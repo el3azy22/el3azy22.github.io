@@ -4,14 +4,8 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#0B1F33">
-<meta property="og:title" content="اختار تشكيلتك · دوري أدنوك">
-<meta property="og:description" content="اختار ناديك وخطتك وملعبك و11 لاعب، واحفظها صورة — مع العازي @el3azy22">
-<meta property="og:image" content="https://el3azy22.github.io/tashkila/og.png">
-<meta property="og:url" content="https://el3azy22.github.io/tashkila/">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:site" content="@el3azy22">
-<meta name="twitter:creator" content="@el3azy22">
-<meta name="twitter:image" content="https://el3azy22.github.io/tashkila/og.png">
+<link rel="apple-touch-icon" href="assets/apple-touch-icon.png">
+<meta name="apple-mobile-web-app-title" content="تشكيلتك">
 <meta name="description" content="اختار ناديك وخطتك وتشكيلتك في دوري أدنوك واحفظها صورة — العازي @el3azy22">
 <title>اختار تشكيلتك · دوري أدنوك</title>
 <style>
@@ -174,7 +168,7 @@ footer{position:fixed;left:0;right:0;bottom:12px;text-align:center;font-size:13p
   <button class="go" type="submit" id="aGo">أضف اللاعب</button>
 </form>
 <div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-label="صورة تشكيلتك">
-  <div class="pvbox"><img id="pvImg" alt="صورة تشكيلتك"><p>اضغط مطوّل على الصورة واحفظها، وبعدين دوس «انشرها في X» وأرفق الصورة</p><button class="btn main" id="pvX" type="button" style="margin-bottom:8px">انشرها في X</button><button class="btn ghost" id="pvClose" type="button" style="width:100%;color:#fff">تم</button></div>
+  <div class="pvbox"><img id="pvImg" alt="صورة تشكيلتك"><p>اضغط مطوّل على الصورة واختار «حفظ الصورة»، وبعدها نزّلها في X ومنشن @el3azy22</p><button class="btn main" id="pvClose" type="button">تم</button></div>
 </div>
 <div class="toast" id="toast"></div>
 
@@ -467,25 +461,23 @@ function drawContain(x,im,dx,dy,w,h){const r=Math.min(w/im.width,h/im.height);co
 function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
 function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(v+(amt<0?v*amt:(255-v)*amt))));return '#'+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,'0')).join('')}
 
+let downloads=null;
+(async()=>{try{if(window.claude&&claude.use){downloads=await claude.use('downloads')}}catch(e){downloads=null}})();
 $('save').hidden=false;
-const SHARE_TXT=()=>'هذي تشكيلتي لـ'+club.name+' ('+fm+') 🔥\nسو تشكيلتك إنت 👇\n'+location.href.split('#')[0]+'\n@el3azy22';
 function showPreview(url){$('pvImg').src=url;$('pv').hidden=false}
 $('pvClose').onclick=()=>{$('pv').hidden=true};
-$('pvX').onclick=()=>window.open('https://x.com/intent/post?text='+encodeURIComponent(SHARE_TXT()),'_blank','noopener');
 $('save').onclick=async()=>{
   if(xi.filter(Boolean).length<11){toast('كمّل 11 لاعب أول');return}
   $('save').disabled=true;
   try{
-    const cv=await drawCard();const url=cv.toDataURL('image/png');
-    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
-    const file=new File([blob],'tashkilti-'+club.id+'.png',{type:'image/png'});
-    const mobile=matchMedia('(pointer:coarse)').matches;
-    if(mobile&&navigator.canShare&&navigator.canShare({files:[file]})){
-      try{await navigator.share({files:[file],text:SHARE_TXT()});return}
-      catch(e){if(e&&e.name==='AbortError')return}
+    const cv=await drawCard();
+    if(downloads){
+      try{const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+        const res=await downloads.save({filename:'tashkilti-'+club.id+'.png',data:blob});
+        if(res&&res.status==='saved'){toast('تم حفظ الصورة، نزّلها في X ومنشن @el3azy22');return}
+      }catch(e){if(e&&e.code==='declined')return}
     }
-    if(!mobile){const a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();toast('تم تحميل الصورة');}
-    showPreview(url);
+    showPreview(cv.toDataURL('image/png'));
   }catch(e){toast('صار خطأ، جرب مرة ثانية')}
   finally{$('save').disabled=false}
 };
