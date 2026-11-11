@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0B1F33">
+<meta property="og:title" content="اختار تشكيلتك · دوري أدنوك">
+<meta property="og:description" content="اختار ناديك وخطتك وملعبك و11 لاعب، واحفظها صورة — مع العازي @el3azy22">
+<meta property="og:image" content="https://el3azy22.github.io/tashkila/og.png">
+<meta property="og:url" content="https://el3azy22.github.io/tashkila/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@el3azy22">
+<meta name="twitter:creator" content="@el3azy22">
+<meta name="twitter:image" content="https://el3azy22.github.io/tashkila/og.png">
+<meta name="description" content="اختار ناديك وخطتك وتشكيلتك في دوري أدنوك واحفظها صورة — العازي @el3azy22">
+<title>اختار تشكيلتك · دوري أدنوك</title>
+<style>
+@font-face{font-family:Readex;src:url(assets/ReadexPro.ttf);font-weight:160 700}
+:root{--c1:#0B1F33;--c2:#D7B465;--ink:#FFFFFF;--soft:rgba(255,255,255,.72)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+html,body{margin:0;min-height:100%}
+body{font-family:Readex,system-ui,sans-serif;color:var(--ink);background:var(--c1);background:
+  radial-gradient(120% 80% at 50% 0%,color-mix(in srgb,var(--c1) 85%,#fff 15%) 0%,var(--c1) 55%,color-mix(in srgb,var(--c1) 70%,#000 30%) 100%);
+  transition:background .5s;min-height:100vh}
+.wrap{max-width:560px;margin:0 auto;padding:16px 14px 72px}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+header img{width:76px;height:76px;object-fit:contain}
+h1{margin:0;font-size:24px;font-weight:700;line-height:1.3}
+.sub{margin:2px 0 0;font-size:14px;color:var(--soft);font-weight:500}
+.lbl{font-size:15px;font-weight:600;margin:18px 0 10px;color:var(--soft)}
+html,body{touch-action:pan-y;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+button,select,input,textarea,.club,.slot,.pl,.list,.sheet{touch-action:pan-y}
+.fms,.fm{touch-action:pan-x pan-y;-webkit-overflow-scrolling:touch;overscroll-behavior-x:contain}
+.clubs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.club{position:relative;border:2px solid rgba(255,255,255,.14);border-radius:16px;background:rgba(8,20,35,.6);padding:10px 4px 8px;cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:6px;color:#fff;font:600 12px Readex;min-height:96px;transition:border-color .2s,background .2s}
+.club img{width:52px;height:52px;object-fit:contain;pointer-events:none}
+.club span{pointer-events:none;line-height:1.2;text-align:center}
+.club[aria-pressed="true"]{border-color:#fff;background:rgba(8,20,35,.92);box-shadow:0 0 0 3px var(--c2)}
+.club[aria-pressed="true"]:after{content:'✓';position:absolute;top:5px;left:6px;width:20px;height:20px;border-radius:50%;background:#fff;color:#111;font:700 12px/20px Readex;text-align:center}
+.club:focus-visible,.fm:focus-visible,.slot:focus-visible,button:focus-visible{outline:3px solid var(--c2);outline-offset:2px}
+.hero{display:flex;align-items:center;gap:14px;margin-top:18px;min-height:64px}
+.hero img{width:64px;height:64px;object-fit:contain}
+.hero .nm{font-size:22px;font-weight:700}
+.hero .cm{font-size:13px;color:var(--soft)}
+.fms{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;scrollbar-width:none}
+.fm{flex:none;border:1.5px solid rgba(255,255,255,.25);background:transparent;color:var(--ink);font:600 15px Readex;padding:8px 14px;border-radius:999px;cursor:pointer;direction:ltr}
+.fm[aria-pressed="true"]{background:var(--c2);color:var(--c1);border-color:var(--c2)}
+.stage{position:relative;margin-top:14px;aspect-ratio:78/100;border-radius:18px;overflow:hidden;background:#070d15;box-shadow:0 18px 40px rgba(0,0,0,.4)}
+.stage canvas{position:absolute;inset:0;width:100%;height:100%}
+#slots{position:absolute;left:14%;top:15%;width:72%;height:72%}
+.slot{position:absolute;transform:translate(-50%,-50%);width:27%;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;padding:0;cursor:pointer;color:#fff;font-family:Readex}
+.shirt{position:relative;width:44px;height:44px;display:flex;align-items:center;justify-content:center;filter:drop-shadow(0 4px 5px rgba(0,0,0,.4))}
+.shirt svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
+.shirt b{position:relative;font:700 15px Readex;margin-top:5px;direction:ltr}
+.slot.empty .shirt{filter:none}
+.pname{font:600 11px Readex;line-height:1.25;background:rgba(0,0,0,.55);padding:2px 7px;border-radius:7px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.slot.empty .pname{background:transparent;color:rgba(255,255,255,.85);font-weight:500}
+.actions{display:flex;gap:8px;margin-top:14px;position:relative;z-index:2}
+.btn{flex:1;border:0;border-radius:14px;padding:14px 10px;font:700 16px Readex;cursor:pointer;min-height:48px}
+.btn.main{background:var(--c2);color:var(--c1)}
+.btn.ghost{background:rgba(255,255,255,.12);color:var(--ink)}
+.btn[disabled]{opacity:.45;cursor:default}
+.count{text-align:center;font-size:13px;color:var(--soft);margin-top:10px}
+.note{margin-top:12px;font-size:13px;line-height:1.6;color:var(--soft);background:rgba(0,0,0,.18);border-radius:12px;padding:10px 12px}
+.toast{position:fixed;left:50%;bottom:22px;transform:translateX(-50%);background:#111;color:#fff;padding:10px 16px;border-radius:12px;font-size:14px;opacity:0;transition:opacity .25s;pointer-events:none;z-index:50}
+.toast.on{opacity:1}
+/* sheet */
+.veil{position:fixed;inset:0;background:rgba(0,0,0,.55);opacity:0;pointer-events:none;transition:opacity .2s;z-index:20}
+.veil.on{opacity:1;pointer-events:auto}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-height:82vh;background:#fff;color:#111;border-radius:22px 22px 0 0;transform:translateY(105%);transition:transform .25s;z-index:30;display:flex;flex-direction:column;max-width:560px;margin:0 auto}
+.sheet.on{transform:translateY(0)}
+.sh-head{padding:14px 16px 8px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.sh-head b{font-size:18px}
+.x{border:0;background:#eee;border-radius:50%;width:40px;height:40px;font-size:20px;cursor:pointer}
+.search{margin:0 16px 8px;padding:12px 14px;border-radius:12px;border:1.5px solid #ddd;font:500 16px Readex;width:calc(100% - 32px)}
+.list{overflow-y:auto;padding:0 8px calc(90px + env(safe-area-inset-bottom))}
+.grp{font-size:13px;font-weight:700;color:#666;padding:12px 10px 6px}
+.pl{display:flex;align-items:center;gap:12px;width:100%;border:0;background:none;padding:10px;border-radius:12px;cursor:pointer;font:600 16px Readex;color:#111;text-align:right}
+.pl:hover{background:#f3f3f3}
+.pl .no{width:40px;height:40px;flex:none;position:relative;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:var(--ink)}
+.pl .no svg{position:absolute;inset:0;width:100%;height:100%}.pl .no i{position:relative;font-style:normal;margin-top:5px}
+.pl[disabled]{opacity:.35;cursor:default}
+.pl .tag{margin-inline-start:auto;font-size:12px;color:#888;font-weight:500}
+.addbtn{margin:0 16px 8px;border:1.5px dashed #bbb;background:#fafafa;color:#111;border-radius:12px;padding:11px;font:600 15px Readex;cursor:pointer}
+.prow{display:flex;align-items:center;gap:4px}.prow .pl{flex:1;min-width:0}.pdel{flex:none;margin-inline-end:8px;border:0;border-radius:10px;padding:7px 10px;background:#fdecec;color:#b00020;font:600 13px Readex;cursor:pointer}.pdel.ask{background:#b00020;color:#fff}
+.addplayer{width:100%;margin-top:8px;border:1.5px dashed rgba(255,255,255,.55);background:rgba(0,0,0,.14);color:var(--ink);border-radius:14px;padding:13px;font:700 15px Readex;cursor:pointer}
+.dlg{position:fixed;left:0;right:0;bottom:0;background:#fff;color:#111;border-radius:22px 22px 0 0;transform:translateY(105%);transition:transform .25s;z-index:40;max-width:560px;margin:0 auto;padding:14px 16px calc(96px + env(safe-area-inset-bottom));max-height:88vh;overflow-y:auto}
+.dlg.on{transform:translateY(0)}
+.dlg label{display:block;font:600 13px Readex;color:#555;margin:12px 0 6px}
+.dlg input{width:100%;padding:12px 14px;border-radius:12px;border:1.5px solid #ddd;font:500 16px Readex}
+.dlg .row{display:flex;gap:10px}.dlg .row>div:first-child{flex:1}.dlg .row>div:last-child{width:96px}
+.roles{display:flex;gap:6px}.roles button{flex:1;border:1.5px solid #ddd;background:#fff;border-radius:12px;padding:10px 0;font:600 14px Readex;cursor:pointer;color:#111}
+.roles button[aria-pressed="true"]{background:#111;color:#fff;border-color:#111}
+.dlg .go{width:100%;margin-top:16px;border:0;border-radius:14px;background:#111;color:#fff;font:700 16px Readex;padding:14px;cursor:pointer}
+.veil2{z-index:35}
+.clearslot{margin:0 16px 8px;border:0;background:#fdecec;color:#b00020;border-radius:12px;padding:10px;font:600 14px Readex;cursor:pointer}
+.empty-list{padding:16px;color:#666;font-size:14px;line-height:1.7}
+select.stad{width:100%;appearance:none;-webkit-appearance:none;border:1.5px solid rgba(255,255,255,.3);background:rgba(0,0,0,.22);color:var(--ink);font:600 16px Readex;padding:12px 14px;border-radius:14px;cursor:pointer}
+select.stad option{color:#111;background:#fff}
+.stadwrap{position:relative}.stadwrap:after{content:'▾';position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--ink)}
+.plab{position:absolute;top:4.2%;left:50%;transform:translateX(-50%);font:600 16px Readex;background:rgba(0,0,0,.45);color:#fff;padding:4px 14px;border-radius:99px;white-space:nowrap;z-index:1;border:0;outline:0;text-align:center;width:200px;max-width:74%}
+input.plab::placeholder{color:rgba(255,255,255,.75)}
+input.plab:focus{box-shadow:0 0 0 2px var(--c2)}
+.pv{position:fixed;inset:0;z-index:60;background:rgba(0,0,0,.85);display:flex;align-items:center;justify-content:center;padding:16px}
+.pvbox{max-width:440px;width:100%;text-align:center;color:#fff}
+.pvbox img{width:100%;border-radius:14px;display:block;-webkit-touch-callout:default;user-select:auto}
+.pvbox p{font-size:14px;line-height:1.7;margin:12px 0}
+.pvbox .btn{width:100%;background:#fff;color:#111}
+footer{position:fixed;left:0;right:0;bottom:12px;text-align:center;font-size:13px;font-weight:600;color:#fff;opacity:.45;direction:ltr;pointer-events:none;z-index:1;margin:0}
+.flagbar{margin-top:16px;height:28px;border-radius:10px;overflow:hidden;display:grid;grid-template-columns:24% 1fr;direction:ltr;box-shadow:0 6px 16px rgba(0,0,0,.3);border:1px solid rgba(255,255,255,.15)}
+.flagbar i{background:#FF0000}
+.flagbar b{background:linear-gradient(#00732F 0 33.4%,#FFFFFF 33.4% 66.6%,#000000 66.6%)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>اختار تشكيلتك</h1>
+      <p class="sub">كرة القدم الإماراتية</p>
+    </div>
+    <img src="assets/el3azy.png" alt="العازي">
+  </header>
+
+  <div class="flagbar" aria-hidden="true"><i></i><b></b></div>
+  <div class="lbl">المنتخب</div>
+  <div class="clubs" id="natl"></div>
+  <div class="lbl">اختار ناديك</div>
+  <div class="clubs" id="clubs"></div>
+
+  <div class="hero" id="hero" hidden>
+    <img id="heroCrest" alt="">
+    <div><div class="nm" id="heroName"></div><div class="cm" id="heroMeta"></div></div>
+  </div>
+
+  <div id="builder" hidden>
+    <div class="lbl">اختار الخطة</div>
+    <div class="fms" id="fms"></div>
+    <div class="stage" id="pitch">
+      <canvas id="stadium" aria-hidden="true"></canvas>
+      <input class="plab" id="plab" maxlength="24" placeholder="اكتب اسم المدرب" aria-label="اسم المدرب" autocomplete="off">
+      <div id="slots"></div>
+    </div>
+    <div class="count" id="count"></div>
+    <div class="actions">
+      <button class="btn ghost" id="reset">مسح</button>
+      <button class="btn main" id="save" hidden>حفظ الصورة</button>
+    </div>
+    <button class="addplayer" id="addPlayer" type="button">+ أضف لاعب يدوي للقائمة</button>
+    <div class="note" id="note" hidden></div>
+  </div>
+
+  <footer>@el3azy22</footer>
+</div>
+
+<div class="veil" id="veil"></div>
+<div class="sheet" id="sheet" role="dialog" aria-modal="true" aria-labelledby="shTitle">
+  <div class="sh-head"><b id="shTitle">اختار اللاعب</b><button class="x" id="shClose" aria-label="إغلاق">×</button></div>
+  <label class="search-wrap"><span hidden>بحث</span><input class="search" id="q" type="search" placeholder="دوّر على اسم أو رقم" aria-label="بحث"></label>
+  <button class="addbtn" id="sheetAdd" type="button">+ لاعب مب موجود؟ أضفه يدوي</button>
+  <button class="clearslot" id="clearSlot" hidden>شيل اللاعب من هالمركز</button>
+  <div class="list" id="list"></div>
+</div>
+<div class="veil veil2" id="veil2"></div>
+<form class="dlg" id="addDlg" role="dialog" aria-modal="true" aria-labelledby="addTitle">
+  <div class="sh-head" style="padding:0"><b id="addTitle">أضف لاعب يدوي</b><button type="button" class="x" id="addClose" aria-label="إغلاق">×</button></div>
+  <div class="row">
+    <div><label for="aName">اسم اللاعب</label><input id="aName" autocomplete="off" placeholder="مثلاً: علي مبخوت"></div>
+    <div><label for="aNo">الرقم</label><input id="aNo" inputmode="numeric" maxlength="3" placeholder="–" style="text-align:center"></div>
+  </div>
+  <label>المركز</label>
+  <div class="roles" id="aRoles"></div>
+  <button class="go" type="submit" id="aGo">أضف اللاعب</button>
+</form>
+<div class="pv" id="pv" hidden role="dialog" aria-modal="true" aria-label="صورة تشكيلتك">
+  <div class="pvbox"><img id="pvImg" alt="صورة تشكيلتك"><p>اضغط مطوّل على الصورة واحفظها، وبعدين دوس «انشرها في X» وأرفق الصورة</p><button class="btn main" id="pvX" type="button" style="margin-bottom:8px">انشرها في X</button><button class="btn ghost" id="pvClose" type="button" style="width:100%;color:#fff">تم</button></div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---------- البيانات: في squads.json ---------- */
+let CLUBS=[],NATL=null;
+/* شكل كل ملعب من فوق: لون الكراسي، السقف، مضمار */
+const STX={hazza:{seat:'#6A35A0',roof:'#E6E2EE'},nahyan:{seat:'#6A1430',roof:'#D8C08A'},mbz:{seat:'#2A2A2A',roof:'#E8E8E8',alt:'#C8192A'},
+ zabeel:{seat:'#E7B700',roof:'#2a2a2a'},maktoum:{seat:'#2558D6',roof:'#E9EEF5'},rashid:{seat:'#C3001F',roof:'#EDEDED'},
+ sharjah:{seat:'#C21D32',roof:'#EDEDED',alt:'#ffffff',track:1},rbs:{seat:'#E0601E',roof:'#2b2b2b'},baniyas:{seat:'#3E9FDC',roof:'#FFFFFF'},
+ kalba:{seat:'#E5B400',roof:'#0B2A4A'},saqr:{seat:'#0F7A3C',roof:'#F2F2F2'},hamdanbz:{seat:'#1B3F93',roof:'#F0F0F0',alt:'#F5C400'},
+ hamdanbr:{seat:'#4FA8DE',roof:'#FFFFFF'},zsc:{seat:'#3D6A9E',roof:'#E2E6EA',track:1}};
+function rng(seed){return()=>{seed|=0;seed=seed+0x6D2B79F5|0;let t=Math.imul(seed^seed>>>15,1|seed);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function mix(hex,k){const n=parseInt(hex.slice(1),16);const r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.round(k<0?v*(1+k):v+(255-v)*k);return 'rgb('+f(r)+','+f(g)+','+f(b)+')'}
+function rrect(x,a,b,w,h,r,add){r=Math.max(0,Math.min(r,w/2,h/2));if(!add)x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+/* يرسم ملعب كامل من فوق: W,H حجم الإطار، P مستطيل أرضية الملعب */
+function drawStadium(x,W,H,P,key){
+  const S=STX[key]||STX.maktoum,u=W/1000,R=rng(7);
+  x.save();
+  x.fillStyle='#060b12';x.fillRect(0,0,W,H);
+  // أشجار وظلام برا الملعب
+  for(let i=0;i<70;i++){const cx=R()<.5?R()*W*.22:W-R()*W*.22,cy=R()<.5?R()*H*.16:H-R()*H*.16,r=(8+R()*22)*u;
+    const g=x.createRadialGradient(cx,cy,0,cx,cy,r);g.addColorStop(0,'rgba(30,70,45,.9)');g.addColorStop(1,'rgba(10,25,18,0)');x.fillStyle=g;x.beginPath();x.arc(cx,cy,r,0,7);x.fill()}
+  const ap=(S.track?46:22)*u;                         // المسافة بين الأرضية والمدرجات
+  const I={x:P.x-ap,y:P.y-ap,w:P.w+2*ap,h:P.h+2*ap};  // حافة المدرج الداخلية
+  const O={x:W*.035,y:H*.03,w:W*.93,h:H*.94};         // حافة السقف
+  const ir=(S.track?120:26)*u,orr=W*.16;
+  const lerpR=t=>({x:I.x+(O.x-I.x)*t,y:I.y+(O.y-I.y)*t,w:I.w+(O.w-I.w)*t,h:I.h+(O.h-I.h)*t,r:ir+(orr-ir)*t});
+  // السقف
+  rrect(x,O.x-8*u,O.y-8*u,O.w+16*u,O.h+16*u,orr+8*u);x.fillStyle=mix(S.roof,-.55);x.fill();
+  // الكراسي: صفوف متدرجة
+  const rows=34;
+  for(let k=rows;k>=0;k--){const t=k/rows,q=lerpR(t);rrect(x,q.x,q.y,q.w,q.h,q.r);
+    const light=-.12-.4*t+(k%2?0:-.08);let col=S.seat;if(S.alt&&Math.floor(k/6)%2)col=S.alt;
+    x.fillStyle=mix(col,light<0?light:light*.5);x.fill()}
+  // ممر دائري (كونكورس)
+  {const q=lerpR(.5);rrect(x,q.x,q.y,q.w,q.h,q.r);x.lineWidth=9*u;x.strokeStyle='rgba(10,12,16,.75)';x.stroke()}
+  // ممرات المدرج (درج)
+  x.save();const qo=lerpR(1),qi=lerpR(0);rrect(x,qo.x,qo.y,qo.w,qo.h,qo.r);x.clip();
+  const cx0=W/2,cy0=P.y+P.h/2;x.strokeStyle='rgba(8,10,14,.45)';x.lineWidth=2.6*u;
+  for(let a=0;a<360;a+=7.5){const rd=a*Math.PI/180;x.beginPath();x.moveTo(cx0,cy0);x.lineTo(cx0+Math.cos(rd)*W*2,cy0+Math.sin(rd)*W*2);x.stroke()}
+  x.restore();
+  // ضلوع السقف
+  x.save();rrect(x,O.x-8*u,O.y-8*u,O.w+16*u,O.h+16*u,orr+8*u);const q9=lerpR(.9);rrect(x,q9.x,q9.y,q9.w,q9.h,q9.r,1);x.fillStyle=mix(S.roof,-.35);x.fill('evenodd');
+  rrect(x,O.x-8*u,O.y-8*u,O.w+16*u,O.h+16*u,orr+8*u);x.clip();x.strokeStyle='rgba(0,0,0,.35)';x.lineWidth=1.6*u;
+  for(let a=0;a<360;a+=3.75){const rd=a*Math.PI/180;x.beginPath();x.moveTo(cx0+Math.cos(rd)*W*.3,cy0+Math.sin(rd)*H*.36);x.lineTo(cx0+Math.cos(rd)*W*2,cy0+Math.sin(rd)*W*2);x.stroke()}
+  x.restore();
+  // الأرضية حول الملعب / المضمار
+  rrect(x,qi.x,qi.y,qi.w,qi.h,qi.r);x.fillStyle=S.track?'#8a3b2c':'#1f5a33';x.fill();
+  if(S.track){x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=1.4*u;for(let l=1;l<6;l++){const d=l*7*u;rrect(x,qi.x+d,qi.y+d,qi.w-2*d,qi.h-2*d,Math.max(10,qi.r-d));x.stroke()}
+    rrect(x,P.x-6*u,P.y-6*u,P.w+12*u,P.h+12*u,8*u);x.fillStyle='#2a7a40';x.fill()}
+  // العشب: خطوط قص
+  x.save();rrect(x,P.x,P.y,P.w,P.h,4*u);x.clip();
+  const n=14;for(let i=0;i<n;i++){x.fillStyle=i%2?'#2f8f48':'#2a8141';x.fillRect(P.x,P.y+P.h*i/n,P.w,P.h/n+1)}
+  for(let i=0;i<5000;i++){const a=P.x+R()*P.w,b=P.y+R()*P.h;x.fillStyle=R()<.5?'rgba(0,0,0,.07)':'rgba(255,255,255,.05)';x.fillRect(a,b,1.6*u,3*u)}
+  const sh=x.createRadialGradient(W/2,cy0,P.w*.2,W/2,cy0,P.h*.75);sh.addColorStop(0,'rgba(255,255,255,.06)');sh.addColorStop(1,'rgba(0,0,0,.28)');x.fillStyle=sh;x.fillRect(P.x,P.y,P.w,P.h);
+  x.restore();
+  // ظل المدرج على الأرضية
+  x.save();rrect(x,qi.x,qi.y,qi.w,qi.h,qi.r);x.clip();x.shadowColor='rgba(0,0,0,.6)';x.shadowBlur=30*u;x.lineWidth=40*u;x.strokeStyle='rgba(0,0,0,.6)';rrect(x,qi.x-20*u,qi.y-20*u,qi.w+40*u,qi.h+40*u,qi.r+20*u);x.stroke();x.restore();
+  // خطوط الملعب
+  const sx=P.w/68,sy=P.h/88,X=v=>P.x+v*sx,Y=v=>P.y+v*sy;
+  x.strokeStyle='rgba(255,255,255,.85)';x.lineWidth=2.6*u;
+  const L=(a,b,w,h)=>x.strokeRect(X(a),Y(b),w*sx,h*sy);
+  L(2,2,64,84);x.beginPath();x.moveTo(X(2),Y(44));x.lineTo(X(66),Y(44));x.stroke();
+  x.beginPath();x.ellipse(X(34),Y(44),7.3*sx,7.3*sx,0,0,7);x.stroke();
+  x.fillStyle='#fff';x.beginPath();x.arc(X(34),Y(44),2.6*u,0,7);x.fill();
+  L(15.5,2,37,13.5);L(25,2,18,5);L(15.5,72.5,37,13.5);L(25,81,18,5);
+  x.beginPath();x.ellipse(X(34),Y(11),7.3*sx,7.3*sx,0,.2*Math.PI,.8*Math.PI);x.stroke();
+  x.beginPath();x.ellipse(X(34),Y(77),7.3*sx,7.3*sx,0,1.2*Math.PI,1.8*Math.PI);x.stroke();
+  [[2,2,0],[66,2,.5],[66,86,1],[2,86,1.5]].forEach(([a,b,s0])=>{x.beginPath();x.arc(X(a),Y(b),1.2*sx,s0*Math.PI,(s0+.5)*Math.PI);x.stroke()});
+  // المرمى والشباك
+  [[Y(2),-1],[Y(86),1]].forEach(([gy,d])=>{const gw=8*sx,gd=2.3*sx;const gx=X(34)-gw/2,gy0=d<0?gy-gd:gy;
+    x.fillStyle='rgba(255,255,255,.12)';x.fillRect(gx,gy0,gw,gd);x.strokeStyle='rgba(255,255,255,.35)';x.lineWidth=1*u;
+    for(let i=1;i<10;i++){x.beginPath();x.moveTo(gx+gw*i/10,gy0);x.lineTo(gx+gw*i/10,gy0+gd);x.stroke()}
+    for(let i=1;i<3;i++){x.beginPath();x.moveTo(gx,gy0+gd*i/3);x.lineTo(gx+gw,gy0+gd*i/3);x.stroke()}
+    x.strokeStyle='#fff';x.lineWidth=3*u;x.strokeRect(gx,gy0,gw,gd)});
+  // دكة البدلاء
+  [Y(36),Y(52)].forEach(by=>{rrect(x,P.x-ap+3*u,by-24*u,Math.max(10*u,ap-8*u),48*u,4*u);x.fillStyle='rgba(15,20,28,.85)';x.fill();x.strokeStyle='rgba(255,255,255,.4)';x.lineWidth=1.2*u;x.stroke()});
+  // الكشافات
+  x.globalCompositeOperation='lighter';
+  [[O.x+orr*.45,O.y+orr*.45],[O.x+O.w-orr*.45,O.y+orr*.45],[O.x+orr*.45,O.y+O.h-orr*.45],[O.x+O.w-orr*.45,O.y+O.h-orr*.45]].forEach(([a,b])=>{
+    let g=x.createRadialGradient(a,b,0,a,b,90*u);g.addColorStop(0,'rgba(255,255,255,.9)');g.addColorStop(.08,'rgba(220,235,255,.55)');g.addColorStop(1,'rgba(120,170,255,0)');x.fillStyle=g;x.fillRect(a-90*u,b-90*u,180*u,180*u);
+    g=x.createRadialGradient(a,b,0,a,b,W*.75);g.addColorStop(0,'rgba(170,200,255,.10)');g.addColorStop(1,'rgba(0,0,0,0)');x.fillStyle=g;x.fillRect(0,0,W,H)});
+  x.globalCompositeOperation='source-over';
+  // جو ليلي أزرق
+  const nb=x.createLinearGradient(W,0,0,H);nb.addColorStop(0,'rgba(40,90,170,.22)');nb.addColorStop(.5,'rgba(0,0,0,0)');nb.addColorStop(1,'rgba(0,0,20,.25)');x.fillStyle=nb;x.fillRect(0,0,W,H);
+  x.restore();
+}
+const PAGE_P={x:.14,y:.15,w:.72,h:.72};
+function paintStage(){const cv=$('stadium');if(!cv||!club)return;const r=cv.getBoundingClientRect();if(!r.width)return;
+  const dpr=Math.min(2,window.devicePixelRatio||1),W=Math.round(r.width*dpr),H=Math.round(r.height*dpr);cv.width=W;cv.height=H;
+  drawStadium(cv.getContext('2d'),W,H,{x:W*PAGE_P.x,y:H*PAGE_P.y,w:W*PAGE_P.w,h:H*PAGE_P.h},stad)}
+window.addEventListener('resize',()=>{clearTimeout(paintStage._t);paintStage._t=setTimeout(paintStage,120)});
+const STADIUMS={hazza:'استاد هزاع بن زايد',nahyan:'استاد آل نهيان',mbz:'استاد محمد بن زايد',zabeel:'استاد زعبيل',maktoum:'استاد آل مكتوم',rashid:'استاد راشد',sharjah:'استاد الشارقة',rbs:'استاد راشد بن سعيد',baniyas:'استاد بني ياس',kalba:'استاد اتحاد كلباء',saqr:'استاد صقر بن محمد القاسمي',hamdanbz:'استاد حمدان بن زايد',hamdanbr:'استاد حمدان بن راشد',zsc:'استاد مدينة زايد الرياضية'};
+const POSN={GK:'الحراس',DEF:'الدفاع',MID:'الوسط',FWD:'الهجوم'};
+
+/* الخطط: [x%, y%, دور] من حارس المرمى (تحت) للهجوم (فوق) */
+const FMS={
+ '4-3-3':[[50,90,'GK'],[13,71,'DEF'],[37,74,'DEF'],[63,74,'DEF'],[87,71,'DEF'],[24,50,'MID'],[50,54,'MID'],[76,50,'MID'],[17,25,'FWD'],[50,20,'FWD'],[83,25,'FWD']],
+ '4-2-3-1':[[50,90,'GK'],[13,72,'DEF'],[37,75,'DEF'],[63,75,'DEF'],[87,72,'DEF'],[34,58,'MID'],[66,58,'MID'],[16,38,'MID'],[50,40,'MID'],[84,38,'MID'],[50,18,'FWD']],
+ '4-4-2':[[50,90,'GK'],[13,72,'DEF'],[37,75,'DEF'],[63,75,'DEF'],[87,72,'DEF'],[13,47,'MID'],[37,51,'MID'],[63,51,'MID'],[87,47,'MID'],[35,22,'FWD'],[65,22,'FWD']],
+ '3-5-2':[[50,90,'GK'],[25,74,'DEF'],[50,76,'DEF'],[75,74,'DEF'],[9,49,'MID'],[30,55,'MID'],[50,45,'MID'],[70,55,'MID'],[91,49,'MID'],[35,22,'FWD'],[65,22,'FWD']],
+ '3-4-3':[[50,90,'GK'],[25,74,'DEF'],[50,76,'DEF'],[75,74,'DEF'],[12,50,'MID'],[37,53,'MID'],[63,53,'MID'],[88,50,'MID'],[17,25,'FWD'],[50,20,'FWD'],[83,25,'FWD']],
+ '5-3-2':[[50,90,'GK'],[9,66,'DEF'],[29,74,'DEF'],[50,76,'DEF'],[71,74,'DEF'],[91,66,'DEF'],[25,48,'MID'],[50,51,'MID'],[75,48,'MID'],[35,22,'FWD'],[65,22,'FWD']],
+ '4-1-4-1':[[50,90,'GK'],[13,72,'DEF'],[37,75,'DEF'],[63,75,'DEF'],[87,72,'DEF'],[50,59,'MID'],[13,40,'MID'],[37,43,'MID'],[63,43,'MID'],[87,40,'MID'],[50,18,'FWD']],
+};
+const ROLE={GK:'حارس',DEF:'دفاع',MID:'وسط',FWD:'هجوم'};
+
+/* ---------- الحالة ---------- */
+const $=id=>document.getElementById(id);
+let club=null, fm='4-3-3', xi=Array(11).fill(null), active=-1, extra={}, stad='', byName='';
+const SHIRT='M31 6 L42 2 Q50 11 58 2 L69 6 L95 22 L85 42 L74 36 L74 96 L26 96 L26 36 L15 42 L5 22 Z';
+function kit(r){const gk=r==='GK';return gk?{body:club.c2,trim:club.c1,num:club.c1}:{body:club.c1,trim:club.c2,num:club.ink}}
+function shirtSVG(k,empty){
+  if(empty)return '<svg viewBox="0 0 100 100"><path d="'+SHIRT+'" fill="rgba(0,0,0,.28)" stroke="rgba(255,255,255,.9)" stroke-width="4" stroke-dasharray="8 6" stroke-linejoin="round"/></svg>';
+  return '<svg viewBox="0 0 100 100"><path d="'+SHIRT+'" fill="'+k.body+'" stroke="rgba(0,0,0,.45)" stroke-width="3" stroke-linejoin="round"/>'+
+   '<path d="M42 2 Q50 11 58 2" fill="none" stroke="'+k.trim+'" stroke-width="6"/>'+
+   '<path d="M5 22 L15 42 M95 22 L85 42" stroke="'+k.trim+'" stroke-width="7"/></svg>';
+}
+function short(n){if(n.length<=8)return n;const w=n.split(' ');let t=w[w.length-1];if(t.length<=3&&w.length>1)t=w[w.length-2]+' '+t;return t}
+$('plab').addEventListener('input',e=>{byName=e.target.value.trim()});
+function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
+function crestSrc(c){return c.crestFile||'assets/crests/'+(c.crest||c.id)+'.png'}
+function key(p){return (p[0]??'')+'|'+p[1]}
+
+/* المنتخب والأندية: تنبني بعد ما تنحمل squads.json */
+function clubBtn(c,host){
+  const b=document.createElement('button');b.className='club';b.setAttribute('aria-pressed','false');b.setAttribute('aria-label',c.name);
+  const im=document.createElement('img');im.src=c.crestFile||'assets/crests/'+c.id+'.png';im.alt='';const nm=document.createElement('span');nm.textContent=c.name;b.append(im,nm);
+  b.onclick=()=>pickClub(c,b);host.appendChild(b);
+}
+function buildClubs(){
+  if(NATL)clubBtn(NATL,$('natl'));
+  CLUBS.forEach(c=>clubBtn(c,$('clubs')));
+}
+Object.keys(FMS).forEach(f=>{
+  const b=document.createElement('button');b.className='fm';b.textContent=f;b.setAttribute('aria-pressed',f===fm);
+  b.onclick=()=>{fm=f;document.querySelectorAll('.fm').forEach(x=>x.setAttribute('aria-pressed',x.textContent===f));renderPitch()};
+  $('fms').appendChild(b);
+});
+
+function pickClub(c,btn){
+  club=c;xi=Array(11).fill(null);
+  document.querySelectorAll('.club').forEach(x=>x.setAttribute('aria-pressed',x===btn));
+  const r=document.documentElement.style;r.setProperty('--c1',c.c1);r.setProperty('--c2',c.c2);r.setProperty('--ink',c.ink);
+  r.setProperty('--soft',c.ink==='#111'?'rgba(0,0,0,.68)':'rgba(255,255,255,.75)');document.querySelector('meta[name=theme-color]')?.setAttribute('content',c.c1);
+  $('hero').hidden=false;$('builder').hidden=false;
+  $('heroCrest').src=crestSrc(c);$('heroCrest').alt=c.name;$('heroName').textContent=c.name;
+  $('heroMeta').textContent='';
+  stad=c.st;requestAnimationFrame(paintStage);
+  const n=$('note');
+  if(c.nonum){n.hidden=false;n.textContent=c.note||('أرقام لاعبي '+c.name+' مب كلها منشورة لين الحين. إذا ما لقيت اللاعب أو تبا تحط رقمه، أضفه يدوي من زر «أضف لاعب».');}
+  else n.hidden=true;
+  renderPitch();
+}
+
+function renderPitch(){
+  const box=$('slots');box.innerHTML='';
+  FMS[fm].forEach(([x,y,r],i)=>{
+    const p=xi[i];const b=document.createElement('button');
+    b.className='slot'+(p?'':' empty');b.style.left=x+'%';b.style.top=y+'%';
+    b.setAttribute('aria-label',p?(p[1]+' رقم '+(p[0]??'')):('اختار '+ROLE[r]));
+    const s=document.createElement('span');s.className='shirt';s.innerHTML=shirtSVG(kit(r),!p);
+    const bn=document.createElement('b');const k=kit(r);bn.style.color=p?k.num:'#fff';bn.textContent=p?(p[0]??''):'+';s.appendChild(bn);
+    const t=document.createElement('span');t.className='pname';t.textContent=p?short(p[1]):ROLE[r];
+    b.append(s,t);b.onclick=()=>openSheet(i);box.appendChild(b);
+  });
+  const n=xi.filter(Boolean).length;$('count').textContent=n+' / 11 لاعب';
+}
+
+/* القائمة */
+function openSheet(i){
+  active=i;const r=FMS[fm][i][2];$('shTitle').textContent='اختار '+ROLE[r];
+  $('q').value='';$('clearSlot').hidden=!xi[i];renderList();
+  $('veil').classList.add('on');$('sheet').classList.add('on');setTimeout(()=>$('q').focus({preventScroll:true}),250);
+}
+function closeSheet(){$('veil').classList.remove('on');$('sheet').classList.remove('on');active=-1}
+$('veil').onclick=closeSheet;$('shClose').onclick=closeSheet;
+document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('addDlg').classList.contains('on'))closeAdd();else if(active>-1)closeSheet()});
+$('q').oninput=renderList;
+$('clearSlot').onclick=()=>{xi[active]=null;closeSheet();renderPitch()};
+
+function renderList(){
+  const L=$('list');L.innerHTML='';const q=$('q').value.trim();
+  const all=club.p.concat(extra[club.id]||[]);
+  const used=new Set(xi.filter(Boolean).map(key));
+  const f=all.filter(p=>!q||p[1].includes(q)||String(p[0]??'')===q);
+  if(!all.length){L.innerHTML='<div class="empty-list">قائمة '+club.name+' مب متوفرة لين الحين. أضف اللاعب يدوي من الزر فوق.</div>';return}
+  if(!f.length){L.innerHTML='<div class="empty-list">ما لقيت لاعب بهالاسم. تقدر تضيفه يدوي من الزر فوق.</div>';return}
+  // تجميع
+  const groups={};const order=[];
+  f.forEach(p=>{const g=p[3]||POSN[p[2]]||'اللاعبين';if(!groups[g]){groups[g]=[];order.push(g)}groups[g].push(p)});
+  const role=FMS[fm][active][2];
+  if(order.includes(POSN[role])){order.splice(order.indexOf(POSN[role]),1);order.unshift(POSN[role])}
+  order.forEach(g=>{
+    const h=document.createElement('div');h.className='grp';h.textContent=g;L.appendChild(h);
+    groups[g].forEach(p=>{
+      const b=document.createElement('button');b.className='pl';const k=key(p);
+      const isCur=xi[active]&&key(xi[active])===k;b.disabled=used.has(k)&&!isCur;
+      const no=document.createElement('span');no.className='no';const kk=kit(p[2]||'');no.innerHTML=shirtSVG(kk,false)+'<i style="color:'+kk.num+'">'+(p[0]??'')+'</i>';
+      const nm=document.createElement('span');nm.textContent=p[1];
+      b.append(no,nm);
+      if(p[2]){const t=document.createElement('span');t.className='tag';t.textContent=p[4]?'مضاف · '+ROLE[p[2]]:ROLE[p[2]];b.appendChild(t)}
+      b.onclick=()=>{xi[active]=p;closeSheet();renderPitch()};
+      if(p[4]===1){const row=document.createElement('div');row.className='prow';row.appendChild(b);
+        const d=document.createElement('button');d.type='button';d.className='pdel';d.textContent='حذف';
+        d.onclick=e=>{e.stopPropagation();if(!d.dataset.ok){d.dataset.ok='1';d.textContent='تأكيد؟';d.classList.add('ask');setTimeout(()=>{delete d.dataset.ok;d.textContent='حذف';d.classList.remove('ask')},3000);return}delManual(p)};
+        row.appendChild(d);L.appendChild(row)}
+      else L.appendChild(b);
+    });
+  });
+}
+function delManual(p){
+  const k=key(p);
+  extra[club.id]=(extra[club.id]||[]).filter(q=>key(q)!==k);saveExtra();
+  xi=xi.map(q=>q&&key(q)===k?null:q);
+  renderPitch();renderList();toast('انحذف '+p[1]);
+}
+/* إضافة لاعب يدوي */
+try{extra=JSON.parse(localStorage.getItem('tashkila_extra')||'{}')||{}}catch(e){extra={}}
+function saveExtra(){try{localStorage.setItem('tashkila_extra',JSON.stringify(extra))}catch(e){}}
+let addRole='MID',addForSlot=false;
+['GK','DEF','MID','FWD'].forEach(r=>{const b=document.createElement('button');b.type='button';b.textContent=ROLE[r];b.dataset.r=r;
+  b.onclick=()=>{addRole=r;document.querySelectorAll('#aRoles button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.r===r))};$('aRoles').appendChild(b)});
+function openAdd(forSlot){
+  addForSlot=forSlot;const r=forSlot?FMS[fm][active][2]:'MID';addRole=r;
+  document.querySelectorAll('#aRoles button').forEach(x=>x.setAttribute('aria-pressed',x.dataset.r===r));
+  $('aName').value=forSlot?$('q').value.trim():'';$('aNo').value='';
+  $('addTitle').textContent=forSlot?'أضف لاعب لهالمركز':'أضف لاعب لقائمة '+club.name;
+  $('veil2').classList.add('on');$('addDlg').classList.add('on');setTimeout(()=>$('aName').focus({preventScroll:true}),260);
+}
+function closeAdd(){$('veil2').classList.remove('on');$('addDlg').classList.remove('on')}
+$('addPlayer').onclick=()=>openAdd(false);
+$('sheetAdd').onclick=()=>openAdd(true);
+$('addClose').onclick=closeAdd;$('veil2').onclick=closeAdd;
+$('addDlg').addEventListener('submit',e=>{
+  e.preventDefault();const nm=$('aName').value.trim();if(!nm){$('aName').focus();toast('اكتب اسم اللاعب');return}
+  const no=$('aNo').value.replace(/\D/g,'');const p=[no?Number(no):null,nm,addRole,'',1];
+  const L=(extra[club.id]=extra[club.id]||[]);
+  if(club.p.concat(L).some(q=>key(q)===key(p))){toast('هاللاعب موجود في القائمة');return}
+  L.push(p);saveExtra();closeAdd();
+  if(addForSlot&&active>-1){xi[active]=p;closeSheet();renderPitch();toast('انضاف '+nm+' للتشكيلة')}
+  else toast('انضاف '+nm+' لقائمة '+club.name);
+});
+$('reset').onclick=()=>{xi=Array(11).fill(null);renderPitch();toast('تم مسح التشكيلة')};
+
+/* ---------- حفظ الصورة ---------- */
+const imgCache={};
+function loadImg(src){return imgCache[src]||(imgCache[src]=new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src}))}
+function fitText(ctx,t,max,size,weight){let s=size;do{ctx.font=weight+' '+s+'px Readex';if(ctx.measureText(t).width<=max)break;s-=1}while(s>14);return s}
+async function drawCard(){
+  await document.fonts.load('700 40px Readex');
+  const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  const c=club,P={x:W*.17,y:H*.205,w:W*.66,h:H*.665};
+  drawStadium(x,W,H,P,stad);
+  // تظليل فوق وتحت عشان الكتابة تبين
+  let g=x.createLinearGradient(0,0,0,P.y+20);g.addColorStop(0,'rgba(4,8,14,.92)');g.addColorStop(.75,'rgba(4,8,14,.7)');g.addColorStop(1,'rgba(4,8,14,0)');x.fillStyle=g;x.fillRect(0,0,W,P.y+20);
+  g=x.createLinearGradient(0,H-110,0,H);g.addColorStop(0,'rgba(4,8,14,0)');g.addColorStop(1,'rgba(4,8,14,.85)');x.fillStyle=g;x.fillRect(0,H-110,W,110);
+  const crestImg=crestSrc(c);
+  const [crest,logo]=await Promise.all([loadImg(crestImg),loadImg('assets/el3azy.png')]);
+  drawContain(x,crest,W-60-120,36,120,120);
+  x.direction='rtl';x.textAlign='right';x.fillStyle='#fff';
+  x.font='700 54px Readex';x.fillText('تشكيلتي',W-60-140,92);
+  x.font='600 32px Readex';x.globalAlpha=.9;x.fillText(c.name,W-60-140,140);
+  const nw=x.measureText(c.name).width;x.direction='ltr';x.textAlign='right';x.fillText(fm+'  ·',W-60-140-nw-12,140);
+  x.direction='rtl';x.font='500 25px Readex';x.globalAlpha=.75;x.fillText(STADIUMS[stad]||'',W-60-140,182);
+  if(byName){x.textAlign='center';x.direction='rtl';x.font='700 44px Readex';x.globalAlpha=1;x.fillText('المدرب '+byName,W/2,246)}
+  x.globalAlpha=1;
+  drawContain(x,logo,34,14,176,176);
+  // اللاعبين
+  x.textAlign='center';
+  FMS[fm].forEach(([fx,fy],i)=>{
+    const p=xi[i];if(!p)return;const cx=P.x+P.w*fx/100,cy=P.y+P.h*fy/100-16,R=42;const k=kit(FMS[fm][i][2]);
+    x.save();x.translate(cx-R,cy-R);x.scale(R*2/100,R*2/100);
+    x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=14;x.shadowOffsetY=6;
+    const sp=new Path2D(SHIRT);x.fillStyle=k.body;x.fill(sp);x.shadowColor='transparent';
+    x.lineJoin='round';x.lineWidth=3;x.strokeStyle='rgba(0,0,0,.45)';x.stroke(sp);
+    x.strokeStyle=k.trim;x.lineWidth=6;x.stroke(new Path2D('M42 2 Q50 11 58 2'));x.lineWidth=7;x.stroke(new Path2D('M5 22 L15 42 M95 22 L85 42'));
+    x.restore();
+    x.fillStyle=k.num;x.font='700 30px Readex';x.textBaseline='middle';x.direction='ltr';x.fillText(p[0]??'',cx,cy+7);x.direction='rtl';
+    x.font='600 24px Readex';const nm=x.measureText(p[1]).width>185?short(p[1]):p[1];const s=fitText(x,nm,185,24,'600');const tw=x.measureText(nm).width;
+    x.fillStyle='rgba(0,0,0,.62)';rr(x,cx-tw/2-12,cy+R+6,tw+24,s+16,9);x.fill();
+    x.fillStyle='#fff';x.font='600 '+s+'px Readex';x.fillText(nm,cx,cy+R+6+(s+16)/2+1);
+  });
+  x.textBaseline='alphabetic';x.textAlign='center';x.fillStyle='#fff';x.globalAlpha=.9;x.font='600 30px Readex';
+  x.direction='ltr';x.fillText('@el3azy22',W/2,H-34);x.globalAlpha=1;
+  return cv;
+}
+function drawContain(x,im,dx,dy,w,h){const r=Math.min(w/im.width,h/im.height);const iw=im.width*r,ih=im.height*r;x.drawImage(im,dx+(w-iw)/2,dy+(h-ih)/2,iw,ih)}
+function rr(x,a,b,w,h,r){x.beginPath();x.moveTo(a+r,b);x.arcTo(a+w,b,a+w,b+h,r);x.arcTo(a+w,b+h,a,b+h,r);x.arcTo(a,b+h,a,b,r);x.arcTo(a,b,a+w,b,r);x.closePath()}
+function shade(hex,amt){const n=parseInt(hex.slice(1),16);let r=n>>16,g=n>>8&255,b=n&255;const f=v=>Math.max(0,Math.min(255,Math.round(v+(amt<0?v*amt:(255-v)*amt))));return '#'+[f(r),f(g),f(b)].map(v=>v.toString(16).padStart(2,'0')).join('')}
+
+$('save').hidden=false;
+const SHARE_TXT=()=>'هذي تشكيلتي لـ'+club.name+' ('+fm+') 🔥\nسو تشكيلتك إنت 👇\n'+location.href.split('#')[0]+'\n@el3azy22';
+function showPreview(url){$('pvImg').src=url;$('pv').hidden=false}
+$('pvClose').onclick=()=>{$('pv').hidden=true};
+$('pvX').onclick=()=>window.open('https://x.com/intent/post?text='+encodeURIComponent(SHARE_TXT()),'_blank','noopener');
+$('save').onclick=async()=>{
+  if(xi.filter(Boolean).length<11){toast('كمّل 11 لاعب أول');return}
+  $('save').disabled=true;
+  try{
+    const cv=await drawCard();const url=cv.toDataURL('image/png');
+    const blob=await new Promise(r=>cv.toBlob(r,'image/png'));
+    const file=new File([blob],'tashkilti-'+club.id+'.png',{type:'image/png'});
+    const mobile=matchMedia('(pointer:coarse)').matches;
+    if(mobile&&navigator.canShare&&navigator.canShare({files:[file]})){
+      try{await navigator.share({files:[file],text:SHARE_TXT()});return}
+      catch(e){if(e&&e.name==='AbortError')return}
+    }
+    if(!mobile){const a=document.createElement('a');a.href=url;a.download=file.name;document.body.appendChild(a);a.click();a.remove();toast('تم تحميل الصورة');}
+    showPreview(url);
+  }catch(e){toast('صار خطأ، جرب مرة ثانية')}
+  finally{$('save').disabled=false}
+};
+/* ثبات المقاس: ما فيه زوم ولا تكبير، بس تحرك الصفحة فوق وتحت */
+['gesturestart','gesturechange','gestureend'].forEach(t=>document.addEventListener(t,e=>e.preventDefault(),{passive:false}));
+document.addEventListener('touchmove',e=>{if(e.touches.length>1)e.preventDefault()},{passive:false});
+document.addEventListener('wheel',e=>{if(e.ctrlKey)e.preventDefault()},{passive:false});
+document.addEventListener('dblclick',e=>e.preventDefault());
+/* تحميل القوائم من squads.json */
+fetch('squads.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(d=>{NATL=d.national||null;CLUBS=d.clubs||[];buildClubs()}).catch(()=>toast('ما قدرنا نحمل القوائم، حدّث الصفحة'));
+</script>
+</body>
+</html>
