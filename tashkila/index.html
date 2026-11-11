@@ -133,7 +133,7 @@ footer{position:fixed;left:0;right:0;bottom:12px;text-align:center;font-size:13p
     <div class="fms" id="fms"></div>
     <div class="stage" id="pitch">
       <canvas id="stadium" aria-hidden="true"></canvas>
-      <input class="plab" id="plab" maxlength="24" placeholder="اكتب اسم المدرب" aria-label="اسم المدرب" autocomplete="off">
+      <input class="plab" id="plab" maxlength="24" placeholder="اكتب اسمك (اختياري)" aria-label="اسمك (اختياري)" autocomplete="off">
       <div id="slots"></div>
     </div>
     <div class="count" id="count"></div>
@@ -435,7 +435,7 @@ async function drawCard(){
   x.font='600 32px Readex';x.globalAlpha=.9;x.fillText(c.name,W-60-140,140);
   const nw=x.measureText(c.name).width;x.direction='ltr';x.textAlign='right';x.fillText(fm+'  ·',W-60-140-nw-12,140);
   x.direction='rtl';x.font='500 25px Readex';x.globalAlpha=.75;x.fillText(STADIUMS[stad]||'',W-60-140,182);
-  if(byName){x.textAlign='center';x.direction='rtl';x.font='700 44px Readex';x.globalAlpha=1;x.fillText('المدرب '+byName,W/2,246)}
+  if(byName){x.textAlign='center';x.direction='rtl';x.font='700 44px Readex';x.globalAlpha=1;x.fillText(byName,W/2,246)}
   x.globalAlpha=1;
   drawContain(x,logo,34,14,176,176);
   // اللاعبين
@@ -454,7 +454,7 @@ async function drawCard(){
     x.fillStyle='#fff';x.font='600 '+s+'px Readex';x.fillText(nm,cx,cy+R+6+(s+16)/2+1);
   });
   x.textBaseline='alphabetic';x.textAlign='center';x.fillStyle='#fff';x.globalAlpha=.9;x.font='600 30px Readex';
-  x.direction='ltr';x.fillText('@el3azy22',W/2,H-34);x.globalAlpha=1;
+  x.globalAlpha=1;
   return cv;
 }
 function drawContain(x,im,dx,dy,w,h){const r=Math.min(w/im.width,h/im.height);const iw=im.width*r,ih=im.height*r;x.drawImage(im,dx+(w-iw)/2,dy+(h-ih)/2,iw,ih)}
