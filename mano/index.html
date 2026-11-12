@@ -194,7 +194,7 @@ const SITE='https://el3azy22.github.io/mano/';
 const CREST={jazira:[1,1],sharjah:[.979,1.133],dhafra:[.92,1.106],ain:[.83,1.197],nasr:[1,1],wahda:[.91,1.176],wasl:[.973,1.165],baniyas:[1.234,.681],hatta:[.989,1.122],khorfakkan:[1.048,1.069],shababahli:[1.037,1.074],ajman:[1.154,1.016],kalba:[.995,1],united:[.995,.995]};
 const crest=(c,s=26)=>{const f=CREST[c]||[1,1];return `<img class="crest" src="assets/${c}.png" alt="" style="width:${Math.round(s*f[0])}px;height:${Math.round(s*f[1])}px;object-fit:contain">`};
 const SIL=`<svg viewBox="0 0 100 100" style="width:100%;height:100%"><circle cx="50" cy="38" r="19" fill="#14384F"/><path d="M14 100 Q16 64 50 62 Q84 64 86 100Z" fill="#14384F"/></svg>`;
-const ph=(p,s=40,badge=true)=>{const b=badge&&p.ph?`<span class="badge">${crest(p.c,Math.round(s*.36))}</span>`:'';const inner=p.ph?`<img class="pi" src="assets/p/${p.id}.webp" alt="" loading="lazy">`:`<span style="width:${Math.round(s*.66)}px;display:grid">${crest(p.c,Math.round(s*.6))}</span>`;return `<span class="phw"><span class="ph" style="width:${s}px;height:${s}px">${inner}</span>${b}</span>`};
+const ph=(p,s=40,badge=true)=>{const b='';const inner=p.ph?`<img class="pi" src="assets/p/${p.id}.webp" alt="" loading="lazy">`:`<span style="width:${Math.round(s*.66)}px;display:grid">${crest(p.c,Math.round(s*.6))}</span>`;return `<span class="phw"><span class="ph" style="width:${s}px;height:${s}px">${inner}</span>${b}</span>`};
 const POS={GK:'حارس مرمى',DF:'مدافع',MD:'لاعب وسط',FW:'مهاجم'};
 const POSS={GK:'حارس',DF:'مدافع',MD:'وسط',FW:'مهاجم'};
 const LINE={GK:0,DF:1,MD:2,FW:3};
