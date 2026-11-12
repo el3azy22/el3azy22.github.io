@@ -2,7 +2,7 @@
 import asyncio,json,base64,os,shutil,sys
 from playwright.async_api import async_playwright
 OUT=sys.argv[1] if len(sys.argv)>1 else '/tmp/frames'
-DUR=38.5
+DUR=45
 async def main():
   shutil.rmtree(OUT,ignore_errors=True);os.makedirs(OUT)
   async with async_playwright() as p:
