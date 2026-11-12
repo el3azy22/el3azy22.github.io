@@ -227,13 +227,21 @@ fetch('data.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json()).then(i
 
 function init(data){
   D=data;BY={};D.players.forEach(p=>{p._k=norm(p.n+' '+p.e);BY[p.id]=p});
-  const idx=Math.max(0,dubaiDayIndex(D.start));
+  const raw=dubaiDayIndex(D.start);
+  if(raw<0&&!/[?&]preview\b/.test(location.search)){prelaunch(raw);return}
+  const idx=Math.max(0,raw);
   DAY=idx+1;ANS=BY[D.schedule[idx%D.schedule.length]];
   YEST=idx>0?BY[D.schedule[(idx-1)%D.schedule.length]]:null;
   $('#dayLbl').textContent='تحدي اليوم #'+AR(DAY);
   document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);b.onclick=()=>{mode=b.dataset.m;store.set('mode',mode);document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));load()}});
   if(!store.get('seenHow',false))$('#howto').hidden=false;
   load();
+}
+function prelaunch(raw){
+  document.querySelector('#modeSeg').style.display='none';
+  const tick=()=>{const ms=msToDubaiMidnight()+(-raw-1)*864e5;const t=Math.floor(ms/1000);const dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60),ss=t%60;const e=$('#pl');if(e)e.textContent=`${AR(dd)} يوم · ${AR(String(hh).padStart(2,'0'))}:${AR(String(mm).padStart(2,'0'))}:${AR(String(ss).padStart(2,'0'))}`;if(t<=0)location.reload()};
+  $('#app').innerHTML=`<div class="card result"><div class="emo">🕵️</div><h2>أول تحدي يبدا الثلاثاء ١٧ نوفمبر</h2><p style="opacity:.8;line-height:1.8;margin-bottom:10px">كل يوم لاعب سري من دوري أدنوك للمحترفين،<br>وعندك ٦ محاولات تعرفه.</p><div class="next">باقي على أول لاعب<b id="pl" style="direction:rtl">--</b></div></div>`;
+  $('#dayLbl').textContent='قريباً';tick();setInterval(tick,1000);
 }
 function load(){
   const k='g_'+DAY+'_'+mode;
