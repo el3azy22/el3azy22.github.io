@@ -73,7 +73,7 @@ header .day{font-size:12px;color:var(--gold);font-weight:600}
 /* easy guesses */
 .eg{display:flex;align-items:center;gap:10px;background:rgba(180,71,63,.16);border:1px solid rgba(180,71,63,.25);border-radius:12px;padding:9px 12px;margin-top:7px;font-size:14px;animation:pop .35s}
 .eg.w{background:rgba(46,158,102,.25);border-color:rgba(46,158,102,.5)}
-.eg span{flex:1}.eg b{font-size:12.5px;font-weight:600}
+.eg>span:not(.phw){flex:1}.eg b{font-size:12.5px;font-weight:600}
 /* pro */
 .legend{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:12px 0 8px}
 .legend span{background:rgba(7,29,43,.7);border-radius:9px;padding:6px 2px;font-size:11px;text-align:center}
@@ -103,6 +103,13 @@ header .day{font-size:12px;color:var(--gold);font-weight:600}
 .btn.ghost{background:transparent;color:var(--gold);border:1.5px solid rgba(215,180,101,.6)}
 .next{margin-top:12px;font-size:13px;opacity:.8}
 .next b{color:var(--gold);font-size:18px;display:block;letter-spacing:1px;direction:ltr}
+.ph{position:relative;flex-shrink:0;border-radius:50%;background:radial-gradient(circle at 50% 35%,#1d4a66,#0C2638 70%);border:2px solid rgba(215,180,101,.55);overflow:hidden;display:grid;place-items:center}
+.ph img.pi{width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.phw{position:relative;flex-shrink:0}
+.phw .badge{position:absolute;bottom:-3px;left:-5px;background:var(--navy);border-radius:50%;padding:3px;display:grid;place-items:center;border:1px solid rgba(215,180,101,.4)}
+.mys{width:96px;height:96px}
+.mys .q{position:absolute;inset:0;display:grid;place-items:center;font-size:38px;font-weight:700;color:var(--gold);text-shadow:0 2px 8px rgba(0,0,0,.6)}
+.reveal{animation:pop .6s}
 .cardimg{display:block;width:100%;border-radius:16px;margin:10px 0 4px;border:1px solid rgba(215,180,101,.35);box-shadow:0 10px 30px rgba(0,0,0,.35);aspect-ratio:4/5;background:var(--navy)}
 .yest{display:flex;align-items:center;gap:12px}
 .yest .lbl{font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px}
@@ -158,7 +165,6 @@ footer a{color:inherit}
   <main id="app"><div class="loading">لحظة...</div></main>
 
   <footer>
-    البيانات من قوائم الأندية المسجلة في رابطة المحترفين الإماراتية · آخر تحديث <span id="upd"></span><br>
     لعبة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener">@el3azy22</a>
   </footer>
 </div>
@@ -187,6 +193,8 @@ const $=s=>document.querySelector(s);
 const SITE='https://el3azy22.github.io/mano/';
 const CREST={jazira:[1,1],sharjah:[.979,1.133],dhafra:[.92,1.106],ain:[.83,1.197],nasr:[1,1],wahda:[.91,1.176],wasl:[.973,1.165],baniyas:[1.234,.681],hatta:[.989,1.122],khorfakkan:[1.048,1.069],shababahli:[1.037,1.074],ajman:[1.154,1.016],kalba:[.995,1],united:[.995,.995]};
 const crest=(c,s=26)=>{const f=CREST[c]||[1,1];return `<img class="crest" src="assets/${c}.png" alt="" style="width:${Math.round(s*f[0])}px;height:${Math.round(s*f[1])}px;object-fit:contain">`};
+const SIL=`<svg viewBox="0 0 100 100" style="width:100%;height:100%"><circle cx="50" cy="38" r="19" fill="#14384F"/><path d="M14 100 Q16 64 50 62 Q84 64 86 100Z" fill="#14384F"/></svg>`;
+const ph=(p,s=40,badge=true)=>{const b=badge&&p.ph?`<span class="badge">${crest(p.c,Math.round(s*.36))}</span>`:'';const inner=p.ph?`<img class="pi" src="assets/p/${p.id}.webp" alt="" loading="lazy">`:`<span style="width:${Math.round(s*.66)}px;display:grid">${crest(p.c,Math.round(s*.6))}</span>`;return `<span class="phw"><span class="ph" style="width:${s}px;height:${s}px">${inner}</span>${b}</span>`};
 const POS={GK:'حارس مرمى',DF:'مدافع',MD:'لاعب وسط',FW:'مهاجم'};
 const POSS={GK:'حارس',DF:'مدافع',MD:'وسط',FW:'مهاجم'};
 const LINE={GK:0,DF:1,MD:2,FW:3};
@@ -223,7 +231,6 @@ function init(data){
   DAY=idx+1;ANS=BY[D.schedule[idx%D.schedule.length]];
   YEST=idx>0?BY[D.schedule[(idx-1)%D.schedule.length]]:null;
   $('#dayLbl').textContent='تحدي اليوم #'+AR(DAY);
-  $('#upd').textContent=new Date(D.updated).toLocaleDateString('ar-AE',{day:'numeric',month:'long'});
   document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);b.onclick=()=>{mode=b.dataset.m;store.set('mode',mode);document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));load()}});
   if(!store.get('seenHow',false))$('#howto').hidden=false;
   load();
@@ -256,7 +263,7 @@ function render(){
   const tries=Array.from({length:MAX},(_,i)=>`<span class="${i<used?(S.win&&i===used-1?'win':'used'):''}"></span>`).join('');
   let h=`<div class="card">
    <div class="hero">
-     <div class="shirt ${S.done?'revealed':''}">${shirtSVG()}<div class="q">${S.done?AR(ANS.no):'؟'}</div></div>
+     ${S.done?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">؟</span></span></span>`}
      <div style="flex:1"><b>${S.done?ANS.n:'لاعب اليوم السري'}</b>
        <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'كل تخمين يقارن لاعبك باللاعب السري')}</div>
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
@@ -270,14 +277,14 @@ function render(){
   }
   if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
   if(mode==='easy'){
-    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],w=id===ANS.id;return `<div class="eg ${w?'w':''}">${crest(p.c,22)}<span>${p.n}</span><b>${w?'✅ صح!':'❌ مب هو'}</b></div>`}).join('');
+    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],w=id===ANS.id;return `<div class="eg ${w?'w':''}">${ph(p,34)}<span>${p.n}</span><b>${w?'✅ صح!':'❌ مب هو'}</b></div>`}).join('');
   }else if(used){
     h+=`<div class="heads"><div>تخمينك</div><div>النادي</div><div>المركز</div><div>الجنسية</div><div>العمر</div><div>الرقم</div></div>`;
     h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],r=cmp(p);return `<div class="row"><div>${p.n}</div><div class="${r.c}">${crest(p.c,28)}</div><div class="${r.p}">${POSS[p.p]}</div><div class="${r.n}"><span class="fl">${flag(p.f)}</span></div><div class="${r.a}">${p.a!=null?AR(p.a):'—'}${arrow(p.a,ANS.a)}</div><div class="${r.no}">${p.no!=null?AR(p.no):'—'}${arrow(p.no,ANS.no)}</div></div>`}).join('');
   }
   h+=`</div>`;
   if(S.done)h+=resultHTML();
-  if(YEST)h+=`<div class="card yest">${crest(YEST.c,44)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · تحدي #${AR(DAY-1)}</div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
+  if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · تحدي #${AR(DAY-1)}</div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
   $('#app').innerHTML=h;
   if(!S.done)bindInput();else bindResult();
 }
@@ -291,7 +298,7 @@ function bindInput(){
     const words=q.split(' ');
     const m=D.players.filter(p=>!S.guesses.includes(p.id)&&words.every(w=>p._k.includes(w)))
       .sort((a,b)=>(b._k.startsWith(q)-a._k.startsWith(q))||(b.ap-a.ap)).slice(0,8);
-    sg.innerHTML=m.length?m.map(p=>`<button data-id="${p.id}">${crest(p.c,24)}<span class="nm">${p.n}<small>${D.clubs[p.c]} · <span dir="ltr">${p.e}</span></small></span></button>`).join(''):'<div class="empty">ما في لاعب بهالاسم في قوائم الدوري</div>';
+    sg.innerHTML=m.length?m.map(p=>`<button data-id="${p.id}">${ph(p,40)}<span class="nm">${p.n}<small>${D.clubs[p.c]} · <span dir="ltr">${p.e}</span></small></span></button>`).join(''):'<div class="empty">ما في لاعب بهالاسم في قوائم الدوري</div>';
     sg.hidden=false;
     sg.querySelectorAll('button').forEach(b=>b.onclick=()=>guess(b.dataset.id));
   };
@@ -334,30 +341,25 @@ function shareText(){
   let grid;
   if(mode==='easy')grid=S.guesses.map(id=>id===ANS.id?'✅':'❌').join('');
   else{const em={ok:'🟩',near:'🟨','':'⬛'};grid=S.guesses.map(id=>{const r=cmp(BY[id]);return [r.c,r.p,r.n,r.a,r.no].map(x=>em[x]).join('')}).join('\n')}
-  return `🕵️ منو اللاعب؟ #${AR(DAY)} ${mode==='easy'?'':'🧠 خبير'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}\n${grid}\n\nجرّب تعرفه 👇\n${SITE}\n@el3azy22`;
+  return `🕵️ منو اللاعب؟ تحدي ${AR(DAY)}${mode==='easy'?'':' 🧠'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}\n\nتقدر تعرفه أسرع؟ 👇\n${SITE}`;
 }
 function resultHTML(){
   const st=store.get('stats_'+mode,{streak:0});
   return `<div class="card result">
    <div class="emo">${S.win?'🎉':'😅'}</div>
    <h2>${S.win?(S.guesses.length===1?'من أول محاولة! مينوون معلومات 🔥':'كفووو! عرفته'):'هالمرة ما ضبطت'}</h2>
-   <div class="ans">${crest(ANS.c,46)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
+   <div class="ans">${ph(ANS,70)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
      <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
    ${st.streak>1&&S.win?`<div style="font-size:14px;margin-bottom:6px">سلسلتك: <b style="color:var(--gold)">${AR(st.streak)} أيام 🔥</b></div>`:''}
-   <div style="font-size:12.5px;opacity:.7">صورة نتيجتك جاهزة (من غير اسم اللاعب):</div>
+   <div style="font-size:12.5px;opacity:.7">نتيجتك جاهزة (من غير اسم اللاعب):</div>
    <img class="cardimg" id="cardImg" alt="صورة نتيجتك">
-   <button class="btn" id="imgBtn">📸 شارك صورة نتيجتك</button>
-   <a class="btn ghost" id="xBtn" target="_blank" rel="noopener">𝕏 انشر النتيجة كنص في X</a>
-   <button class="btn ghost" id="cpBtn">📋 انسخ النص</button>
-   <div class="share" id="shareTxt" style="position:fixed;top:0;right:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;margin:0;padding:0">${shareText()}</div>
+   <button class="btn" id="imgBtn">𝕏 شارك نتيجتك</button>
    ${!store.get('g_'+DAY+'_'+(mode==='easy'?'pro':'easy'),{}).done?`<button class="btn ghost" id="otherBtn">جرّب ${mode==='easy'?'وضع الخبير 🧠':'الوضع العادي 🙂'}</button>`:''}
    <div class="next">اللاعب الياي بعد<b id="cd">--:--:--</b></div>
   </div>`;
 }
 function bindResult(){
   const t=shareText();
-  $('#xBtn').href='https://x.com/intent/post?text='+encodeURIComponent(t);
-  $('#cpBtn').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('انتسخت ✓')).catch(()=>{const r=document.createRange();r.selectNodeContents($('#shareTxt'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('حددناها لك، انسخها')})};
   buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{const im=$('#cardImg');if(im)im.remove()});
   $('#imgBtn').onclick=shareImage;
   const o=$('#otherBtn');if(o)o.onclick=()=>{document.querySelector(`#modeSeg [data-m=${mode==='easy'?'pro':'easy'}]`).click();scrollTo({top:0,behavior:'smooth'})};
@@ -400,12 +402,12 @@ async function buildCard(){
   const G={ok:'#2E9E66',near:'#C4952B','':'#243F52'};
   const top=490,bot=1040;
   if(mode==='easy'){
-    // mystery shirt
-    {const sx=W/2,sy=478,k=2.1;x.save();x.translate(sx-50*k,sy);x.scale(k,k);
-     const p=new Path2D('M33 8 L18 14 L4 32 L16 42 L24 34 L24 94 L76 94 L76 34 L84 42 L96 32 L82 14 L67 8 Q50 22 33 8Z');
-     const sg=x.createLinearGradient(0,0,0,100);sg.addColorStop(0,S.win?'#F0D99A':'#14384F');sg.addColorStop(1,S.win?'#D7B465':'#0C2638');
-     x.fillStyle=sg;x.fill(p);x.strokeStyle='#D7B465';x.lineWidth=2.5;x.lineJoin='round';x.stroke(p);x.restore();
-     x.fillStyle=S.win?'#071D2B':'#D7B465';x.font=`700 76px ${F}`;x.fillText('؟',sx,sy+118)}
+    // mystery player silhouette
+    {const cx=W/2,cy=580,R=105;x.save();x.beginPath();x.arc(cx,cy,R,0,7);x.closePath();
+     const rg=x.createRadialGradient(cx,cy-35,10,cx,cy,R);rg.addColorStop(0,'#1d4a66');rg.addColorStop(1,'#0C2638');x.fillStyle=rg;x.fill();x.clip();
+     x.fillStyle='#14384F';x.beginPath();x.arc(cx,cy-25,40,0,7);x.fill();x.beginPath();x.moveTo(cx-78,cy+R);x.quadraticCurveTo(cx-74,cy+28,cx,cy+26);x.quadraticCurveTo(cx+74,cy+28,cx+78,cy+R);x.fill();x.restore();
+     x.strokeStyle='#D7B465';x.lineWidth=5;x.beginPath();x.arc(cx,cy,R,0,7);x.stroke();
+     x.fillStyle='#D7B465';x.font=`700 84px ${F}`;x.fillText('؟',cx,cy+8)}
     const s=128,gap=20,tot=MAX*s+(MAX-1)*gap,y=735;
     for(let i=0;i<MAX;i++){
       const X=W/2+tot/2-s-i*(s+gap); // RTL: first try on the right
@@ -457,7 +459,8 @@ async function shareImage(){
     try{await navigator.share({files:[file],text});return}catch(e){if(e&&e.name==='AbortError')return}
   }
   const a=document.createElement('a');a.href=cardUrl;a.download=file.name;document.body.appendChild(a);a.click();a.remove();
-  toast('نزّلت الصورة، ارفقها في تغريدتك');
+  window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank');
+  toast('نزّلت الصورة، ارفقها في التغريدة');
 }
 
 /* ---------- modals ---------- */

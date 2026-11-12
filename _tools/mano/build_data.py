@@ -34,6 +34,10 @@ while seq:
 FIRST=['Soufian Rahimi','Christian Benteke','Mehdi Taremi','Laba Kodjo','Malcom Olivieira','Khalid Eisa','Igor Coronado']
 first=[next(p for p in order if p['e']==n) for n in FIRST]
 order=first+[p for p in order if p not in first]
+import os
+PH='/home/claude/el3azy22.github.io/mano/assets/p'
+for p in P:
+  if os.path.exists(f'{PH}/{p["id"]}.webp'): p['ph']=1
 out=dict(updated=datetime.date.today().isoformat(),start='2026-11-17',clubs=CN,players=[{k:v for k,v in p.items() if k!='src'} for p in P],schedule=[p['id'] for p in order])
 json.dump(out,open('/home/claude/el3azy22.github.io/mano/data.json','w'),ensure_ascii=False,separators=(',',':'))
 json.dump(P,open('players_full.json','w'),ensure_ascii=False,indent=1)
