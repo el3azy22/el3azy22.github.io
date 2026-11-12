@@ -103,6 +103,12 @@ header .day{font-size:12px;color:var(--gold);font-weight:600}
 .btn.ghost{background:transparent;color:var(--gold);border:1.5px solid rgba(215,180,101,.6)}
 .next{margin-top:12px;font-size:13px;opacity:.8}
 .next b{color:var(--gold);font-size:18px;display:block;letter-spacing:1px;direction:ltr}
+.cardimg{display:block;width:100%;border-radius:16px;margin:10px 0 4px;border:1px solid rgba(215,180,101,.35);box-shadow:0 10px 30px rgba(0,0,0,.35);aspect-ratio:4/5;background:var(--navy)}
+.yest{display:flex;align-items:center;gap:12px}
+.yest .lbl{font-size:12px;color:var(--gold);font-weight:600;margin-bottom:3px}
+.yest .nm{font-size:17px;font-weight:700}
+.yest .en{font-size:11.5px;opacity:.55;direction:ltr;text-align:right}
+.icon.off{opacity:.5}
 footer{text-align:center;font-size:11px;opacity:.5;line-height:1.9;margin:18px 0 6px}
 footer a{color:inherit}
 /* modal */
@@ -139,6 +145,7 @@ footer a{color:inherit}
   <header>
     <img class="logo" src="assets/logo.png" alt="العازي">
     <div class="ttl"><h1>منو اللاعب؟</h1><div class="day" id="dayLbl">تحدي العازي اليومي</div></div>
+    <button class="icon" id="sndBtn" aria-label="الصوت">🔊</button>
     <button class="icon" id="statsBtn" aria-label="إحصائياتي">📊</button>
     <button class="icon" id="helpBtn" aria-label="كيف ألعب">؟</button>
   </header>
@@ -190,6 +197,13 @@ const store={get(k,d){try{const v=localStorage.getItem('el3azy_mano_'+k);return 
 let toastT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1900)}
 const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
 
+/* ---------- sound (صوت العازي) ---------- */
+let soundOn=store.get('sound',true);const SFX={};
+function sfx(n,vol=1){if(!soundOn)return;try{let a=SFX[n];if(!a){a=SFX[n]=new Audio('assets/sfx/'+n+'.mp3');a.preload='auto'}a.pause();a.currentTime=0;a.volume=vol;const pr=a.play();pr&&pr.catch(()=>{})}catch(e){}}
+function sndUI(){const b=$('#sndBtn');b.textContent=soundOn?'🔊':'🔇';b.classList.toggle('off',!soundOn);b.setAttribute('aria-label',soundOn?'اطفي الصوت':'شغّل الصوت')}
+$('#sndBtn').onclick=()=>{soundOn=!soundOn;store.set('sound',soundOn);sndUI();if(soundOn)sfx('kafu');else Object.values(SFX).forEach(a=>{try{a.pause()}catch(e){}});toast(soundOn?'🔊 صوت العازي شغّال':'🔇 الصوت طافي')};
+sndUI();
+
 /* ---------- day ---------- */
 function dubaiDayIndex(startISO){
   const now=new Date(Date.now()+4*3600e3); // Dubai = UTC+4, no DST
@@ -199,7 +213,7 @@ function dubaiDayIndex(startISO){
 }
 function msToDubaiMidnight(){const now=Date.now()+4*3600e3;return 864e5-(now%864e5)}
 
-let D,BY,ANS,DAY,mode=store.get('mode','easy'),S,timer;
+let D,BY,ANS,YEST,DAY,cardBlob=null,cardUrl=null,mode=store.get('mode','easy'),S,timer;
 const MAX=6;
 fetch('data.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json()).then(init).catch(()=>{$('#app').innerHTML='<div class="card loading">ما قدرنا نحمّل اللعبة. حدّث الصفحة 🔄</div>'});
 
@@ -207,6 +221,7 @@ function init(data){
   D=data;BY={};D.players.forEach(p=>{p._k=norm(p.n+' '+p.e);BY[p.id]=p});
   const idx=Math.max(0,dubaiDayIndex(D.start));
   DAY=idx+1;ANS=BY[D.schedule[idx%D.schedule.length]];
+  YEST=idx>0?BY[D.schedule[(idx-1)%D.schedule.length]]:null;
   $('#dayLbl').textContent='تحدي اليوم #'+AR(DAY);
   $('#upd').textContent=new Date(D.updated).toLocaleDateString('ar-AE',{day:'numeric',month:'long'});
   document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);b.onclick=()=>{mode=b.dataset.m;store.set('mode',mode);document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));load()}});
@@ -262,6 +277,7 @@ function render(){
   }
   h+=`</div>`;
   if(S.done)h+=resultHTML();
+  if(YEST)h+=`<div class="card yest">${crest(YEST.c,44)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · تحدي #${AR(DAY-1)}</div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
   $('#app').innerHTML=h;
   if(!S.done)bindInput();else bindResult();
 }
@@ -291,8 +307,9 @@ function guess(id){
   save();
   if(S.done)record();
   render();
-  if(win){vib([30,40,60]);confetti()}
-  else if(!S.done){vib(40);if(mode==='easy')toast('🔓 انفتح تلميح يديد');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
+  if(win){vib([30,40,60]);confetti();const n=S.guesses.length;sfx(n===1?'mainoon':n<=4?'kafu':'sawaha')}
+  else if(S.done){vib([60,40,60]);sfx('lose')}
+  else if(!S.done){vib(40);sfx('mubho',.85);if(mode==='easy')toast('🔓 انفتح تلميح يديد');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
   if(S.done)setTimeout(()=>{const r=document.querySelector('.result');r&&r.scrollIntoView({behavior:'smooth',block:'start'})},350);
 }
 
@@ -327,10 +344,12 @@ function resultHTML(){
    <div class="ans">${crest(ANS.c,46)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
      <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
    ${st.streak>1&&S.win?`<div style="font-size:14px;margin-bottom:6px">سلسلتك: <b style="color:var(--gold)">${AR(st.streak)} أيام 🔥</b></div>`:''}
-   <div style="font-size:12.5px;opacity:.7">نتيجتك جاهزة (من غير اسم اللاعب):</div>
-   <div class="share">${shareText().replace(SITE,'<span dir="ltr">'+SITE+'</span>').replace('@el3azy22','<span dir="ltr">@el3azy22</span>')}</div>
-   <a class="btn" id="xBtn" target="_blank" rel="noopener">𝕏 انشر نتيجتك في X</a>
-   <button class="btn ghost" id="cpBtn">📋 انسخ النتيجة</button>
+   <div style="font-size:12.5px;opacity:.7">صورة نتيجتك جاهزة (من غير اسم اللاعب):</div>
+   <img class="cardimg" id="cardImg" alt="صورة نتيجتك">
+   <button class="btn" id="imgBtn">📸 شارك صورة نتيجتك</button>
+   <a class="btn ghost" id="xBtn" target="_blank" rel="noopener">𝕏 انشر النتيجة كنص في X</a>
+   <button class="btn ghost" id="cpBtn">📋 انسخ النص</button>
+   <div class="share" id="shareTxt" style="position:fixed;top:0;right:0;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none;margin:0;padding:0">${shareText()}</div>
    ${!store.get('g_'+DAY+'_'+(mode==='easy'?'pro':'easy'),{}).done?`<button class="btn ghost" id="otherBtn">جرّب ${mode==='easy'?'وضع الخبير 🧠':'الوضع العادي 🙂'}</button>`:''}
    <div class="next">اللاعب الياي بعد<b id="cd">--:--:--</b></div>
   </div>`;
@@ -338,16 +357,112 @@ function resultHTML(){
 function bindResult(){
   const t=shareText();
   $('#xBtn').href='https://x.com/intent/post?text='+encodeURIComponent(t);
-  $('#cpBtn').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('انتسخت ✓')).catch(()=>{const r=document.createRange();r.selectNodeContents(document.querySelector('.share'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('حددناها لك، انسخها')})};
+  $('#cpBtn').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('انتسخت ✓')).catch(()=>{const r=document.createRange();r.selectNodeContents($('#shareTxt'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('حددناها لك، انسخها')})};
+  buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{const im=$('#cardImg');if(im)im.remove()});
+  $('#imgBtn').onclick=shareImage;
   const o=$('#otherBtn');if(o)o.onclick=()=>{document.querySelector(`#modeSeg [data-m=${mode==='easy'?'pro':'easy'}]`).click();scrollTo({top:0,behavior:'smooth'})};
   clearInterval(timer);const f=x=>String(x).padStart(2,'0');
   const tick=()=>{const s=Math.floor(msToDubaiMidnight()/1000);const e=$('#cd');if(!e)return;e.textContent=`${f(s/3600|0)}:${f(s%3600/60|0)}:${f(s%60)}`;if(s<=1)setTimeout(()=>location.reload(),1500)};
   tick();timer=setInterval(tick,1000);
 }
 
+/* ---------- result image ---------- */
+const IMG={};
+const loadImg=src=>IMG[src]||(IMG[src]=new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src}));
+function rr(x,X,Y,W,H,R){x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()}
+const CLUBS_ORDER=['ain','wahda','jazira','shababahli','sharjah','wasl','nasr','baniyas','ajman','kalba','khorfakkan','dhafra','hatta','united'];
+async function buildCard(){
+  const W=1080,H=1350,F="'Readex Pro'";
+  try{await Promise.all([700,600,500].map(w=>document.fonts.load(`${w} 40px 'Readex Pro'`,'منو اللاعب؟ ٠١٢٣')))}catch(e){}
+  const [logo,...cr]=await Promise.all(['assets/logo.png',...CLUBS_ORDER.map(c=>'assets/'+c+'.png')].map(s=>loadImg(s).catch(()=>null)));
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  x.direction='rtl';x.textBaseline='middle';
+  // background
+  let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0C2638');g.addColorStop(.55,'#071D2B');g.addColorStop(1,'#051521');x.fillStyle=g;x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(W*.85,-40,0,W*.85,-40,700);g.addColorStop(0,'rgba(215,180,101,.30)');g.addColorStop(1,'rgba(215,180,101,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(W*.1,H+60,0,W*.1,H+60,700);g.addColorStop(0,'rgba(20,56,79,.9)');g.addColorStop(1,'rgba(20,56,79,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(x,28,28,W-56,H-56,40);x.stroke();
+  // header: logo + titles
+  if(logo)x.drawImage(logo,W-80-190,64,190,190);
+  x.textAlign='right';x.fillStyle='#D7B465';x.font=`600 36px ${F}`;x.fillText('تحدي العازي اليومي',W-80-190-30,108);
+  x.fillStyle='#FFF5E5';x.font=`700 92px ${F}`;x.fillText('منو اللاعب؟',W-80-190-30,178);
+  const tag=`تحدي ${AR(DAY)}  ·  ${mode==='easy'?'الوضع العادي':'وضع الخبير'}`;
+  x.font=`600 32px ${F}`;const tw=x.measureText(tag).width+44;
+  x.fillStyle='rgba(215,180,101,.14)';rr(x,W-80-190-30-tw,222,tw,54,27);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
+  x.fillStyle='#D7B465';x.fillText(tag,W-80-190-30-22,250);
+  // headline
+  const n=S.guesses.length;
+  x.textAlign='center';x.fillStyle=S.win?'#F0D99A':'#FFF5E5';x.font=`700 70px ${F}`;
+  x.fillText(S.win?(n===1?'من أول محاولة!':'عرفته من المحاولة '+AR(n)):'ما عرفته اليوم',W/2,365);
+  x.globalAlpha=.7;x.fillStyle='#FFF5E5';x.font=`500 30px ${F}`;
+  x.fillText(S.win?(n===1?'ماينون معلومات':n<=3?'كفووو!':'سواها في الأخير'):'باجر بعوّضها',W/2,432);x.globalAlpha=1;
+  // grid
+  const G={ok:'#2E9E66',near:'#C4952B','':'#243F52'};
+  const top=490,bot=1040;
+  if(mode==='easy'){
+    // mystery shirt
+    {const sx=W/2,sy=478,k=2.1;x.save();x.translate(sx-50*k,sy);x.scale(k,k);
+     const p=new Path2D('M33 8 L18 14 L4 32 L16 42 L24 34 L24 94 L76 94 L76 34 L84 42 L96 32 L82 14 L67 8 Q50 22 33 8Z');
+     const sg=x.createLinearGradient(0,0,0,100);sg.addColorStop(0,S.win?'#F0D99A':'#14384F');sg.addColorStop(1,S.win?'#D7B465':'#0C2638');
+     x.fillStyle=sg;x.fill(p);x.strokeStyle='#D7B465';x.lineWidth=2.5;x.lineJoin='round';x.stroke(p);x.restore();
+     x.fillStyle=S.win?'#071D2B':'#D7B465';x.font=`700 76px ${F}`;x.fillText('؟',sx,sy+118)}
+    const s=128,gap=20,tot=MAX*s+(MAX-1)*gap,y=735;
+    for(let i=0;i<MAX;i++){
+      const X=W/2+tot/2-s-i*(s+gap); // RTL: first try on the right
+      const id=S.guesses[i];const st=id==null?'none':id===ANS.id?'win':'miss';
+      rr(x,X,y,s,s,28);
+      if(st==='none'){x.strokeStyle='rgba(255,245,229,.18)';x.lineWidth=3;x.setLineDash([10,8]);x.stroke();x.setLineDash([])}
+      else{x.fillStyle=st==='win'?'#2E9E66':'#B4473F';x.fill();
+        x.strokeStyle='#FFF5E5';x.lineWidth=11;x.lineCap='round';x.lineJoin='round';x.beginPath();
+        const cx=X+s/2,cy=y+s/2;
+        if(st==='win'){x.moveTo(cx-26,cy+2);x.lineTo(cx-7,cy+21);x.lineTo(cx+28,cy-20)}else{x.moveTo(cx-20,cy-20);x.lineTo(cx+20,cy+20);x.moveTo(cx+20,cy-20);x.lineTo(cx-20,cy+20)}
+        x.stroke()}
+      x.fillStyle='rgba(255,245,229,.55)';x.font=`500 26px ${F}`;x.fillText(AR(i+1),X+s/2,y+s+40);
+    }
+    x.fillStyle='rgba(255,245,229,.55)';x.font=`500 28px ${F}`;x.fillText('كل غلطة تفتح تلميح، وعندك ٦ محاولات',W/2,y+s+105);
+  }else{
+    const heads=['النادي','المركز','الجنسية','العمر','الرقم'];
+    const cw=150,ch=64,gx=14,gy=12,tot=5*cw+4*gx,X0=W/2+tot/2;
+    const rowsH=MAX*ch+(MAX-1)*gy,y0=top+48+((bot-top-48)-rowsH)/2;
+    x.font=`600 26px ${F}`;x.fillStyle='rgba(255,245,229,.6)';
+    heads.forEach((h,j)=>x.fillText(h,X0-cw/2-j*(cw+gx),y0-34));
+    for(let i=0;i<MAX;i++){
+      const id=S.guesses[i];const r=id?cmp(BY[id]):null;const cells=r?[r.c,r.p,r.n,r.a,r.no]:null;
+      for(let j=0;j<5;j++){
+        const X=X0-cw-j*(cw+gx),Y=y0+i*(ch+gy);rr(x,X,Y,cw,ch,16);
+        if(!cells){x.strokeStyle='rgba(255,245,229,.14)';x.lineWidth=2.5;x.setLineDash([8,7]);x.stroke();x.setLineDash([])}
+        else{x.fillStyle=(id===ANS.id)?'#2E9E66':G[cells[j]];x.fill()}
+      }
+    }
+  }
+  // streak
+  const st=store.get('stats_'+mode,{streak:0,played:0,wins:0});
+  if(S.win&&st.streak>1){x.fillStyle='#D7B465';x.font=`600 32px ${F}`;x.fillText(`سلسلة الفوز: ${AR(st.streak)} أيام`,W/2,1068)}
+  // crests: 14 clubs, balanced
+  const cy0=1130,rowGap=86,cols=7,cellW=(W-180)/cols,base=58;
+  CLUBS_ORDER.forEach((c,i)=>{const im=cr[i];if(!im)return;const f=CREST[c]||[1,1];const w=base*f[0],h=base*f[1];
+    const col=i%cols,row=i/cols|0;const cx=W-90-cellW/2-col*cellW,cy=cy0+row*rowGap;
+    x.globalAlpha=.9;x.drawImage(im,cx-w/2,cy-h/2,w,h);x.globalAlpha=1});
+  // footer
+  x.strokeStyle='rgba(215,180,101,.3)';x.lineWidth=2;x.beginPath();x.moveTo(90,1262);x.lineTo(W-90,1262);x.stroke();
+  x.fillStyle='#FFF5E5';x.font=`600 30px ${F}`;x.textAlign='right';x.fillText('تقدر تعرفه أسرع؟',W-90,1296);
+  x.direction='ltr';x.textAlign='left';x.fillStyle='#D7B465';x.font=`600 30px ${F}`;x.fillText(SITE.replace('https://','').replace(/\/$/,''),90,1296);
+  return await new Promise((ok,no)=>cv.toBlob(b=>b?ok(b):no(),'image/png'));
+}
+async function shareImage(){
+  if(!cardBlob){toast('لحظة، الصورة تتجهز...');return}
+  const file=new File([cardBlob],`mano-${DAY}.png`,{type:'image/png'});
+  const text=shareText();
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],text});return}catch(e){if(e&&e.name==='AbortError')return}
+  }
+  const a=document.createElement('a');a.href=cardUrl;a.download=file.name;document.body.appendChild(a);a.click();a.remove();
+  toast('نزّلت الصورة، ارفقها في تغريدتك');
+}
+
 /* ---------- modals ---------- */
 $('#helpBtn').onclick=()=>$('#howto').hidden=false;
-$('#howGo').onclick=()=>{$('#howto').hidden=true;store.set('seenHow',true);const i=$('#gIn');i&&i.focus()};
+$('#howGo').onclick=()=>{$('#howto').hidden=true;sfx('welcome');store.set('seenHow',true);const i=$('#gIn');i&&i.focus()};
 let sm=mode;
 $('#statsBtn').onclick=()=>{sm=mode;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm);$('#statsM').hidden=false};
 document.querySelectorAll('#statSeg button').forEach(b=>b.onclick=()=>{sm=b.dataset.m;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#statsBody').innerHTML=statsHTML(sm)});
