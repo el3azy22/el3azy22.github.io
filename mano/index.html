@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>منو اللاعب؟ | العازي</title>
+<meta name="description" content="لعبة يومية: خمّن لاعب دوري أدنوك للمحترفين. لاعب يديد كل يوم.">
+<meta name="theme-color" content="#071D2B">
+<meta property="og:title" content="منو اللاعب؟ — تحدي العازي اليومي">
+<meta property="og:description" content="خمّن لاعب دوري أدنوك اليوم في ٦ محاولات. لاعب يديد كل يوم.">
+<meta property="og:image" content="https://el3azy22.github.io/mano/assets/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@el3azy22">
+<link rel="icon" href="assets/logo.png">
+<link rel="apple-touch-icon" href="assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F0D99A;--ivory:#FFF5E5;--green:#2E9E66;--yellow:#C4952B;--gray:#243F52;--red:#B4473F}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--navy)}
+body{font-family:'Readex Pro',system-ui,sans-serif;color:var(--ivory);min-height:100vh;padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom));
+background-image:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.20),transparent 45%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%);background-attachment:fixed}
+.wrap{max-width:500px;margin:0 auto;padding:0 16px}
+button{font-family:inherit;cursor:pointer}
+header{display:flex;align-items:center;gap:10px;padding:12px 0 6px}
+header .logo{height:62px;width:auto}
+header .ttl{flex:1}
+header h1{font-size:24px;font-weight:700;line-height:1.2}
+header .day{font-size:12px;color:var(--gold);font-weight:600}
+.icon{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.06);color:var(--gold);font-size:18px;font-weight:700;display:grid;place-items:center}
+.seg{display:flex;background:var(--navy2);border:1px solid rgba(255,245,229,.06);border-radius:14px;padding:4px;margin:10px 0 12px}
+.seg button{flex:1;border:0;background:none;color:var(--ivory);font-weight:600;font-size:14px;padding:10px;border-radius:10px;opacity:.6;transition:.2s}
+.seg button.on{background:var(--navy3);opacity:1;color:var(--gold);box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.seg small{display:block;font-size:10.5px;font-weight:400;opacity:.75;margin-top:1px}
+.card{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:20px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+/* hero */
+.hero{display:flex;align-items:center;gap:14px}
+.shirt{width:86px;height:86px;flex-shrink:0;position:relative}
+.shirt svg{width:100%;height:100%}
+.shirt .q{position:absolute;inset:18px 0 0;display:grid;place-items:center;font-size:30px;font-weight:700;color:var(--gold)}
+.shirt.revealed .q{font-size:26px;color:var(--navy)}
+.hero b{font-size:16px;display:block}
+.hero .sub{font-size:12px;opacity:.65;margin-top:2px}
+.tries{display:flex;gap:5px;margin-top:9px;align-items:center}
+.tries span{width:20px;height:6px;border-radius:3px;background:var(--gray);transition:.3s}
+.tries span.used{background:var(--gold)}
+.tries span.win{background:var(--green)}
+.tries em{font-style:normal;font-size:11px;opacity:.7;margin-right:6px}
+/* clues */
+.clues{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:14px}
+.clue{background:rgba(7,29,43,.7);border:1px dashed rgba(255,245,229,.14);border-radius:14px;padding:10px 11px;min-height:70px;display:flex;flex-direction:column;justify-content:space-between}
+.clue span{font-size:11px;opacity:.55}
+.clue b{font-size:13px;opacity:.4;font-weight:500}
+.clue.open{border:1px solid rgba(215,180,101,.55);background:linear-gradient(160deg,rgba(215,180,101,.16),rgba(7,29,43,.7));animation:pop .45s}
+.clue.open span{opacity:.8;color:var(--gold)}
+.clue.open b{font-size:18px;opacity:1;font-weight:700;display:flex;align-items:center;gap:7px}
+.clue .crest{flex-shrink:0}
+@keyframes pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+/* input */
+.inp{position:relative;margin-top:14px}
+.inp input{width:100%;font-family:inherit;font-size:16px;padding:14px 46px 14px 14px;border-radius:14px;border:1.5px solid rgba(215,180,101,.45);background:var(--navy);color:var(--ivory);outline:none;transition:.2s}
+.inp input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(215,180,101,.12)}
+.inp::before{content:'🔎';position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.7;pointer-events:none}
+.sugg{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--navy2);border:1px solid rgba(215,180,101,.35);border-radius:14px;overflow:hidden;z-index:6;max-height:300px;overflow-y:auto;box-shadow:0 14px 40px rgba(0,0,0,.5)}
+.sugg button{display:flex;align-items:center;gap:10px;width:100%;text-align:right;padding:11px 12px;background:none;border:0;border-bottom:1px solid rgba(255,255,255,.05);color:var(--ivory);font-size:15px}
+.sugg button:active,.sugg button:hover{background:var(--navy3)}
+.sugg .nm{flex:1;line-height:1.3}
+.sugg small{display:block;font-size:11px;opacity:.55}
+.sugg .empty{padding:12px;font-size:13px;opacity:.6}
+/* easy guesses */
+.eg{display:flex;align-items:center;gap:10px;background:rgba(180,71,63,.16);border:1px solid rgba(180,71,63,.25);border-radius:12px;padding:9px 12px;margin-top:7px;font-size:14px;animation:pop .35s}
+.eg.w{background:rgba(46,158,102,.25);border-color:rgba(46,158,102,.5)}
+.eg span{flex:1}.eg b{font-size:12.5px;font-weight:600}
+/* pro */
+.legend{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:12px 0 8px}
+.legend span{background:rgba(7,29,43,.7);border-radius:9px;padding:6px 2px;font-size:11px;text-align:center}
+.legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-left:4px;vertical-align:middle}
+.heads,.row{display:grid;grid-template-columns:1.45fr repeat(5,1fr);gap:5px}
+.heads{font-size:10.5px;opacity:.55;text-align:center;margin:8px 0 6px}
+.heads div:first-child{text-align:right}
+.row{margin-bottom:6px}
+.row>div{border-radius:10px;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:600;background:var(--gray);padding:3px;animation:flip .5s both;line-height:1.15}
+.row>div:first-child{background:transparent;align-items:flex-start;text-align:right;font-size:12.5px;font-weight:500}
+.row small{font-size:9.5px;font-weight:500;opacity:.92;margin-top:2px}
+.row .fl{font-size:22px}
+.ok{background:var(--green)!important}.near{background:var(--yellow)!important}
+@keyframes flip{from{transform:rotateX(90deg);opacity:0}to{transform:none;opacity:1}}
+.row>div:nth-child(2){animation-delay:.07s}.row>div:nth-child(3){animation-delay:.14s}.row>div:nth-child(4){animation-delay:.21s}.row>div:nth-child(5){animation-delay:.28s}.row>div:nth-child(6){animation-delay:.35s}
+/* result */
+.result{text-align:center;animation:pop .5s}
+.result .emo{font-size:44px}
+.result h2{font-size:25px;color:var(--gold);margin:4px 0 10px}
+.ans{display:flex;align-items:center;gap:12px;background:rgba(7,29,43,.75);border-radius:16px;padding:12px;text-align:right;margin-bottom:12px}
+.ans .nm{font-size:18px;font-weight:700}
+.ans .en{font-size:12px;opacity:.6;direction:ltr;text-align:right}
+.facts{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.facts span{font-size:11.5px;background:var(--navy3);border-radius:20px;padding:3px 9px}
+.share{background:var(--navy);border:1px dashed rgba(215,180,101,.35);border-radius:14px;padding:12px;font-size:15px;line-height:1.7;margin:10px 0;white-space:pre-line}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--navy);border:0;border-radius:14px;font-weight:700;font-size:16px;padding:14px;margin-top:8px;text-decoration:none}
+.btn.ghost{background:transparent;color:var(--gold);border:1.5px solid rgba(215,180,101,.6)}
+.next{margin-top:12px;font-size:13px;opacity:.8}
+.next b{color:var(--gold);font-size:18px;display:block;letter-spacing:1px;direction:ltr}
+footer{text-align:center;font-size:11px;opacity:.5;line-height:1.9;margin:18px 0 6px}
+footer a{color:inherit}
+/* modal */
+.modal{position:fixed;inset:0;background:rgba(3,14,22,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:30;display:grid;place-items:center;padding:18px}
+.modal[hidden]{display:none}
+.mbox{background:linear-gradient(165deg,var(--navy3),var(--navy));border:1px solid rgba(215,180,101,.4);border-radius:24px;padding:22px 20px;max-width:390px;width:100%;text-align:center;animation:pop .35s;max-height:90vh;overflow-y:auto}
+.mbox h2{color:var(--gold);font-size:21px;margin:4px 0 12px}
+.step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
+.step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 16px}
+.stats div{background:rgba(7,29,43,.7);border-radius:12px;padding:10px 2px}
+.stats b{display:block;font-size:22px;color:var(--gold)}
+.stats span{font-size:10.5px;opacity:.7}
+.dist{text-align:right}
+.dist div{display:flex;align-items:center;gap:8px;margin:5px 0;font-size:13px}
+.dist i{font-style:normal;height:22px;min-width:24px;background:var(--gray);border-radius:6px;color:var(--ivory);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:flex-start;padding:0 8px}
+.dist i.hl{background:var(--green)}
+.toast{position:fixed;top:calc(16px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--gold);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:30px;z-index:40;transition:transform .3s;box-shadow:0 8px 24px rgba(0,0,0,.35);white-space:nowrap;font-size:14px}
+.toast.on{transform:translateX(-50%) translateY(0)}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
+#confetti{position:fixed;inset:0;pointer-events:none;z-index:35}
+.loading{text-align:center;padding:60px 0;opacity:.7}
+.hero>div{min-width:0}
+.tries{flex-wrap:wrap}
+@media (max-width:360px){header h1{font-size:20px}header .logo{height:50px}.icon{width:36px;height:36px}.tries span{width:14px}.shirt{width:72px;height:72px}.clue.open b{font-size:16px}.heads,.row{grid-template-columns:1.3fr repeat(5,1fr);gap:4px}.row>div{font-size:12px}}
+</style>
+</head>
+<body>
+<canvas id="confetti"></canvas>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <header>
+    <img class="logo" src="assets/logo.png" alt="العازي">
+    <div class="ttl"><h1>منو اللاعب؟</h1><div class="day" id="dayLbl">تحدي العازي اليومي</div></div>
+    <button class="icon" id="statsBtn" aria-label="إحصائياتي">📊</button>
+    <button class="icon" id="helpBtn" aria-label="كيف ألعب">؟</button>
+  </header>
+
+  <div class="seg" id="modeSeg">
+    <button class="on" data-m="easy">🙂 عادي<small>التلميحات تنفتح</small></button>
+    <button data-m="pro">🧠 خبير<small>قارن وخمّن</small></button>
+  </div>
+
+  <main id="app"><div class="loading">لحظة...</div></main>
+
+  <footer>
+    البيانات من قوائم الأندية المسجلة في رابطة المحترفين الإماراتية · آخر تحديث <span id="upd"></span><br>
+    لعبة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener">@el3azy22</a>
+  </footer>
+</div>
+
+<div class="modal" id="howto" hidden><div class="mbox">
+  <div style="font-size:40px">🕵️</div>
+  <h2>كيف تلعب «منو اللاعب؟»</h2>
+  <div class="step"><i>١</i><div><b>كل يوم لاعب سري</b><span>من لاعبين دوري أدنوك للمحترفين</span></div></div>
+  <div class="step"><i>٢</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك ٦ محاولات</span></div></div>
+  <div class="step"><i>٣</i><div><b>كل غلطة تفتح لك تلميح 🔓</b><span>الجنسية، المركز، العمر، النادي، الرقم...</span></div></div>
+  <div class="step"><i>٤</i><div><b>عرفته؟ شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
+  <p style="font-size:12px;opacity:.7;margin-top:12px;line-height:1.8">تبا تحدي أصعب؟ جرّب <b style="color:var(--gold)">وضع الخبير 🧠</b>: كل تخمين يقارن لاعبك باللاعب السري بالألوان.</p>
+  <button class="btn" id="howGo">يلا نلعب</button>
+</div></div>
+
+<div class="modal" id="statsM" hidden><div class="mbox">
+  <h2>📊 إحصائياتي</h2>
+  <div class="seg" id="statSeg" style="margin-top:0"><button class="on" data-m="easy">🙂 عادي</button><button data-m="pro">🧠 خبير</button></div>
+  <div id="statsBody"></div>
+  <button class="btn ghost" id="statsClose">تمام</button>
+</div></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const SITE='https://el3azy22.github.io/mano/';
+const CREST={jazira:[1,1],sharjah:[.979,1.133],dhafra:[.92,1.106],ain:[.83,1.197],nasr:[1,1],wahda:[.91,1.176],wasl:[.973,1.165],baniyas:[1.234,.681],hatta:[.989,1.122],khorfakkan:[1.048,1.069],shababahli:[1.037,1.074],ajman:[1.154,1.016],kalba:[.995,1],united:[.995,.995]};
+const crest=(c,s=26)=>{const f=CREST[c]||[1,1];return `<img class="crest" src="assets/${c}.png" alt="" style="width:${Math.round(s*f[0])}px;height:${Math.round(s*f[1])}px;object-fit:contain">`};
+const POS={GK:'حارس مرمى',DF:'مدافع',MD:'لاعب وسط',FW:'مهاجم'};
+const POSS={GK:'حارس',DF:'مدافع',MD:'وسط',FW:'مهاجم'};
+const LINE={GK:0,DF:1,MD:2,FW:3};
+const AR=n=>String(n).replace(/\d/g,d=>'٠١٢٣٤٥٦٧٨٩'[d]);
+const flag=cc=>cc&&cc.length===2?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt())):'🏳️';
+const norm=s=>(s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9؀-ۿ ]/g,' ').replace(/\s+/g,' ').trim();
+const store={get(k,d){try{const v=localStorage.getItem('el3azy_mano_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('el3azy_mano_'+k,JSON.stringify(v))}catch(e){}}};
+let toastT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1900)}
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+
+/* ---------- day ---------- */
+function dubaiDayIndex(startISO){
+  const now=new Date(Date.now()+4*3600e3); // Dubai = UTC+4, no DST
+  const today=Date.UTC(now.getUTCFullYear(),now.getUTCMonth(),now.getUTCDate());
+  const [y,m,d]=startISO.split('-').map(Number);
+  return Math.floor((today-Date.UTC(y,m-1,d))/864e5);
+}
+function msToDubaiMidnight(){const now=Date.now()+4*3600e3;return 864e5-(now%864e5)}
+
+let D,BY,ANS,DAY,mode=store.get('mode','easy'),S,timer;
+const MAX=6;
+fetch('data.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json()).then(init).catch(()=>{$('#app').innerHTML='<div class="card loading">ما قدرنا نحمّل اللعبة. حدّث الصفحة 🔄</div>'});
+
+function init(data){
+  D=data;BY={};D.players.forEach(p=>{p._k=norm(p.n+' '+p.e);BY[p.id]=p});
+  const idx=Math.max(0,dubaiDayIndex(D.start));
+  DAY=idx+1;ANS=BY[D.schedule[idx%D.schedule.length]];
+  $('#dayLbl').textContent='تحدي اليوم #'+AR(DAY);
+  $('#upd').textContent=new Date(D.updated).toLocaleDateString('ar-AE',{day:'numeric',month:'long'});
+  document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);b.onclick=()=>{mode=b.dataset.m;store.set('mode',mode);document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));load()}});
+  if(!store.get('seenHow',false))$('#howto').hidden=false;
+  load();
+}
+function load(){
+  const k='g_'+DAY+'_'+mode;
+  const saved=store.get(k,null);
+  S={k,guesses:[],done:false,win:false};
+  if(saved&&Array.isArray(saved.guesses)){S.guesses=saved.guesses.filter(id=>BY[id]);S.done=saved.done;S.win=saved.win}
+  render();
+}
+function save(){store.set(S.k,{guesses:S.guesses,done:S.done,win:S.win})}
+
+/* ---------- compare ---------- */
+function cmp(p){
+  const a=ANS;const r={};
+  r.c=p.c===a.c?'ok':'';
+  r.p=p.p===a.p?'ok':(Math.abs(LINE[p.p]-LINE[a.p])===1?'near':'');
+  r.n=(p.nat&&p.nat===a.nat)?'ok':'';
+  r.a=p.a==null?'':p.a===a.a?'ok':(Math.abs(p.a-a.a)<=2?'near':'');
+  r.no=p.no==null?'':p.no===a.no?'ok':(Math.abs(p.no-a.no)<=3?'near':'');
+  return r;
+}
+const arrow=(g,a)=>g==null||g===a?'':`<small>${a>g?'⬆ أكبر':'⬇ أصغر'}</small>`;
+
+/* ---------- render ---------- */
+function shirtSVG(){return `<svg viewBox="0 0 100 100"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.done?'#F0D99A':'#14384F'}"/><stop offset="1" stop-color="${S.done?'#D7B465':'#0C2638'}"/></linearGradient></defs><path d="M33 8 L18 14 L4 32 L16 42 L24 34 L24 94 L76 94 L76 34 L84 42 L96 32 L82 14 L67 8 Q50 22 33 8Z" fill="url(#sg)" stroke="#D7B465" stroke-width="2.5" stroke-linejoin="round"/></svg>`}
+function render(){
+  const used=S.guesses.length;
+  const tries=Array.from({length:MAX},(_,i)=>`<span class="${i<used?(S.win&&i===used-1?'win':'used'):''}"></span>`).join('');
+  let h=`<div class="card">
+   <div class="hero">
+     <div class="shirt ${S.done?'revealed':''}">${shirtSVG()}<div class="q">${S.done?AR(ANS.no):'؟'}</div></div>
+     <div style="flex:1"><b>${S.done?ANS.n:'لاعب اليوم السري'}</b>
+       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'كل تخمين يقارن لاعبك باللاعب السري')}</div>
+       <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
+   </div>`;
+  if(mode==='easy'){
+    const CL=[['الجنسية',()=>`<span style="font-size:22px">${flag(ANS.f)}</span>${ANS.nat}`],['المركز',()=>POS[ANS.p]],['العمر',()=>AR(ANS.a)+' سنة'],['النادي',()=>crest(ANS.c,24)+D.clubs[ANS.c]],['رقم القميص',()=>AR(ANS.no)],['أول حرف من اسمه',()=>`«${ANS.n.trim()[0]}»`]];
+    const shown=S.done?6:Math.min(used+1,6);
+    h+=`<div class="clues">${CL.map((c,i)=>i<shown?`<div class="clue open"><span>تلميح ${AR(i+1)} · ${c[0]}</span><b>${c[1]()}</b></div>`:`<div class="clue"><span>تلميح ${AR(i+1)}</span><b>🔒 ينفتح لو غلطت</b></div>`).join('')}</div>`;
+  }else{
+    h+=`<div class="legend"><span><i style="background:var(--green)"></i>نفسه</span><span><i style="background:var(--yellow)"></i>قريب</span><span>⬆ السري أكبر</span><span>⬇ السري أصغر</span></div>`;
+  }
+  if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
+  if(mode==='easy'){
+    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],w=id===ANS.id;return `<div class="eg ${w?'w':''}">${crest(p.c,22)}<span>${p.n}</span><b>${w?'✅ صح!':'❌ مب هو'}</b></div>`}).join('');
+  }else if(used){
+    h+=`<div class="heads"><div>تخمينك</div><div>النادي</div><div>المركز</div><div>الجنسية</div><div>العمر</div><div>الرقم</div></div>`;
+    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],r=cmp(p);return `<div class="row"><div>${p.n}</div><div class="${r.c}">${crest(p.c,28)}</div><div class="${r.p}">${POSS[p.p]}</div><div class="${r.n}"><span class="fl">${flag(p.f)}</span></div><div class="${r.a}">${p.a!=null?AR(p.a):'—'}${arrow(p.a,ANS.a)}</div><div class="${r.no}">${p.no!=null?AR(p.no):'—'}${arrow(p.no,ANS.no)}</div></div>`}).join('');
+  }
+  h+=`</div>`;
+  if(S.done)h+=resultHTML();
+  $('#app').innerHTML=h;
+  if(!S.done)bindInput();else bindResult();
+}
+
+/* ---------- input ---------- */
+function bindInput(){
+  const gIn=$('#gIn'),sg=$('#sugg');
+  const show=()=>{
+    const q=norm(gIn.value);
+    if(!q){sg.innerHTML='<div class="empty">اكتب أول حروف الاسم... مثلاً: «سفيان» أو «Benteke»</div>';sg.hidden=false;return}
+    const words=q.split(' ');
+    const m=D.players.filter(p=>!S.guesses.includes(p.id)&&words.every(w=>p._k.includes(w)))
+      .sort((a,b)=>(b._k.startsWith(q)-a._k.startsWith(q))||(b.ap-a.ap)).slice(0,8);
+    sg.innerHTML=m.length?m.map(p=>`<button data-id="${p.id}">${crest(p.c,24)}<span class="nm">${p.n}<small>${D.clubs[p.c]} · <span dir="ltr">${p.e}</span></small></span></button>`).join(''):'<div class="empty">ما في لاعب بهالاسم في قوائم الدوري</div>';
+    sg.hidden=false;
+    sg.querySelectorAll('button').forEach(b=>b.onclick=()=>guess(b.dataset.id));
+  };
+  gIn.oninput=show;gIn.onfocus=show;
+  gIn.onkeydown=e=>{if(e.key==='Enter'){const f=sg.querySelector('button');if(f){e.preventDefault();guess(f.dataset.id)}}};
+  document.onclick=e=>{if(!e.target.closest('.inp'))sg.hidden=true};
+}
+function guess(id){
+  if(S.done||S.guesses.includes(id))return;
+  S.guesses.push(id);
+  const win=id===ANS.id;
+  if(win){S.done=true;S.win=true}else if(S.guesses.length>=MAX){S.done=true}
+  save();
+  if(S.done)record();
+  render();
+  if(win){vib([30,40,60]);confetti()}
+  else if(!S.done){vib(40);if(mode==='easy')toast('🔓 انفتح تلميح يديد');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
+  if(S.done)setTimeout(()=>{const r=document.querySelector('.result');r&&r.scrollIntoView({behavior:'smooth',block:'start'})},350);
+}
+
+/* ---------- stats ---------- */
+function record(){
+  const st=store.get('stats_'+mode,{played:0,wins:0,streak:0,best:0,last:0,dist:[0,0,0,0,0,0]});
+  if(st.lastDay===DAY)return;
+  st.played++;
+  if(S.win){st.wins++;st.dist[S.guesses.length-1]++;st.streak=(st.lastWinDay===DAY-1?st.streak:0)+1;st.best=Math.max(st.best,st.streak);st.lastWinDay=DAY}else st.streak=0;
+  st.lastDay=DAY;store.set('stats_'+mode,st);
+}
+function statsHTML(m){
+  const st=store.get('stats_'+m,{played:0,wins:0,streak:0,best:0,dist:[0,0,0,0,0,0]});
+  const mx=Math.max(1,...st.dist);const cur=(S&&S.win&&m===mode)?S.guesses.length-1:-1;
+  return `<div class="stats"><div><b>${AR(st.played)}</b><span>لعبت</span></div><div><b>${AR(st.played?Math.round(st.wins/st.played*100):0)}٪</b><span>فوز</span></div><div><b>${AR(st.streak)}🔥</b><span>سلسلة</span></div><div><b>${AR(st.best)}</b><span>أطول سلسلة</span></div></div>
+  <div class="dist"><div style="font-size:12px;opacity:.7;margin-bottom:6px">عرفته من المحاولة:</div>${st.dist.map((n,i)=>`<div><span style="width:14px">${AR(i+1)}</span><i class="${i===cur?'hl':''}" style="width:${Math.max(8,n/mx*100)}%">${AR(n)}</i></div>`).join('')}</div>`;
+}
+
+/* ---------- result ---------- */
+function shareText(){
+  const n=S.guesses.length;
+  let grid;
+  if(mode==='easy')grid=S.guesses.map(id=>id===ANS.id?'✅':'❌').join('');
+  else{const em={ok:'🟩',near:'🟨','':'⬛'};grid=S.guesses.map(id=>{const r=cmp(BY[id]);return [r.c,r.p,r.n,r.a,r.no].map(x=>em[x]).join('')}).join('\n')}
+  return `🕵️ منو اللاعب؟ #${AR(DAY)} ${mode==='easy'?'':'🧠 خبير'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}\n${grid}\n\nجرّب تعرفه 👇\n${SITE}\n@el3azy22`;
+}
+function resultHTML(){
+  const st=store.get('stats_'+mode,{streak:0});
+  return `<div class="card result">
+   <div class="emo">${S.win?'🎉':'😅'}</div>
+   <h2>${S.win?(S.guesses.length===1?'من أول محاولة! مينوون معلومات 🔥':'كفووو! عرفته'):'هالمرة ما ضبطت'}</h2>
+   <div class="ans">${crest(ANS.c,46)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
+     <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
+   ${st.streak>1&&S.win?`<div style="font-size:14px;margin-bottom:6px">سلسلتك: <b style="color:var(--gold)">${AR(st.streak)} أيام 🔥</b></div>`:''}
+   <div style="font-size:12.5px;opacity:.7">نتيجتك جاهزة (من غير اسم اللاعب):</div>
+   <div class="share">${shareText().replace(SITE,'<span dir="ltr">'+SITE+'</span>').replace('@el3azy22','<span dir="ltr">@el3azy22</span>')}</div>
+   <a class="btn" id="xBtn" target="_blank" rel="noopener">𝕏 انشر نتيجتك في X</a>
+   <button class="btn ghost" id="cpBtn">📋 انسخ النتيجة</button>
+   ${!store.get('g_'+DAY+'_'+(mode==='easy'?'pro':'easy'),{}).done?`<button class="btn ghost" id="otherBtn">جرّب ${mode==='easy'?'وضع الخبير 🧠':'الوضع العادي 🙂'}</button>`:''}
+   <div class="next">اللاعب الياي بعد<b id="cd">--:--:--</b></div>
+  </div>`;
+}
+function bindResult(){
+  const t=shareText();
+  $('#xBtn').href='https://x.com/intent/post?text='+encodeURIComponent(t);
+  $('#cpBtn').onclick=()=>{(navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast('انتسخت ✓')).catch(()=>{const r=document.createRange();r.selectNodeContents(document.querySelector('.share'));const s=getSelection();s.removeAllRanges();s.addRange(r);toast('حددناها لك، انسخها')})};
+  const o=$('#otherBtn');if(o)o.onclick=()=>{document.querySelector(`#modeSeg [data-m=${mode==='easy'?'pro':'easy'}]`).click();scrollTo({top:0,behavior:'smooth'})};
+  clearInterval(timer);const f=x=>String(x).padStart(2,'0');
+  const tick=()=>{const s=Math.floor(msToDubaiMidnight()/1000);const e=$('#cd');if(!e)return;e.textContent=`${f(s/3600|0)}:${f(s%3600/60|0)}:${f(s%60)}`;if(s<=1)setTimeout(()=>location.reload(),1500)};
+  tick();timer=setInterval(tick,1000);
+}
+
+/* ---------- modals ---------- */
+$('#helpBtn').onclick=()=>$('#howto').hidden=false;
+$('#howGo').onclick=()=>{$('#howto').hidden=true;store.set('seenHow',true);const i=$('#gIn');i&&i.focus()};
+let sm=mode;
+$('#statsBtn').onclick=()=>{sm=mode;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm);$('#statsM').hidden=false};
+document.querySelectorAll('#statSeg button').forEach(b=>b.onclick=()=>{sm=b.dataset.m;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#statsBody').innerHTML=statsHTML(sm)});
+$('#statsClose').onclick=()=>$('#statsM').hidden=true;
+document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m){m.hidden=true;if(m.id==='howto')store.set('seenHow',true)}});
+
+/* ---------- confetti ---------- */
+function confetti(){
+  const c=$('#confetti'),x=c.getContext('2d');c.width=innerWidth*devicePixelRatio;c.height=innerHeight*devicePixelRatio;x.scale(devicePixelRatio,devicePixelRatio);
+  const cols=['#D7B465','#F0D99A','#FFF5E5','#2E9E66','#ffffff'];
+  const ps=Array.from({length:140},()=>({x:innerWidth/2+(Math.random()-.5)*80,y:innerHeight*.35,vx:(Math.random()-.5)*12,vy:-Math.random()*13-4,r:Math.random()*6+3,c:cols[Math.random()*cols.length|0],a:Math.random()*6,va:(Math.random()-.5)*.3}));
+  let t=0;(function f(){x.clearRect(0,0,innerWidth,innerHeight);ps.forEach(p=>{p.vy+=.35;p.vx*=.99;p.x+=p.vx;p.y+=p.vy;p.a+=p.va;x.save();x.translate(p.x,p.y);x.rotate(p.a);x.fillStyle=p.c;x.fillRect(-p.r/2,-p.r/4,p.r,p.r/2);x.restore()});if(++t<150)requestAnimationFrame(f);else x.clearRect(0,0,innerWidth,innerHeight)})();
+}
+})();
+</script>
+</body>
+</html>
