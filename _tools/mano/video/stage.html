@@ -3,6 +3,7 @@
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
+html{zoom:2}
 html,body{width:540px;height:960px;overflow:hidden;background:#071D2B;font-family:'Readex Pro';color:#FFF5E5}
 body{background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.28),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),#071D2B}
 .scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;transition:opacity .5s,transform .6s;transform:scale(.96)}
@@ -18,7 +19,7 @@ body{background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.28),transpa
 #cap b{color:#D7B465}
 #phone{position:absolute;top:166px;left:50%;width:466px;height:762px;margin-left:-233px;overflow:hidden;border-radius:46px;background:#020b12;border:3px solid rgba(215,180,101,.65);box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 8px rgba(215,180,101,.08);padding:8px;opacity:0;transform:translateY(60px);transition:opacity .6s,transform .7s cubic-bezier(.2,.9,.3,1.2)}
 #phone.on{opacity:1;transform:none}
-#phone iframe{width:390px;height:620px;transform:scale(1.1487);transform-origin:top right;border:0;border-radius:33px;display:block;background:#071D2B}
+#phone iframe{width:390px;height:640px;transform:scale(1.1487);transform-origin:top right;border:0;border-radius:33px;display:block;background:#071D2B}
 #tag{position:absolute;bottom:26px;left:0;right:0;text-align:center;font-size:17px;color:#D7B465;font-weight:600;direction:ltr;opacity:0;transition:opacity .5s}
 #tag.on{opacity:.9}
 .chips{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;justify-content:center;width:470px}
@@ -67,11 +68,11 @@ window.start=()=>{
   at(17.0,()=>{cap('تبا أصعب؟ <b>وضع الخبير</b> 🧠<br>قارن بالألوان');F().querySelector('#modeSeg [data-m=pro]').click()});
   at(18.0,()=>type('Asllani','kristjan-asllani'));
   at(20.0,()=>type('Puertas','cameron-mitchel-puertas-castro'));
-  at(22.4,()=>cap('عرفته؟ <b>شارك صورة نتيجتك</b> في X 📸'));
-  at(22.6,()=>type('Tapia','renato-fabrizio-tapia-cortijo'));
-  at(24.6,()=>{const r=F().querySelector('#cardImg');r&&FW().scrollTo({top:r.getBoundingClientRect().top+FW().scrollY-70,behavior:'smooth'})});
-  at(27.5,()=>{cap('');$('#phone').classList.remove('on');$('#tag').classList.remove('on')});
-  at(28.0,()=>$('#outro').classList.add('on'));
+  at(22.9,()=>cap('عرفته؟ <b>شارك صورة نتيجتك</b> في X 📸'));
+  at(23.0,()=>type('Tapia','renato-fabrizio-tapia-cortijo'));
+  at(25.0,()=>{const r=F().querySelector('#cardImg');r&&FW().scrollTo({top:r.getBoundingClientRect().top+FW().scrollY-70,behavior:'smooth'})});
+  at(27.9,()=>{cap('');$('#phone').classList.remove('on');$('#tag').classList.remove('on')});
+  at(28.3,()=>$('#outro').classList.add('on'));
 };
 </script>
 </body></html>
