@@ -95,8 +95,11 @@ const nf=n=>Number(n||0).toLocaleString('en-US');
 const pct=(a,b)=>b?Math.round(a/b*100):0;
 const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 // token: from #k= once, then localStorage
-(function(){const m=location.hash.match(/k=([a-z0-9]+)/i);if(m){try{localStorage.setItem('el3azy_gc_key',m[1])}catch(e){}history.replaceState(null,'',location.pathname)}})();
-const KEY=()=>{try{return localStorage.getItem('el3azy_gc_key')}catch(e){return null}};
+// المفتاح يظل في الرابط (#k=) عشان يشتغل حتى في التصفح الخاص ومن أيقونة الشاشة الرئيسية
+const HK=()=>{const m=location.hash.match(/k=([a-z0-9]+)/i);return m?m[1]:null};
+const KEY=()=>{const h=HK();if(h){try{localStorage.setItem('el3azy_gc_key',h)}catch(e){}return h}
+  let k=null;try{k=localStorage.getItem('el3azy_gc_key')}catch(e){}
+  if(k&&!HK())history.replaceState(null,'',location.pathname+'#k='+k);return k};
 // Dubai day helpers
 const dubaiToday=()=>{const t=Date.now()+OFF;return t-t%DAYMS}; // ms of Dubai midnight expressed as UTC-midnight number
 const dLabel=t=>String(new Date(t).getUTCDate());
@@ -125,7 +128,7 @@ function login(msg){
   <div class="mini">الصق مفتاح GoatCounter مرة وحدة، وينحفظ في هالجهاز بس.</div>
   ${msg?`<div class="err">${msg}</div>`:''}
   <input id="kin" placeholder="المفتاح" autocomplete="off" autocapitalize="off" spellcheck="false"><button id="kgo">دخول</button></div>`;
-  $('#kgo').onclick=()=>{const v=$('#kin').value.trim();if(v){try{localStorage.setItem('el3azy_gc_key',v)}catch(e){}load()}};
+  $('#kgo').onclick=()=>{const v=$('#kin').value.trim();if(v){try{localStorage.setItem('el3azy_gc_key',v)}catch(e){}history.replaceState(null,'',location.pathname+'#k='+v);load()}};
 }
 function segHTML(){return `<div class="seg">${RANGES.map(([k,t])=>`<button data-r="${k}" class="${k===range?'on':''}">${t}</button>`).join('')}</div>`}
 function bars(rows,opt={}){ // rows: [label,value,{img,cls}]
@@ -157,7 +160,7 @@ async function load(){
     out.tot=await gc('/stats/total',{start:iso(ca),end:iso(b)});await sleep(260);
     out.refs=await gc('/stats/toprefs',{start:iso(a),end:iso(b),limit:10});
     out.single=single;out.ca=ca;out.b=b;
-  }catch(e){btn.classList.remove('spin');if(e.message==='auth'){try{localStorage.removeItem('el3azy_gc_key')}catch(_){}login('المفتاح ما اشتغل، تأكد منه.');return}
+  }catch(e){btn.classList.remove('spin');if(e.message==='auth'){try{localStorage.removeItem('el3azy_gc_key')}catch(_){}history.replaceState(null,'',location.pathname);login('المفتاح ما اشتغل، تأكد منه.');return}
     $('#app').innerHTML=segHTML()+`<div class="err">ما قدرنا نجيب الأرقام الحين (${esc(e.message)}). جرّب التحديث بعد شوي.</div>`;bindSeg();return}
   const [fbS,fbC,md]=await Promise.all([fb('/s.json'),fb('/c.json'),manoData()]);
   btn.classList.remove('spin');
