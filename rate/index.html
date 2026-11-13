@@ -125,10 +125,10 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 @keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
 @media (max-width:360px){header h1{font-size:20px}header .logo{height:50px}.nums button{height:31px;font-size:13px}.pr .nm b{font-size:14px}}
 
-.topnav{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 0 4px}
-.topnav a,.topnav button{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border-radius:999px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.07);color:#F6E3AE;font:600 13px inherit;font-family:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.topnav{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:2px 0 4px}
+.topnav a,.topnav button{display:inline-grid;place-items:center;width:38px;height:38px;padding:0;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.07);color:#F6E3AE;font:600 13px inherit;font-family:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .topnav a:active,.topnav button:active{transform:scale(.96)}
-.topnav svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.topnav svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
@@ -136,8 +136,8 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 <div class="toast" id="toast"></div>
 <div class="wrap">
   <nav class="topnav" aria-label="التنقل">
-    <button type="button" id="navBack" aria-label="رجوع"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>رجوع</button>
-    <a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg>الرئيسية</a>
+    <button type="button" id="navBack" aria-label="رجوع"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
+    <a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg></a>
   </nav>
   <header>
     <a class="home" href="../" aria-label="منصة العازي"><img class="logo" src="../mano/assets/logo.png" alt="العازي"></a>
