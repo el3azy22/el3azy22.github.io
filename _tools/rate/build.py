@@ -41,6 +41,22 @@ def kick_ms(t):  # "2026-11-08 4:55 م"
     return int(datetime(int(y), int(mo), int(d), h, int(mi), tzinfo=UAE).timestamp() * 1000)
 
 
+ALEF_MAQ = {'مصطفى', 'عيسى', 'موسى', 'يحيى', 'مرتضى', 'مجتبى', 'مرعى', 'هدى', 'منى', 'ليلى', 'المصطفى', 'مقتدى', 'الهدى', 'ضحى'}
+
+
+def fix_ya(name):
+    """موقع الاتحاد يكتب الياء الأخيرة ألف مقصورة (الزعابى) والعكس (مصطفي). نصلحها كلمة كلمة."""
+    out = []
+    for w in name.split():
+        base = w[:-1]
+        if w.endswith('ى') and w not in ALEF_MAQ:
+            w = base + 'ي'
+        elif w.endswith('ي') and base + 'ى' in ALEF_MAQ:
+            w = base + 'ى'
+        out.append(w)
+    return ' '.join(out)
+
+
 def norm(s):
     s = re.sub('[إأآ]', 'ا', s or '').replace('ة', 'ه').replace('ى', 'ي')
     return re.sub(r'\s+', ' ', s).strip()
@@ -118,7 +134,7 @@ def team(tm, side, ev, sq):
             og = sum(1 for x in e if x['type'] == 'goal' and x.get('player_id') == pid and x.get('goal_type') == '3')
             cards = [x['type'][0] for x in e if x.get('player_id') == pid and x['type'] in ('ycard', 'rcard', 'y2card')]
             players.append({k: v for k, v in {
-                'i': pid, 'n': re.sub(r'\s+', ' ', known), 'f': re.sub(r'\s+', ' ', pa['shortname_ar']).strip(),
+                'i': pid, 'n': fix_ya(re.sub(r'\s+', ' ', known).strip()), 'f': fix_ya(re.sub(r'\s+', ' ', pa['shortname_ar']).strip()),
                 'no': int(pa['j_no']) if (pa.get('j_no') or '').isdigit() else None,
                 'p': POS.get(pa.get('position'), 'M'), 'fp': pa.get('formation_pos', ''),
                 's': 1 if starter else 0, 'in': sub_in, 'out': sub_out,
@@ -129,7 +145,7 @@ def team(tm, side, ev, sq):
     coach = next((o for o in tm.get('official') or [] if o.get('title_name_en') == 'Coach'), None)
     form = (a.get('formation') or '').split(':')[-1].strip()
     return {'c': slug, 'cid': a['id'], 'name': a['name_ar'], 'sc': int(a['score']) if (a.get('score') or '').isdigit() else None,
-            'fm': form, 'coach': {'i': 'c' + coach['person_id'], 'n': coach['shortname_ar'].strip()} if coach else None,
+            'fm': form, 'coach': {'i': 'c' + coach['person_id'], 'n': fix_ya(coach['shortname_ar'].strip())} if coach else None,
             'pl': players}
 
 

@@ -1,0 +1,34 @@
+{
+ "_help": "فيديو «قيّم اللاعبين» (31 ثانية). نفس نظام timeline.json — شوف README.txt. التشغيل: TL=rate-timeline.json STAGE=rate-stage.html python3 record.py ...",
+ "fps": 30,
+ "duration": 31,
+ "demo": {
+  "nowMs": "1795113000000",
+  "rateDemo": "rate-demo.json",
+  "match": "84529",
+  "ratings": [7, 6, 9, 7, 8, 6, 7],
+  "starRow": 2
+ },
+ "music": {
+  "lufs": -14, "fadeIn": 0.3, "fadeOut": 1.4, "sfxGainDb": -9,
+  "segments": [{"file": "../mano/video/platform-theme-2.m4a", "trackStart": 0, "at": 0}]
+ },
+ "scenes": [
+  {"id": "hook", "start": 0, "sfx": null, "captions": [
+    {"at": 0.4, "text": "*صافرة النهاية*…"},
+    {"at": 2.2, "text": "مَن *نجم المباراة* في رأيك؟"}]},
+  {"id": "list", "start": 4.6, "sfx": "whoosh", "captions": [
+    {"at": 0.2, "text": "*قيّم اللاعبين* في منصة العازي"},
+    {"at": 2.3, "text": "التشكيلة الرسمية *قبل المباراة بساعة*"}]},
+  {"id": "rate", "start": 9.0, "sfx": "swish", "captions": [
+    {"at": 0.2, "text": "قيّم كل لاعب *من 1 إلى 10*"},
+    {"at": 4.8, "text": "واختر *نجم المباراة* ⭐"}]},
+  {"id": "crowd", "start": 17.0, "sfx": "chime", "captions": [
+    {"at": 0.3, "text": "وقارن تقييمك *بتقييم الجماهير*"}]},
+  {"id": "share", "start": 22.4, "sfx": "swish", "captions": [
+    {"at": 0.2, "text": "وشارك تقييمك على *X*"}]},
+  {"id": "outro", "start": 26.2, "sfx": "chime", "thumb": 0.9, "captions": [
+    {"at": 0.2, "text": "يُفتح التقييم *بعد صافرة النهاية* ولمدة *48 ساعة*"},
+    {"at": 2.6, "text": "*مجاني*، ومن غير *تسجيل*"}]}
+ ]
+}

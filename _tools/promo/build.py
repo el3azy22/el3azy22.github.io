@@ -4,7 +4,7 @@
 import json,os,sys,subprocess,bisect,numpy as np,soundfile as sf,pyloudnorm as pyln
 from PIL import Image
 HERE=os.path.dirname(os.path.abspath(__file__));SFX=os.path.join(HERE,'..','audio','sfx')
-TL=json.load(open(os.path.join(HERE,'timeline.json'),encoding='utf-8'))
+TL=json.load(open(os.path.join(HERE,os.environ.get('TL','timeline.json')),encoding='utf-8'))
 FR,OUT=sys.argv[1],sys.argv[2];VOICE=sys.argv[3] if len(sys.argv)>3 else None
 WORK=os.path.dirname(os.path.abspath(OUT));FPS=TL['fps'];T=TL['duration'];SR=48000;N=int(round(T*FPS))
 # ---------- الصورة ----------
