@@ -1,0 +1,24 @@
+{
+  "name": "منصة العازي",
+  "short_name": "منصة العازي",
+  "description": "ألعاب وأدوات مجانية لجماهير الدوري الإماراتي للمحترفين",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#071D2B",
+  "theme_color": "#071D2B",
+  "icons": [
+    {
+      "src": "/assets/icon/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icon/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}

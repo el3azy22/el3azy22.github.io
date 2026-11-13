@@ -9,8 +9,13 @@
 <meta property="og:url" content="https://el3azy22.github.io/">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#071D2B">
-<link rel="icon" href="mano/assets/logo.png">
-<link rel="apple-touch-icon" href="tashkila/assets/apple-touch-icon.png">
+<link rel="icon" type="image/png" href="assets/icon/favicon-64.png">
+<link rel="apple-touch-icon" href="assets/icon/apple-touch-icon.png">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="apple-mobile-web-app-title" content="منصة العازي">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
@@ -20,7 +25,7 @@
 html{background:var(--navy)}
 body{font-family:'Readex Pro',system-ui,sans-serif;color:var(--ivory);min-height:100vh;
  background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.22),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),var(--navy);background-attachment:fixed}
-.wrap{max-width:520px;margin:0 auto;padding:22px 18px calc(28px + env(safe-area-inset-bottom));position:relative}
+.wrap{max-width:520px;margin:0 auto;padding:calc(22px + env(safe-area-inset-top)) 18px calc(28px + env(safe-area-inset-bottom));position:relative}
 
 header{text-align:center;position:relative;padding-top:6px}
 header:before{content:'';position:absolute;inset:-22px -18px auto;height:330px;z-index:-1;opacity:.07;pointer-events:none;
