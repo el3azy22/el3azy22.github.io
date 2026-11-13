@@ -1,0 +1,15 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<style>@font-face{font-family:R;src:url(/tashkila/assets/ReadexPro.ttf) format('truetype');font-weight:160 700}
+body{margin:0;width:1200px;height:630px;font-family:R;color:#FFF5E5;overflow:hidden;
+background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.22),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),#071D2B}
+.w{display:flex;align-items:center;height:100%;padding:0 70px;gap:60px}
+.logo{width:330px}
+h1{font-size:96px;margin:0;line-height:1.2;font-weight:700}
+.k{color:#D7B465;font-size:34px;font-weight:600;margin-top:22px}
+.s{font-size:28px;opacity:.75;margin-top:14px}
+.c{display:flex;flex-wrap:wrap;gap:14px 18px;margin-top:34px;max-width:470px}
+.c img{object-fit:contain;opacity:.9}</style></head><body><div class="w">
+<img class="logo" src="/mano/assets/logo.png">
+<div><h1>منصة العازي</h1><div class="k">لجماهير الدوري الإماراتي للمحترفين</div><div class="s">مجانية · من غير تسجيل · من تلفونك</div><div class="c" id="c"></div></div></div>
+<script>const C={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};
+document.getElementById('c').innerHTML=Object.entries(C).map(([c,f])=>`<img src="/mano/assets/${c}.png" style="width:${Math.round(44*f[0])}px;height:${Math.round(44*f[1])}px">`).join('');</script></body></html>
