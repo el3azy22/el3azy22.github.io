@@ -473,7 +473,6 @@ async function drawCard(){
   x.direction='rtl';x.font='500 25px Readex';x.globalAlpha=.75;x.fillText(STADIUMS[stad]||'',W-60-140,182);
   if(byName){x.textAlign='center';x.direction='rtl';x.font='700 44px Readex';x.globalAlpha=1;x.fillText(byName,W/2,246)}
   x.globalAlpha=1;
-  x.globalAlpha=.32;drawContain(x,logo,44,24,150,150);x.globalAlpha=1;
   // اللاعبين
   x.textAlign='center';
   const lb=LBL();const PH=await Promise.all(xi.map(p=>PHOTO(p)?loadImg(PHOTO(p)).catch(()=>null):null));
@@ -502,8 +501,19 @@ async function drawCard(){
     x.fillStyle='rgba(0,0,0,.62)';rr(x,cx-tw/2-12,cy+R+6,tw+24,s+16,9);x.fill();
     x.fillStyle='#fff';x.font='600 '+s+'px Readex';x.fillText(nm,cx,cy+R+6+(s+16)/2+1);
   });
-  x.textBaseline='alphabetic';x.textAlign='center';x.fillStyle='#fff';x.globalAlpha=.9;x.font='600 30px Readex';
-  x.globalAlpha=1;
+  // شريط المنصة: هوية العازي + الرابط
+  {const FY=H-104;
+   let gg=x.createLinearGradient(0,FY-40,0,H);gg.addColorStop(0,'rgba(7,29,43,0)');gg.addColorStop(.35,'rgba(7,29,43,.94)');gg.addColorStop(1,'#071D2B');x.fillStyle=gg;x.fillRect(0,FY-40,W,H-FY+40);
+   gg=x.createLinearGradient(60,0,W-60,0);gg.addColorStop(0,'rgba(215,180,101,0)');gg.addColorStop(.5,'#D7B465');gg.addColorStop(1,'rgba(215,180,101,0)');
+   x.strokeStyle=gg;x.lineWidth=2;x.beginPath();x.moveTo(60,FY);x.lineTo(W-60,FY);x.stroke();
+   const cy=FY+52;drawContain(x,logo,W-60-84,cy-42,84,84);
+   x.textBaseline='middle';x.direction='rtl';x.textAlign='right';
+   x.fillStyle='#FFF5E5';x.font='700 34px Readex';x.fillText('منصة العازي',W-60-100,cy-15);
+   x.fillStyle='rgba(255,245,229,.7)';x.font='500 22px Readex';x.fillText('سوّ تشكيلتك وشاركها',W-60-100,cy+22);
+   x.direction='ltr';x.textAlign='left';x.fillStyle='#D7B465';x.font='600 32px Readex';x.fillText('el3azy.com/tashkila',60,cy);
+   // إطار ذهبي
+   x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(x,14,14,W-28,H-28,34);x.stroke();}
+  x.textBaseline='alphabetic';x.globalAlpha=1;
   return cv;
 }
 function drawContain(x,im,dx,dy,w,h){const r=Math.min(w/im.width,h/im.height);const iw=im.width*r,ih=im.height*r;x.drawImage(im,dx+(w-iw)/2,dy+(h-ih)/2,iw,ih)}

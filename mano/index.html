@@ -447,7 +447,7 @@ function tally(raw,from,to){
 function crowdLine(){
   if(!CW||CW.n<5)return '';
   if(S.win&&CW.faster!=null)return `⚡ أسرع من ${PC(AR(CW.faster))} من الجماهير`;
-  return `👥 ${PC(AR(CW.pct))} بس عرفوه اليوم`;
+  return CW.pct<50?`👥 ${PC(AR(CW.pct))} بس عرفوه اليوم`:`👥 ${PC(AR(CW.pct))} من الجماهير عرفوه اليوم`;
 }
 function pickHTML(again){
   return `<div class="card clubc"><div class="lbl">🏆 تحدي الأندية الأسبوعي</div>
