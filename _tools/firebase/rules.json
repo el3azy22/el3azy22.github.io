@@ -54,6 +54,62 @@
      }
     }
    }
+  },
+  "rv": {
+   "$k": {
+    "$u": {
+     ".write": "auth != null && auth.uid == $u && !data.exists()",
+     ".validate": "newData.hasChildren(['t','r']) && $k.matches(/^[0-9]{3,8}_[0-9]{13}$/) && newData.child('t').isNumber() && $k.endsWith('_' + newData.child('t').val()) && now >= newData.child('t').val() + 6000000 && now < newData.child('t').val() + 180000000 && newData.parent().parent().parent().child('rn').child($k).val() == (root.child('rn').child($k).exists() ? root.child('rn').child($k).val() : 0) + 1",
+     "t": {
+      ".validate": true
+     },
+     "r": {
+      "$p": {
+       ".validate": "$p.matches(/^c?[0-9]{1,7}$/) && newData.isNumber() && newData.val() >= 1 && newData.val() <= 10 && newData.val() % 1 == 0"
+      }
+     },
+     "st": {
+      ".validate": "newData.isString() && newData.val().matches(/^c?[0-9]{1,7}$/)"
+     },
+     "$other": {
+      ".validate": false
+     }
+    }
+   }
+  },
+  "rn": {
+   ".read": true,
+   "$k": {
+    ".write": "auth != null && !root.child('rv').child($k).child(auth.uid).exists() && newData.parent().parent().child('rv').child($k).child(auth.uid).exists()",
+    ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val() + 1)"
+   }
+  },
+  "ra": {
+   ".read": true,
+   "$k": {
+    "$p": {
+     "n": {
+      ".write": "auth != null && !root.child('rv').child($k).child(auth.uid).exists() && newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).exists()",
+      ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val() + 1) && newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).child('r').child($p).exists()"
+     },
+     "s": {
+      ".write": "auth != null && !root.child('rv').child($k).child(auth.uid).exists() && newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).exists()",
+      ".validate": "newData.isNumber() && newData.val() == (data.exists() ? data.val() : 0) + newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).child('r').child($p).val()"
+     },
+     "$o": {
+      ".validate": false
+     }
+    }
+   }
+  },
+  "rs": {
+   ".read": true,
+   "$k": {
+    "$p": {
+     ".write": "auth != null && !root.child('rv').child($k).child(auth.uid).exists() && newData.parent().parent().parent().child('rv').child($k).child(auth.uid).exists()",
+     ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val() + 1) && newData.parent().parent().parent().child('rv').child($k).child(auth.uid).child('st').val() == $p"
+    }
+   }
   }
  }
 }

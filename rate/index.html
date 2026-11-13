@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>قيّم اللاعبين | العازي</title>
+<meta name="description" content="قيّم لاعبين دوري أدنوك للمحترفين بعد كل مباراة، وشوف تقييم الجماهير ونجم المباراة.">
+<meta name="theme-color" content="#071D2B">
+<meta property="og:title" content="قيّم اللاعبين — منصة العازي">
+<meta property="og:description" content="بعد صافرة النهاية: قيّم كل لاعب من 1 لين 10، واختار نجم المباراة، وقارن تقييمك بالجماهير.">
+<meta property="og:image" content="https://el3azy22.github.io/rate/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@el3azy22">
+<link rel="icon" href="../mano/assets/logo.png">
+<link rel="apple-touch-icon" href="../mano/assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F0D99A;--ivory:#FFF5E5;--green:#2E9E66;--yellow:#C4952B;--gray:#243F52;--red:#B4473F}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--navy)}
+body{font-family:'Readex Pro',system-ui,sans-serif;color:var(--ivory);min-height:100vh;padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom));
+background-image:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.20),transparent 45%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%);background-attachment:fixed}
+.wrap{max-width:500px;margin:0 auto;padding:0 14px}
+button{font-family:inherit;cursor:pointer;color:inherit}
+header{display:flex;align-items:center;gap:10px;padding:12px 0 6px}
+header .logo{height:60px;width:auto}
+header .ttl{flex:1}
+header h1{font-size:24px;font-weight:700;line-height:1.2}
+header .sub{font-size:12px;color:var(--gold);font-weight:600}
+.icon{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.06);color:var(--gold);font-size:18px;font-weight:700;display:grid;place-items:center}
+.crests14{display:flex;justify-content:space-between;align-items:center;padding:6px 2px 12px;opacity:.85}
+.card{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.lbl{font-size:12.5px;color:var(--gold);font-weight:600;margin-bottom:8px}
+.day{font-size:13px;font-weight:600;opacity:.75;margin:14px 4px 8px}
+/* match card */
+.mc{display:block;width:100%;text-align:inherit;background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;padding:12px 12px 10px;margin-bottom:10px;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:.15s}
+.mc:active{transform:scale(.985)}
+.mc.open{border-color:rgba(215,180,101,.6);background:linear-gradient(165deg,#173F58,var(--navy2))}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
+.tm{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:13.5px;font-weight:600;text-align:center;min-width:0}
+.tm .cw{height:46px;display:grid;place-items:center}
+.sc{font-size:28px;font-weight:700;direction:ltr;letter-spacing:1px;white-space:nowrap;color:var(--ivory)}
+.sc.t{font-size:16px;color:var(--gold);font-weight:600;letter-spacing:0;direction:rtl}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 11px;font-size:12px;font-weight:600;background:var(--navy3)}
+.chip.go{background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--navy)}
+.chip.ok{background:rgba(46,158,102,.25);color:#8fe3b5}
+.mfoot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11.5px;opacity:.95}
+.mfoot .n{opacity:.6}
+/* match view */
+.back{background:none;border:0;color:var(--gold);font-size:14px;font-weight:600;padding:6px 2px 10px}
+.mh .sc{font-size:38px}
+.mh .tm{font-size:15px}
+.mh .meta{text-align:center;font-size:11.5px;opacity:.6;margin-top:8px}
+.seg{display:flex;background:var(--navy2);border:1px solid rgba(255,245,229,.06);border-radius:14px;padding:4px;margin:4px 0 12px;position:sticky;top:6px;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.seg button{flex:1;border:0;background:none;font-weight:600;font-size:14px;padding:9px 6px;border-radius:10px;opacity:.6;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s}
+.seg button.on{background:var(--navy3);opacity:1;color:var(--gold)}
+.seg em{font-style:normal;font-size:11px;opacity:.75;font-weight:500}
+.pr{background:rgba(7,29,43,.55);border:1px solid rgba(255,245,229,.06);border-radius:16px;padding:9px 10px 10px;margin-bottom:8px;transition:.2s}
+.pr.done{border-color:rgba(215,180,101,.35)}
+.pr .top{display:flex;align-items:center;gap:10px}
+.pr .nm{flex:1;min-width:0}
+.pr .nm b{display:block;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pr .nm small{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;opacity:.65;margin-top:2px;align-items:center}
+.pr .nm small i{font-style:normal;direction:ltr;unicode-bidi:isolate}
+.val{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:20px;font-weight:700;background:rgba(255,245,229,.05);border:1px dashed rgba(255,245,229,.18);color:rgba(255,245,229,.35);flex-shrink:0}
+.val.v{border:0;color:var(--navy)}
+.star{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.3);background:none;font-size:19px;filter:grayscale(1);opacity:.45;flex-shrink:0;transition:.2s}
+.star.on{filter:none;opacity:1;background:rgba(215,180,101,.18);border-color:var(--gold);animation:pop .35s}
+.nums{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:9px}
+.nums button{border:0;height:34px;border-radius:9px;background:rgba(255,245,229,.06);font-size:14px;font-weight:600;transition:.12s}
+.nums button.on{color:var(--navy);transform:scale(1.08);box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.ph{position:relative;flex-shrink:0;border-radius:50%;background:radial-gradient(circle at 50% 35%,#1d4a66,#0C2638 70%);border:2px solid rgba(215,180,101,.5);overflow:hidden;display:grid;place-items:center}
+.ph img{width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.ph.fb img{object-position:50% 0}
+.coachh{font-size:12px;color:var(--gold);font-weight:600;margin:14px 4px 8px}
+.bar{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));z-index:6;background:linear-gradient(180deg,var(--navy3),var(--navy2));border:1px solid rgba(215,180,101,.5);border-radius:18px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.5);margin-top:14px}
+.bar .info{flex:1;font-size:12.5px;line-height:1.5}
+.bar .info b{color:var(--gold)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(180deg,var(--gold2),var(--gold));color:var(--navy);border:0;border-radius:14px;font-weight:700;font-size:16px;padding:14px;margin-top:8px;text-decoration:none}
+.btn.sm{width:auto;padding:12px 16px;margin:0;font-size:15px}
+.btn[disabled]{opacity:.45}
+.btn.ghost{background:transparent;color:var(--gold);border:1.5px solid rgba(215,180,101,.6)}
+/* results */
+.mvp{display:flex;align-items:center;gap:14px;background:linear-gradient(90deg,rgba(215,180,101,.24),rgba(215,180,101,.04));border:1px solid rgba(215,180,101,.5);border-radius:18px;padding:12px;margin-bottom:12px}
+.mvp .t{font-size:12px;color:var(--gold);font-weight:600}
+.mvp b{font-size:19px;display:block;margin:2px 0}
+.mvp small{font-size:12px;opacity:.7}
+.rr{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.05)}
+.rr:last-child{border:0}
+.rr .k{width:18px;text-align:center;font-size:12px;opacity:.55}
+.rr .nm{flex:1;min-width:0}
+.rr .nm b{display:block;font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.rr .nm small{font-size:11px;opacity:.6}
+.rr .me{font-size:11px;opacity:.75;text-align:center;width:42px;line-height:1.3}
+.rr .me b{display:block;font-size:14px;opacity:1}
+.avg{width:50px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:700;color:var(--navy);flex-shrink:0}
+.avg.na{background:rgba(255,245,229,.06);color:rgba(255,245,229,.4);font-size:14px}
+.note{font-size:12px;opacity:.65;line-height:1.8;text-align:center;margin:6px 0}
+.cardimg{display:block;width:100%;border-radius:16px;margin:4px 0;border:1px solid rgba(215,180,101,.35);box-shadow:0 10px 30px rgba(0,0,0,.35);aspect-ratio:4/5;background:var(--navy)}
+.empty{text-align:center;padding:26px 10px;opacity:.8;line-height:1.9}
+.loading{text-align:center;padding:60px 0;opacity:.7}
+footer{text-align:center;font-size:11px;opacity:.5;line-height:1.9;margin:18px 0 6px}
+footer a{color:inherit}
+.modal{position:fixed;inset:0;background:rgba(3,14,22,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:30;display:grid;place-items:center;padding:18px}
+.modal[hidden]{display:none}
+.mbox{background:linear-gradient(165deg,var(--navy3),var(--navy));border:1px solid rgba(215,180,101,.4);border-radius:24px;padding:22px 20px;max-width:390px;width:100%;text-align:center;animation:pop .35s;max-height:90vh;overflow-y:auto}
+.mbox h2{color:var(--gold);font-size:21px;margin:4px 0 12px}
+.step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
+.step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
+.toast{position:fixed;top:calc(16px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--gold);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:30px;z-index:40;transition:transform .3s;box-shadow:0 8px 24px rgba(0,0,0,.35);white-space:nowrap;font-size:14px}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@keyframes pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
+@media (max-width:360px){header h1{font-size:20px}header .logo{height:50px}.nums button{height:31px;font-size:13px}.pr .nm b{font-size:14px}}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <header>
+    <img class="logo" src="../mano/assets/logo.png" alt="العازي">
+    <div class="ttl"><h1>قيّم اللاعبين</h1><div class="sub" id="sub">دوري أدنوك للمحترفين</div></div>
+    <button class="icon" id="helpBtn" aria-label="كيف تقيّم">؟</button>
+  </header>
+  <main id="app"><div class="loading">لحظة...</div></main>
+  <footer>أداة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener">@el3azy22</a> · <a href="../">منصة العازي</a><br>التشكيلات والتبديلات من موقع اتحاد الكرة</footer>
+</div>
+
+<div class="modal" id="howto" hidden><div class="mbox">
+  <div style="font-size:40px">⭐</div>
+  <h2>كيف تقيّم اللاعبين</h2>
+  <div class="step"><i>1</i><div><b>اختار المباراة بعد صافرة النهاية</b><span>التقييم يفتح بعد المباراة ويسكّر بعد 48 ساعة</span></div></div>
+  <div class="step"><i>2</i><div><b>عط كل لاعب من 1 لين 10</b><span>اللي لعبوا بس: الأساسيين والبدلاء اللي نزلوا والمدرب</span></div></div>
+  <div class="step"><i>3</i><div><b>اختار نجم المباراة ⭐</b><span>لاعب واحد من الفريقين</span></div></div>
+  <div class="step"><i>4</i><div><b>اعتمد وشوف تقييم الجماهير</b><span>تقييم واحد لكل مباراة، وبعدها شارك تقييمك في X</span></div></div>
+  <button class="btn" id="howGo">يلا نقيّم</button>
+</div></div>
+
+<div class="modal" id="confirmM" hidden><div class="mbox">
+  <div style="font-size:38px">✅</div>
+  <h2>تعتمد تقييمك؟</h2>
+  <p id="confirmTxt" style="font-size:14px;line-height:1.9;opacity:.85"></p>
+  <button class="btn" id="confirmGo">اعتمد</button>
+  <button class="btn ghost" id="confirmNo">أرجع أعدّل</button>
+</div></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const SITE='https://el3azy22.github.io/rate/';
+const A='../mano/assets/';
+const FB={key:'AIzaSyCJVYgLTqvj2k1KnvLYo6Z1feOS4E8fj94',db:'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app'};
+const Q=new URLSearchParams(location.search),OFF=(+Q.get('off')||0)*3600e3,now=()=>Date.now()+OFF;
+if(Q.has('emu')){FB.db='http://127.0.0.1:9000';FB.ns='?ns=demo-rate-default-rtdb';FB.auth='http://127.0.0.1:9099/'}
+const dbu=(p,q='')=>FB.db+'/'+p+'.json'+(FB.ns?FB.ns+(q?'&'+q:''):(q?'?'+q:''));
+const OPEN_AFTER=100*60e3,CLOSE_AFTER=50*3600e3,MINR=3,MINSUB=3;
+const CREST={jazira:[1,1],sharjah:[.979,1.133],dhafra:[.92,1.106],ain:[.83,1.197],nasr:[1,1],wahda:[.91,1.176],wasl:[.973,1.165],baniyas:[1.234,.681],hatta:[.989,1.122],khorfakkan:[1.048,1.069],shababahli:[1.037,1.074],ajman:[1.154,1.016],kalba:[.995,1],united:[.995,.995]};
+const CLUBS_ORDER=['ain','wahda','jazira','shababahli','sharjah','wasl','nasr','baniyas','ajman','kalba','khorfakkan','dhafra','hatta','united'];
+const crest=(c,s=26)=>{const f=CREST[c]||[1,1];return c?`<img src="${A}${c}.png" alt="" style="width:${Math.round(s*f[0])}px;height:${Math.round(s*f[1])}px;object-fit:contain">`:''};
+const SIL=`<svg viewBox="0 0 100 100" style="width:100%;height:100%"><circle cx="50" cy="38" r="19" fill="#14384F"/><path d="M14 100 Q16 64 50 62 Q84 64 86 100Z" fill="#14384F"/></svg>`;
+const ph=(p,s=42)=>`<span class="ph ${p.ph&&!p.ph.startsWith('../')?'fb':''}" style="width:${s}px;height:${s}px">${p.ph?`<img src="${p.ph}" alt="" loading="lazy">`:SIL}</span>`;
+const POS={GK:'حارس',D:'مدافع',M:'وسط',F:'مهاجم',C:'المدرب'};
+const PC=n=>'⁦'+n+'%⁩';
+const nf=n=>Number(n).toLocaleString('en-US');
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const col=v=>v>=9?'#F0D99A':v>=7.5?'#5FC48E':v>=6?'#9BC46A':v>=5?'#D9A23A':'#D9665C';
+const store={get(k,d){try{const v=localStorage.getItem('el3azy_rate_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('el3azy_rate_'+k,JSON.stringify(v))}catch(e){}}};
+let toastT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),2000)}
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+const gc=n=>{try{window.goatcounter&&window.goatcounter.count&&window.goatcounter.count({path:n,title:n,event:true})}catch(e){}};
+const fmtDay=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{weekday:'long',day:'numeric',month:'long',timeZone:'Asia/Dubai'}).format(t);
+const fmtTime=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{hour:'numeric',minute:'2-digit',timeZone:'Asia/Dubai'}).format(t);
+const hrs=ms=>{const h=Math.ceil(ms/3600e3);return h<=1?'أقل من ساعة':h===2?'ساعتين':h<=10?h+' ساعات':h+' ساعة'};
+const key=m=>m.id+'_'+m.t;
+const allP=m=>[...(m.h.pl||[]),...(m.a.pl||[]),...[m.h.coach,m.a.coach].filter(Boolean)];
+function state(m){
+  const T0=now();
+  if(m.st===6&&m.h.pl&&m.h.pl.length){
+    if(T0<m.t+OPEN_AFTER)return 'soon';
+    if(T0<m.t+CLOSE_AFTER)return 'open';
+    return 'closed';
+  }
+  if(T0>=m.t-75*60e3&&T0<m.t+3*3600e3)return 'live';
+  return 'pre';
+}
+
+/* ---------- data ---------- */
+let D,RN={},M=null,side='h',draft=null,RES=null,cardBlob=null,cardUrl=null;
+const qs=new URLSearchParams(location.search);
+Promise.all([
+  fetch('data.json?v='+Math.floor(now()/60e3)).then(r=>r.json()),
+  fetch(dbu('rn')).then(r=>r.ok?r.json():{}).catch(()=>({}))
+]).then(([d,rn])=>{D=d;RN=rn||{};route();if(!store.get('seenHow',false))$('#howto').hidden=false})
+.catch(e=>{console.error(e);$('#app').innerHTML='<div class="card empty">ما قدرنا نحمّل المباريات. حدّث الصفحة 🔄</div>'});
+window.addEventListener('popstate',route);
+function go(id){const q=new URLSearchParams(location.search);id?q.set('m',id):q.delete('m');history.pushState(null,'','?'+q);route();scrollTo(0,0)}
+function route(){
+  const id=new URLSearchParams(location.search).get('m');
+  const m=id&&D.matches.find(x=>x.id===id);
+  if(m)openMatch(m);else list();
+}
+
+/* ---------- list ---------- */
+function list(){
+  M=null;
+  const ms=D.matches;
+  const wk=ms.filter(m=>state(m)!=='pre').map(m=>m.wk).pop()||(ms[0]&&ms[0].wk);
+  $('#sub').textContent='دوري أدنوك للمحترفين'+(wk?' · الجولة '+wk:'');
+  if(!ms.length){$('#app').innerHTML=crests14()+'<div class="card empty">ما في مباريات هالأيام 🤷‍♂️<br>ارجع لنا يوم الجولة الياية</div>';return}
+  // المفتوحة أول، بعدين الياية، بعدين اللي سكّرت
+  const rank={open:0,soon:1,live:1,pre:2,closed:3};
+  const sorted=[...ms].sort((a,b)=>rank[state(a)]-rank[state(b)]||(state(a)==='closed'?b.t-a.t:a.t-b.t));
+  let html=crests14(),lastG='';
+  sorted.forEach(m=>{
+    const st=state(m),g=st==='open'?'⭐ قيّم الحين':st==='closed'?'سكّر التقييم · نتائج الجماهير':fmtDay(m.t);
+    if(g!==lastG){html+=`<div class="day">${g}</div>`;lastG=g}
+    html+=matchCard(m);
+  });
+  $('#app').innerHTML=html;
+  document.querySelectorAll('.mc').forEach(b=>b.onclick=()=>go(b.dataset.id));
+}
+function crests14(){return `<div class="crests14">${CLUBS_ORDER.map(c=>crest(c,22)).join('')}</div>`}
+function scoreHTML(m){
+  const st=state(m);
+  if(m.h.sc!=null&&st!=='pre')return `<div class="sc">${m.a.sc} - ${m.h.sc}</div>`;
+  return `<div class="sc t">${fmtTime(m.t)}</div>`;
+}
+function matchCard(m){
+  const st=state(m),k=key(m),done=store.get('sub_'+k,null),n=RN[k]||0;
+  let chip='';
+  if(st==='open')chip=done?'<span class="chip ok">✅ قيّمت · شوف الجماهير</span>':`<span class="chip go">قيّم الحين ←</span>`;
+  else if(st==='soon')chip='<span class="chip">⏳ التقييم يفتح بعد شوي</span>';
+  else if(st==='live')chip=`<span class="chip">🟢 ${m.h.pl&&m.h.pl.length?'التشكيلة نزلت':'اليوم'} · التقييم بعد صافرة النهاية</span>`;
+  else if(st==='pre')chip=`<span class="chip">📋 التشكيلة قبل المباراة بساعة</span>`;
+  else chip=`<span class="chip">📊 تقييم الجماهير</span>`;
+  const left=st==='open'?`باقي ${hrs(m.t+CLOSE_AFTER-now())}`:'';
+  return `<button class="mc ${st==='open'&&!done?'open':''}" data-id="${m.id}">
+    <div class="teams"><div class="tm"><span class="cw">${crest(m.h.c,42)}</span>${esc(m.h.name)}</div>${scoreHTML(m)}<div class="tm"><span class="cw">${crest(m.a.c,42)}</span>${esc(m.a.name)}</div></div>
+    <div class="mfoot">${chip}<span class="n">${n?`👥 ${nf(n)} قيّموا`:''}${n&&left?' · ':''}${left}</span></div></button>`;
+}
+
+/* ---------- match ---------- */
+function header(m){
+  const st=state(m);
+  return `<button class="back" id="back">→ كل المباريات</button>
+  <div class="card mh"><div class="teams"><div class="tm"><span class="cw">${crest(m.h.c,50)}</span>${esc(m.h.name)}</div>${scoreHTML(m)}<div class="tm"><span class="cw">${crest(m.a.c,50)}</span>${esc(m.a.name)}</div></div>
+  <div class="meta">الجولة ${m.wk} · ${fmtDay(m.t)}${st==='open'?` · التقييم يسكّر بعد ${hrs(m.t+CLOSE_AFTER-now())}`:''}</div></div>`;
+}
+function openMatch(m){
+  M=m;RES=null;cardBlob=null;
+  $('#sub').textContent='دوري أدنوك للمحترفين · الجولة '+m.wk;
+  const st=state(m),k=key(m);
+  gc('open-'+m.id);
+  if(st==='open'&&!store.get('sub_'+k,null))return rateView();
+  if(st==='open'||st==='closed')return resultsView();
+  // قبل/أثناء المباراة: التشكيلة إذا نزلت
+  let body='';
+  if(m.h.pl&&m.h.pl.length){
+    body=`<div class="card"><div class="lbl">📋 التشكيلة الرسمية</div><div class="note" style="text-align:right;margin:0 0 8px">التقييم يفتح بعد صافرة النهاية، ارجع لنا 👋</div>
+      ${['h','a'].map(s=>`<div class="coachh">${crest(m[s].c,18)} ${esc(m[s].name)}${m[s].fm?' · <bdi dir="ltr">'+m[s].fm+'</bdi>':''}</div>${m[s].pl.filter(p=>p.s).map(p=>lineRow(p)).join('')}`).join('')}</div>`;
+  }else body=`<div class="card empty">⏰ المباراة ${fmtDay(m.t)} الساعة ${fmtTime(m.t)}<br>التشكيلة تنزل قبل البداية بساعة،<br>والتقييم يفتح بعد صافرة النهاية</div>`;
+  $('#app').innerHTML=header(m)+body;
+  $('#back').onclick=()=>go();
+}
+function meta(p){
+  const x=[];
+  if(p.no!=null)x.push(`<i>#${p.no}</i>`);
+  x.push(POS[p.p]||'');
+  if(p.cap)x.push('©');
+  if(p.in!=null)x.push(`<i style="color:#8fe3b5">↑ ${p.in}'</i>`);
+  if(p.out!=null)x.push(`<i style="color:#e79a93">↓ ${p.out}'</i>`);
+  if(p.g)x.push('⚽'.repeat(Math.min(p.g,4)));
+  if(p.og)x.push('⚽ عكسي');
+  if(p.cd)x.push(p.cd.includes('r')?'🟥':'🟨');
+  return x.join(' · ').replace(/ · (⚽|🟥|🟨)/g,' $1');
+}
+function lineRow(p){return `<div class="rr">${ph(p,36)}<div class="nm"><b>${esc(p.n)}</b><small>${meta(p)}</small></div></div>`}
+
+/* ---------- rate ---------- */
+function rateView(){
+  const m=M,k=key(m);
+  draft=store.get('draft_'+k,{r:{},st:''});
+  $('#app').innerHTML=header(m)+`
+    <div class="seg" id="sideSeg">${['h','a'].map(s=>`<button data-s="${s}" class="${s===side?'on':''}">${crest(m[s].c,22)} ${esc(m[s].name)} <em id="cnt_${s}"></em></button>`).join('')}</div>
+    <div id="plist"></div>
+    <div class="bar"><div class="info" id="barInfo"></div><button class="btn sm" id="submit">اعتمد ✅</button></div>`;
+  $('#back').onclick=()=>go();
+  document.querySelectorAll('#sideSeg button').forEach(b=>b.onclick=()=>{side=b.dataset.s;document.querySelectorAll('#sideSeg button').forEach(x=>x.classList.toggle('on',x===b));drawList()});
+  $('#submit').onclick=askSubmit;
+  drawList();
+}
+function rowHTML(p){
+  const v=draft.r[p.i];
+  return `<div class="pr ${v?'done':''}" data-p="${p.i}"><div class="top">${ph(p)}
+    <div class="nm"><b>${esc(p.n)}</b><small>${p.p==='C'?'المدرب':meta(p)}</small></div>
+    <button class="star ${draft.st===p.i?'on':''}" aria-label="نجم المباراة">⭐</button>
+    <div class="val ${v?'v':''}" style="${v?'background:'+col(v):''}">${v||'–'}</div></div>
+    <div class="nums">${[1,2,3,4,5,6,7,8,9,10].map(n=>`<button data-v="${n}" class="${v===n?'on':''}" style="${v===n?'background:'+col(n):''}">${n}</button>`).join('')}</div></div>`;
+}
+function drawList(){
+  const t=M[side],ps=[...t.pl.filter(p=>p.s),...t.pl.filter(p=>!p.s)];
+  let h=`<div class="lbl">الأساسيين${t.fm?' · <bdi dir="ltr">'+t.fm+'</bdi>':''}</div>`+ps.filter(p=>p.s).map(rowHTML).join('');
+  const subs=ps.filter(p=>!p.s);
+  if(subs.length)h+=`<div class="coachh">البدلاء اللي نزلوا</div>`+subs.map(rowHTML).join('');
+  if(t.coach)h+=`<div class="coachh">المدرب</div>`+rowHTML({...t.coach,p:'C'});
+  $('#plist').innerHTML=h;
+  $('#plist').querySelectorAll('.pr').forEach(el=>{
+    const id=el.dataset.p;
+    el.querySelectorAll('.nums button').forEach(b=>b.onclick=()=>{const v=+b.dataset.v;if(draft.r[id]===v)delete draft.r[id];else draft.r[id]=v;vib(8);saveDraft();
+      drawList()});
+    el.querySelector('.star').onclick=()=>{draft.st=draft.st===id?'':id;if(draft.st&&!draft.r[id])toast('⭐ لا تنسى تعطيه تقييم');vib(12);saveDraft();drawList()};
+  });
+  updBar();
+}
+const findP=id=>{for(const s of ['h','a']){const p=M[s].pl.find(x=>x.i===id);if(p)return p;if(M[s].coach&&M[s].coach.i===id)return {...M[s].coach,c:1}}};
+function saveDraft(){store.set('draft_'+key(M),draft)}
+function updBar(){
+  const cnt=s=>{const ids=[...M[s].pl.map(p=>p.i),M[s].coach&&M[s].coach.i];return ids.filter(i=>i&&draft.r[i]).length};
+  const tot=s=>M[s].pl.length+(M[s].coach?1:0);
+  ['h','a'].forEach(s=>{const e=$('#cnt_'+s);if(e)e.textContent=cnt(s)?`${cnt(s)}/${tot(s)}`:''});
+  const n=Object.keys(draft.r).length,stp=draft.st&&findP(draft.st);
+  $('#barInfo').innerHTML=`قيّمت <b>${n}</b> ${n===1?'لاعب':'لاعبين'}<br>${stp?`⭐ نجم المباراة: <b>${esc(stp.n)}</b>`:'⭐ اختار نجم المباراة'}`;
+  $('#submit').disabled=n<MINSUB;
+}
+function askSubmit(){
+  const n=Object.keys(draft.r).length;
+  if(n<MINSUB){toast(`قيّم ${MINSUB} لاعبين على الأقل`);return}
+  const stp=draft.st&&findP(draft.st);
+  $('#confirmTxt').innerHTML=`قيّمت <b>${n}</b> ${n===1?'لاعب':'لاعبين'}${stp?`<br>⭐ نجم المباراة: <b>${esc(stp.n)}</b>`:'<br>ما اخترت نجم المباراة'}<br><span style="font-size:12px;opacity:.7">التقييم مرة وحدة بس لكل مباراة</span>`;
+  $('#confirmM').hidden=false;
+}
+$('#confirmNo').onclick=()=>$('#confirmM').hidden=true;
+$('#confirmGo').onclick=async()=>{
+  const b=$('#confirmGo');b.disabled=true;b.textContent='لحظة...';
+  try{await submit();$('#confirmM').hidden=true;gc('submit-'+M.id);toast('✅ انحسب تقييمك');resultsView();scrollTo(0,0)}
+  catch(e){toast(e.message==='late'?'التقييم سكّر لهالمباراة':'ما انرسل، جرّب مرة ثانية');}
+  b.disabled=false;b.textContent='اعتمد';
+};
+async function fbTok(){
+  let a=store.get('fb',null);
+  if(a&&a.exp>now()+6e4)return a;
+  let r=null;
+  if(a&&a.r){r=await fetch((FB.auth?FB.auth+'securetoken.googleapis.com/':'https://securetoken.googleapis.com/')+'v1/token?key='+FB.key,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.r)}).then(x=>x.ok?x.json():null).catch(()=>null);
+    if(r&&r.id_token)a={t:r.id_token,r:r.refresh_token,u:r.user_id,exp:now()+r.expires_in*1e3};else r=null}
+  if(!r){r=await fetch((FB.auth?FB.auth+'identitytoolkit.googleapis.com/':'https://identitytoolkit.googleapis.com/')+'v1/accounts:signUp?key='+FB.key,{method:'POST',headers:{'content-type':'application/json'},body:'{"returnSecureToken":true}'}).then(x=>x.json());
+    if(!r.idToken)throw new Error('auth');a={t:r.idToken,r:r.refreshToken,u:r.localId,exp:now()+r.expiresIn*1e3}}
+  store.set('fb',a);return a;
+}
+async function submit(){
+  const m=M,k=key(m);
+  if(now()>=m.t+CLOSE_AFTER)throw new Error('late');
+  const a=await fbTok(),inc=n=>({'.sv':{increment:n}}),r={...draft.r};
+  const rec={t:m.t,r};if(draft.st)rec.st=draft.st;
+  const b={[`rv/${k}/${a.u}`]:rec,[`rn/${k}`]:inc(1)};
+  Object.entries(r).forEach(([p,v])=>{b[`ra/${k}/${p}/n`]=inc(1);b[`ra/${k}/${p}/s`]=inc(v)});
+  if(draft.st)b[`rs/${k}/${draft.st}`]=inc(1);
+  let res=await fetch(dbu('','auth='+a.t),{method:'PATCH',body:JSON.stringify(b)});
+  if(!res.ok){
+    // يمكن انحسب من قبل (نفس الجهاز)
+    const chk=await fetch(dbu(`rv/${k}/${a.u}`,'auth='+a.t)).then(x=>x.ok?x.json():null).catch(()=>null);
+    if(!chk)throw new Error('fail');
+  }
+  store.set('sub_'+k,{r,st:draft.st||''});
+  RN[k]=(RN[k]||0)+1;
+}
+
+/* ---------- results ---------- */
+async function resultsView(){
+  const m=M,k=key(m),mine=store.get('sub_'+k,null);
+  $('#app').innerHTML=header(m)+`<div id="res"><div class="card loading" style="padding:30px 0">لحظة، نجيب تقييم الجماهير...</div></div>`;
+  $('#back').onclick=()=>go();
+  let ra={},rs={},rn=0;
+  try{[ra,rs,rn]=await Promise.all(['ra','rs','rn'].map(p=>fetch(dbu(`${p}/${k}`)).then(r=>r.ok?r.json():null)));}catch(e){}
+  if(M!==m)return;
+  ra=ra||{};rs=rs||{};rn=rn||0;RN[k]=Math.max(RN[k]||0,rn);
+  RES={ra,rs,rn,mine};
+  const avg=id=>{const x=ra[id];return x&&x.n>=MINR?x.s/x.n:null};
+  // نجم المباراة عند الجماهير
+  const stars=Object.entries(rs).sort((a,b)=>b[1]-a[1]);const totS=stars.reduce((s,x)=>s+x[1],0);
+  let h='';
+  if(stars.length&&totS>=MINR){const p=findP(stars[0][0]);if(p)h+=`<div class="mvp">${ph(p,64)}<div><div class="t">⭐ نجم المباراة عند الجماهير</div><b>${esc(p.n)}</b><small>${PC(Math.round(stars[0][1]/totS*100))} من الأصوات</small></div></div>`}
+  if(mine)h+=`<div class="card"><div class="lbl">📸 تقييمك</div><img class="cardimg" id="cardImg" alt="صورة تقييمك"><button class="btn" id="shareBtn">𝕏 شارك تقييمك</button></div>`;
+  else if(state(m)==='closed'&&rn)h+=`<div class="card"><div class="lbl">📸 تقييم الجماهير</div><img class="cardimg" id="cardImg" alt="صورة تقييم الجماهير"><button class="btn" id="shareBtn">𝕏 شارك تقييم الجماهير</button></div>`;
+  h+=`<div class="seg" id="sideSeg">${['h','a'].map(s=>`<button data-s="${s}" class="${s===side?'on':''}">${crest(m[s].c,22)} ${esc(m[s].name)}</button>`).join('')}</div><div id="rlist"></div>`;
+  h+=`<div class="note">👥 ${nf(rn)} قيّموا هالمباراة · المعدل يطلع بعد ${MINR} تقييمات للاعب${state(m)==='open'?'<br>الأرقام تتحدث لين يسكّر التقييم':''}</div>`;
+  $('#res').innerHTML=h;
+  const draw=()=>{
+    const t=m[side],ps=[...t.pl,...(t.coach?[{...t.coach,p:'C'}]:[])];
+    const rows=ps.map(p=>({p,a:avg(p.i),n:(ra[p.i]||{}).n||0,me:mine&&mine.r[p.i]})).sort((x,y)=>(y.a??-1)-(x.a??-1)||y.n-x.n);
+    $('#rlist').innerHTML=`<div class="card" style="padding:8px 10px"><div class="rr" style="font-size:10.5px;opacity:.55;padding-top:2px;padding-bottom:2px;border:0"><span class="k"></span><span style="width:40px"></span><span class="nm">اللاعب</span>${mine?'<span class="me">تقييمك</span>':''}<span style="width:50px;text-align:center">الجماهير</span></div>`+
+      rows.map((r,i)=>`<div class="rr"><span class="k">${r.a!=null?i+1:'–'}</span>${ph(r.p,40)}<div class="nm"><b>${esc(r.p.n)}${stars[0]&&stars[0][0]===r.p.i&&totS>=MINR?' ⭐':''}</b><small>${r.p.p==='C'?'المدرب':meta(r.p)}${r.n?` · ${nf(r.n)} تقييم`:''}</small></div>${mine?`<span class="me"><b style="color:${r.me?col(r.me):'inherit'}">${r.me||'–'}</b></span>`:''}<span class="avg ${r.a==null?'na':''}" style="${r.a!=null?'background:'+col(r.a):''}">${r.a!=null?r.a.toFixed(1):'—'}</span></div>`).join('')+`</div>`;
+  };
+  document.querySelectorAll('#sideSeg button').forEach(b=>b.onclick=()=>{side=b.dataset.s;document.querySelectorAll('#sideSeg button').forEach(x=>x.classList.toggle('on',x===b));draw()});
+  draw();
+  if($('#cardImg')){
+    $('#shareBtn').onclick=shareImage;
+    buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(e=>console.error(e));
+  }
+}
+
+/* ---------- share image ---------- */
+const IMG={};
+const loadImg=src=>IMG[src]||(IMG[src]=new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src}));
+function rr(x,X,Y,W,H,R){x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()}
+function fit(x,t,w){if(x.measureText(t).width<=w)return t;while(t.length>2&&x.measureText(t+'…').width>w)t=t.slice(0,-1);return t+'…'}
+function cardRows(){
+  const m=M,{ra,mine}=RES;
+  if(mine){
+    const cnt=s=>[...m[s].pl.map(p=>p.i),m[s].coach&&m[s].coach.i].filter(i=>i&&mine.r[i]).length;
+    const s=cnt('h')>=cnt('a')?'h':'a';
+    const ps=[...m[s].pl,...(m[s].coach?[{...m[s].coach,p:'C'}]:[])].filter(p=>mine.r[p.i]).map(p=>({p,v:mine.r[p.i]}));
+    return {s,mine:true,rows:ps.sort((a,b)=>b.v-a.v).slice(0,16)};
+  }
+  const s=side,t=m[s];
+  const ps=[...t.pl,...(t.coach?[{...t.coach,p:'C'}]:[])].map(p=>{const x=ra[p.i];return {p,v:x&&x.n>=MINR?x.s/x.n:null}}).filter(r=>r.v!=null);
+  return {s,mine:false,rows:ps.sort((a,b)=>b.v-a.v).slice(0,16)};
+}
+async function buildCard(){
+  const W=1080,H=1350,F="'Readex Pro'",m=M,C=cardRows();
+  try{await Promise.all([700,600,500].map(w=>document.fonts.load(`${w} 40px 'Readex Pro'`,'قيّم اللاعبين 0123')))}catch(e){}
+  const t=m[C.s];
+  const [logo,ch,ca,...phs]=await Promise.all([A+'logo.png',A+m.h.c+'.png',A+m.a.c+'.png',...C.rows.map(r=>r.p.ph||'')].map(s=>s?loadImg(s).catch(()=>null):null));
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  x.direction='rtl';x.textBaseline='middle';
+  let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0C2638');g.addColorStop(.55,'#071D2B');g.addColorStop(1,'#051521');x.fillStyle=g;x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(W*.85,-40,0,W*.85,-40,700);g.addColorStop(0,'rgba(215,180,101,.30)');g.addColorStop(1,'rgba(215,180,101,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(x,28,28,W-56,H-56,40);x.stroke();
+  // header
+  if(logo)x.drawImage(logo,W-70-150,58,150,150);
+  x.textAlign='right';x.fillStyle='#D7B465';x.font=`600 30px ${F}`;x.fillText('دوري أدنوك للمحترفين · الجولة '+m.wk,W-70-150-26,100);
+  x.fillStyle='#FFF5E5';x.font=`700 78px ${F}`;x.fillText(C.mine?'تقييمي':'تقييم الجماهير',W-70-150-26,168);
+  // match strip
+  const sy=262;x.fillStyle='rgba(7,29,43,.75)';rr(x,70,sy,W-140,130,30);x.fill();x.strokeStyle='rgba(255,245,229,.08)';x.lineWidth=2;x.stroke();
+  const cs=(im,c,cx)=>{if(!im)return;const f=CREST[c]||[1,1],b=76;x.drawImage(im,cx-b*f[0]/2,sy+65-b*f[1]/2,b*f[0],b*f[1])};
+  cs(ch,m.h.c,W-140);cs(ca,m.a.c,140);
+  x.font=`700 38px ${F}`;x.fillStyle='#FFF5E5';x.textAlign='right';x.fillText(fit(x,m.h.name,250),W-200,sy+65);
+  x.textAlign='left';x.direction='ltr';x.fillText(m.a.name,200,sy+65);x.direction='rtl';
+  x.textAlign='center';x.direction='ltr';x.font=`700 64px ${F}`;x.fillStyle='#F0D99A';x.fillText(`${m.a.sc} - ${m.h.sc}`,W/2,sy+68);x.direction='rtl';
+  // label
+  const stp=C.mine&&RES.mine.st?findP(RES.mine.st):null;
+  x.textAlign='right';x.font=`600 32px ${F}`;x.fillStyle='#D7B465';
+  x.fillText((C.mine?'تقييمي للاعبين ':'لاعبين ')+t.name,W-80,450);
+  if(stp){x.textAlign='left';x.fillStyle='#F0D99A';x.fillText('⭐ نجم المباراة: '+stp.n,80,450)}
+  // grid 2 cols × 8
+  const rows=C.rows,n=rows.length,per=Math.ceil(n/2)||1,cw=(W-160-24)/2,rh=Math.min(100,(1180-490)/per),y0=490+((1180-490)-per*rh)/2;
+  rows.forEach((r,i)=>{
+    const c=i<per?0:1,j=c?i-per:i,X=W-80-cw-c*(cw+24),Y=y0+j*rh,h=rh-12;
+    x.fillStyle='rgba(20,56,79,.55)';rr(x,X,Y,cw,h,h/2);x.fill();
+    // photo (right side)
+    const R=h/2-6,cx=X+cw-6-R,cy=Y+h/2,im=phs[i];
+    x.save();x.beginPath();x.arc(cx,cy,R,0,7);x.closePath();x.fillStyle='#0C2638';x.fill();x.clip();
+    if(im){const s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,0,s,s,cx-R,cy-R,2*R,2*R)}
+    else{x.fillStyle='#14384F';x.beginPath();x.arc(cx,cy-R*.25,R*.38,0,7);x.fill();x.beginPath();x.arc(cx,cy+R*1.05,R*.8,0,7);x.fill()}
+    x.restore();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2.5;x.beginPath();x.arc(cx,cy,R,0,7);x.stroke();
+    // badge (left)
+    const bw=86,bh=h-16;x.fillStyle=col(r.v);rr(x,X+8,Y+8,bw,bh,bh/2.4);x.fill();
+    x.textAlign='center';x.direction='ltr';x.fillStyle='#071D2B';x.font=`700 ${Math.round(bh*.6)}px ${F}`;x.fillText(C.mine?String(r.v):r.v.toFixed(1),X+8+bw/2,cy+2);x.direction='rtl';
+    // name
+    x.textAlign='right';x.fillStyle='#FFF5E5';x.font=`600 ${Math.round(Math.min(32,h*.4))}px ${F}`;
+    x.fillText(fit(x,r.p.n+(r.p.p==='C'?' (المدرب)':''),cw-2*R-bw-46),cx-R-14,cy+1);
+  });
+  // footer
+  x.strokeStyle='rgba(215,180,101,.3)';x.lineWidth=2;x.beginPath();x.moveTo(90,1222);x.lineTo(W-90,1222);x.stroke();
+  x.textAlign='right';x.fillStyle='#FFF5E5';x.font=`600 30px ${F}`;x.fillText(C.mine?'قيّم أنت بعد 👈':`${nf(RES.rn)} من الجماهير قيّموا`,W-90,1268);
+  x.direction='ltr';x.textAlign='left';x.fillStyle='#D7B465';x.fillText(SITE.replace('https://','').replace(/\/$/,''),90,1268);
+  return await new Promise((ok,no)=>cv.toBlob(b=>b?ok(b):no(),'image/png'));
+}
+function shareText(){
+  const m=M,C=cardRows(),t=m[C.s];
+  const res=`${m.h.name} ${m.h.sc}-${m.a.sc} ${m.a.name}`;
+  if(C.mine){const stp=RES.mine.st?findP(RES.mine.st):null;
+    return `تقييمي للاعبين ${t.name} ⭐\n${res}${stp?`\nنجم المباراة: ${stp.n}`:''}\n\nقيّم أنت بعد من منصة العازي @el3azy22\n${SITE}?m=${m.id}`}
+  return `تقييم الجماهير للاعبين ${t.name} 📊\n${res}\n\nمن منصة العازي @el3azy22\n${SITE}?m=${m.id}`;
+}
+async function shareImage(){
+  gc('share-rate');
+  if(!cardBlob){toast('لحظة، الصورة تتجهز...');return}
+  const file=new File([cardBlob],`rate-${M.id}.png`,{type:'image/png'}),text=shareText();
+  if(navigator.canShare&&navigator.canShare({files:[file]})){
+    try{await navigator.share({files:[file],text});return}catch(e){if(e&&e.name==='AbortError')return}
+  }
+  const a=document.createElement('a');a.href=cardUrl;a.download=file.name;document.body.appendChild(a);a.click();a.remove();
+  window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank');
+  toast('نزّلت الصورة، ارفقها في التغريدة');
+}
+
+/* ---------- modals ---------- */
+$('#helpBtn').onclick=()=>$('#howto').hidden=false;
+$('#howGo').onclick=()=>{$('#howto').hidden=true;store.set('seenHow',true)};
+document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m){m.hidden=true;if(m.id==='howto')store.set('seenHow',true)}});
+})();
+</script>
+<script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="robots" content="noindex"><title>تحديث قواعد Firebase | العازي</title>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;600;700&display=swap" rel="stylesheet">
+<style>body{font-family:'Readex Pro',sans-serif;background:#071D2B;color:#FFF5E5;margin:0;padding:18px;line-height:1.8}.w{max-width:520px;margin:auto}h1{color:#D7B465;font-size:22px}
+li{margin-bottom:14px}b{color:#F0D99A}a{color:#D7B465}
+button{font-family:inherit;width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(#F0D99A,#D7B465);color:#071D2B;font-weight:700;font-size:16px;margin:8px 0}
+textarea{width:100%;height:110px;background:#0C2638;color:#FFF5E5;border:1px solid #D7B46566;border-radius:12px;direction:ltr;font-size:11px}</style></head>
+<body><div class="w"><h1>⭐ تحديث قواعد Firebase — «قيّم اللاعبين»</h1>
+<p style="opacity:.75">دقيقة وحدة بس. القواعد اليديدة فيها «منو اللاعب؟» زي ما هي + قواعد التقييم.</p>
+<ol>
+<li>اضغط الزر عشان تنسخ القواعد:<button id="cp">📋 انسخ القواعد</button><textarea id="r" readonly>{
+ &quot;rules&quot;: {
+  &quot;.read&quot;: false,
+  &quot;.write&quot;: false,
+  &quot;p&quot;: {
+   &quot;$d&quot;: {
+    &quot;$m&quot;: {
+     &quot;$u&quot;: {
+      &quot;.write&quot;: &quot;auth != null &amp;&amp; auth.uid == $u &amp;&amp; !data.exists()&quot;,
+      &quot;.validate&quot;: &quot;newData.hasChildren([&#x27;g&#x27;,&#x27;c&#x27;,&#x27;d&#x27;]) &amp;&amp; ($m == &#x27;easy&#x27; || $m == &#x27;pro&#x27;) &amp;&amp; $d.matches(/^[0-9]{1,4}$/) &amp;&amp; newData.child(&#x27;d&#x27;).isNumber() &amp;&amp; $d == &#x27;&#x27; + newData.child(&#x27;d&#x27;).val() &amp;&amp; now &gt;= 1794859200000 + (newData.child(&#x27;d&#x27;).val() - 1) * 86400000 &amp;&amp; now &lt; 1794859200000 + (newData.child(&#x27;d&#x27;).val() + 1) * 86400000 &amp;&amp; newData.child(&#x27;g&#x27;).isNumber() &amp;&amp; newData.child(&#x27;g&#x27;).val() &gt;= 0 &amp;&amp; newData.child(&#x27;g&#x27;).val() &lt;= 6 &amp;&amp; newData.child(&#x27;c&#x27;).isString() &amp;&amp; newData.child(&#x27;c&#x27;).val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united)?$/) &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;s&#x27;).child($d).child($m).child(&#x27;n&#x27;).val() == (root.child(&#x27;s&#x27;).child($d).child($m).child(&#x27;n&#x27;).exists() ? root.child(&#x27;s&#x27;).child($d).child($m).child(&#x27;n&#x27;).val() : 0) + 1&quot;,
+      &quot;d&quot;: {
+       &quot;.validate&quot;: true
+      },
+      &quot;g&quot;: {
+       &quot;.validate&quot;: true
+      },
+      &quot;c&quot;: {
+       &quot;.validate&quot;: true
+      },
+      &quot;$other&quot;: {
+       &quot;.validate&quot;: false
+      }
+     }
+    }
+   }
+  },
+  &quot;s&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$d&quot;: {
+    &quot;$m&quot;: {
+     &quot;$f&quot;: {
+      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists()&quot;,
+      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; ($f == &#x27;n&#x27; || ($f == &#x27;w&#x27; &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val() &gt; 0) || $f == &#x27;g&#x27; + newData.parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val())&quot;
+     }
+    }
+   }
+  },
+  &quot;c&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$d&quot;: {
+    &quot;$m&quot;: {
+     &quot;$c&quot;: {
+      &quot;n&quot;: {
+       &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists()&quot;,
+       &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;c&#x27;).val() == $c&quot;
+      },
+      &quot;t&quot;: {
+       &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists()&quot;,
+       &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;c&#x27;).val() == $c &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val() &gt; 0 &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + 7 - newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val()&quot;
+      },
+      &quot;$o&quot;: {
+       &quot;.validate&quot;: false
+      }
+     }
+    }
+   }
+  },
+  &quot;rv&quot;: {
+   &quot;$k&quot;: {
+    &quot;$u&quot;: {
+     &quot;.write&quot;: &quot;auth != null &amp;&amp; auth.uid == $u &amp;&amp; !data.exists()&quot;,
+     &quot;.validate&quot;: &quot;newData.hasChildren([&#x27;t&#x27;,&#x27;r&#x27;]) &amp;&amp; $k.matches(/^[0-9]{3,8}_[0-9]{13}$/) &amp;&amp; newData.child(&#x27;t&#x27;).isNumber() &amp;&amp; $k.endsWith(&#x27;_&#x27; + newData.child(&#x27;t&#x27;).val()) &amp;&amp; now &gt;= newData.child(&#x27;t&#x27;).val() + 6000000 &amp;&amp; now &lt; newData.child(&#x27;t&#x27;).val() + 180000000 &amp;&amp; newData.parent().parent().parent().child(&#x27;rn&#x27;).child($k).val() == (root.child(&#x27;rn&#x27;).child($k).exists() ? root.child(&#x27;rn&#x27;).child($k).val() : 0) + 1&quot;,
+     &quot;t&quot;: {
+      &quot;.validate&quot;: true
+     },
+     &quot;r&quot;: {
+      &quot;$p&quot;: {
+       &quot;.validate&quot;: &quot;$p.matches(/^c?[0-9]{1,7}$/) &amp;&amp; newData.isNumber() &amp;&amp; newData.val() &gt;= 1 &amp;&amp; newData.val() &lt;= 10 &amp;&amp; newData.val() % 1 == 0&quot;
+      }
+     },
+     &quot;st&quot;: {
+      &quot;.validate&quot;: &quot;newData.isString() &amp;&amp; newData.val().matches(/^c?[0-9]{1,7}$/)&quot;
+     },
+     &quot;$other&quot;: {
+      &quot;.validate&quot;: false
+     }
+    }
+   }
+  },
+  &quot;rn&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$k&quot;: {
+    &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+    &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1)&quot;
+   }
+  },
+  &quot;ra&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$k&quot;: {
+    &quot;$p&quot;: {
+     &quot;n&quot;: {
+      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;r&#x27;).child($p).exists()&quot;
+     },
+     &quot;s&quot;: {
+      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;r&#x27;).child($p).val()&quot;
+     },
+     &quot;$o&quot;: {
+      &quot;.validate&quot;: false
+     }
+    }
+   }
+  },
+  &quot;rs&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$k&quot;: {
+    &quot;$p&quot;: {
+     &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+     &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;st&#x27;).val() == $p&quot;
+    }
+   }
+  }
+ }
+}</textarea></li>
+<li>افتح <a href="https://console.firebase.google.com/project/el3azy-3b64e/database/el3azy-3b64e-default-rtdb/rules" target="_blank">صفحة القواعد في Firebase</a> (مشروع el3azy-3b64e ← Realtime Database ← Rules).</li>
+<li>امسح كل اللي في المربع، والصق القواعد ← <b>Publish</b>.</li>
+<li>خبر Claude إنك خلصت ✅</li>
+</ol></div>
+<script>document.getElementById('cp').onclick=async()=>{const t=document.getElementById('r');try{await navigator.clipboard.writeText(t.value)}catch(e){t.select();document.execCommand('copy')}document.getElementById('cp').textContent='✅ انسخت'}</script></body></html>

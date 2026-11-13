@@ -30,4 +30,32 @@ rules={"rules":{
         ".validate":f"newData.isNumber() && {P(c_after)}.child('c').val() == $c && {g(c_after)} > 0 && newData.val() == (data.exists() ? data.val() : 0) + 7 - {g(c_after)}"},
    "$o":{".validate":False}}}}}
 }}
+# ── «قيّم اللاعبين» ── $k = <match_id>_<kickoff ms>
+# rv/$k/$u  سجل الجهاز (مقفول): {t: وقت البداية, r: {$p: 1..10}, st: نجم المباراة}
+# ra/$k/$p = {n: عدد, s: مجموع}   rs/$k/$p = أصوات نجم المباراة   rn/$k = عدد المقيّمين  (كلها مقروءة)
+H=3600000
+RV=lambda after:f"{after}.child('rv').child($k).child(auth.uid)"
+rfresh=lambda after:f"auth != null && !root.child('rv').child($k).child(auth.uid).exists() && {RV(after)}.exists()"
+ra_after="newData.parent().parent().parent().parent()"
+rs_after="newData.parent().parent().parent()"
+rn_after="newData.parent().parent()"
+PID="/^c?[0-9]{1,7}$/"
+rules["rules"].update({
+ "rv":{"$k":{"$u":{
+   ".write":"auth != null && auth.uid == $u && !data.exists()",
+   ".validate":("newData.hasChildren(['t','r']) && $k.matches(/^[0-9]{3,8}_[0-9]{13}$/)"
+     " && newData.child('t').isNumber() && $k.endsWith('_' + newData.child('t').val())"
+     f" && now >= newData.child('t').val() + {100*60000} && now < newData.child('t').val() + {50*H}"
+     f" && newData.parent().parent().parent().child('rn').child($k).val() == (root.child('rn').child($k).exists() ? root.child('rn').child($k).val() : 0) + 1"),
+   "t":{".validate":True},
+   "r":{"$p":{".validate":f"$p.matches({PID}) && newData.isNumber() && newData.val() >= 1 && newData.val() <= 10 && newData.val() % 1 == 0"}},
+   "st":{".validate":f"newData.isString() && newData.val().matches({PID})"},
+   "$other":{".validate":False}}}},
+ "rn":{".read":True,"$k":{".write":rfresh(rn_after),".validate":f"newData.isNumber() && {inc}"}},
+ "ra":{".read":True,"$k":{"$p":{
+   "n":{".write":rfresh(ra_after),".validate":f"newData.isNumber() && {inc} && {RV(ra_after)}.child('r').child($p).exists()"},
+   "s":{".write":rfresh(ra_after),".validate":f"newData.isNumber() && newData.val() == (data.exists() ? data.val() : 0) + {RV(ra_after)}.child('r').child($p).val()"},
+   "$o":{".validate":False}}}},
+ "rs":{".read":True,"$k":{"$p":{".write":rfresh(rs_after),".validate":f"newData.isNumber() && {inc} && {RV(rs_after)}.child('st').val() == $p"}}},
+})
 json.dump(rules,open('rules.json','w'),ensure_ascii=False,indent=1)

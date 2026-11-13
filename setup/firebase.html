@@ -67,6 +67,62 @@ textarea{width:100%;height:110px;background:#0C2638;color:#FFF5E5;border:1px sol
      }
     }
    }
+  },
+  &quot;rv&quot;: {
+   &quot;$k&quot;: {
+    &quot;$u&quot;: {
+     &quot;.write&quot;: &quot;auth != null &amp;&amp; auth.uid == $u &amp;&amp; !data.exists()&quot;,
+     &quot;.validate&quot;: &quot;newData.hasChildren([&#x27;t&#x27;,&#x27;r&#x27;]) &amp;&amp; $k.matches(/^[0-9]{3,8}_[0-9]{13}$/) &amp;&amp; newData.child(&#x27;t&#x27;).isNumber() &amp;&amp; $k.endsWith(&#x27;_&#x27; + newData.child(&#x27;t&#x27;).val()) &amp;&amp; now &gt;= newData.child(&#x27;t&#x27;).val() + 6000000 &amp;&amp; now &lt; newData.child(&#x27;t&#x27;).val() + 180000000 &amp;&amp; newData.parent().parent().parent().child(&#x27;rn&#x27;).child($k).val() == (root.child(&#x27;rn&#x27;).child($k).exists() ? root.child(&#x27;rn&#x27;).child($k).val() : 0) + 1&quot;,
+     &quot;t&quot;: {
+      &quot;.validate&quot;: true
+     },
+     &quot;r&quot;: {
+      &quot;$p&quot;: {
+       &quot;.validate&quot;: &quot;$p.matches(/^c?[0-9]{1,7}$/) &amp;&amp; newData.isNumber() &amp;&amp; newData.val() &gt;= 1 &amp;&amp; newData.val() &lt;= 10 &amp;&amp; newData.val() % 1 == 0&quot;
+      }
+     },
+     &quot;st&quot;: {
+      &quot;.validate&quot;: &quot;newData.isString() &amp;&amp; newData.val().matches(/^c?[0-9]{1,7}$/)&quot;
+     },
+     &quot;$other&quot;: {
+      &quot;.validate&quot;: false
+     }
+    }
+   }
+  },
+  &quot;rn&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$k&quot;: {
+    &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+    &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1)&quot;
+   }
+  },
+  &quot;ra&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$k&quot;: {
+    &quot;$p&quot;: {
+     &quot;n&quot;: {
+      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;r&#x27;).child($p).exists()&quot;
+     },
+     &quot;s&quot;: {
+      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;r&#x27;).child($p).val()&quot;
+     },
+     &quot;$o&quot;: {
+      &quot;.validate&quot;: false
+     }
+    }
+   }
+  },
+  &quot;rs&quot;: {
+   &quot;.read&quot;: true,
+   &quot;$k&quot;: {
+    &quot;$p&quot;: {
+     &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
+     &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;st&#x27;).val() == $p&quot;
+    }
+   }
   }
  }
 }</textarea></li>
