@@ -10,81 +10,137 @@
 <meta name="twitter:card" content="summary_large_image">
 <meta name="theme-color" content="#071D2B">
 <link rel="icon" href="mano/assets/logo.png">
+<link rel="apple-touch-icon" href="tashkila/assets/apple-touch-icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
-:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--ivory:#FFF5E5}
-*{box-sizing:border-box;margin:0;padding:0}
+:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F6E3AE;--gold3:#B08A3E;--ivory:#FFF5E5;--green:#2E9E66;
+ --sadu:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M0 11 9 2.5 18 11' fill='none' stroke='%23D7B465' stroke-width='1.3'/%3E%3Cpath d='M9 6.6 11.2 8.8 9 11 6.8 8.8Z' fill='%23D7B465'/%3E%3C/svg%3E")}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{background:var(--navy)}
 body{font-family:'Readex Pro',system-ui,sans-serif;color:var(--ivory);min-height:100vh;
  background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.22),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),var(--navy);background-attachment:fixed}
-.wrap{max-width:520px;margin:0 auto;padding:28px 18px calc(28px + env(safe-area-inset-bottom))}
-header{text-align:center}
-header img{width:132px;height:132px;object-fit:contain}
-.kick{color:var(--gold);font-weight:600;font-size:14.5px;margin-top:4px}
-h1{font-size:32px;font-weight:700;margin-top:4px;line-height:1.3}
-.sub{opacity:.72;font-size:14.5px;margin-top:6px;line-height:1.7}
-.crests{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 12px;margin:20px auto 6px;max-width:330px}
+.wrap{max-width:520px;margin:0 auto;padding:22px 18px calc(28px + env(safe-area-inset-bottom));position:relative}
+
+header{text-align:center;position:relative;padding-top:6px}
+header:before{content:'';position:absolute;inset:-22px -18px auto;height:330px;z-index:-1;opacity:.07;pointer-events:none;
+ background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 400 330'%3E%3Cg fill='none' stroke='%23FFF5E5' stroke-width='2'%3E%3Ccircle cx='200' cy='150' r='92'/%3E%3Cpath d='M-10 150h420'/%3E%3Ccircle cx='200' cy='150' r='4' fill='%23FFF5E5'/%3E%3C/g%3E%3C/svg%3E") center/100% 100% no-repeat;
+ -webkit-mask:linear-gradient(#000 60%,transparent);mask:linear-gradient(#000 60%,transparent)}
+.logo{position:relative;width:136px;height:136px;margin:0 auto;display:grid;place-items:center}
+.logo:before{content:'';position:absolute;inset:8px;border-radius:50%;background:radial-gradient(circle,rgba(215,180,101,.35),rgba(215,180,101,0) 68%)}
+.logo img{position:relative;width:136px;height:136px;object-fit:contain}
+h1{font-size:34px;font-weight:700;margin-top:4px;line-height:1.25;padding:0 4px .18em;display:inline-block;background:linear-gradient(180deg,#FFFBF2 30%,#F1DDAE);-webkit-background-clip:text;background-clip:text;color:transparent}
+.kick{color:var(--gold);font-weight:600;font-size:14.5px;margin-top:-2px}
+.sadu{height:12px;width:150px;margin:14px auto 0;background:var(--sadu) center/18px 12px repeat-x;opacity:.85;
+ -webkit-mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent);mask:linear-gradient(90deg,transparent,#000 22%,#000 78%,transparent)}
+.crests{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 12px;margin:16px auto 4px;max-width:330px}
 .crests img{object-fit:contain;opacity:.9}
-h2{font-size:14px;color:var(--gold);font-weight:600;margin:26px 4px 10px}
-.tool{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:linear-gradient(180deg,rgba(20,56,79,.75),rgba(12,38,56,.75));border:1px solid rgba(215,180,101,.35);border-radius:20px;padding:16px;margin-bottom:12px;transition:transform .15s,border-color .15s}
-.tool:active{transform:scale(.98)}
-.tool:hover{border-color:var(--gold)}
+
+h2{display:flex;align-items:center;gap:10px;font-size:14px;color:var(--gold);font-weight:600;margin:26px 4px 12px}
+h2:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(215,180,101,.45))}
+
 .ic{width:58px;height:58px;border-radius:18px;display:grid;place-items:center;flex-shrink:0;position:relative;
  background:radial-gradient(circle at 30% 18%,rgba(240,217,154,.28),transparent 60%),linear-gradient(160deg,#16405A,#0A2232);
  border:1px solid rgba(215,180,101,.6);box-shadow:inset 0 1px 0 rgba(255,240,200,.22),inset 0 -6px 12px rgba(0,0,0,.25),0 6px 14px rgba(0,0,0,.35)}
 .ic svg{width:32px;height:32px;fill:none;stroke:url(#gg);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;filter:drop-shadow(0 1px 1px rgba(0,0,0,.45))}
 .ic svg .f{fill:url(#gg);stroke:none}
 .ic svg .s{fill:url(#gg);fill-opacity:.18}
-.soon .ic{filter:saturate(.6)}
+
+.feat{display:block;position:relative;overflow:hidden;text-decoration:none;color:inherit;border-radius:24px;padding:22px 18px 18px;margin-top:22px;
+ border:1.5px solid transparent;
+ background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.22),transparent 55%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,
+  linear-gradient(135deg,var(--gold2),var(--gold3) 35%,rgba(215,180,101,.25) 65%,var(--gold)) border-box;
+ box-shadow:0 14px 36px rgba(0,0,0,.4);transition:transform .15s}
+.feat:before{content:'';position:absolute;top:0;left:0;right:0;height:10px;background:var(--sadu) center/18px 12px repeat-x;opacity:.35;transform:scaleY(-1)}
+.feat:after{content:'';position:absolute;top:0;bottom:0;width:60%;left:-70%;background:linear-gradient(100deg,transparent,rgba(246,227,174,.13),transparent);transform:skewX(-18deg);animation:shine 5.5s ease-in-out 1.2s infinite;pointer-events:none}
+@keyframes shine{0%{left:-70%}35%,100%{left:130%}}
+.feat .top{display:flex;align-items:center;gap:14px}
+.feat .ic{width:66px;height:66px;border-radius:20px}
+.feat .ic svg{width:38px;height:38px}
+.tag{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;color:var(--gold)}
+.tag i{width:7px;height:7px;border-radius:50%;background:#3DDC84;box-shadow:0 0 0 0 rgba(61,220,132,.6);animation:pulse 1.8s infinite}
+@keyframes pulse{70%{box-shadow:0 0 0 7px rgba(61,220,132,0)}100%{box-shadow:0 0 0 0 rgba(61,220,132,0)}}
+.feat b.t{display:block;font-size:23px;font-weight:700;margin-top:2px}
+.feat .d{font-size:13.5px;opacity:.78;line-height:1.7;margin-top:12px}
+.timer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:14px;padding:10px 12px;border-radius:14px;background:rgba(7,29,43,.55);border:1px solid rgba(215,180,101,.18)}
+.timer span{font-size:12.5px;opacity:.8}
+.timer time{font-size:18px;font-weight:700;color:var(--gold2);display:flex;align-items:baseline;gap:8px}
+.timer time em{font-style:normal;font-size:14px}
+.timer time bdi{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums;letter-spacing:.5px}
+.cta{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:14px;height:50px;border-radius:15px;font-weight:700;font-size:16.5px;color:var(--navy);
+ background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(215,180,101,.25)}
+.cta.done{background:rgba(255,245,229,.08);color:var(--ivory);box-shadow:none;border:1px solid rgba(255,245,229,.18)}
+
+.tool{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:linear-gradient(180deg,rgba(20,56,79,.75),rgba(12,38,56,.75));border:1px solid rgba(215,180,101,.32);border-radius:20px;padding:15px 16px;margin-bottom:12px;transition:transform .15s,border-color .15s}
+.tool:active,.feat:active{transform:scale(.985)}
+.tool:hover{border-color:var(--gold)}
 .tool b{display:block;font-size:18px;font-weight:700}
 .tool span.d{display:block;font-size:13px;opacity:.72;margin-top:3px;line-height:1.6}
 .tool .go{margin-inline-start:auto;color:var(--gold);font-size:22px;flex-shrink:0}
 .badge{display:inline-block;font-size:11px;font-weight:600;border-radius:20px;padding:2px 9px;margin-inline-start:6px;vertical-align:middle;background:var(--gold);color:var(--navy)}
-.badge.new{background:#2E9E66;color:#fff}
-.tool[hidden]{display:none}
+.badge.new{background:var(--green);color:#fff}
+[hidden]{display:none!important}
 .soon{opacity:.55;pointer-events:none;border-style:dashed}
 .soon .badge{background:rgba(255,245,229,.15);color:var(--ivory)}
-footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:28px;line-height:1.9}
+.soon .ic{filter:saturate(.6)}
+
+.qr{text-align:center;margin:30px auto 8px}
+.qr img{width:132px;height:132px;border-radius:16px;border:2px solid var(--gold);background:var(--ivory);display:block;margin:0 auto}
+.qr div{font-size:12.5px;color:var(--gold);font-weight:600;margin-top:8px}
+footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:22px;line-height:1.9}
+footer .sadu{width:90px;margin:0 auto 12px;opacity:.6}
 footer a{color:var(--gold);text-decoration:none;font-weight:600}
+
+.in{opacity:0;transform:translateY(12px);animation:up .6s cubic-bezier(.2,.7,.2,1) forwards}
+@keyframes up{to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){.in{animation:none;opacity:1;transform:none}.feat:after,.tag i{animation:none}}
+@media (max-width:360px){h1{font-size:29px}.feat b.t{font-size:20px}}
 </style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F6E3AE"/><stop offset=".55" stop-color="#D7B465"/><stop offset="1" stop-color="#B08A3E"/></linearGradient></defs></svg>
 <div class="wrap">
 <header>
-  <img src="mano/assets/logo.png" alt="العازي">
-  <h1>منصة العازي</h1>
-  <div class="kick">لجماهير الدوري الإماراتي للمحترفين</div>
-  <div class="crests" id="crests"></div>
+  <div class="logo in"><img src="mano/assets/logo.png" alt="العازي"></div>
+  <h1 class="in" style="animation-delay:.08s">منصة العازي</h1>
+  <div class="kick in" style="animation-delay:.14s">لجماهير الدوري الإماراتي للمحترفين</div>
+  <div class="sadu in" style="animation-delay:.2s" aria-hidden="true"></div>
+  <div class="crests in" style="animation-delay:.26s" id="crests"></div>
 </header>
 
-<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F6E3AE"/><stop offset=".55" stop-color="#D7B465"/><stop offset="1" stop-color="#B08A3E"/></linearGradient></defs></svg>
-<h2>متوفرة الحين</h2>
-<a class="tool" href="mano/">
-  <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M11 5 6 7.5 3 13l4 2 1.5-2.5V27h15V12.5L25 15l4-2-3-5.5L21 5c-1 2-2.8 3-5 3s-4-1-5-3Z"/><path d="M13.7 15.3c0-1.5 1-2.5 2.4-2.5s2.4.9 2.4 2.2c0 1.8-2.5 2-2.5 4"/><circle class="f" cx="16" cy="22.3" r="1.15"/></svg></div>
-  <div><b>منو اللاعب؟ <span class="badge new" id="manoBadge">يديد</span></b><span class="d">كل يوم لاعب سري من دوري أدنوك، وعندك 6 محاولات تعرفه</span></div>
-  <div class="go">‹</div>
+<a class="feat in" style="animation-delay:.34s" href="mano/" id="feat">
+  <div class="top">
+    <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M11 5 6 7.5 3 13l4 2 1.5-2.5V27h15V12.5L25 15l4-2-3-5.5L21 5c-1 2-2.8 3-5 3s-4-1-5-3Z"/><path d="M13.7 15.3c0-1.5 1-2.5 2.4-2.5s2.4.9 2.4 2.2c0 1.8-2.5 2-2.5 4"/><circle class="f" cx="16" cy="22.3" r="1.15"/></svg></div>
+    <div><span class="tag" id="fTag"><i></i>تحدي اليوم</span><b class="t">منو اللاعب؟</b></div>
+  </div>
+  <div class="d">كل يوم لاعب سري من الدوري، وعندك 6 محاولات تعرفه. خلّص التحدي وشارك نتيجتك.</div>
+  <div class="timer"><span id="fLbl">اللاعب الياي بعد</span><time id="fTime">--:--:--</time></div>
+  <div class="cta" id="fCta">العب الحين</div>
 </a>
-<a class="tool" href="tashkila/">
+
+<h2 class="in" style="animation-delay:.42s">أدوات الجماهير</h2>
+<a class="tool in" style="animation-delay:.48s" href="tashkila/">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><rect class="s" x="5" y="3" width="22" height="26" rx="3"/><path d="M5 16h22M11.5 3v4.2h9V3M11.5 29v-4.2h9V29"/><circle cx="16" cy="16" r="3.2"/><circle class="f" cx="10" cy="10.5" r="1.5"/><circle class="f" cx="22" cy="10.5" r="1.5"/><circle class="f" cx="10.5" cy="21.5" r="1.5"/><circle class="f" cx="21.5" cy="21.5" r="1.5"/></svg></div>
   <div><b>اختار تشكيلتك</b><span class="d">اختار ناديك والخطة، وركّب تشكيلتك الأساسية</span></div>
   <div class="go">‹</div>
 </a>
-<a class="tool" href="rate/" id="rateLive" hidden>
+<a class="tool in" style="animation-delay:.54s" href="rate/" id="rateLive" hidden>
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
   <div><b>قيّم اللاعبين <span class="badge new">يديد</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span></div>
   <div class="go">‹</div>
 </a>
 
-<h2>قريباً</h2>
-<div class="tool soon" id="rateSoon">
+<h2 class="in" style="animation-delay:.6s">قريباً</h2>
+<div class="tool soon in" style="animation-delay:.64s" id="rateSoon">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
   <div><b>قيّم اللاعبين <span class="badge">قريباً</span></b><span class="d">قيّم لاعبين فريقك بعد كل مباراة</span></div>
 </div>
-<div class="tool soon">
+<div class="tool soon in" style="animation-delay:.68s">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg></div>
   <div><b>دوري التوقعات <span class="badge">قريباً</span></b><span class="d">توقّع نتايج الجولة ونافس الجماهير في ترتيب أسبوعي</span></div>
 </div>
 
-<div style="text-align:center;margin:26px auto 8px"><img src="assets/qr/portal.png" alt="باركود" width="132" height="132" style="border-radius:16px;border:2px solid #D7B465;background:#FFF5E5;display:block;margin:0 auto"><div style="font-size:12.5px;color:#D7B465;font-weight:600;margin-top:8px">صوّر الباركود وشارك المنصة</div></div>
+<div class="qr"><img src="assets/qr/portal.png" alt="باركود منصة العازي"><div>صوّر الباركود وشارك المنصة</div></div>
 <footer>
+  <div class="sadu" aria-hidden="true"></div>
   <div style="font-size:14px;opacity:.9;margin-bottom:4px">مجانية ومن غير تسجيل</div>
   منصة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener" dir="ltr">@el3azy22</a>
 </footer>
@@ -92,9 +148,30 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 <script>
 const C={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};
 document.getElementById('crests').innerHTML=Object.entries(C).map(([c,f])=>`<img src="mano/assets/${c}.png" alt="" style="width:${Math.round(30*f[0])}px;height:${Math.round(30*f[1])}px">`).join('');
-// before launch the mano badge says when it starts
-try{const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Dubai'}));if(now<new Date(2026,10,17))document.getElementById('manoBadge').textContent='يبدا الثلاثاء'}catch(e){}
+
+// daily challenge card: Dubai time (UTC+4), same day logic as the game
+(()=>{
+  const START=Date.UTC(2026,10,17),$=id=>document.getElementById(id);
+  const p2=n=>String(n).padStart(2,'0');
+  const read=k=>{try{return JSON.parse(localStorage.getItem('el3azy_mano_'+k)||'null')}catch(e){return null}};
+  function tick(){
+    const dub=Date.now()+4*3600e3,today=dub-dub%864e5,day=Math.floor((today-START)/864e5);
+    let ms=864e5-dub%864e5;
+    if(day<0){
+      ms+=(-day-1)*864e5;
+      $('fTag').innerHTML='<i></i>يبدا الثلاثاء 17 نوفمبر';$('fLbl').textContent='أول تحدي بعد';$('fCta').textContent='شوف التفاصيل';
+    }else{
+      const n=day+1,g=read('g_'+n+'_easy')||read('g_'+n+'_pro');
+      $('fTag').innerHTML='<i></i>تحدي اليوم #'+n;$('fLbl').textContent='اللاعب الياي بعد';
+      const done=g&&g.done;$('fCta').textContent=done?(g.win?'✓ عرفته اليوم · شوف نتيجتك':'شوف نتيجتك'):'العب الحين';$('fCta').classList.toggle('done',!!done);
+    }
+    const t=Math.floor(ms/1000),d=Math.floor(t/86400);
+    const dl=d===1?'يوم':d===2?'يومين':d+' أيام';
+    $('fTime').innerHTML=(d?'<em>'+dl+' و</em>':'')+'<bdi>'+p2(Math.floor(t%86400/3600))+':'+p2(Math.floor(t%3600/60))+':'+p2(t%60)+'</bdi>';
+  }
+  tick();setInterval(tick,1000);
+})();
+(()=>{const on=Date.now()>=Date.UTC(2026,10,18,20)||location.search.includes('rate');if(on){document.getElementById('rateLive').hidden=false;document.getElementById('rateSoon').hidden=true}})();
 </script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script>(()=>{const on=Date.now()>=Date.UTC(2026,10,18,20)||location.search.includes('rate');if(on){document.getElementById('rateLive').hidden=false;document.getElementById('rateSoon').hidden=true}})()</script>
 </body></html>

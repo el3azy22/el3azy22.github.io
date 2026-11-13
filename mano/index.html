@@ -169,8 +169,8 @@ footer a{color:inherit}
   <header>
     <a href="../" aria-label="منصة العازي" style="line-height:0;flex-shrink:0"><img class="logo" src="assets/logo.png" alt="العازي"></a>
     <div class="ttl"><h1>منو اللاعب؟</h1><div class="day" id="dayLbl">تحدي العازي اليومي</div></div>
-    <button class="icon" id="sndBtn" aria-label="الصوت">🔊</button>
-    <button class="icon" id="statsBtn" aria-label="إحصائياتي">📊</button>
+    <button class="icon" id="sndBtn" aria-label="الصوت"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity=".2"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg></button>
+    <button class="icon" id="statsBtn" aria-label="إحصائياتي"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20h16"/><rect x="5.5" y="12" width="3.2" height="6" rx="1" fill="currentColor" fill-opacity=".2"/><rect x="10.4" y="7" width="3.2" height="11" rx="1" fill="currentColor" fill-opacity=".2"/><rect x="15.3" y="4" width="3.2" height="14" rx="1" fill="currentColor" fill-opacity=".2"/></svg></button>
     <button class="icon" id="helpBtn" aria-label="كيف ألعب">؟</button>
   </header>
 
@@ -228,7 +228,8 @@ const gc=n=>{try{window.goatcounter&&window.goatcounter.count&&window.goatcounte
 /* ---------- sound (صوت العازي) ---------- */
 let soundOn=store.get('sound',true);const SFX={};
 function sfx(n,vol=1){if(!soundOn)return;try{let a=SFX[n];if(!a){a=SFX[n]=new Audio('assets/sfx/'+n+'.mp3');a.preload='auto'}a.pause();a.currentTime=0;a.volume=vol;const pr=a.play();pr&&pr.catch(()=>{})}catch(e){}}
-function sndUI(){const b=$('#sndBtn');b.textContent=soundOn?'🔊':'🔇';b.classList.toggle('off',!soundOn);b.setAttribute('aria-label',soundOn?'اطفي الصوت':'شغّل الصوت')}
+const SND_ON='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity=".2"/><path d="M15.5 9a4 4 0 0 1 0 6M18 6.5a7.5 7.5 0 0 1 0 11"/></svg>',SND_OFF='<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 9.5h3.5L12 5.5v13l-4.5-4H4z" fill="currentColor" fill-opacity=".2"/><path d="m16 9.5 5 5m0-5-5 5"/></svg>';
+function sndUI(){const b=$('#sndBtn');b.innerHTML=soundOn?SND_ON:SND_OFF;b.classList.toggle('off',!soundOn);b.setAttribute('aria-label',soundOn?'اطفي الصوت':'شغّل الصوت')}
 $('#sndBtn').onclick=()=>{soundOn=!soundOn;store.set('sound',soundOn);sndUI();if(soundOn)sfx('kafu');else Object.values(SFX).forEach(a=>{try{a.pause()}catch(e){}});toast(soundOn?'🔊 صوت العازي شغّال':'🔇 الصوت طافي')};
 sndUI();
 
