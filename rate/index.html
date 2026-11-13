@@ -124,12 +124,21 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
 @media (max-width:360px){header h1{font-size:20px}header .logo{height:50px}.nums button{height:31px;font-size:13px}.pr .nm b{font-size:14px}}
+
+.topnav{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:2px 0 4px}
+.topnav a,.topnav button{display:inline-flex;align-items:center;gap:6px;height:34px;padding:0 13px;border-radius:999px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.07);color:#F6E3AE;font:600 13px inherit;font-family:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.topnav a:active,.topnav button:active{transform:scale(.96)}
+.topnav svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 </style>
 </head>
 <body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F6E3AE"/><stop offset=".55" stop-color="#D7B465"/><stop offset="1" stop-color="#B08A3E"/></linearGradient></defs></svg>
 <div class="toast" id="toast"></div>
 <div class="wrap">
+  <nav class="topnav" aria-label="التنقل">
+    <button type="button" id="navBack" aria-label="رجوع"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg>رجوع</button>
+    <a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg>الرئيسية</a>
+  </nav>
   <header>
     <a class="home" href="../" aria-label="منصة العازي"><img class="logo" src="../mano/assets/logo.png" alt="العازي"></a>
     <div class="ttl"><h1>قيّم اللاعبين</h1><div class="sub" id="sub">دوري أدنوك للمحترفين</div></div>
@@ -505,5 +514,13 @@ document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m){m.
 })();
 </script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+<script>
+(function(){var b=document.getElementById('navBack');if(!b)return;b.onclick=function(){
+  var q=new URLSearchParams(location.search);
+  if(q.has('m')&&typeof go==='function'){go();return}
+  var sameRef=document.referrer&&document.referrer.indexOf(location.origin)===0;
+  if(sameRef&&history.length>1){history.back()}else{location.href='../'}
+}})();
+</script>
 </body>
 </html>
