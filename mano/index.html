@@ -144,6 +144,17 @@ footer a{color:inherit}
 .cpick button{background:rgba(7,29,43,.7);border:1px solid rgba(215,180,101,.2);border-radius:12px;padding:8px 0 5px;display:grid;justify-items:center;align-content:center;gap:4px;color:var(--ivory);font-size:9.5px;height:66px}
 .cpick button:active{border-color:var(--gold)}
 .linkb{background:none;border:0;color:var(--gold);font-size:12.5px;text-decoration:underline;padding:4px}
+.clubm .tile{width:62px;height:62px;margin:2px auto 6px;border-radius:18px;display:grid;place-items:center;background:linear-gradient(160deg,rgba(215,180,101,.22),rgba(215,180,101,.05));border:1px solid rgba(215,180,101,.55);box-shadow:0 8px 24px rgba(215,180,101,.15)}
+.clubm .tile svg{width:34px;height:34px}
+.clubm h2{margin:6px 0 6px;font-size:22px}
+.clubm .why{font-size:13px;line-height:1.8;opacity:.8;margin-bottom:12px}
+.clubm .why b{color:var(--gold);font-weight:600}
+.cgrid{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:12px}
+.cgrid button{position:relative;width:calc(25% - 6px);height:78px;background:rgba(7,29,43,.75);border:1.5px solid rgba(215,180,101,.18);border-radius:14px;display:grid;justify-items:center;align-content:center;gap:5px;color:var(--ivory);font-size:11px;transition:.15s}
+.cgrid button.on{border-color:var(--gold);background:rgba(215,180,101,.14);transform:translateY(-2px);box-shadow:0 6px 18px rgba(215,180,101,.2)}
+.cgrid button.on:after{content:'✓';position:absolute;top:-7px;left:-7px;width:20px;height:20px;border-radius:50%;background:var(--gold);color:var(--navy);font-size:12px;font-weight:700;display:grid;place-items:center}
+.clubm .btn:disabled{opacity:.4}
+.clubm .later{display:flex;justify-content:space-between;margin-top:8px}
 .champ{background:linear-gradient(90deg,rgba(215,180,101,.22),rgba(215,180,101,.05));border:1px solid rgba(215,180,101,.45);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:10px;font-size:13.5px;margin-bottom:10px}
 .mine{background:rgba(46,158,102,.15);border-radius:12px;padding:7px 10px;font-size:13.5px;margin-bottom:8px}
 .ct{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:10px;font-size:13px}
@@ -204,6 +215,15 @@ footer a{color:inherit}
   <div class="step" id="clubStep" hidden><i>5</i><div><b>ناديك ينافس 🏆</b><span>نتيجتك تنحسب لجمهور ناديك في تحدي الأندية الأسبوعي</span></div></div>
   <p style="font-size:12px;opacity:.7;margin-top:12px;line-height:1.8">تبا تحدي أصعب؟ جرّب <b style="color:var(--gold)">وضع الخبير 🧠</b>: كل تخمين يقارن لاعبك باللاعب السري بالألوان.</p>
   <button class="btn" id="howGo">يلا نلعب</button>
+</div></div>
+
+<div class="modal" id="clubM" hidden><div class="mbox clubm">
+  <div class="tile"><svg viewBox="0 0 24 24" fill="none" stroke="#D7B465" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8 4h8v5a4 4 0 0 1-8 0z" fill="rgba(215,180,101,.25)"/><path d="M8 6H5a3 3 0 0 0 3 4M16 6h3a3 3 0 0 1-3 4M12 13v4M8.5 20h7M10 17h4"/></svg></div>
+  <h2>جمهور أي نادي أنت؟</h2>
+  <p class="why">نتيجتك كل يوم تنحسب لجمهور ناديك في <b>تحدي الأندية</b>.<br>كل ما عرفت اللاعب أسرع، ناديك يتقدم.</p>
+  <div class="cgrid" id="cgrid"></div>
+  <button class="btn" id="clubOk" disabled>اختار ناديك</button>
+  <div class="later"><button class="linkb" id="clubNone">ما أشجع نادي معيّن</button><button class="linkb" id="clubLater" style="opacity:.7">بعدين</button></div>
 </div></div>
 
 <div class="modal" id="statsM" hidden><div class="mbox">
@@ -406,6 +426,7 @@ function bindResult(){
   const tick=()=>{const s=Math.floor(msToDubaiMidnight()/1000);const e=$('#cd');if(!e)return;e.textContent=`${f(s/3600|0)}:${f(s%3600/60|0)}:${f(s%60)}`;if(s<=1)setTimeout(()=>location.reload(),1500)};
   tick();timer=setInterval(tick,1000);
   crowdFlow();
+  setTimeout(askClub,S.win?1600:900);
 }
 
 
@@ -594,6 +615,21 @@ async function shareImage(){
   window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank');
   toast('نزّلت الصورة، ارفقها في التغريدة');
 }
+
+/* ---------- نافذة اختيار النادي ---------- */
+let pickC=null;
+function askClub(){
+  if(!CROWD||myClub()!==null||store.get('ask_'+DAY,false))return;
+  store.set('ask_'+DAY,true);pickC=null;
+  $('#cgrid').innerHTML=CLUBS_ORDER.map(k=>`<button data-c="${k}">${crest(k,34)}<span>${D.clubs[k]}</span></button>`).join('');
+  const ok=$('#clubOk');ok.disabled=true;ok.textContent='اختار ناديك';
+  $('#cgrid').querySelectorAll('button').forEach(b=>b.onclick=()=>{pickC=b.dataset.c;$('#cgrid').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));ok.disabled=false;ok.textContent='أنا مع جمهور '+D.clubs[pickC]+' 💪';vib(15)});
+  $('#clubM').hidden=false;
+}
+function setClub(c){store.set('club',c);gc('club-'+(c||'none'));$('#clubM').hidden=true;toast(c?'💪 يلا '+D.clubs[c]+'!':'تمام 👍');crowdFlow()}
+$('#clubOk').onclick=()=>{if(pickC)setClub(pickC)};
+$('#clubNone').onclick=()=>setClub('');
+$('#clubLater').onclick=()=>{$('#clubM').hidden=true};
 
 /* ---------- modals ---------- */
 $('#helpBtn').onclick=()=>$('#howto').hidden=false;
