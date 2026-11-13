@@ -1,4 +1,85 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>العازي</title><meta http-equiv="refresh" content="0; url=mano/"><link rel="canonical" href="mano/"></head>
-<body style="background:#071D2B;color:#FFF5E5;font-family:sans-serif;text-align:center;padding-top:40vh"><a href="mano/" style="color:#D7B465">منو اللاعب؟</a></body></html>
+<html lang="ar" dir="rtl"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>العازي · ألعاب وأدوات دوري أدنوك</title>
+<meta name="description" content="ألعاب وأدوات مجانية لجماهير دوري أدنوك للمحترفين من العازي.">
+<meta property="og:title" content="العازي · ألعاب وأدوات دوري أدنوك">
+<meta property="og:description" content="ألعاب وأدوات مجانية لجماهير دوري أدنوك للمحترفين.">
+<meta property="og:image" content="https://el3azy22.github.io/assets/og-portal.jpg">
+<meta property="og:url" content="https://el3azy22.github.io/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="theme-color" content="#071D2B">
+<link rel="icon" href="mano/assets/logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--ivory:#FFF5E5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Readex Pro',system-ui,sans-serif;color:var(--ivory);min-height:100vh;
+ background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.22),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),var(--navy);background-attachment:fixed}
+.wrap{max-width:520px;margin:0 auto;padding:28px 18px calc(28px + env(safe-area-inset-bottom))}
+header{text-align:center}
+header img{width:132px;height:132px;object-fit:contain}
+.kick{color:var(--gold);font-weight:600;font-size:15px;margin-top:6px}
+h1{font-size:30px;font-weight:700;margin-top:2px}
+.sub{opacity:.72;font-size:14.5px;margin-top:6px;line-height:1.7}
+.crests{display:flex;flex-wrap:wrap;justify-content:center;gap:10px 12px;margin:20px auto 6px;max-width:330px}
+.crests img{object-fit:contain;opacity:.9}
+h2{font-size:14px;color:var(--gold);font-weight:600;margin:26px 4px 10px}
+.tool{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;background:linear-gradient(180deg,rgba(20,56,79,.75),rgba(12,38,56,.75));border:1px solid rgba(215,180,101,.35);border-radius:20px;padding:16px;margin-bottom:12px;transition:transform .15s,border-color .15s}
+.tool:active{transform:scale(.98)}
+.tool:hover{border-color:var(--gold)}
+.ic{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;font-size:28px;flex-shrink:0;background:rgba(215,180,101,.14);border:1px solid rgba(215,180,101,.4)}
+.tool b{display:block;font-size:18px;font-weight:700}
+.tool span.d{display:block;font-size:13px;opacity:.72;margin-top:3px;line-height:1.6}
+.tool .go{margin-inline-start:auto;color:var(--gold);font-size:22px;flex-shrink:0}
+.badge{display:inline-block;font-size:11px;font-weight:600;border-radius:20px;padding:2px 9px;margin-inline-start:6px;vertical-align:middle;background:var(--gold);color:var(--navy)}
+.badge.new{background:#2E9E66;color:#fff}
+.soon{opacity:.55;pointer-events:none;border-style:dashed}
+.soon .badge{background:rgba(255,245,229,.15);color:var(--ivory)}
+footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:28px;line-height:1.9}
+footer a{color:var(--gold);text-decoration:none;font-weight:600}
+</style></head><body>
+<div class="wrap">
+<header>
+  <img src="mano/assets/logo.png" alt="العازي">
+  <div class="kick">ألعاب وأدوات دوري أدنوك</div>
+  <h1>منصة العازي</h1>
+  <p class="sub">مجانية، ومن غير تسجيل، وتشتغل من تلفونك</p>
+  <div class="crests" id="crests"></div>
+</header>
+
+<h2>العب الحين</h2>
+<a class="tool" href="mano/">
+  <div class="ic">🕵️</div>
+  <div><b>منو اللاعب؟ <span class="badge new" id="manoBadge">يديد</span></b><span class="d">كل يوم لاعب سري من دوري أدنوك، وعندك ٦ محاولات تعرفه</span></div>
+  <div class="go">‹</div>
+</a>
+<a class="tool" href="tashkila/">
+  <div class="ic">📋</div>
+  <div><b>اختار تشكيلتك</b><span class="d">اختار ناديك والخطة، وركّب تشكيلتك الأساسية</span></div>
+  <div class="go">‹</div>
+</a>
+
+<h2>قريباً</h2>
+<div class="tool soon">
+  <div class="ic">⭐</div>
+  <div><b>قيّم اللاعبين <span class="badge">قريباً</span></b><span class="d">قيّم لاعبين فريقك بعد كل امباراة</span></div>
+</div>
+<div class="tool soon">
+  <div class="ic">🎯</div>
+  <div><b>دوري التوقعات <span class="badge">قريباً</span></b><span class="d">توقّع نتايج الجولة ونافس الجماهير في ترتيب أسبوعي</span></div>
+</div>
+
+<footer>
+  منصة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener" dir="ltr">@el3azy22</a>
+</footer>
+</div>
+<script>
+const C={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};
+document.getElementById('crests').innerHTML=Object.entries(C).map(([c,f])=>`<img src="mano/assets/${c}.png" alt="" style="width:${Math.round(30*f[0])}px;height:${Math.round(30*f[1])}px">`).join('');
+// before launch the mano badge says when it starts
+try{const now=new Date(new Date().toLocaleString('en-US',{timeZone:'Asia/Dubai'}));if(now<new Date(2026,10,17))document.getElementById('manoBadge').textContent='يبدا الثلاثاء'}catch(e){}
+</script>
+<script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body></html>
