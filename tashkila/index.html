@@ -437,7 +437,7 @@ async function drawCard(){
   // تظليل فوق وتحت عشان الكتابة تبين
   let g=x.createLinearGradient(0,0,0,P.y+20);g.addColorStop(0,'rgba(4,8,14,.92)');g.addColorStop(.75,'rgba(4,8,14,.7)');g.addColorStop(1,'rgba(4,8,14,0)');x.fillStyle=g;x.fillRect(0,0,W,P.y+20);
   g=x.createLinearGradient(0,H-110,0,H);g.addColorStop(0,'rgba(4,8,14,0)');g.addColorStop(1,'rgba(4,8,14,.85)');x.fillStyle=g;x.fillRect(0,H-110,W,110);
-  const crestImg=crestSrc(c);
+  const crestImg=c.crestFile||'assets/crests/'+c.id+'.png'; // النسخة البيضاء تناسب خلفية الصورة الغامقة
   const [crest,logo]=await Promise.all([loadImg(crestImg),loadImg('assets/el3azy.png')]);
   drawContain(x,crest,W-60-120,36,120,120);
   x.direction='rtl';x.textAlign='right';x.fillStyle='#fff';
@@ -447,7 +447,7 @@ async function drawCard(){
   x.direction='rtl';x.font='500 25px Readex';x.globalAlpha=.75;x.fillText(STADIUMS[stad]||'',W-60-140,182);
   if(byName){x.textAlign='center';x.direction='rtl';x.font='700 44px Readex';x.globalAlpha=1;x.fillText(byName,W/2,246)}
   x.globalAlpha=1;
-  drawContain(x,logo,34,14,176,176);
+  x.globalAlpha=.32;drawContain(x,logo,44,24,150,150);x.globalAlpha=1;
   // اللاعبين
   x.textAlign='center';
   const lb=LBL();const PH=await Promise.all(xi.map(p=>PHOTO(p)?loadImg(PHOTO(p)).catch(()=>null):null));
