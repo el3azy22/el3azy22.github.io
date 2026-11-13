@@ -1,33 +1,140 @@
 {
-  "_help": "كل مشهد: start = متى يبدا (بالثواني)، captions = الجمل اللي تطلع فوق؛ at = بعد كم ثانية من بداية المشهد. الكلمات بين *نجمتين* تطلع ذهبية. duration = طول الفيديو كامل. حركات كل مشهد تتمدد تلقائي على طوله. شوف README.txt",
-  "fps": 30,
-  "duration": 60,
-  "demo": { "tashkilaClub": "ain", "formation": "4-3-3", "manoAnswer": "renato-fabrizio-tapia-cortijo", "manoGuesses": ["kristjan-asllani", "karim-el-berkaoui", "renato-fabrizio-tapia-cortijo"] },
-  "music": { "lufs": -14, "fadeIn": 0.5, "fadeOut": 1.5, "sfxGainDb": -9,
-    "segments": [
-      { "file": "../mano/video/platform-theme.m4a", "trackStart": 41.4, "at": 0, "until": 14.9 },
-      { "file": "../mano/video/platform-theme.m4a", "trackStart": 57.6, "at": 15.0 }
-    ] },
-  "scenes": [
-    { "id": "hook", "start": 0, "sfx": null,
-      "captions": [ { "at": 0.3, "text": "*أربعطعش* نادي، وجماهير *ما تهدى*." } ] },
-    { "id": "question", "start": 6, "sfx": "swish",
-      "captions": [ { "at": 0.2, "text": "بس وين *المحتوى الجماهيري* اللي نتفاعل فيه؟" },
-                    { "at": 3.2, "text": "*نلعب*، *نتحدى*، ونقول *رايينا*؟" } ] },
-    { "id": "reveal", "start": 12, "sfx": "chime",
-      "captions": [ { "at": 0.3, "text": "عشان جذي سويت *منصة العازي*." },
-                    { "at": 3.4, "text": "لأن دورينا *يستاهل*." } ] },
-    { "id": "mano", "start": 18, "sfx": "whoosh",
-      "captions": [ { "at": 0.3, "text": "كل يوم *لاعب سري* من الدوري، وعندك *ست محاولات* تعرفه." },
-                    { "at": 7.6, "text": "أول تحدي *الثلاثاء 17 نوفمبر*." } ] },
-    { "id": "tashkila", "start": 30, "sfx": "swish",
-      "captions": [ { "at": 0.2, "text": "ركّب *تشكيلة ناديك*، واحفظها صورة و*شاركها*." } ] },
-    { "id": "soon", "start": 38, "sfx": "whoosh",
-      "captions": [ { "at": 0.2, "text": "وفي الطريق: *قيّم اللاعبين* بعد كل مباراة، *دوري التوقعات*، و*أغاني* عن دورينا وأنديتنا." } ] },
-    { "id": "unity", "start": 48, "sfx": "swish",
-      "captions": [ { "at": 0.2, "text": "*مكان واحد* يجمع جماهير كل الأندية." },
-                    { "at": 3.3, "text": "*مجاني*، ومن غير *تسجيل*." } ] },
-    { "id": "outro", "start": 54, "sfx": "chime",
-      "captions": [ { "at": 0.3, "text": "*صوّر الباركود*، وخلك ويانا." } ] }
+ "_help": "كل مشهد: start = متى يبدا (بالثواني)، captions = الجمل اللي تطلع فوق؛ at = بعد كم ثانية من بداية المشهد. الكلمات بين *نجمتين* تطلع ذهبية. duration = طول الفيديو كامل. حركات كل مشهد تتمدد تلقائي على طوله. شوف README.txt",
+ "fps": 30,
+ "duration": 60,
+ "demo": {
+  "tashkilaClub": "ain",
+  "formation": "4-3-3",
+  "manoAnswer": "renato-fabrizio-tapia-cortijo",
+  "manoGuesses": [
+   "kristjan-asllani",
+   "karim-el-berkaoui",
+   "renato-fabrizio-tapia-cortijo"
   ]
+ },
+ "music": {
+  "lufs": -14,
+  "fadeIn": 0.5,
+  "fadeOut": 1.5,
+  "sfxGainDb": -9,
+  "segments": [
+   {
+    "file": "../mano/video/platform-theme.m4a",
+    "trackStart": 41.4,
+    "at": 0,
+    "until": 14.9
+   },
+   {
+    "file": "../mano/video/platform-theme.m4a",
+    "trackStart": 57.6,
+    "at": 15.0
+   }
+  ]
+ },
+ "scenes": [
+  {
+   "id": "hook",
+   "start": 0,
+   "sfx": null,
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "*أربعة عشر* ناديًا، وجماهير *لا تهدأ*."
+    }
+   ]
+  },
+  {
+   "id": "question",
+   "start": 6,
+   "sfx": "swish",
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "ولكن أين *المحتوى الجماهيري* الذي نتفاعل معه؟"
+    },
+    {
+     "at": 3.2,
+     "text": "*نلعب*، و*نتحدى*، ونُبدي *رأينا*؟"
+    }
+   ]
+  },
+  {
+   "id": "reveal",
+   "start": 12,
+   "sfx": "chime",
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "لهذا أطلقتُ *منصة العازي*."
+    },
+    {
+     "at": 3.4,
+     "text": "لأن دورينا *يستحق*."
+    }
+   ]
+  },
+  {
+   "id": "mano",
+   "start": 18,
+   "sfx": "whoosh",
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "كل يوم *لاعب سري* من الدوري، ولديك *ست محاولات* لمعرفته."
+    },
+    {
+     "at": 7.6,
+     "text": "أول تحدٍّ *الثلاثاء 17 نوفمبر*."
+    }
+   ]
+  },
+  {
+   "id": "tashkila",
+   "start": 30,
+   "sfx": "swish",
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "كوِّن *تشكيلة ناديك*، واحفظها صورة و*شاركها*."
+    }
+   ]
+  },
+  {
+   "id": "soon",
+   "start": 38,
+   "sfx": "whoosh",
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "وقريبًا: *قيّم اللاعبين* بعد كل مباراة، و*دوري التوقعات*، و*أغانٍ* عن دورينا وأنديتنا."
+    }
+   ]
+  },
+  {
+   "id": "unity",
+   "start": 48,
+   "sfx": "swish",
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "*مكان واحد* يجمع جماهير جميع الأندية."
+    },
+    {
+     "at": 3.3,
+     "text": "*مجانية*، ودون *تسجيل*."
+    }
+   ]
+  },
+  {
+   "id": "outro",
+   "start": 54,
+   "sfx": "chime",
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "*صوِّر الباركود*، وكن معنا."
+    }
+   ]
+  }
+ ]
 }
