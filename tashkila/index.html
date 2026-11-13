@@ -53,7 +53,7 @@ button,select,input,textarea,.club,.slot,.pl,.list,.sheet{touch-action:pan-y}
 .pic img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 12%;display:block}
 .pic i{position:absolute;bottom:-5px;left:-6px;min-width:22px;height:22px;padding:0 4px;border-radius:11px;font:700 12px/22px Readex;font-style:normal;text-align:center;direction:ltr;box-shadow:0 0 0 1.5px rgba(255,255,255,.85)}
 .pl .pic{width:42px;height:42px;border-width:2.5px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}.pl .pic i{min-width:19px;height:19px;font-size:11px;line-height:19px;bottom:-4px;left:-5px}
-.pname{font:600 11px Readex;line-height:1.25;background:rgba(0,0,0,.55);padding:2px 7px;border-radius:7px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pname{font:600 10.5px Readex;line-height:1.3;background:rgba(0,0,0,.55);padding:2px 6px;border-radius:7px;max-width:140%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .slot.empty .pname{background:transparent;color:rgba(255,255,255,.85);font-weight:500}
 .actions{display:flex;gap:8px;margin-top:14px;position:relative;z-index:2}
 .btn{flex:1;border:0;border-radius:14px;padding:14px 10px;font:700 16px Readex;cursor:pointer;min-height:48px}
@@ -300,6 +300,7 @@ function crestSrc(c){return c.crestFile||'assets/crests/'+(c.crest||c.id)+'.png'
 const PHOTO=p=>p&&p[5]?(String(p[5]).startsWith('nt/')?'assets/'+p[5]:'../mano/assets/p/'+p[5])+'.webp':null;
 const SIL='<svg viewBox="0 0 100 100" style="width:100%;height:100%;border-radius:50%"><rect width="100" height="100" fill="#13283a"/><circle cx="50" cy="40" r="19" fill="#2a4a63"/><path d="M14 100 Q16 66 50 64 Q84 66 86 100Z" fill="#2a4a63"/></svg>';
 function picHTML(p,k){return (PHOTO(p)?'<img src="'+PHOTO(p)+'" alt="" loading="lazy">':SIL)+(p[0]==null||p[0]===''?'':'<i style="background:'+k.body+';color:'+k.num+'">'+(p[0]??'')+'</i>')}
+function LBL(){const m={};xi.forEach(p=>{if(p){const l=p[6]||p[1];m[l]=(m[l]||0)+1}});return p=>{const l=p[6]||p[1];return m[l]>1?p[1].replace(/\bعبد (الله|العزيز|الرحمن|الرحيم|الكريم|القادر|المجيد|السلام)\b/g,'عبد$1'):l}}
 function key(p){return (p[0]??'')+'|'+p[1]}
 
 /* المنتخب والأندية: تنبني بعد ما تنحمل squads.json */
@@ -334,7 +335,7 @@ function pickClub(c,btn){
 }
 
 function renderPitch(){
-  const box=$('slots');box.innerHTML='';
+  const box=$('slots');box.innerHTML='';const lb=LBL();
   FMS[fm].forEach(([x,y,r],i)=>{
     const p=xi[i];const b=document.createElement('button');
     b.className='slot'+(p?'':' empty');b.style.left=x+'%';b.style.top=y+'%';
@@ -342,7 +343,7 @@ function renderPitch(){
     const s=document.createElement('span');const k=kit(r);
     if(p){s.className='pic';s.style.setProperty('--rb',k.body);s.innerHTML=picHTML(p,k)}
     else{s.className='pic add';s.textContent='+'}
-    const t=document.createElement('span');t.className='pname';t.textContent=p?short(p[1]):ROLE[r];
+    const t=document.createElement('span');t.className='pname';t.textContent=p?lb(p):ROLE[r];
     b.append(s,t);b.onclick=()=>openSheet(i);box.appendChild(b);
   });
   const n=xi.filter(Boolean).length;$('count').textContent=n+' / 11 لاعب';
@@ -449,7 +450,7 @@ async function drawCard(){
   drawContain(x,logo,34,14,176,176);
   // اللاعبين
   x.textAlign='center';
-  const PH=await Promise.all(xi.map(p=>PHOTO(p)?loadImg(PHOTO(p)).catch(()=>null):null));
+  const lb=LBL();const PH=await Promise.all(xi.map(p=>PHOTO(p)?loadImg(PHOTO(p)).catch(()=>null):null));
   FMS[fm].forEach(([fx,fy],i)=>{
     const p=xi[i];if(!p)return;const cx=P.x+P.w*fx/100,cy=P.y+P.h*fy/100-16,R=42;const k=kit(FMS[fm][i][2]);
     {const im=PH[i],r=48,c0=cy-2;
@@ -461,7 +462,7 @@ async function drawCard(){
       x.restore();
       const bx=cx-r*.78,by=c0+r*.72;if(p[0]!=null&&p[0]!==''){x.beginPath();x.arc(bx,by,19,0,7);x.fillStyle='#fff';x.fill();x.beginPath();x.arc(bx,by,17,0,7);x.fillStyle=k.body;x.fill();
       x.fillStyle=k.num;x.font='700 20px Readex';x.textBaseline='middle';x.direction='ltr';x.fillText(p[0]??'',bx,by+1);x.direction='rtl'}
-      x.font='600 24px Readex';const nm=x.measureText(p[1]).width>185?short(p[1]):p[1];const s=fitText(x,nm,185,24,'600');const tw=x.measureText(nm).width;
+      x.font='600 24px Readex';const nm=lb(p);const s=fitText(x,nm,185,24,'600');const tw=x.measureText(nm).width;
       x.fillStyle='rgba(0,0,0,.62)';rr(x,cx-tw/2-12,cy+R+6,tw+24,s+16,9);x.fill();
       x.fillStyle='#fff';x.font='600 '+s+'px Readex';x.fillText(nm,cx,cy+R+6+(s+16)/2+1);return}
     x.save();x.translate(cx-R,cy-R);x.scale(R*2/100,R*2/100);
@@ -471,7 +472,7 @@ async function drawCard(){
     x.strokeStyle=k.trim;x.lineWidth=6;x.stroke(new Path2D('M42 2 Q50 11 58 2'));x.lineWidth=7;x.stroke(new Path2D('M5 22 L15 42 M95 22 L85 42'));
     x.restore();
     x.fillStyle=k.num;x.font='700 30px Readex';x.textBaseline='middle';x.direction='ltr';x.fillText(p[0]??'',cx,cy+7);x.direction='rtl';
-    x.font='600 24px Readex';const nm=x.measureText(p[1]).width>185?short(p[1]):p[1];const s=fitText(x,nm,185,24,'600');const tw=x.measureText(nm).width;
+    x.font='600 24px Readex';const nm=lb(p);const s=fitText(x,nm,185,24,'600');const tw=x.measureText(nm).width;
     x.fillStyle='rgba(0,0,0,.62)';rr(x,cx-tw/2-12,cy+R+6,tw+24,s+16,9);x.fill();
     x.fillStyle='#fff';x.font='600 '+s+'px Readex';x.fillText(nm,cx,cy+R+6+(s+16)/2+1);
   });
