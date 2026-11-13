@@ -1,9 +1,11 @@
 # «قيّم اللاعبين»: يسحب التشكيلات والتبديلات والنتايج من موقع اتحاد الكرة وينشر rate/data.json
+# GitHub يأخّر الجداول (*/10 كانت تشتغل تقريباً مرة بالساعة)، فكل تشغيل في وقت المباريات
+# يظل شغّال لين ~3 ساعات ويسحب البيانات كل 8 دقايق. التشغيلات الجاية تنتظر في الطابور وتكمّل وراه، فما في فراغ.
 name: rate-data
 on:
   schedule:
-    - cron: '*/10 11-21 * * *'   # 3 العصر لين 2 الفجر بتوقيت الإمارات: كل 10 دقايق (وقت المباريات)
-    - cron: '17 3 * * *'          # مرة الصبح لتحديث قائمة المباريات
+    - cron: '7 11-21 * * *'    # 3 العصر لين 2 الفجر بتوقيت الإمارات (كل تشغيل يلف لحاله كل 8 دقايق)
+    - cron: '17 3 * * *'       # مرة الصبح لتحديث قائمة المباريات
   workflow_dispatch:
 permissions:
   contents: write
@@ -13,19 +15,33 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 190
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install pillow
-      - run: python3 _tools/rate/build.py
-      - name: commit
+      - name: loop
         run: |
           git config user.name "el3azy-bot"
           git config user.email "el3azy-bot@users.noreply.github.com"
-          git add rate/data.json rate/p
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "قيّم اللاعبين: تحديث المباريات" -q
-          git pull --rebase -q && git push -q
+          start=$(date -u +%s)
+          h=$(date -u +%H)
+          # نهاية وقت المباريات = 22:05 UTC (2:05 الفجر بتوقيت الإمارات)، وأقصى مدة للتشغيل 175 دقيقة
+          win_end=$(date -u -d "today 22:05" +%s)
+          deadline=$(( start + 175*60 ))
+          [ "$win_end" -lt "$deadline" ] && deadline=$win_end
+          # برا وقت المباريات (تشغيل الصبح أو يدوي): مرة وحدة بس
+          if [ "$h" -lt 11 ] || [ "$h" -ge 22 ]; then deadline=$start; fi
+          while :; do
+            python3 _tools/rate/build.py || echo "::warning::build.py فشل في هالدورة"
+            git add rate/data.json rate/p
+            if ! git diff --cached --quiet; then
+              git commit -m "قيّم اللاعبين: تحديث المباريات" -q
+              git pull --rebase -q && git push -q || echo "::warning::push فشل في هالدورة"
+            fi
+            now=$(date -u +%s)
+            [ $(( now + 8*60 )) -ge "$deadline" ] && break
+            sleep 480
+          done
