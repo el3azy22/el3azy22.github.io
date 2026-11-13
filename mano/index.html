@@ -172,7 +172,6 @@ footer a{color:inherit}
 <div class="toast" id="toast"></div>
 <div class="wrap">
   <nav class="topnav" aria-label="التنقل">
-    <button type="button" id="navBack" aria-label="رجوع"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6"/></svg></button>
     <a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg></a>
   </nav>
   <header>
@@ -615,13 +614,5 @@ function confetti(){
 })();
 </script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script>
-(function(){var b=document.getElementById('navBack');if(!b)return;b.onclick=function(){
-  var q=new URLSearchParams(location.search);
-  if(q.has('m')&&typeof go==='function'){go();return}
-  var sameRef=document.referrer&&document.referrer.indexOf(location.origin)===0;
-  if(sameRef&&history.length>1){history.back()}else{location.href='../'}
-}})();
-</script>
 </body>
 </html>
