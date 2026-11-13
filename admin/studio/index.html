@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>استوديو المحتوى · منصة العازي</title>
+<link rel="icon" href="../../assets/icon/favicon-64.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--ivory:#FFF5E5}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Readex Pro',system-ui,sans-serif;background:var(--navy);color:var(--ivory);padding:calc(14px + env(safe-area-inset-top)) 14px calc(30px + env(safe-area-inset-bottom))}
+.wrap{max-width:560px;margin:0 auto}
+header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
+header img{width:46px;height:46px}
+header h1{font-size:20px}
+header p{font-size:12.5px;opacity:.65}
+header a{margin-inline-start:auto;width:38px;height:38px;border:1px solid rgba(215,180,101,.5);border-radius:12px;display:grid;place-items:center;color:var(--gold)}
+header a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.note{font-size:12.5px;opacity:.75;line-height:1.8;margin:10px 0 4px}
+.card{background:var(--navy2);border:1px solid rgba(215,180,101,.25);border-radius:18px;padding:14px;margin-top:16px}
+.card h2{font-size:16px;color:var(--gold);display:flex;align-items:center;gap:8px}
+.card h2 small{font-size:11.5px;color:var(--ivory);opacity:.6;font-weight:400;margin-inline-start:auto}
+.when{font-size:12.5px;opacity:.75;margin:4px 0 10px;line-height:1.7}
+.step{display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.step button{width:38px;height:38px;border-radius:11px;border:1px solid rgba(215,180,101,.45);background:var(--navy);color:var(--gold);font-size:20px;font-family:inherit}
+.step b{flex:1;text-align:center;font-size:15px}
+.prev{width:100%;border-radius:12px;display:block;background:#051521;aspect-ratio:4/5}
+.tw{background:var(--navy);border:1px dashed rgba(215,180,101,.35);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.8;white-space:pre-line;margin-top:10px}
+.btns{display:flex;gap:8px;margin-top:10px}
+.btn{flex:1;border:0;border-radius:12px;padding:12px;font:600 14.5px 'Readex Pro';background:linear-gradient(180deg,#F6E3AE,#B08A3E);color:#071D2B}
+.btn.g{background:transparent;color:var(--gold);border:1px solid rgba(215,180,101,.5)}
+.btn:disabled{opacity:.45}
+.empty{padding:26px 10px;text-align:center;opacity:.7;font-size:13.5px;line-height:1.9}
+.toast{position:fixed;bottom:calc(24px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%) translateY(30px);background:var(--gold);color:var(--navy);padding:10px 18px;border-radius:12px;font-weight:600;font-size:14px;opacity:0;transition:.25s;pointer-events:none;z-index:9}
+.toast.on{opacity:1;transform:translateX(-50%)}
+</style>
+</head>
+<body>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <header>
+    <img src="../../mano/assets/logo.png" alt="">
+    <div><h1>استوديو المحتوى</h1><p>صور X اليومية من أرقام المنصة الحقيقية</p></div>
+    <a href="../" aria-label="لوحة الإحصائيات" onclick="this.href='../'+location.hash"><svg viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-5M12 16V7M17 16v-8"/></svg></a>
+  </header>
+  <p class="note">كل صورة تطلع جاهزة مع نص التغريدة. على الآيفون اضغط «شارك الصورة» وبعدين X أو «حفظ الصورة»، وعقبها «انسخ النص».</p>
+
+  <section class="card" id="cA">
+    <h2>🕵️ تحدي اليوم بدا <small>بدون كشف اللاعب</small></h2>
+    <p class="when">انشرها 12 بالليل. تقدر تجهز صور الأيام الياية من الحين وتجدولها في X.</p>
+    <div class="step"><button data-d="-1">›</button><b id="dA">—</b><button data-d="1">‹</button></div>
+    <img class="prev" id="iA" alt="">
+    <div class="tw" id="tA"></div>
+    <div class="btns"><button class="btn" data-share="A">شارك الصورة</button><button class="btn g" data-copy="A">انسخ النص</button></div>
+  </section>
+
+  <section class="card" id="cB">
+    <h2>✅ جواب أمس <small>أرقام الجماهير الحقيقية</small></h2>
+    <p class="when">انشرها الصبح. فيها اسم لاعب أمس ونسبة اللي عرفوه.</p>
+    <div class="step"><button data-d="-1">›</button><b id="dB">—</b><button data-d="1">‹</button></div>
+    <div id="bB"><img class="prev" id="iB" alt=""><div class="tw" id="tB"></div>
+    <div class="btns"><button class="btn" data-share="B">شارك الصورة</button><button class="btn g" data-copy="B">انسخ النص</button></div></div>
+  </section>
+
+  <section class="card" id="cC">
+    <h2>🏆 تحدي الأندية <small>ترتيب جماهير الأندية</small></h2>
+    <p class="when">انشرها نص الأسبوع عشان تشعل المنافسة، وفي آخر يوم من الأسبوع عشان تعلن البطل.</p>
+    <div class="step"><button data-d="-1">›</button><b id="dC">—</b><button data-d="1">‹</button></div>
+    <div id="bC"><img class="prev" id="iC" alt=""><div class="tw" id="tC"></div>
+    <div class="btns"><button class="btn" data-share="C">شارك الصورة</button><button class="btn g" data-copy="C">انسخ النص</button></div></div>
+  </section>
+</div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const A='../../mano/';const URL_M='https://el3azy.com/mano/';
+const FB='https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app';
+const DEMO=/[?&]demo\b/.test(location.search);
+const CREST={jazira:[1,1],sharjah:[.979,1.133],dhafra:[.92,1.106],ain:[.83,1.197],nasr:[1,1],wahda:[.91,1.176],wasl:[.973,1.165],baniyas:[1.234,.681],hatta:[.989,1.122],khorfakkan:[1.048,1.069],shababahli:[1.037,1.074],ajman:[1.154,1.016],kalba:[.995,1],united:[.995,.995]};
+const ORDER=['ain','wahda','jazira','shababahli','sharjah','wasl','nasr','baniyas','ajman','kalba','khorfakkan','dhafra','hatta','united'];
+const POS={GK:'حارس مرمى',DF:'مدافع',MD:'لاعب وسط',FW:'مهاجم'};
+const WEEK=7,MINP=3,F="'Readex Pro'";
+const SADU="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M0 11 9 2.5 18 11' fill='none' stroke='%23D7B465' stroke-width='1.3'/%3E%3Cpath d='M9 6.6 11.2 8.8 9 11 6.8 8.8Z' fill='%23D7B465'/%3E%3C/svg%3E";
+let toastT;const toast=t=>{const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1900)};
+const IMG={};const img=s=>IMG[s]||(IMG[s]=new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=s}));
+const imgOK=s=>img(s).catch(()=>null);
+function rr(x,X,Y,W,H,R){x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+W,Y,X+W,Y+H,R);x.arcTo(X+W,Y+H,X,Y+H,R);x.arcTo(X,Y+H,X,Y,R);x.arcTo(X,Y,X+W,Y,R);x.closePath()}
+const pctTxt=n=>n+'%';
+/* سطر عربي مركّب من أجزاء (يتفادى لخبطة الأرقام وسط العربي) */
+function segs(x,cx,y,list,align='center'){
+  const ws=list.map(([t,f])=>{x.font=f;return x.measureText(t).width});const tot=ws.reduce((a,b)=>a+b,0);
+  let cur=align==='center'?cx+tot/2:cx;x.textAlign='right';
+  list.forEach(([t,f,c],i)=>{x.font=f;x.fillStyle=c;x.direction=/[؀-ۿ]/.test(t)?'rtl':'ltr';x.fillText(t,cur,y);cur-=ws[i]});x.direction='rtl';
+}
+function crestAt(x,im,c,cx,cy,base,a=1){if(!im)return;const f=CREST[c]||[1,1];const w=base*f[0],h=base*f[1];x.globalAlpha=a;x.drawImage(im,cx-w/2,cy-h/2,w,h);x.globalAlpha=1}
+
+let D,BY,TODAY,CR={},LOGO,SADUI;
+const dubaiIdx=()=>{const n=new Date(Date.now()+4*3600e3);const t=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate());const [y,m,d]=D.start.split('-').map(Number);return Math.floor((t-Date.UTC(y,m-1,d))/864e5)};
+const ansOf=d=>BY[D.schedule[(d-1)%D.schedule.length]];
+const wkOf=d=>Math.floor((d-1)/WEEK)+1;
+
+/* الإطار المشترك */
+function frame(tag){
+  const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  x.direction='rtl';x.textBaseline='middle';
+  let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0C2638');g.addColorStop(.55,'#071D2B');g.addColorStop(1,'#051521');x.fillStyle=g;x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(W*.85,-40,0,W*.85,-40,720);g.addColorStop(0,'rgba(215,180,101,.30)');g.addColorStop(1,'rgba(215,180,101,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  g=x.createRadialGradient(W*.1,H+60,0,W*.1,H+60,700);g.addColorStop(0,'rgba(20,56,79,.9)');g.addColorStop(1,'rgba(20,56,79,0)');x.fillStyle=g;x.fillRect(0,0,W,H);
+  x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(x,28,28,W-56,H-56,40);x.stroke();
+  // header
+  if(LOGO)x.drawImage(LOGO,W-80-170,62,170,170);
+  const R=W-80-170-28;x.textAlign='right';
+  x.fillStyle='#D7B465';x.font=`600 34px ${F}`;x.fillText('تحدي العازي اليومي',R,100);
+  x.fillStyle='#FFF5E5';x.font=`700 86px ${F}`;x.fillText('منو اللاعب؟',R,168);
+  x.font=`600 30px ${F}`;const tw=x.measureText(tag).width+44;
+  x.fillStyle='rgba(215,180,101,.14)';rr(x,R-tw,206,tw,52,26);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
+  x.fillStyle='#D7B465';x.fillText(tag,R-22,233);
+  // sadu
+  if(SADUI){x.globalAlpha=.7;for(let i=0;i<20;i++)x.drawImage(SADUI,W/2-180+i*18,290,18,12);x.globalAlpha=1}
+  return {cv,x,W,H};
+}
+function footer(x,W,cta){
+  x.strokeStyle='rgba(215,180,101,.3)';x.lineWidth=2;x.beginPath();x.moveTo(90,1240);x.lineTo(W-90,1240);x.stroke();
+  x.fillStyle='#FFF5E5';x.font=`600 32px ${F}`;x.textAlign='right';x.direction='rtl';x.fillText(cta,W-90,1284);
+  x.direction='ltr';x.textAlign='left';x.fillStyle='#D7B465';x.font=`600 32px ${F}`;x.fillText('el3azy.com/mano',90,1284);x.direction='rtl';
+}
+const blobOf=cv=>new Promise((ok,no)=>cv.toBlob(b=>b?ok(b):no(),'image/png'));
+
+/* A: تحدي اليوم بدا */
+async function cardA(d){
+  const {cv,x,W}=frame(d===1?'التحدي الأول':'تحدي #'+d);
+  const cx=W/2,cy=520,R=150;
+  x.save();x.beginPath();x.arc(cx,cy,R,0,7);const rg=x.createRadialGradient(cx,cy-50,10,cx,cy,R);rg.addColorStop(0,'#1d4a66');rg.addColorStop(1,'#0C2638');x.fillStyle=rg;x.fill();x.clip();
+  x.fillStyle='#14384F';x.beginPath();x.arc(cx,cy-36,58,0,7);x.fill();x.beginPath();x.moveTo(cx-112,cy+R);x.quadraticCurveTo(cx-106,cy+40,cx,cy+37);x.quadraticCurveTo(cx+106,cy+40,cx+112,cy+R);x.fill();x.restore();
+  x.strokeStyle='#D7B465';x.lineWidth=6;x.beginPath();x.arc(cx,cy,R,0,7);x.stroke();
+  x.fillStyle='#D7B465';x.font=`700 120px ${F}`;x.textAlign='center';x.fillText('؟',cx,cy+10);
+  x.fillStyle='#F0D99A';x.font=`700 64px ${F}`;x.fillText(d===1?'انطلق أول تحدي!':'لاعب اليوم السري يديد',cx,748);
+  segs(x,cx,816,[['لاعب من دوري أدنوك للمحترفين، وعندك ',`500 32px ${F}`,'rgba(255,245,229,.75)'],['6',`700 34px ${F}`,'#D7B465'],[' محاولات',`500 32px ${F}`,'rgba(255,245,229,.75)']]);
+  const s=104,gap=18,tot=6*s+5*gap,y=880;
+  for(let i=0;i<6;i++){const X=cx+tot/2-s-i*(s+gap);rr(x,X,y,s,s,24);x.strokeStyle='rgba(215,180,101,.45)';x.lineWidth=3;x.setLineDash([10,8]);x.stroke();x.setLineDash([]);
+    x.fillStyle='rgba(255,245,229,.5)';x.font=`600 30px ${F}`;x.fillText(String(i+1),X+s/2,y+s/2+2)}
+  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 26px ${F}`;x.fillText('من أي نادي؟',cx,1040);
+  const cols=7,cw=(W-200)/cols;ORDER.forEach((c,i)=>{const col=i%cols,row=i/cols|0;crestAt(x,CR[c],c,W-100-cw/2-col*cw,1098+row*74,50,.9)});
+  footer(x,W,'تقدر تعرفه؟');
+  const text=d===1?`🕵️ انطلق أول تحدي في «منو اللاعب؟»\nلاعب سري من دوري أدنوك للمحترفين، وعندك 6 محاولات تعرفه.\n\nيلا نشوف منو يعرفه أول 👇\n${URL_M}`
+    :`🕵️ منو اللاعب؟ تحدي #${d}\nلاعب سري يديد من دوري أدنوك للمحترفين، وعندك 6 محاولات.\n\nتقدر تعرفه؟ 👇\n${URL_M}`;
+  return {cv,text};
+}
+
+/* B: جواب أمس */
+async function cardB(d){
+  const p=ansOf(d);
+  let se,sp;
+  if(DEMO){se={n:412,w:288,g1:21,g2:57,g3:83,g4:66,g5:39,g6:22};sp={n:136,w:51}}
+  else{[se,sp]=await Promise.all(['easy','pro'].map(m=>fetch(`${FB}/s/${d}/${m}.json`).then(r=>r.json()).catch(()=>null)))}
+  se=se||{n:0,w:0};sp=sp||{n:0,w:0};
+  const {cv,x,W}=frame('جواب تحدي #'+d);
+  const cx=W/2,cy=505,R=140;
+  const ph=p.ph?await imgOK(A+'assets/p/'+p.id+'.webp'):null;
+  x.save();x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=30;x.beginPath();x.arc(cx,cy,R+8,0,7);x.fillStyle='#D7B465';x.fill();x.restore();
+  x.save();x.beginPath();x.arc(cx,cy,R,0,7);x.fillStyle='#0C2638';x.fill();x.clip();
+  if(ph){const sc=(R*2)/Math.min(ph.width,ph.height),iw=ph.width*sc,ih=ph.height*sc;x.drawImage(ph,cx-iw/2,cy-R-(ih-R*2)*.1,iw,ih)}
+  else crestAt(x,CR[p.c],p.c,cx,cy,150);
+  x.restore();
+  // شعار النادي
+  x.beginPath();x.arc(cx-R*.74,cy+R*.74,44,0,7);x.fillStyle='#071D2B';x.fill();x.strokeStyle='#D7B465';x.lineWidth=3;x.stroke();crestAt(x,CR[p.c],p.c,cx-R*.74,cy+R*.74,52);
+  x.textAlign='center';x.fillStyle='#FFF5E5';x.font=`700 66px ${F}`;x.fillText(p.n,cx,696);
+  x.direction='ltr';x.fillStyle='rgba(255,245,229,.6)';x.font=`500 30px ${F}`;x.fillText(p.e,cx,764);x.direction='rtl';
+  segs(x,cx,812,[[D.clubs[p.c],`600 30px ${F}`,'#D7B465'],['  ·  ',`500 30px ${F}`,'rgba(255,245,229,.4)'],[POS[p.p],`500 30px ${F}`,'rgba(255,245,229,.85)'],['  ·  ',`500 30px ${F}`,'rgba(255,245,229,.4)'],[p.nat,`500 30px ${F}`,'rgba(255,245,229,.85)'],['  ·  ',`500 30px ${F}`,'rgba(255,245,229,.4)'],['رقم ',`500 30px ${F}`,'rgba(255,245,229,.85)'],[String(p.no),`600 30px ${F}`,'rgba(255,245,229,.85)']]);
+  // أرقام الجماهير
+  const pe=se.n?Math.round(se.w/se.n*100):null,pp=sp.n?Math.round(sp.w/sp.n*100):null;
+  const box=(X,label,pc,n)=>{rr(x,X,862,400,200,26);x.fillStyle='rgba(20,56,79,.6)';x.fill();x.strokeStyle='rgba(215,180,101,.35)';x.lineWidth=2;x.stroke();
+    x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText(label,X+200,906);
+    x.direction='ltr';x.fillStyle='#D7B465';x.font=`700 76px ${F}`;x.fillText(pc==null?'—':pctTxt(pc),X+200,975);x.direction='rtl';
+    x.fillStyle='rgba(255,245,229,.55)';x.font=`500 24px ${F}`;segs(x,X+200,1030,n?[['لعبوا: ',`500 24px ${F}`,'rgba(255,245,229,.55)'],[n.toLocaleString('en-US'),`600 24px ${F}`,'rgba(255,245,229,.75)']]:[['ما لعب أحد',`500 24px ${F}`,'rgba(255,245,229,.55)']])};
+  box(W/2+20,'الوضع العادي',pe,se.n);box(W/2-420,'وضع الخبير',pp,sp.n);
+  // أكثر محاولة
+  if(se.w){let bi=1;for(let i=2;i<=6;i++)if((se['g'+i]||0)>(se['g'+bi]||0))bi=i;
+    segs(x,cx,1110,[['أغلب الجماهير عرفوه من المحاولة ',`500 28px ${F}`,'rgba(255,245,229,.7)'],[String(bi),`700 30px ${F}`,'#D7B465']]);
+    const one=se.g1||0;if(one)segs(x,cx,1160,[['و',`500 28px ${F}`,'rgba(255,245,229,.7)'],[one.toLocaleString('en-US'),`700 30px ${F}`,'#F0D99A'],[' عرفوه من أول محاولة 🔥',`500 28px ${F}`,'rgba(255,245,229,.7)']])}
+  footer(x,W,'تحدي اليوم بدا');
+  const tot=(se.n||0)+(sp.n||0);
+  const line=pe==null?'':pe<50?`${pe}% بس عرفوه في الوضع العادي`:`${pe}% من الجماهير عرفوه في الوضع العادي`;
+  const text=`✅ جواب تحدي #${d}: ${p.n}\n${line}${pp!=null?`، و${pp}% في وضع الخبير`:''}${line?'.':''}${tot?`\nلعبوا أمس: ${tot.toLocaleString('en-US')}`:''}\n\nتحدي اليوم بدا 👇\n${URL_M}`;
+  return {cv,text,empty:!tot&&!DEMO};
+}
+
+/* C: تحدي الأندية */
+function tally(raw,from,to){
+  const T={};ORDER.forEach(k=>T[k]={k,n:0,t:0});
+  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,o])=>{if(T[k]&&o){T[k].n+=o.n||0;T[k].t+=o.t||0}}))});
+  return Object.values(T).map(o=>(o.avg=o.n>=MINP?o.t/o.n:-1,o)).sort((a,b)=>b.avg-a.avg||b.n-a.n||ORDER.indexOf(a.k)-ORDER.indexOf(b.k));
+}
+async function cardC(wk){
+  const f=(wk-1)*WEEK+1,l=f+WEEK-1;
+  let raw;
+  if(DEMO){raw={};ORDER.forEach((k,i)=>{const n=[96,71,64,58,49,40,37,22,18,15,11,7,4,2][i];raw[f]=raw[f]||{easy:{}};raw[f].easy[k]={n,t:Math.round(n*(4.6-i*.17))}})}
+  else raw=await fetch(`${FB}/c.json?orderBy=${encodeURIComponent('"$key"')}&startAt=${encodeURIComponent('"'+f+'"')}&endAt=${encodeURIComponent('"'+l+'"')}`).then(r=>r.json()).catch(()=>null);
+  const T=tally(raw,f,l);const done=TODAY>l;const top=T[0];
+  const {cv,x,W}=frame('تحدي الأندية · الأسبوع '+wk);
+  x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 54px ${F}`;
+  x.fillText(done?'بطل الأسبوع':'الترتيب لين الحين',W/2,360);
+  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 25px ${F}`;x.fillText('معدل نقاط كل جمهور (من أول محاولة 6 نقاط … سادس محاولة نقطة)',W/2,412);
+  const mx=Math.max(.1,...T.map(o=>o.avg));const y0=470,rh=52;
+  x.font=`500 22px ${F}`;x.fillStyle='rgba(255,245,229,.45)';x.textAlign='center';x.fillText('المعدل',190,y0-24);x.fillText('لعبوا',110,y0-24);
+  T.forEach((o,i)=>{const y=y0+i*rh;const lead=i===0&&o.avg>=0;
+    if(lead){rr(x,80,y-4,W-160,rh-6,14);x.fillStyle='rgba(215,180,101,.16)';x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke()}
+    const cy=y+rh/2-5;x.textAlign='center';x.fillStyle=lead?'#D7B465':'rgba(255,245,229,.55)';x.font=`600 26px ${F}`;x.fillText(o.avg>=0?String(i+1):'–',W-112,cy);
+    crestAt(x,CR[o.k],o.k,W-170,cy,34);
+    x.textAlign='right';x.fillStyle=o.avg>=0?'#FFF5E5':'rgba(255,245,229,.45)';x.font=`${lead?700:500} 28px ${F}`;x.fillText(D.clubs[o.k],W-205,cy);
+    const bx=250,bw=W-205-200-bx;rr(x,bx,cy-7,bw,14,7);x.fillStyle='rgba(255,245,229,.07)';x.fill();
+    if(o.avg>0){const w=Math.max(14,bw*o.avg/mx);rr(x,bx+bw-w,cy-7,w,14,7);const gg=x.createLinearGradient(bx+bw-w,0,bx+bw,0);gg.addColorStop(0,'#B08A3E');gg.addColorStop(1,'#F6E3AE');x.fillStyle=gg;x.fill()}
+    x.textAlign='center';x.direction='ltr';x.fillStyle=lead?'#D7B465':'#FFF5E5';x.font=`700 26px ${F}`;x.fillText(o.avg>=0?o.avg.toFixed(1):'—',190,cy);
+    x.fillStyle='rgba(255,245,229,.5)';x.font=`500 22px ${F}`;x.fillText(o.n?o.n.toLocaleString('en-US'):'',110,cy);x.direction='rtl'});
+  footer(x,W,'العب وارفع ترتيب ناديك');
+  const ok=top&&top.avg>=0;
+  const text=ok?(done?`🏆 بطل تحدي الأندية · الأسبوع ${wk}\nجمهور ${D.clubs[top.k]} بمعدل ${top.avg.toFixed(1)} نقطة 👏\n\nالأسبوع اليديد بدا، العب وارفع ترتيب ناديك 👇\n${URL_M}`
+    :`🏆 تحدي الأندية · الأسبوع ${wk}\nجمهور ${D.clubs[top.k]} متصدر بمعدل ${top.avg.toFixed(1)} نقطة.\nكل يوم تلعب «منو اللاعب؟» نتيجتك تنحسب لجمهور ناديك.\n\nمنو بيلحقهم؟ 👇\n${URL_M}`):'';
+  return {cv,text,empty:!ok};
+}
+
+/* واجهة */
+const OUT={};
+async function show(k,fn,arg,label,emptyMsg){
+  $('#d'+k).textContent=label;
+  const r=await fn(arg);const blob=await blobOf(r.cv);
+  const box=$('#b'+k);
+  if(r.empty){if(box){box.dataset.html=box.dataset.html||box.innerHTML;box.innerHTML=`<div class="empty">${emptyMsg}</div>`}OUT[k]=null;return}
+  if(box&&box.dataset.html&&!$('#i'+k)){box.innerHTML=box.dataset.html;bindBtns()}
+  if(OUT[k]&&OUT[k].url)URL.revokeObjectURL(OUT[k].url);
+  OUT[k]={blob,text:r.text,url:URL.createObjectURL(blob),name:`el3azy-${k}-${arg}.png`};
+  $('#i'+k).src=OUT[k].url;$('#t'+k).textContent=r.text;
+}
+let dA,dB,wC;
+const rA=()=>show('A',cardA,dA,(dA===1?'التحدي الأول':'تحدي #'+dA)+(dA===Math.max(1,TODAY)?' · اليوم':dA===TODAY+1?' · باجر':''));
+const rB=()=>show('B',cardB,dB,'جواب تحدي #'+dB+(dB===TODAY-1?' · أمس':''),'ما في أرقام لهاليوم بعد.<br>الصورة تطلع عقب أول يوم من التحدي.');
+const rC=()=>show('C',cardC,wC,'الأسبوع '+wC,'ما في أندية وصلت '+MINP+' لاعبين هالأسبوع بعد.<br>ارجع عقب ما الجماهير تلعب.');
+function bindBtns(){
+  document.querySelectorAll('[data-share]').forEach(b=>b.onclick=async()=>{const o=OUT[b.dataset.share];if(!o)return;
+    const file=new File([o.blob],o.name,{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file]});return}catch(e){if(e&&e.name==='AbortError')return}}
+    const a=document.createElement('a');a.href=o.url;a.download=o.name;document.body.appendChild(a);a.click();a.remove();toast('نزلت الصورة')});
+  document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=async()=>{const o=OUT[b.dataset.copy];if(!o)return;
+    try{await navigator.clipboard.writeText(o.text);toast('✓ انسخ النص')}catch(e){const t=document.createElement('textarea');t.value=o.text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove();toast('✓ انسخ النص')}});
+}
+async function init(){
+  D=await fetch(A+'data.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json());
+  BY={};D.players.forEach(p=>BY[p.id]=p);
+  TODAY=dubaiIdx()+1;
+  const qd=+(new URLSearchParams(location.search).get('day')||0);if(qd)TODAY=qd;
+  try{await Promise.all([700,600,500].map(w=>document.fonts.load(`${w} 40px 'Readex Pro'`,'منو اللاعب؟ 0123')))}catch(e){}
+  [LOGO,SADUI]=await Promise.all([imgOK(A+'assets/logo.png'),imgOK(SADU)]);
+  const cs=await Promise.all(ORDER.map(c=>imgOK(A+'assets/'+c+'.png')));ORDER.forEach((c,i)=>CR[c]=cs[i]);
+  dA=Math.max(1,TODAY);dB=Math.max(1,TODAY-1);wC=wkOf(Math.max(1,TODAY));
+  bindBtns();
+  document.querySelectorAll('#cA [data-d]').forEach(b=>b.onclick=()=>{dA=Math.max(1,Math.min(D.schedule.length,dA+ +b.dataset.d));rA()});
+  document.querySelectorAll('#cB [data-d]').forEach(b=>b.onclick=()=>{dB=Math.max(1,Math.min(Math.max(1,TODAY-1),dB+ +b.dataset.d));rB()});
+  document.querySelectorAll('#cC [data-d]').forEach(b=>b.onclick=()=>{wC=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wC+ +b.dataset.d));rC()});
+  await rA();
+  if(TODAY<2&&!DEMO){$('#bB').innerHTML='<div class="empty">أول صورة «جواب أمس» تطلع صباح الأربعاء 18 نوفمبر.</div>';$('#dB').textContent='—'}else await rB();
+  if(TODAY<1&&!DEMO){$('#bC').innerHTML='<div class="empty">تحدي الأندية يبدا مع أول تحدي الثلاثاء 17 نوفمبر.</div>';$('#dC').textContent='—'}else await rC();
+}
+init().catch(e=>{document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="empty">ما قدرنا نحمّل البيانات، حدّث الصفحة.</div>')});
+})();
+</script>
+</body>
+</html>
