@@ -205,6 +205,7 @@ const store={get(k,d){try{const v=localStorage.getItem('el3azy_mano_'+k);return 
 let toastT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1900)}
 const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
 
+const gc=n=>{try{window.goatcounter&&window.goatcounter.count&&window.goatcounter.count({path:n,title:n,event:true})}catch(e){}};
 /* ---------- sound (صوت العازي) ---------- */
 let soundOn=store.get('sound',true);const SFX={};
 function sfx(n,vol=1){if(!soundOn)return;try{let a=SFX[n];if(!a){a=SFX[n]=new Audio('assets/sfx/'+n+'.mp3');a.preload='auto'}a.pause();a.currentTime=0;a.volume=vol;const pr=a.play();pr&&pr.catch(()=>{})}catch(e){}}
@@ -322,8 +323,9 @@ function guess(id){
   save();
   if(S.done)record();
   render();
-  if(win){vib([30,40,60]);confetti();const n=S.guesses.length;sfx(n===1?'mainoon':n<=4?'kafu':'sawaha')}
-  else if(S.done){vib([60,40,60]);sfx('lose')}
+  if(S.guesses.length===1)gc('start-'+mode);
+  if(win){gc('win-'+mode);vib([30,40,60]);confetti();const n=S.guesses.length;sfx(n===1?'mainoon':n<=4?'kafu':'sawaha')}
+  else if(S.done){gc('lose-'+mode);vib([60,40,60]);sfx('lose')}
   else if(!S.done){vib(40);sfx('mubho',.85);if(mode==='easy')toast('🔓 انفتح تلميح يديد');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
   if(S.done)setTimeout(()=>{const r=document.querySelector('.result');r&&r.scrollIntoView({behavior:'smooth',block:'start'})},350);
 }
@@ -460,6 +462,7 @@ async function buildCard(){
   return await new Promise((ok,no)=>cv.toBlob(b=>b?ok(b):no(),'image/png'));
 }
 async function shareImage(){
+  gc('share-'+mode);
   if(!cardBlob){toast('لحظة، الصورة تتجهز...');return}
   const file=new File([cardBlob],`mano-${DAY}.png`,{type:'image/png'});
   const text=shareText();
@@ -489,5 +492,6 @@ function confetti(){
 }
 })();
 </script>
+<script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
