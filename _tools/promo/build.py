@@ -29,7 +29,7 @@ for s in TL['scenes']:
     x=load(os.path.join(SFX,s['sfx']+'.wav'))*10**(M.get('sfxGainDb',-9)/20);a=int(max(0,s['start']-.08)*SR);x=x[:len(mix)-a];mix[a:a+len(x)]+=x
 if VOICE:   # التعليق: -16 LUFS والموسيقى تنخفض تحته
   v=load(VOICE)[:len(mix)];v*=10**((-16-meter.integrated_loudness(v))/20)
-  env=np.abs(v).max(1);w=int(.25*SR);env=np.convolve(env,np.ones(w)/w,'same');duck=1-.78*np.clip(env/.02,0,1);mix[:len(v)]*=duck[:,None];mix[:len(v)]+=v
+  env=np.abs(v).max(1);w=int(.25*SR);env=np.convolve(env,np.ones(w)/w,'same');duck=1-.84*np.clip(env/.02,0,1);mix[:len(v)]*=duck[:,None];mix[:len(v)]+=v
 fi,fo=int(M['fadeIn']*SR),int(M['fadeOut']*SR);mix[:fi]*=np.linspace(0,1,fi)[:,None];mix[-fo:]*=(np.linspace(1,0,fo)**1.5)[:,None]
 pk=np.abs(mix).max();
 if pk>.89:mix=np.tanh(mix/pk*1.2)/np.tanh(1.2)*.89   # حد ناعم للقمم
