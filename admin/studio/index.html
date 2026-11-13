@@ -94,7 +94,7 @@ const pctTxt=n=>n+'%';
 function segs(x,cx,y,list,align='center'){
   const ws=list.map(([t,f])=>{x.font=f;return x.measureText(t).width});const tot=ws.reduce((a,b)=>a+b,0);
   let cur=align==='center'?cx+tot/2:cx;x.textAlign='right';
-  list.forEach(([t,f,c],i)=>{x.font=f;x.fillStyle=c;x.direction=/[؀-ۿ]/.test(t)?'rtl':'ltr';x.fillText(t,cur,y);cur-=ws[i]});x.direction='rtl';
+  list.forEach(([t,f,c],i)=>{x.font=f;x.fillStyle=c;x.direction=/[؀-ۿ]/.test(t)?'rtl':'ltr';x.fillText(t,cur,y);cur-=ws[i]});x.direction='rtl';x.textAlign='center';
 }
 function crestAt(x,im,c,cx,cy,base,a=1){if(!im)return;const f=CREST[c]||[1,1];const w=base*f[0],h=base*f[1];x.globalAlpha=a;x.drawImage(im,cx-w/2,cy-h/2,w,h);x.globalAlpha=1}
 
@@ -143,7 +143,7 @@ async function cardA(d){
   const s=104,gap=18,tot=6*s+5*gap,y=880;
   for(let i=0;i<6;i++){const X=cx+tot/2-s-i*(s+gap);rr(x,X,y,s,s,24);x.strokeStyle='rgba(215,180,101,.45)';x.lineWidth=3;x.setLineDash([10,8]);x.stroke();x.setLineDash([]);
     x.fillStyle='rgba(255,245,229,.5)';x.font=`600 30px ${F}`;x.fillText(String(i+1),X+s/2,y+s/2+2)}
-  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 26px ${F}`;x.fillText('من أي نادي؟',cx,1040);
+  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 26px ${F}`;x.fillText('اللاعب السري من أي نادي؟',cx,1040);
   const cols=7,cw=(W-200)/cols;ORDER.forEach((c,i)=>{const col=i%cols,row=i/cols|0;crestAt(x,CR[c],c,W-100-cw/2-col*cw,1098+row*74,50,.9)});
   footer(x,W,'تقدر تعرفه؟');
   const text=d===1?`🕵️ انطلق أول تحدي في «منو اللاعب؟»\nلاعب سري من دوري أدنوك للمحترفين، وعندك 6 محاولات تعرفه.\n\nيلا نشوف منو يعرفه أول 👇\n${URL_M}`
