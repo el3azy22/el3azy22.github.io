@@ -48,6 +48,11 @@ button,select,input,textarea,.club,.slot,.pl,.list,.sheet{touch-action:pan-y}
 .shirt svg{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
 .shirt b{position:relative;font:700 15px Readex;margin-top:5px;direction:ltr}
 .slot.empty .shirt{filter:none}
+.pic.add{border:2.5px dashed rgba(255,255,255,.9);background:rgba(0,0,0,.28);box-shadow:none;display:grid;place-items:center;font:700 20px Readex;color:#fff}
+.pic{position:relative;width:46px;height:46px;border-radius:50%;flex:none;background:#0d1a26;border:3px solid var(--rb,#fff);box-shadow:0 0 0 1.5px rgba(255,255,255,.85),0 5px 10px rgba(0,0,0,.45)}
+.pic img{width:100%;height:100%;border-radius:50%;object-fit:cover;object-position:50% 12%;display:block}
+.pic i{position:absolute;bottom:-5px;left:-6px;min-width:22px;height:22px;padding:0 4px;border-radius:11px;font:700 12px/22px Readex;font-style:normal;text-align:center;direction:ltr;box-shadow:0 0 0 1.5px rgba(255,255,255,.85)}
+.pl .pic{width:42px;height:42px;border-width:2.5px;box-shadow:0 0 0 1px rgba(0,0,0,.15)}.pl .pic i{min-width:19px;height:19px;font-size:11px;line-height:19px;bottom:-4px;left:-5px}
 .pname{font:600 11px Readex;line-height:1.25;background:rgba(0,0,0,.55);padding:2px 7px;border-radius:7px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .slot.empty .pname{background:transparent;color:rgba(255,255,255,.85);font-weight:500}
 .actions{display:flex;gap:8px;margin-top:14px;position:relative;z-index:2}
@@ -292,6 +297,9 @@ function short(n){if(n.length<=8)return n;const w=n.split(' ');let t=w[w.length-
 $('plab').addEventListener('input',e=>{byName=e.target.value.trim()});
 function toast(t){const e=$('toast');e.textContent=t;e.classList.add('on');clearTimeout(e._t);e._t=setTimeout(()=>e.classList.remove('on'),2200)}
 function crestSrc(c){return c.crestFile||'assets/crests/'+(c.crest||c.id)+'.png'}
+const PHOTO=p=>p&&p[5]?'../mano/assets/p/'+p[5]+'.webp':null;
+const SIL='<svg viewBox="0 0 100 100" style="width:100%;height:100%;border-radius:50%"><rect width="100" height="100" fill="#13283a"/><circle cx="50" cy="40" r="19" fill="#2a4a63"/><path d="M14 100 Q16 66 50 64 Q84 66 86 100Z" fill="#2a4a63"/></svg>';
+function picHTML(p,k){return (PHOTO(p)?'<img src="'+PHOTO(p)+'" alt="" loading="lazy">':SIL)+'<i style="background:'+k.body+';color:'+k.num+'">'+(p[0]??'')+'</i>'}
 function key(p){return (p[0]??'')+'|'+p[1]}
 
 /* المنتخب والأندية: تنبني بعد ما تنحمل squads.json */
@@ -331,8 +339,9 @@ function renderPitch(){
     const p=xi[i];const b=document.createElement('button');
     b.className='slot'+(p?'':' empty');b.style.left=x+'%';b.style.top=y+'%';
     b.setAttribute('aria-label',p?(p[1]+' رقم '+(p[0]??'')):('اختار '+ROLE[r]));
-    const s=document.createElement('span');s.className='shirt';s.innerHTML=shirtSVG(kit(r),!p);
-    const bn=document.createElement('b');const k=kit(r);bn.style.color=p?k.num:'#fff';bn.textContent=p?(p[0]??''):'+';s.appendChild(bn);
+    const s=document.createElement('span');const k=kit(r);
+    if(p){s.className='pic';s.style.setProperty('--rb',k.body);s.innerHTML=picHTML(p,k)}
+    else{s.className='pic add';s.textContent='+'}
     const t=document.createElement('span');t.className='pname';t.textContent=p?short(p[1]):ROLE[r];
     b.append(s,t);b.onclick=()=>openSheet(i);box.appendChild(b);
   });
@@ -368,7 +377,7 @@ function renderList(){
     groups[g].forEach(p=>{
       const b=document.createElement('button');b.className='pl';const k=key(p);
       const isCur=xi[active]&&key(xi[active])===k;b.disabled=used.has(k)&&!isCur;
-      const no=document.createElement('span');no.className='no';const kk=kit(p[2]||'');no.innerHTML=shirtSVG(kk,false)+'<i style="color:'+kk.num+'">'+(p[0]??'')+'</i>';
+      const no=document.createElement('span');const kk=kit(p[2]||'');no.className='pic';no.style.setProperty('--rb',kk.body);no.innerHTML=picHTML(p,kk);
       const nm=document.createElement('span');nm.textContent=p[1];
       b.append(no,nm);
       if(p[2]){const t=document.createElement('span');t.className='tag';t.textContent=p[4]?'مضاف · '+ROLE[p[2]]:ROLE[p[2]];b.appendChild(t)}
@@ -440,8 +449,21 @@ async function drawCard(){
   drawContain(x,logo,34,14,176,176);
   // اللاعبين
   x.textAlign='center';
+  const PH=await Promise.all(xi.map(p=>PHOTO(p)?loadImg(PHOTO(p)).catch(()=>null):null));
   FMS[fm].forEach(([fx,fy],i)=>{
     const p=xi[i];if(!p)return;const cx=P.x+P.w*fx/100,cy=P.y+P.h*fy/100-16,R=42;const k=kit(FMS[fm][i][2]);
+    {const im=PH[i],r=48,c0=cy-2;
+      x.save();x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=16;x.shadowOffsetY=6;x.beginPath();x.arc(cx,c0,r+5,0,7);x.fillStyle='#fff';x.fill();x.restore();
+      x.beginPath();x.arc(cx,c0,r+3,0,7);x.fillStyle=k.body;x.fill();
+      x.save();x.beginPath();x.arc(cx,c0,r-2,0,7);x.clip();x.fillStyle='#0d1a26';x.fillRect(cx-r,c0-r,r*2,r*2);
+      if(im){const sc=(r*2-4)/Math.min(im.width,im.height),iw=im.width*sc,ih=im.height*sc;x.drawImage(im,cx-iw/2,c0-(r-2)-(ih-(r*2-4))*.12,iw,ih)}
+      else{x.fillStyle='#13283a';x.fillRect(cx-r,c0-r,r*2,r*2);x.fillStyle='#2a4a63';x.beginPath();x.arc(cx,c0-r+r*.8,r*.38,0,7);x.fill();x.beginPath();x.moveTo(cx-r*.72,c0+r);x.quadraticCurveTo(cx-r*.68,c0+r*.3,cx,c0+r*.28);x.quadraticCurveTo(cx+r*.68,c0+r*.3,cx+r*.72,c0+r);x.fill()}
+      x.restore();
+      const bx=cx-r*.78,by=c0+r*.72;x.beginPath();x.arc(bx,by,19,0,7);x.fillStyle='#fff';x.fill();x.beginPath();x.arc(bx,by,17,0,7);x.fillStyle=k.body;x.fill();
+      x.fillStyle=k.num;x.font='700 20px Readex';x.textBaseline='middle';x.direction='ltr';x.fillText(p[0]??'',bx,by+1);x.direction='rtl';
+      x.font='600 24px Readex';const nm=x.measureText(p[1]).width>185?short(p[1]):p[1];const s=fitText(x,nm,185,24,'600');const tw=x.measureText(nm).width;
+      x.fillStyle='rgba(0,0,0,.62)';rr(x,cx-tw/2-12,cy+R+6,tw+24,s+16,9);x.fill();
+      x.fillStyle='#fff';x.font='600 '+s+'px Readex';x.fillText(nm,cx,cy+R+6+(s+16)/2+1);return}
     x.save();x.translate(cx-R,cy-R);x.scale(R*2/100,R*2/100);
     x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=14;x.shadowOffsetY=6;
     const sp=new Path2D(SHIRT);x.fillStyle=k.body;x.fill(sp);x.shadowColor='transparent';
