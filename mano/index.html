@@ -401,7 +401,7 @@ function bindResult(){
 
 
 /* ---------- crowd + club challenge (Firebase RTDB via REST) ---------- */
-const FB={key:'',db:''}; // Firebase: apiKey + databaseURL
+const FB={key:'AIzaSyCJVYgLTqvj2k1KnvLYo6Z1feOS4E8fj94',db:'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app'}; // Firebase: apiKey + databaseURL
 const CROWD=!!(FB.key&&FB.db);
 const MINP=3,WEEK=7;
 let CW=null; // crowd stats for this day+mode
@@ -427,7 +427,7 @@ async function crowdSubmit(){
   if(g){b[`s/${d}/${m}/w`]=inc(1);b[`s/${d}/${m}/g${g}`]=inc(1)}
   if(c){b[`c/${d}/${m}/${c}/n`]=inc(1);if(g)b[`c/${d}/${m}/${c}/t`]=inc(7-g)}
   const r=await fetch(FB.db+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});
-  if(r.ok||r.status===401||r.status===403)store.set(k,{g,c});
+  if(r.ok)store.set(k,{g,c});
 }
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 function tally(raw,from,to){
