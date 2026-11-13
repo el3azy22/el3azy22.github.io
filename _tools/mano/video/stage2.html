@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html{zoom:2}
+html,body{width:540px;height:960px;overflow:hidden;background:#071D2B;font-family:'Readex Pro';color:#FFF5E5}
+body{background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.28),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),#071D2B}
+.scene{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;opacity:0;transition:opacity .5s,transform .6s;transform:scale(.96)}
+.scene.on{opacity:1;transform:none}
+.logo{width:190px;height:190px}
+.kick{color:#D7B465;font-weight:600;font-size:24px;margin-top:14px}
+.big{font-weight:700;font-size:72px;line-height:1.15}
+.sub{font-size:22px;opacity:.75;margin-top:10px}
+.crests{display:flex;flex-wrap:wrap;justify-content:center;gap:14px 18px;width:440px;margin-top:34px}
+.crests img{object-fit:contain;opacity:.92}
+#cap{position:absolute;top:40px;left:30px;right:30px;height:112px;display:flex;align-items:center;justify-content:center;text-align:center;font-weight:700;font-size:30px;line-height:1.35;opacity:0;transition:opacity .35s,transform .35s;transform:translateY(-8px)}
+#cap.on{opacity:1;transform:none}
+#cap b{color:#D7B465}
+#phone{position:absolute;top:166px;left:50%;width:466px;height:762px;margin-left:-233px;overflow:hidden;border-radius:46px;background:#020b12;border:3px solid rgba(215,180,101,.65);box-shadow:0 30px 70px rgba(0,0,0,.6),0 0 0 8px rgba(215,180,101,.08);padding:8px;opacity:0;transform:translateY(60px);transition:opacity .6s,transform .7s cubic-bezier(.2,.9,.3,1.2)}
+#phone.on{opacity:1;transform:none}
+#phone iframe{width:390px;height:640px;transform:scale(1.1487);transform-origin:top right;border:0;border-radius:33px;display:block;background:#071D2B}
+#tag{position:absolute;bottom:26px;left:0;right:0;text-align:center;font-size:17px;color:#D7B465;font-weight:600;direction:ltr;opacity:0;transition:opacity .5s}
+#tag.on{opacity:.9}
+.chips{display:flex;gap:10px;margin-top:26px;flex-wrap:wrap;justify-content:center;width:470px}
+.chips span{border:1.5px solid rgba(215,180,101,.6);background:rgba(215,180,101,.1);border-radius:30px;padding:8px 16px;font-size:19px;font-weight:600}
+.date{margin-top:30px;background:linear-gradient(180deg,#F0D99A,#D7B465);color:#071D2B;border-radius:22px;padding:14px 26px;font-weight:700;font-size:30px}
+.url{margin-top:22px;font-size:24px;font-weight:600;color:#D7B465;direction:ltr}
+.qr{margin-top:20px;display:flex;flex-direction:column;align-items:center;gap:8px}
+.qr img{width:150px;height:150px;border-radius:18px;border:3px solid #D7B465;background:#FFF5E5}
+.qr span{font-size:15px;color:#D7B465;font-weight:600}
+.leg{background:radial-gradient(ellipse at 50% 30%,rgba(215,180,101,.35),transparent 60%)}
+.leg .star{font-size:84px;filter:drop-shadow(0 6px 20px rgba(215,180,101,.6))}
+.leg .chip{margin-top:18px;border:1.5px solid rgba(215,180,101,.7);background:rgba(215,180,101,.14);border-radius:30px;padding:8px 20px;font-size:20px;font-weight:600}
+</style></head><body>
+<div class="scene" id="intro">
+  <img class="logo" src="../../../mano/assets/logo.png">
+  <div class="kick">تحدي العازي اليومي</div>
+  <div class="big">منو اللاعب؟</div>
+  <div class="sub">خمّن لاعب دوري أدنوك في ٦ محاولات</div>
+  <div class="crests" id="cr1"></div>
+</div>
+<div id="cap"></div>
+<div id="phone"><iframe id="f" src="../../../mano/index.html"></iframe></div>
+<div id="tag">el3azy22.github.io/mano</div>
+<div class="scene leg" id="legend">
+  <div class="star">⭐</div>
+  <div class="kick" style="font-size:28px">الويكند</div>
+  <div class="big" style="font-size:62px">تحدي الأساطير</div>
+  <div class="chip">لاعبين صنعوا تاريخ الدوري</div>
+</div>
+<div class="scene" id="outro">
+  <img class="logo" src="../../../mano/assets/logo.png" style="width:160px;height:160px">
+  <div class="big" style="font-size:64px;margin-top:8px">منو اللاعب؟</div>
+  <div class="chips"><span>مجانية</span><span>من غير تسجيل</span><span>لاعب جديد كل يوم</span></div>
+  <div class="date">تبدا اليوم · الثلاثاء 17 نوفمبر</div>
+  <div class="url">el3azy22.github.io/mano</div>
+  <div class="qr"><img src="qr-mano.png"><span>صوّر الباركود والعب</span></div>
+  <div class="crests" id="cr2" style="margin-top:22px"></div>
+</div>
+<script>
+const CREST={jazira:[1,1],sharjah:[.979,1.133],dhafra:[.92,1.106],ain:[.83,1.197],nasr:[1,1],wahda:[.91,1.176],wasl:[.973,1.165],baniyas:[1.234,.681],hatta:[.989,1.122],khorfakkan:[1.048,1.069],shababahli:[1.037,1.074],ajman:[1.154,1.016],kalba:[.995,1],united:[.995,.995]};
+['cr1','cr2'].forEach(id=>document.getElementById(id).innerHTML=['ain','wahda','jazira','shababahli','sharjah','wasl','nasr','baniyas','ajman','kalba','khorfakkan','dhafra','hatta','united'].map(c=>`<img src="../../../mano/assets/${c}.png" style="width:${Math.round(42*CREST[c][0])}px;height:${Math.round(42*CREST[c][1])}px">`).join(''));
+const $=s=>document.querySelector(s);const F=()=>$('#f').contentDocument,FW=()=>$('#f').contentWindow;
+const cap=(t)=>{const c=$('#cap');c.classList.remove('on');setTimeout(()=>{c.innerHTML='<div>'+t+'</div>';c.classList.add('on')},t?250:0)};
+async function type(txt,id){const d=F(),i=d.querySelector('#gIn');i.focus();i.value='';for(const ch of txt){i.value+=ch;i.dispatchEvent(new Event('input'));await new Promise(r=>setTimeout(r,70))}
+  await new Promise(r=>setTimeout(r,350));const b=d.querySelector(`#sugg button[data-id="${id}"]`);b&&b.click();await new Promise(r=>setTimeout(r,500));const a=d.activeElement;a&&a.blur&&a.blur();const s=d.querySelector('#sugg');s&&(s.hidden=true);}
+const at=(t,fn)=>setTimeout(fn,t*1000);
+window.ready=false;
+$('#f').onload=()=>{window.ready=true};
+const scrollTo=(sel,off=60)=>{const r=F().querySelector(sel);r&&FW().scrollTo({top:r.getBoundingClientRect().top+FW().scrollY-off,behavior:'smooth'})};
+window.prep=async()=>{F().querySelector('#howGo').click();await new Promise(r=>setTimeout(r,300));F().querySelector('#modeSeg [data-m=pro]').click();
+  await type('Asllani','kristjan-asllani');await type('Puertas','cameron-mitchel-puertas-castro');await type('Tapia','renato-fabrizio-tapia-cortijo');
+  await new Promise(r=>setTimeout(r,2500));scrollTo('#crowd',10);};
+window.start=()=>{
+  $('#phone').classList.add('on');$('#tag').classList.add('on');
+  at(.1,()=>cap('شوف <b>كم واحد عرفه</b> اليوم 👥'));
+  at(2.4,()=>cap('⚡ وإنت <b>أسرع من كم واحد</b>'));
+  at(4.6,()=>{cap('🏆 <b>تحدي الأندية</b> كل أسبوع');scrollTo('#clubs',10)});
+  at(6.4,()=>{const b=F().querySelector('#chgClub');b&&b.click();setTimeout(()=>scrollTo('#clubs',10),100)});
+  at(7.6,()=>{cap('نتيجتك تنحسب <b>لناديك</b>');const b=F().querySelector('#clubs [data-c="wasl"]');b&&b.click()});
+  at(8.6,()=>scrollTo('#clubs',10));
+  at(11.4,()=>{cap('');$('#phone').classList.remove('on');$('#tag').classList.remove('on')});
+  at(11.7,()=>$('#legend').classList.add('on'));
+  at(14.6,()=>$('#legend').classList.remove('on'));
+  at(15.0,()=>$('#outro').classList.add('on'));
+};
+</script>
+</body></html>
