@@ -3,3 +3,4 @@
 2) python3 build_data.py  (ينظف البيانات ويكتب mano/data.json)
 الجدول اليومي ثابت حسب ترتيب schedule، فلا تغيّر start.
 3) python3 photos.py  (صور اللاعبين، قبل build_data)
+4) python3 ../apply_position_fixes.py  (بعد أي تحديث: يصحح مراكز اللاعبين الغلط في بيانات الرابطة — القائمة في _tools/position_fixes.json)

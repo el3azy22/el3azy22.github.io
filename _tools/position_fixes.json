@@ -1,0 +1,18 @@
+{
+ "_note": "تصحيحات مراكز اللاعبين مقارنة ببيانات الرابطة، بعد المراجعة مع FotMob ومصادر أخرى (نوفمبر 2026). تُطبّق على tashkila/squads.json و mano/data.json عبر _tools/apply_position_fixes.py",
+ "ain":   {"55":"GK","21":"FWD","57":"DEF","79":"DEF","97":"DEF"},
+ "wahda": {"18":"DEF"},
+ "jazira":{"61":"MID","10":"FWD","25":"FWD"},
+ "wasl":  {"59":"FWD"},
+ "nasr":  {"10":"FWD"},
+ "united":{"5":"MID","10":"FWD","29":"DEF"},
+ "ajman": {"8":"MID","7":"FWD","31":"DEF","10":"MID"},
+ "baniyas":{"4":"MID"},
+ "sharjah":{"3":"DEF","6":"MID","15":"DEF","16":"FWD","19":"DEF","30":"FWD","31":"DEF","34":"FWD","80":"MID"},
+ "shabab":{"8":"FWD","24":"FWD","55":"FWD","70":"FWD","77":"FWD","10":"FWD"},
+ "kalba": {"77":"MID"},
+ "khorfakkan":{"13":"MID","34":"DEF","3":"DEF","79":"MID","80":"MID"},
+ "dhafra":{"77":"DEF"},
+ "hatta": {"4":"MID","52":"DEF","60":"MID","9":"MID"},
+ "uae_nt":{"name:حارب عبدالله":"FWD","name:علي صالح":"FWD","name:فابيو فيرجينيو":"FWD","name:لوان مارتينس":"MID"}
+}
