@@ -135,6 +135,23 @@ footer a{color:inherit}
 .dist i{font-style:normal;height:22px;min-width:24px;background:var(--gray);border-radius:6px;color:var(--ivory);font-size:12px;font-weight:700;display:flex;align-items:center;justify-content:flex-start;padding:0 8px}
 .dist i.hl{background:var(--green)}
 .toast{position:fixed;top:calc(16px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--gold);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:30px;z-index:40;transition:transform .3s;box-shadow:0 8px 24px rgba(0,0,0,.35);white-space:nowrap;font-size:14px}
+.crowd .lbl,.clubc .lbl{font-size:12.5px;color:var(--gold);font-weight:600;margin-bottom:8px}
+.crowd .big{font-size:15px;margin-bottom:4px}.crowd .big b{font-size:34px;color:var(--gold2);margin-left:6px}
+.crowd .fast{display:inline-block;background:rgba(46,158,102,.18);border:1px solid rgba(46,158,102,.5);border-radius:20px;padding:4px 12px;font-size:13.5px;margin:4px 0 8px}.crowd .fast b{color:#6fdca3}
+.crowd .dist i{background:var(--navy3);justify-content:flex-start}.crowd .dist i.hl{background:var(--green)}
+.cfoot{font-size:11.5px;opacity:.6;margin-top:8px;line-height:1.7}
+.cpick{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px 0}
+.cpick button{background:rgba(7,29,43,.7);border:1px solid rgba(215,180,101,.2);border-radius:12px;padding:8px 0 5px;display:grid;justify-items:center;align-content:center;gap:4px;color:var(--ivory);font-size:9.5px;height:66px}
+.cpick button:active{border-color:var(--gold)}
+.linkb{background:none;border:0;color:var(--gold);font-size:12.5px;text-decoration:underline;padding:4px}
+.champ{background:linear-gradient(90deg,rgba(215,180,101,.22),rgba(215,180,101,.05));border:1px solid rgba(215,180,101,.45);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:10px;font-size:13.5px;margin-bottom:10px}
+.mine{background:rgba(46,158,102,.15);border-radius:12px;padding:7px 10px;font-size:13.5px;margin-bottom:8px}
+.ct{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:10px;font-size:13px}
+.ct.me{background:rgba(215,180,101,.16);outline:1px solid rgba(215,180,101,.5)}
+.ct .r{width:18px;opacity:.6;font-size:12px;text-align:center}.ct .cr{width:26px;display:grid;place-items:center}
+.ct .nm{width:78px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ct .bar{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}.ct .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px}
+.ct .v{width:34px;text-align:left;font-weight:700;color:var(--gold2)}.ct .n{width:40px;text-align:left;font-size:10.5px;opacity:.55}
 .toast.on{transform:translateX(-50%) translateY(0)}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
@@ -176,6 +193,7 @@ footer a{color:inherit}
   <div class="step"><i>٢</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك ٦ محاولات</span></div></div>
   <div class="step"><i>٣</i><div><b>كل غلطة تفتح لك تلميح 🔓</b><span>الجنسية، المركز، العمر، النادي، الرقم...</span></div></div>
   <div class="step"><i>٤</i><div><b>عرفته؟ شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
+  <div class="step" id="clubStep" hidden><i>٥</i><div><b>ناديك ينافس 🏆</b><span>نتيجتك تنحسب لجمهور ناديك في تحدي الأندية الأسبوعي</span></div></div>
   <p style="font-size:12px;opacity:.7;margin-top:12px;line-height:1.8">تبا تحدي أصعب؟ جرّب <b style="color:var(--gold)">وضع الخبير 🧠</b>: كل تخمين يقارن لاعبك باللاعب السري بالألوان.</p>
   <button class="btn" id="howGo">يلا نلعب</button>
 </div></div>
@@ -245,6 +263,7 @@ function prelaunch(raw){
   $('#dayLbl').textContent='قريباً';tick();setInterval(tick,1000);
 }
 function load(){
+  CW=null;
   const k='g_'+DAY+'_'+mode;
   const saved=store.get(k,null);
   S={k,guesses:[],done:false,win:false};
@@ -292,7 +311,7 @@ function render(){
     h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],r=cmp(p);return `<div class="row"><div>${p.n}</div><div class="${r.c}">${crest(p.c,28)}</div><div class="${r.p}">${POSS[p.p]}</div><div class="${r.n}"><span class="fl">${flag(p.f)}</span></div><div class="${r.a}">${p.a!=null?AR(p.a):'—'}${arrow(p.a,ANS.a)}</div><div class="${r.no}">${p.no!=null?AR(p.no):'—'}${arrow(p.no,ANS.no)}</div></div>`}).join('');
   }
   h+=`</div>`;
-  if(S.done)h+=resultHTML();
+  if(S.done)h+=resultHTML()+(CROWD?'<div id="crowd"></div><div id="clubs"></div>':'');
   if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · تحدي #${AR(DAY-1)}</div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
   $('#app').innerHTML=h;
   if(!S.done)bindInput();else bindResult();
@@ -351,7 +370,7 @@ function shareText(){
   let grid;
   if(mode==='easy')grid=S.guesses.map(id=>id===ANS.id?'✅':'❌').join('');
   else{const em={ok:'🟩',near:'🟨','':'⬛'};grid=S.guesses.map(id=>{const r=cmp(BY[id]);return [r.c,r.p,r.n,r.a,r.no].map(x=>em[x]).join('')}).join('\n')}
-  return `🕵️ منو اللاعب؟ تحدي ${AR(DAY)}${mode==='easy'?'':' 🧠'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}\n\nتقدر تعرفه أسرع؟ 👇\n${SITE}`;
+  return `🕵️ منو اللاعب؟ تحدي ${AR(DAY)}${mode==='easy'?'':' 🧠'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}${crowdLine()?'\n'+crowdLine():''}\n\nتقدر تعرفه أسرع؟ 👇\n${SITE}`;
 }
 function resultHTML(){
   const st=store.get('stats_'+mode,{streak:0});
@@ -376,6 +395,97 @@ function bindResult(){
   clearInterval(timer);const f=x=>String(x).padStart(2,'0');
   const tick=()=>{const s=Math.floor(msToDubaiMidnight()/1000);const e=$('#cd');if(!e)return;e.textContent=`${f(s/3600|0)}:${f(s%3600/60|0)}:${f(s%60)}`;if(s<=1)setTimeout(()=>location.reload(),1500)};
   tick();timer=setInterval(tick,1000);
+  crowdFlow();
+}
+
+
+/* ---------- crowd + club challenge (Firebase RTDB via REST) ---------- */
+const FB={key:'',db:''}; // Firebase: apiKey + databaseURL
+const CROWD=!!(FB.key&&FB.db);
+const MINP=3,WEEK=7;
+let CW=null; // crowd stats for this day+mode
+if(CROWD)$('#clubStep').hidden=false;
+const AR1=v=>AR(v.toFixed(1)).replace('.','٫');
+const nf=n=>AR(Number(n).toLocaleString('en-US')).replace(/,/g,'٬');
+async function fbTok(){
+  let a=store.get('fb',null);
+  if(a&&a.exp>Date.now()+6e4)return a;
+  let r=null;
+  if(a&&a.r){r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.key,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.r)}).then(x=>x.ok?x.json():null).catch(()=>null);
+    if(r&&r.id_token)a={t:r.id_token,r:r.refresh_token,u:r.user_id,exp:Date.now()+r.expires_in*1e3};else r=null}
+  if(!r){r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FB.key,{method:'POST',headers:{'content-type':'application/json'},body:'{"returnSecureToken":true}'}).then(x=>x.json());
+    if(!r.idToken)throw new Error('auth');a={t:r.idToken,r:r.refreshToken,u:r.localId,exp:Date.now()+r.expiresIn*1e3}}
+  store.set('fb',a);return a;
+}
+const myClub=()=>store.get('club',null); // null = ما انسأل، '' = ما يشجع حد
+async function crowdSubmit(){
+  const k='sub_'+DAY+'_'+mode;if(store.get(k,null))return;
+  const c=myClub();if(c===null)return;
+  const g=S.win?S.guesses.length:0,d=DAY,m=mode,a=await fbTok(),inc=n=>({'.sv':{increment:n}});
+  const b={[`p/${d}/${m}/${a.u}`]:{d,g,c},[`s/${d}/${m}/n`]:inc(1)};
+  if(g){b[`s/${d}/${m}/w`]=inc(1);b[`s/${d}/${m}/g${g}`]=inc(1)}
+  if(c){b[`c/${d}/${m}/${c}/n`]=inc(1);if(g)b[`c/${d}/${m}/${c}/t`]=inc(7-g)}
+  const r=await fetch(FB.db+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});
+  if(r.ok||r.status===401||r.status===403)store.set(k,{g,c});
+}
+const wkOf=d=>Math.floor((d-1)/WEEK)+1;
+function tally(raw,from,to){
+  const T={};CLUBS_ORDER.forEach(k=>T[k]={k,n:0,t:0});
+  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){T[k].n+=x.n||0;T[k].t+=x.t||0}}))});
+  return Object.values(T).map(o=>(o.avg=o.n>=MINP?o.t/o.n:-1,o)).sort((a,b)=>b.avg-a.avg||b.n-a.n||CLUBS_ORDER.indexOf(a.k)-CLUBS_ORDER.indexOf(b.k));
+}
+function crowdLine(){
+  if(!CW||CW.n<5)return '';
+  if(S.win&&CW.faster!=null)return `⚡ أسرع من ${AR(CW.faster)}٪ من الجماهير`;
+  return `👥 ${AR(CW.pct)}٪ بس عرفوه اليوم`;
+}
+function pickHTML(again){
+  return `<div class="card clubc"><div class="lbl">🏆 تحدي الأندية الأسبوعي</div>
+   <div style="font-size:16px;font-weight:700">${again?'غيّر ناديك':'أي نادي تشجع؟'}</div>
+   <div style="font-size:12.5px;opacity:.7;margin-top:3px">كل يوم نتيجتك تنحسب لجمهور ناديك${again?' (من اللعبة الياية)':'، وبعدها تشوف نسبة الجماهير'}</div>
+   <div class="cpick">${CLUBS_ORDER.map(k=>`<button data-c="${k}">${crest(k,30)}<span>${D.clubs[k]}</span></button>`).join('')}</div>
+   <button class="linkb" data-c="">ما أشجع نادي معيّن</button></div>`;
+}
+async function crowdFlow(again){
+  if(!CROWD)return;
+  const box=$('#clubs'),cb=$('#crowd');if(!box)return;
+  if(myClub()===null||again){
+    box.innerHTML=pickHTML(again);
+    if(cb&&!again)cb.innerHTML='';
+    box.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const c=b.dataset.c;store.set('club',c);gc('club-'+(c||'none'));toast(c?'💪 يلا '+D.clubs[c]+'!':'تمام 👍');crowdFlow()});
+    return;
+  }
+  if(cb)cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 الجماهير اليوم</div><div class="loading" style="padding:8px 0">لحظة...</div></div>`;
+  try{await crowdSubmit()}catch(e){}
+  const wk=wkOf(DAY),f=(wk-1)*WEEK+1,pf=wk>1?f-WEEK:f;
+  let s=null,c=null;
+  try{[s,c]=await Promise.all([fetch(`${FB.db}/s/${DAY}/${mode}.json`).then(r=>r.json()),fetch(`${FB.db}/c.json?orderBy=${encodeURIComponent('"$key"')}&startAt=${encodeURIComponent('"'+pf+'"')}&endAt=${encodeURIComponent('"'+(f+WEEK-1)+'"')}`).then(r=>r.json())])}catch(e){}
+  if(!$('#clubs'))return; // تغيّرت الشاشة
+  // crowd card
+  if(s&&s.n){
+    const n=s.n,w=s.w||0,g=S.win?S.guesses.length:0;
+    let better=n-w;for(let j=g+1;j<=6;j++)better+=s['g'+j]||0;
+    CW={n,pct:Math.round(w/n*100),faster:g&&n>1?Math.round(better/(n-1)*100):null};
+    const rows=[1,2,3,4,5,6].map(i=>[AR(i),s['g'+i]||0,i===g]).concat([['❌',n-w,!g]]);const mx=Math.max(1,...rows.map(r=>r[1]));
+    cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 الجماهير اليوم · ${mode==='easy'?'الوضع العادي':'وضع الخبير'}</div>
+      <div class="big"><b>${AR(CW.pct)}٪</b>عرفوه اليوم</div>
+      ${g&&n>=5?`<div class="fast">⚡ أسرع من <b>${AR(CW.faster)}٪</b> من اللي لعبوا</div>`:''}
+      <div class="dist">${rows.map(r=>`<div><span style="width:16px">${r[0]}</span><i class="${r[2]?'hl':''}" style="width:${Math.max(8,r[1]/mx*100)}%">${AR(Math.round(r[1]/n*100))}٪</i></div>`).join('')}</div>
+      <div class="cfoot">لعبوا اليوم: ${nf(n)}</div></div>`;
+    if(crowdLine())buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{});
+  }else if(cb)cb.innerHTML='';
+  // club card
+  const T=tally(c,f,f+WEEK-1),me=myClub(),sub=store.get('sub_'+DAY+'_'+mode,null);
+  const champ=wk>1?tally(c,pf,f-1)[0]:null;
+  const left=Math.ceil((f+WEEK-1-DAY)+msToDubaiMidnight()/864e5);
+  const mx=Math.max(.1,...T.map(o=>o.avg));
+  box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 تحدي الأندية · الأسبوع ${AR(wk)}</div>
+    ${champ&&champ.avg>=0?`<div class="champ">${crest(champ.k,30)}<div><b>بطل الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">بمعدل ${AR1(champ.avg)} نقطة</div></div></div>`:''}
+    ${me&&sub&&sub.c===me?`<div class="mine">${sub.g?`✅ <b>+${AR(7-sub.g)}</b> نقاط لجمهور ${D.clubs[me]} اليوم`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}، باجر تعوّضها 💪`}</div>`:''}
+    <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبوا</span></div>
+    ${T.map((o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):'–'}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):''}</span></div>`).join('')}
+    <div class="cfoot">المعدل = نقاط جمهور النادي ÷ عدد اللي لعبوا (من أول محاولة ٦ نقاط … سادس محاولة نقطة)<br>يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+  $('#chgClub').onclick=()=>crowdFlow(true);
 }
 
 /* ---------- result image ---------- */
@@ -449,7 +559,8 @@ async function buildCard(){
   }
   // streak
   const st=store.get('stats_'+mode,{streak:0,played:0,wins:0});
-  if(S.win&&st.streak>1){x.fillStyle='#D7B465';x.font=`600 32px ${F}`;x.fillText(`سلسلة الفوز: ${AR(st.streak)} أيام`,W/2,1068)}
+  {const L=[];if(S.win&&st.streak>1)L.push(`سلسلة الفوز: ${AR(st.streak)} أيام 🔥`);const cl=crowdLine();if(cl)L.push(cl);
+   if(L.length){x.fillStyle='#D7B465';x.font=`600 ${L.length>1?28:32}px ${F}`;x.fillText(L.join('   ·   '),W/2,1068)}}
   // crests: 14 clubs, balanced
   const cy0=1130,rowGap=86,cols=7,cellW=(W-180)/cols,base=58;
   CLUBS_ORDER.forEach((c,i)=>{const im=cr[i];if(!im)return;const f=CREST[c]||[1,1];const w=base*f[0],h=base*f[1];

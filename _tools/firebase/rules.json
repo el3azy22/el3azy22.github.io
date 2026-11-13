@@ -1,0 +1,59 @@
+{
+ "rules": {
+  ".read": false,
+  ".write": false,
+  "p": {
+   "$d": {
+    "$m": {
+     "$u": {
+      ".write": "auth != null && auth.uid == $u && !data.exists()",
+      ".validate": "newData.hasChildren(['g','c','d']) && ($m == 'easy' || $m == 'pro') && $d.matches(/^[0-9]{1,4}$/) && newData.child('d').isNumber() && $d == '' + newData.child('d').val() && now >= 1794859200000 + (newData.child('d').val() - 1) * 86400000 && now < 1794859200000 + (newData.child('d').val() + 1) * 86400000 && newData.child('g').isNumber() && newData.child('g').val() >= 0 && newData.child('g').val() <= 6 && newData.child('c').isString() && newData.child('c').val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united)?$/) && newData.parent().parent().parent().parent().child('s').child($d).child($m).child('n').val() == (root.child('s').child($d).child($m).child('n').exists() ? root.child('s').child($d).child($m).child('n').val() : 0) + 1",
+      "d": {
+       ".validate": true
+      },
+      "g": {
+       ".validate": true
+      },
+      "c": {
+       ".validate": true
+      },
+      "$other": {
+       ".validate": false
+      }
+     }
+    }
+   }
+  },
+  "s": {
+   ".read": true,
+   "$d": {
+    "$m": {
+     "$f": {
+      ".write": "auth != null && !root.child('p').child($d).child($m).child(auth.uid).exists() && newData.parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).exists()",
+      ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val() + 1) && ($f == 'n' || ($f == 'w' && newData.parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val() > 0) || $f == 'g' + newData.parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val())"
+     }
+    }
+   }
+  },
+  "c": {
+   ".read": true,
+   "$d": {
+    "$m": {
+     "$c": {
+      "n": {
+       ".write": "auth != null && !root.child('p').child($d).child($m).child(auth.uid).exists() && newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).exists()",
+       ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val() + 1) && newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('c').val() == $c"
+      },
+      "t": {
+       ".write": "auth != null && !root.child('p').child($d).child($m).child(auth.uid).exists() && newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).exists()",
+       ".validate": "newData.isNumber() && newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('c').val() == $c && newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val() > 0 && newData.val() == (data.exists() ? data.val() : 0) + 7 - newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val()"
+      },
+      "$o": {
+       ".validate": false
+      }
+     }
+    }
+   }
+  }
+ }
+}
