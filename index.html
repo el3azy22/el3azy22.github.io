@@ -169,7 +169,7 @@ document.getElementById('crests').innerHTML=Object.entries(C).map(([c,f])=>`<img
       $('fTag').innerHTML='<i></i>يبدا الثلاثاء 17 نوفمبر';$('fLbl').textContent='أول تحدي بعد';$('fCta').textContent='شوف التفاصيل';
     }else{
       const n=day+1,g=read('g_'+n+'_easy')||read('g_'+n+'_pro');
-      $('fTag').innerHTML='<i></i>تحدي اليوم #'+n;$('fLbl').textContent='اللاعب الياي بعد';
+      $('fTag').innerHTML='<i></i>تحدي اليوم <bdi dir="ltr">#'+n+'</bdi>';$('fLbl').textContent='اللاعب الياي بعد';
       const done=g&&g.done;$('fCta').textContent=done?(g.win?'✓ عرفته اليوم · شوف نتيجتك':'شوف نتيجتك'):'العب الحين';$('fCta').classList.toggle('done',!!done);
     }
     const t=Math.floor(ms/1000),d=Math.floor(t/86400);

@@ -16,7 +16,7 @@ body{font-family:'Readex Pro',system-ui,sans-serif;background:var(--navy);color:
 .wrap{max-width:560px;margin:0 auto}
 header{display:flex;align-items:center;gap:12px;margin-bottom:6px}
 header img{width:46px;height:46px}
-header h1{font-size:20px}
+header h1{font-size:20px;white-space:nowrap}
 header p{font-size:12.5px;opacity:.65}
 header a{margin-inline-start:auto;width:38px;height:38px;border:1px solid rgba(215,180,101,.5);border-radius:12px;display:grid;place-items:center;color:var(--gold)}
 header a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
@@ -29,7 +29,7 @@ header a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1
 .step button{width:38px;height:38px;border-radius:11px;border:1px solid rgba(215,180,101,.45);background:var(--navy);color:var(--gold);font-size:20px;font-family:inherit}
 .step b{flex:1;text-align:center;font-size:15px}
 .prev{width:100%;border-radius:12px;display:block;background:#051521;aspect-ratio:4/5}
-.tw{background:var(--navy);border:1px dashed rgba(215,180,101,.35);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.8;white-space:pre-line;margin-top:10px}
+.tw{unicode-bidi:plaintext;background:var(--navy);border:1px dashed rgba(215,180,101,.35);border-radius:12px;padding:10px 12px;font-size:13.5px;line-height:1.8;white-space:pre-line;margin-top:10px}
 .btns{display:flex;gap:8px;margin-top:10px}
 .btn{flex:1;border:0;border-radius:12px;padding:12px;font:600 14.5px 'Readex Pro';background:linear-gradient(180deg,#F6E3AE,#B08A3E);color:#071D2B}
 .btn.g{background:transparent;color:var(--gold);border:1px solid rgba(215,180,101,.5)}
@@ -117,10 +117,10 @@ function frame(tag){
   x.fillStyle='#D7B465';x.font=`600 34px ${F}`;x.fillText('تحدي العازي اليومي',R,100);
   x.fillStyle='#FFF5E5';x.font=`700 86px ${F}`;x.fillText('منو اللاعب؟',R,168);
   x.font=`600 30px ${F}`;const tw=x.measureText(tag).width+44;
-  x.fillStyle='rgba(215,180,101,.14)';rr(x,R-tw,206,tw,52,26);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
-  x.fillStyle='#D7B465';x.fillText(tag,R-22,233);
+  x.fillStyle='rgba(215,180,101,.14)';rr(x,R-tw,232,tw,52,26);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
+  x.fillStyle='#D7B465';x.fillText(tag,R-22,259);
   // sadu
-  if(SADUI){x.globalAlpha=.7;for(let i=0;i<20;i++)x.drawImage(SADUI,W/2-180+i*18,290,18,12);x.globalAlpha=1}
+  if(SADUI){x.globalAlpha=.7;for(let i=0;i<20;i++)x.drawImage(SADUI,W/2-180+i*18,306,18,12);x.globalAlpha=1}
   return {cv,x,W,H};
 }
 function footer(x,W,cta){

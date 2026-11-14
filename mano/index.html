@@ -27,8 +27,8 @@ background-image:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.20),transp
 button{font-family:inherit;cursor:pointer}
 header{display:flex;align-items:center;gap:10px;padding:12px 0 6px}
 header .logo{height:62px;width:auto}
-header .ttl{flex:1}
-header h1{font-size:24px;font-weight:700;line-height:1.2}
+header .ttl{flex:1;min-width:0}
+header h1{font-size:clamp(19px,6vw,24px);font-weight:700;line-height:1.3;white-space:nowrap}
 header .day{font-size:12px;color:var(--gold);font-weight:600}
 .icon{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.06);color:var(--gold);font-size:18px;font-weight:700;display:grid;place-items:center}
 .seg{display:flex;background:var(--navy2);border:1px solid rgba(255,245,229,.06);border-radius:14px;padding:4px;margin:10px 0 12px}
@@ -201,7 +201,7 @@ footer a{color:inherit}
   <main id="app"><div class="loading">لحظة...</div></main>
 
   <footer>
-    لعبة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener">@el3azy22</a>
+    لعبة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener" dir="ltr">@el3azy22</a>
   </footer>
 </div>
 
@@ -281,7 +281,7 @@ function init(data){
   const idx=Math.max(0,raw);
   DAY=idx+1;ANS=BY[D.schedule[idx%D.schedule.length]];
   YEST=idx>0?BY[D.schedule[(idx-1)%D.schedule.length]]:null;
-  $('#dayLbl').textContent='تحدي اليوم #'+AR(DAY);
+  $('#dayLbl').innerHTML='تحدي اليوم <bdi dir="ltr">#'+AR(DAY)+'</bdi>';
   document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);b.onclick=()=>{mode=b.dataset.m;store.set('mode',mode);document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));load()}});
   if(!store.get('seenHow',false))$('#howto').hidden=false;
   load();
@@ -289,7 +289,7 @@ function init(data){
 function prelaunch(raw){
   document.querySelector('#modeSeg').style.display='none';
   const tick=()=>{const ms=msToDubaiMidnight()+(-raw-1)*864e5;const t=Math.floor(ms/1000);const dd=Math.floor(t/86400),hh=Math.floor(t%86400/3600),mm=Math.floor(t%3600/60),ss=t%60;const e=$('#pl');if(e)e.textContent=`${AR(dd)} يوم · ${AR(String(hh).padStart(2,'0'))}:${AR(String(mm).padStart(2,'0'))}:${AR(String(ss).padStart(2,'0'))}`;if(t<=0)location.reload()};
-  $('#app').innerHTML=`<div class="card result"><div class="emo">🕵️</div><h2>أول تحدي يبدا الثلاثاء 17 نوفمبر</h2><p style="opacity:.8;line-height:1.8;margin-bottom:10px">كل يوم لاعب سري من دوري أدنوك للمحترفين،<br>وعندك 6 محاولات تعرفه.</p><div class="next">باقي على أول لاعب<b id="pl" style="direction:rtl">--</b></div></div>`;
+  $('#app').innerHTML=`<div class="card result"><div class="emo">🕵️</div><h2>أول تحدي يبدا<br><span style="white-space:nowrap">الثلاثاء 17 نوفمبر</span></h2><p style="opacity:.8;line-height:1.8;margin-bottom:10px">كل يوم لاعب سري من دوري أدنوك للمحترفين، وعندك 6 محاولات تعرفه.</p><div class="next">باقي على أول لاعب<b id="pl" style="direction:rtl">--</b></div></div>`;
   $('#dayLbl').textContent='قريباً';tick();setInterval(tick,1000);
 }
 function load(){
@@ -541,8 +541,8 @@ async function buildCard(){
   x.fillStyle='#FFF5E5';x.font=`700 92px ${F}`;x.fillText('منو اللاعب؟',W-80-190-30,178);
   const tag=`تحدي ${AR(DAY)}  ·  ${mode==='easy'?'الوضع العادي':'وضع الخبير'}`;
   x.font=`600 32px ${F}`;const tw=x.measureText(tag).width+44;
-  x.fillStyle='rgba(215,180,101,.14)';rr(x,W-80-190-30-tw,222,tw,54,27);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
-  x.fillStyle='#D7B465';x.fillText(tag,W-80-190-30-22,250);
+  x.fillStyle='rgba(215,180,101,.14)';rr(x,W-80-190-30-tw,238,tw,54,27);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
+  x.fillStyle='#D7B465';x.fillText(tag,W-80-190-30-22,266);
   // headline
   const n=S.guesses.length;
   x.textAlign='center';x.fillStyle=S.win?'#F0D99A':'#FFF5E5';x.font=`700 70px ${F}`;

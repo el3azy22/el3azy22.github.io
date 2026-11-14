@@ -154,7 +154,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div class="step"><i>1</i><div><b>اختار المباراة بعد صافرة النهاية</b><span>التقييم يفتح بعد المباراة ويسكّر بعد 48 ساعة</span></div></div>
   <div class="step"><i>2</i><div><b>عط كل لاعب من 1 لين 10</b><span>اللي لعبوا بس: الأساسيين والبدلاء اللي نزلوا والمدرب</span></div></div>
   <div class="step"><i>3</i><div><b>اختار نجم المباراة ⭐</b><span>لاعب واحد من الفريقين</span></div></div>
-  <div class="step"><i>4</i><div><b>اعتمد وشوف تقييم الجماهير</b><span>تقييم واحد لكل مباراة، وبعدها شارك تقييمك في X</span></div></div>
+  <div class="step"><i>4</i><div><b>اعتمد وشوف تقييم الجماهير</b><span>تقييم واحد لكل مباراة، وبعدها شارك تقييمك في&nbsp;X</span></div></div>
   <button class="btn" id="howGo">يلا نقيّم</button>
 </div></div>
 
@@ -456,13 +456,13 @@ async function buildCard(){
   const cs=(im,c,cx)=>{if(!im)return;const f=CREST[c]||[1,1],b=76;x.drawImage(im,cx-b*f[0]/2,sy+65-b*f[1]/2,b*f[0],b*f[1])};
   cs(ch,m.h.c,W-140);cs(ca,m.a.c,140);
   x.font=`700 38px ${F}`;x.fillStyle='#FFF5E5';x.textAlign='right';x.fillText(fit(x,m.h.name,250),W-200,sy+65);
-  x.textAlign='left';x.direction='ltr';x.fillText(m.a.name,200,sy+65);x.direction='rtl';
+  x.textAlign='left';x.direction='rtl';x.fillText(fit(x,m.a.name,250),200,sy+65);x.direction='rtl';
   x.textAlign='center';x.direction='ltr';x.font=`700 64px ${F}`;x.fillStyle='#F0D99A';x.fillText(`${m.a.sc} - ${m.h.sc}`,W/2,sy+68);x.direction='rtl';
   // label
   const stp=C.mine&&RES.mine.st?findP(RES.mine.st):null;
   x.textAlign='right';x.font=`600 32px ${F}`;x.fillStyle='#D7B465';
-  x.fillText((C.mine?'تقييمي للاعبين ':'لاعبين ')+t.name,W-80,450);
-  if(stp){x.textAlign='left';x.fillStyle='#F0D99A';x.fillText('⭐ نجم المباراة: '+stp.n,80,450)}
+  x.fillText(fit(x,(C.mine?'تقييمي للاعبين ':'لاعبين ')+t.name,stp?W/2-100:W-160),W-80,450);
+  if(stp){x.textAlign='left';x.fillStyle='#F0D99A';x.fillText(fit(x,'⭐ نجم المباراة: '+stp.n,W/2-100),80,450)}
   // grid 2 cols × 8
   const rows=C.rows,n=rows.length,per=Math.ceil(n/2)||1,cw=(W-160-24)/2,rh=Math.min(100,(1180-490)/per),y0=490+((1180-490)-per*rh)/2;
   rows.forEach((r,i)=>{
