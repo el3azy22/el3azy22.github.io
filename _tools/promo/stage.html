@@ -281,7 +281,7 @@ const SC={
  mano(b){$('#glow').classList.remove('on');showFrame('fMano');$('#phone').classList.add('on');tag('منو اللاعب؟','shirt');
   const g=TL.demo.manoGuesses;
   b(.085,()=>typeGuess(g[0]));b(.33,()=>typeGuess(g[1]));b(.575,()=>typeGuess(g[2]));
-  b(.80,()=>scrollIn(FM(),'#cardImg',14))},
+  if(TL.demo.clubPick){b(.78,()=>clubPick(false));b(.865,()=>clubPick(true))}else b(.80,()=>scrollIn(FM(),'#cardImg',14))},
  tashkila(b){$('#phone').classList.add('on');showFrame('fTash');tag('اختار تشكيلتك','board');const w=FT(),d=w.document;
   b(.09,()=>{const c=TL.demo.tashkilaClub;const bt=[...d.querySelectorAll('#clubs .club')].find(x=>x.querySelector('img').src.includes('/'+c+'.png'));bt&&bt.click();
     w.eval(`(()=>{const m=${JSON.stringify(AP)};const used=new Set();window.__xi=FMS[fm].map(s=>{const c=club.p.filter(p=>p[2]===s[2]&&!used.has(p)).sort((a,b)=>(m[b[5]]||0)-(m[a[5]]||0)||(b[5]?1:0)-(a[5]?1:0));used.add(c[0]);return c[0]})})()`)});
@@ -295,14 +295,20 @@ const SC={
   $$('#unity .chip').forEach((e,i)=>b(.56+i*.07,()=>e.classList.add('on')))},
  outro(b){$('#phone').classList.remove('on');tag('');b(.03,()=>$('#outro .box').classList.add('go'));b(.3,()=>sweep())}
 };
+/* نافذة «تشجع أي نادي انت؟» الحقيقية من اللعبة، معبّاة بالأندية */
+function clubPick(sel){const d=FM().document,m=d.querySelector('#clubM'),g=d.querySelector('#cgrid');if(!m||!g)return;
+ if(!sel){const O=['ain','wahda','jazira','shababahli','sharjah','wasl','nasr','baniyas','ajman','kalba','khorfakkan','dhafra','hatta','united'];
+  g.innerHTML=O.map(k=>`<button data-c="${k}"><img src="assets/${k}.png" style="width:34px;height:34px;object-fit:contain"><span>${CLN[k]}</span></button>`).join('');
+  const ok=d.querySelector('#clubOk');ok.disabled=true;ok.textContent='اختار ناديك';m.hidden=false;return}
+ const c=TL.demo.clubPick;g.querySelectorAll('button').forEach(x=>x.classList.toggle('on',x.dataset.c===c));const ok=d.querySelector('#clubOk');ok.disabled=false;ok.textContent='أنا مع جمهور '+CLN[c]+' 💪'}
 function sweep(){const s=$('#sweep');s.classList.remove('run');void s.offsetWidth;s.classList.add('run')}
 
 /* ---------- الخط الزمني ---------- */
-let TL=null,AP={};window.ready=false;
+let TL=null,AP={},CLN={};window.ready=false;
 const loaded=f=>new Promise(r=>{if(f.contentDocument&&f.contentDocument.readyState==='complete'&&f.contentWindow.location.href!=='about:blank')r();else f.addEventListener('load',()=>r(),{once:true})});
 (async()=>{
   TL=await (await fetch((new URLSearchParams(location.search).get('tl')||'timeline.json')+'?'+performance.now())).json();
-  const D=await (await fetch('../../mano/data.json')).json();D.players.forEach(p=>{PL[p.id]=p;AP[p.id]=p.ap||0});
+  const D=await (await fetch('../../mano/data.json')).json();D.players.forEach(p=>{PL[p.id]=p;AP[p.id]=p.ap||0});Object.assign(CLN,D.clubs);
   await Promise.all([loaded($('#fMano')),loaded($('#fTash')),document.fonts.ready]);
   window.ready=true;
 })();

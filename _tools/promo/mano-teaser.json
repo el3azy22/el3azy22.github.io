@@ -1,7 +1,7 @@
 {
  "_help": "مقطع «منو اللاعب؟» القصير لتغريدة أول تحدي (20 ثانية). نفس طريقة timeline.json — شوف README.txt",
  "fps": 30,
- "duration": 20,
+ "duration": 24,
  "demo": {
   "tashkilaClub": "ain",
   "formation": "4-3-3",
@@ -10,7 +10,8 @@
    "kristjan-asllani",
    "karim-el-berkaoui",
    "renato-fabrizio-tapia-cortijo"
-  ]
+  ],
+  "clubPick": "wahda"
  },
  "music": {
   "lufs": -14,
@@ -20,7 +21,7 @@
   "segments": [
    {
     "file": "../mano/video/platform-theme.m4a",
-    "trackStart": 39.8,
+    "trackStart": 36.0,
     "at": 0
    }
   ]
@@ -40,14 +41,18 @@
      "text": "كل محاولة غلط تفتح لك *تلميح* يديد"
     },
     {
-     "at": 6.8,
+     "at": 7.4,
      "text": "عندك *6 محاولات*… *تعرفه؟*"
+    },
+    {
+     "at": 12.9,
+     "text": "ونتيجتك تنحسب لـ*جمهور ناديك*… *منو بيتصدر؟*"
     }
    ]
   },
   {
    "id": "outro",
-   "start": 13.6,
+   "start": 17.4,
    "sfx": "chime",
    "captions": [
     {
