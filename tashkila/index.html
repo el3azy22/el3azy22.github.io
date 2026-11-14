@@ -373,7 +373,7 @@ function renderPitch(){
     if(p){s.className='pic';s.style.setProperty('--rb',k.body);s.innerHTML=picHTML(p,k)}
     else{s.className='pic add';s.textContent='+'}
     const t=document.createElement('span');t.className='pname';t.textContent=p?lb(p):ROLE[r];
-    {const Y=(q,rr)=>rr==='GK'?93:q,yi=Y(y,r);let d=r==='GK'?44:32;FMS[fm].forEach(([x2,y2,r2],j)=>{if(j===i||r==='GK')return;const yj=Y(y2,r2),dy=Math.abs(yj-yi),dx=Math.abs(x2-x);if(dy<=12)d=Math.min(d,dx);else if(dy<=18&&yj>yi)d=Math.min(d,dx*1.4)});t.style.maxWidth=`calc(${d*4}% - 3px)`} // عرض الاسم حسب المسافة بين اللاعبين
+    {const Y=(q,rr)=>rr==='GK'?93:q,yi=Y(y,r);let d=r==='GK'?44:32;FMS[fm].forEach(([x2,y2,r2],j)=>{if(j===i||r==='GK')return;const yj=Y(y2,r2),dy=Math.abs(yj-yi),dx=Math.abs(x2-x);if(dy<=12)d=Math.min(d,dx);else if(dy<=18&&yj>yi&&dx>=16)d=Math.min(d,dx*1.4)});t.style.maxWidth=`calc(${d*4}% - 3px)`} // عرض الاسم حسب المسافة بين اللاعبين
     b.append(s,t);b.onclick=()=>openSheet(i);box.appendChild(b);
   });
   // الاسم الطويل اللي ما يكفيه المكان: الاسم الأول بس
