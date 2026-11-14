@@ -162,7 +162,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
     <div class="fms" id="fms"></div>
     <div class="stage" id="pitch">
       <canvas id="stadium" aria-hidden="true"></canvas>
-      <input class="plab" id="plab" maxlength="24" placeholder="اكتب اسمك (اختياري)" aria-label="اسمك (اختياري)" autocomplete="off">
+      <input class="plab" id="plab" maxlength="24" placeholder="اسمك أو يوزرك (يطلع كمدرب في الصورة)" aria-label="اسمك أو يوزرك (اختياري)" autocomplete="off">
       <div id="slots"></div>
     </div>
     <div class="count" id="count"></div>
@@ -482,8 +482,13 @@ async function drawCard(){
   rr(x,fx0,124,fw,44,22);x.fillStyle='rgba(215,180,101,.16)';x.fill();x.strokeStyle='rgba(215,180,101,.7)';x.lineWidth=2;x.stroke();
   x.fillStyle='#F0D99A';x.textAlign='center';x.fillText(fm,fx0+fw/2,147);
   x.direction='rtl';x.textAlign='right';x.fillStyle='rgba(255,245,229,.6)';x.font='500 24px Readex';x.fillText(STADIUMS[stad]||'',R0,198);
-  if(byName){x.textAlign='left';x.direction='rtl';x.fillStyle='rgba(255,245,229,.55)';x.font='500 22px Readex';x.fillText('اختيار',62,92);
-    const s2=fitText(x,byName,330,40,'700');x.fillStyle='#FFF5E5';x.font='700 '+s2+'px Readex';x.fillText(byName,62,138)}
+  if(byName){ // بطاقة المدرب: صاحب التشكيلة
+    const lat=/^[@A-Za-z0-9_.\s]+$/.test(byName),maxW=Math.min(470,fx0-62-40);
+    const s2=fitText(x,byName,maxW-48,46,'700');x.font='700 '+s2+'px Readex';const bw=Math.max(200,Math.min(maxW,x.measureText(byName).width+48)),bx=62,by=48,bh=136;
+    let cg=x.createLinearGradient(bx,by,bx,by+bh);cg.addColorStop(0,'rgba(215,180,101,.18)');cg.addColorStop(1,'rgba(215,180,101,.04)');
+    rr(x,bx,by,bw,bh,22);x.fillStyle=cg;x.fill();x.strokeStyle='rgba(215,180,101,.8)';x.lineWidth=2;x.stroke();
+    x.textBaseline='middle';x.direction='rtl';x.textAlign='center';x.fillStyle='#D7B465';x.font='600 24px Readex';x.fillText('المدرب',bx+bw/2,by+36);{const tw2=x.measureText('المدرب').width/2+14;x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.beginPath();x.moveTo(bx+bw/2+tw2,by+37);x.lineTo(bx+bw/2+tw2+26,by+37);x.moveTo(bx+bw/2-tw2,by+37);x.lineTo(bx+bw/2-tw2-26,by+37);x.stroke()}
+    x.fillStyle='#FFF5E5';x.font='700 '+s2+'px Readex';x.direction=lat?'ltr':'rtl';x.fillText(byName,bx+bw/2,by+88);x.direction='rtl'}
   x.textBaseline='alphabetic';
   // اللاعبين
   x.textAlign='center';
@@ -521,11 +526,9 @@ async function drawCard(){
    let gg=x.createLinearGradient(0,FY,0,H);gg.addColorStop(0,'#071D2B');gg.addColorStop(1,'#0C2638');x.fillStyle=gg;x.fillRect(0,FY,W,H-FY);
    gg=x.createLinearGradient(60,0,W-60,0);gg.addColorStop(0,'rgba(215,180,101,0)');gg.addColorStop(.5,'#D7B465');gg.addColorStop(1,'rgba(215,180,101,0)');
    x.strokeStyle=gg;x.lineWidth=2;x.beginPath();x.moveTo(60,FY);x.lineTo(W-60,FY);x.stroke();
-   const cy=FY+52;drawContain(x,logo,W-60-84,cy-42,84,84);
-   x.textBaseline='middle';x.direction='rtl';x.textAlign='right';
-   x.fillStyle='#FFF5E5';x.font='700 34px Readex';x.fillText('منصة العازي',W-60-100,cy-15);
-   x.fillStyle='rgba(255,245,229,.7)';x.font='500 22px Readex';x.fillText('سوّ تشكيلتك وشاركها',W-60-100,cy+22);
-   x.direction='ltr';x.textAlign='left';x.fillStyle='#D7B465';x.font='600 32px Readex';x.fillText('el3azy.com/tashkila',60,cy);
+   const cy=FY+52;x.textBaseline='middle';x.direction='ltr';x.textAlign='center';x.fillStyle='#D7B465';x.font='600 38px Readex';x.fillText('el3azy.com/tashkila',W/2,cy);
+   const dw=x.measureText('el3azy.com/tashkila').width/2+34;
+   if(sadu){x.globalAlpha=.6;for(let i=0;i<6;i++){x.drawImage(sadu,W/2+dw+i*18,cy-6,18,12);x.drawImage(sadu,W/2-dw-18-i*18,cy-6,18,12)}x.globalAlpha=1}
    // إطار ذهبي
    x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(x,14,14,W-28,H-28,34);x.stroke();}
   x.textBaseline='alphabetic';x.globalAlpha=1;
