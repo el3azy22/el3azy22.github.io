@@ -342,7 +342,7 @@ function render(){
   }
   h+=`</div>`;
   if(S.done)h+=resultHTML()+(CROWD?'<div id="crowd"></div><div id="clubs"></div>':'');
-  if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · تحدي #${AR(DAY-1)}</div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
+  if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · تحدي <bdi dir="ltr">#${AR(DAY-1)}</bdi></div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
   $('#app').innerHTML=h;
   if(!S.done)bindInput();else bindResult();
 }
