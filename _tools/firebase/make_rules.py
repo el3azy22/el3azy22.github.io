@@ -60,13 +60,26 @@ rules["rules"].update({
 })
 # ── هوية المشجع ── f/$u = {c: النادي أو none, n: الاسم الاختياري}   fc/$c = عدد مشجعي النادي (مقروء)
 FCL=CL+"|none"
+S0=1785528000000; YMS=31557600000   # 1 أغسطس 2026 00:00 الإمارات · سنة = 365.25 يوم
+KEEPX="newData.child('x').val() == data.child('x').val()"
 rules["rules"].update({
  "f":{"$u":{
+   ".read":"auth != null && auth.uid == $u",
    ".write":"auth != null && auth.uid == $u",
-   ".validate":(f"newData.hasChildren(['c']) && newData.child('c').isString() && newData.child('c').val().matches(/^({FCL})$/)"
-     " && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1)"),
+   ".validate":(f"newData.hasChildren(['c','t']) && newData.child('c').isString() && newData.child('c').val().matches(/^({FCL})$/)"
+     " && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1)"
+     # تغيير النادي: 24 ساعة تعديل بعد كل اختيار، وبعدها تغيير واحد في الموسم (x = رقم الموسم اللي غيّر فيه).
+     # الموسم يبدا 1 أغسطس (S0 = 1 أغسطس 2026 بتوقيت الإمارات) ويتجدد كل سنة تلقائياً. «محايد» يختار نادي أي وقت.
+     f" && (!data.child('t').exists() ? newData.child('t').val() == now && {KEEPX}"
+     f" : data.child('c').val() == newData.child('c').val() ? newData.child('t').val() == data.child('t').val() && {KEEPX}"
+     f" : now - data.child('t').val() < {DAYMS} ? newData.child('t').val() == data.child('t').val() && {KEEPX}"
+     f" : data.child('c').val() == 'none' ? newData.child('t').val() == now && {KEEPX}"
+     f" : (!data.child('x').exists() || now >= {S0} + (data.child('x').val() + 1) * {YMS}) && newData.child('t').val() == now"
+     f" && newData.child('x').isNumber() && now >= {S0} + newData.child('x').val() * {YMS} && now < {S0} + (newData.child('x').val() + 1) * {YMS})"),
    "c":{".validate":True},
    "n":{".validate":"newData.isString() && newData.val().length <= 16"},
+   "t":{".validate":"newData.isNumber()"},
+   "x":{".validate":"newData.isNumber()"},
    "$other":{".validate":False}}},
  "fc":{".read":True,"$c":{
    ".write":"auth != null",

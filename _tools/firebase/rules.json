@@ -113,13 +113,20 @@
   },
   "f": {
    "$u": {
+    ".read": "auth != null && auth.uid == $u",
     ".write": "auth != null && auth.uid == $u",
-    ".validate": "newData.hasChildren(['c']) && newData.child('c').isString() && newData.child('c').val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1)",
+    ".validate": "newData.hasChildren(['c','t']) && newData.child('c').isString() && newData.child('c').val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1) && (!data.child('t').exists() ? newData.child('t').val() == now && newData.child('x').val() == data.child('x').val() : data.child('c').val() == newData.child('c').val() ? newData.child('t').val() == data.child('t').val() && newData.child('x').val() == data.child('x').val() : now - data.child('t').val() < 86400000 ? newData.child('t').val() == data.child('t').val() && newData.child('x').val() == data.child('x').val() : data.child('c').val() == 'none' ? newData.child('t').val() == now && newData.child('x').val() == data.child('x').val() : (!data.child('x').exists() || now >= 1785528000000 + (data.child('x').val() + 1) * 31557600000) && newData.child('t').val() == now && newData.child('x').isNumber() && now >= 1785528000000 + newData.child('x').val() * 31557600000 && now < 1785528000000 + (newData.child('x').val() + 1) * 31557600000)",
     "c": {
      ".validate": true
     },
     "n": {
      ".validate": "newData.isString() && newData.val().length <= 16"
+    },
+    "t": {
+     ".validate": "newData.isNumber()"
+    },
+    "x": {
+     ".validate": "newData.isNumber()"
     },
     "$other": {
      ".validate": false

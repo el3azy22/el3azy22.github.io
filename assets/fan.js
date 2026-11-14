@@ -26,23 +26,43 @@ async function tok(){
     if(!r.idToken)throw new Error('auth');a={t:r.idToken,r:r.refreshToken,u:r.localId,exp:Date.now()+r.expiresIn*1e3}}
   PID.set('fb',a);return a;
 }
-/* يسجل اختيار المشجع في قاعدة البيانات: مرة لكل مشجع، ولو غيّر ناديه ينقص من القديم ويزيد في اليديد */
+/* يسجل اختيار المشجع في قاعدة البيانات، والسيرفر هو الحَكَم:
+   - بعد كل اختيار نادي: 24 ساعة يقدر يعدّل فيها
+   - وبعدها تغيير واحد في الموسم (x = الموسم اللي غيّر فيه). الموسم يبدا 1 أغسطس
+   - «محايد» يقدر يختار نادي أي وقت. الاسم يتغير بحرية */
+const DAY=864e5,S0=1785528000000,YMS=31557600000;
+const season=t=>Math.floor((t-S0)/YMS);
+function lock(){const s=PID.get('fan_srv');const now=Date.now();
+  if(!s||!s.t||s.c==='none')return{free:true,first:!s||s.c==='none'};
+  if(now-s.t<DAY)return{free:true,grace:s.t+DAY};
+  if(s.x==null||s.x<season(now))return{free:true,left:true};
+  return{free:false};
+}
 let syncing=null;
 async function sync(){
   const c=club();if(c===null)return;
   const cv=c||'none',n=name(),srv=PID.get('fan_srv');
-  if(srv&&srv.c===cv&&srv.n===n)return;
+  if(srv&&srv.t&&srv.c===cv&&srv.n===n)return;
   if(syncing)return syncing;
   syncing=(async()=>{try{
-    const a=await tok();const b={};
-    b['f/'+a.u]={c:cv,n};
-    if(!srv||srv.c!==cv){b['fc/'+cv]={'.sv':{increment:1}};if(srv&&srv.c)b['fc/'+srv.c]={'.sv':{increment:-1}}}
+    const a=await tok();const U=FB.db+'/f/'+a.u+'.json?auth='+a.t;
+    const cur=await fetch(U).then(r=>r.ok?r.json():null).catch(()=>null);
+    if(cur&&cur.c===cv&&cur.n===n&&cur.t){PID.set('fan_srv',cur);return}
+    const now=Date.now(),TS={'.sv':'timestamp'};let t=TS,x=cur?cur.x:undefined;
+    if(cur&&cur.t){
+      if(cur.c===cv||now-cur.t<DAY)t=cur.t;            // نفس النادي أو خلال مهلة الـ24 ساعة
+      else if(cur.c!=='none')x=season(now);             // التغيير الوحيد في هالموسم
+    }
+    const b={};b['f/'+a.u]={c:cv,n,t,x};
+    if(!cur||cur.c!==cv){b['fc/'+cv]={'.sv':{increment:1}};if(cur&&cur.c)b['fc/'+cur.c]={'.sv':{increment:-1}}}
     const r=await fetch(FB.db+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});
-    if(r.ok)PID.set('fan_srv',{c:cv,n});
+    if(r.ok){const v=await fetch(U).then(r=>r.ok?r.json():null).catch(()=>null);PID.set('fan_srv',v||{c:cv,n,t:typeof t==='number'?t:now,x})}
+    else if(cur&&cur.c&&cur.c!==cv){ // السيرفر رفض تغيير النادي: نرجع للنادي المسجل
+      PID.set('club',cur.c==='none'?'':cur.c);PID.set('fan_srv',cur);render();window.dispatchEvent(new Event('el3fan'))}
   }catch(e){}finally{syncing=null}})();
   return syncing;
 }
-function set(c,n){PID.set('club',c);if(n!==undefined)PID.set('name',cleanName(n));gc('club-'+(c||'none'));sync();render()}
+function set(c,n){const old=club();PID.set('club',c);if(n!==undefined)PID.set('name',cleanName(n));if(old!==c)gc('club-'+(c||'none'));sync();render();window.dispatchEvent(new Event('el3fan'))}
 
 /* ---------- الواجهة ---------- */
 const css=`
@@ -71,26 +91,35 @@ const css=`
 .fz-ok{display:block;width:100%;border:0;border-radius:14px;padding:13px;font:700 15px 'Readex Pro';background:linear-gradient(180deg,#F6E3AE,#B08A3E);color:#071D2B;cursor:pointer}
 .fz-ok:disabled{opacity:.4}
 .fz-row{display:flex;justify-content:space-between;margin-top:8px}
+.fz-grid button:disabled{opacity:.3;cursor:default}
+.fz-lock{font-size:11.5px;color:#D7B465;opacity:.85;margin:-4px 2px 12px;line-height:1.7}
 .fz-link{background:none;border:0;color:#D7B465;font:400 12.5px 'Readex Pro';text-decoration:underline;padding:6px;cursor:pointer}
 `;
 function addCss(){if(document.getElementById('fz-css'))return;const s=document.createElement('style');s.id='fz-css';s.textContent=css;document.head.appendChild(s)}
 
 function open(){
   addCss();const cur=club(),edit=cur!==null;let pick=cur||null;
+  const L=edit?lock():{free:true},locked=!L.free;
+  const hrs=t=>{const h=Math.max(1,Math.ceil((t-Date.now())/36e5));return h===1?'ساعة':h===2?'ساعتين':h<=10?h+' ساعات':h+' ساعة'};
+  const note=locked?`🔒 غيّرت ناديك هالموسم، تقدر تغيره الموسم الياي`
+    :L.grace?`تقدر تعدل خلال ${hrs(L.grace)}، وبعدها تغيير واحد في الموسم`
+    :L.left?`تقدر تغير ناديك مرة وحدة في الموسم`
+    :`عندك 24 ساعة تعدل، وبعدها تغيير واحد في الموسم`;
   const bg=document.createElement('div');bg.className='fz-bg';
   bg.innerHTML=`<div class="fz-sh" role="dialog" aria-modal="true">
     <div class="fz-tile"><svg viewBox="0 0 32 32" fill="none" stroke="#D7B465" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M10.5 5h11v7.5a5.5 5.5 0 0 1-11 0z" fill="rgba(215,180,101,.25)"/><path d="M10.5 7.5H6.8a4 4 0 0 0 4.2 5.8M21.5 7.5h3.7a4 4 0 0 1-4.2 5.8M16 18v5M11.5 27h9M13 23h6"/></svg></div>
     <h2>${edit?'بطاقة المشجع':'تشجع أي نادي انت؟'}</h2>
     <p class="fz-why">نتيجتك في كل أقسام المنصة تنحسب لـ<b>جمهور ناديك</b>،<br>وكل ما لعبت تساعده يتصدر منافسة الجماهير.</p>
-    <div class="fz-grid">${ORDER.map(k=>`<button type="button" data-c="${k}" class="${k===pick?'on':''}">${crest(k,34)}<span>${CL[k]}</span></button>`).join('')}</div>
+    <div class="fz-grid">${ORDER.map(k=>`<button type="button" data-c="${k}" class="${k===pick?'on':''}"${locked&&k!==cur?' disabled':''}>${crest(k,34)}<span>${CL[k]}</span></button>`).join('')}</div>
+    <p class="fz-lock">${note}</p>
     <input class="fz-name" maxlength="16" placeholder="اسمك (اختياري)" value="${esc(name())}">
     <p class="fz-hint">يطلع جنب شعار ناديك، وفي الترتيبات. مب تسجيل.</p>
     <button class="fz-ok" type="button"></button>
-    <div class="fz-row"><button class="fz-link fz-none" type="button">ما أشجع نادي معيّن</button><button class="fz-link fz-close" type="button" style="opacity:.7">${edit?'إغلاق':'بعدين'}</button></div></div>`;
+    <div class="fz-row"><button class="fz-link fz-none" type="button"${locked||cur===''?' style="visibility:hidden"':''}>ما أشجع نادي معيّن</button><button class="fz-link fz-close" type="button" style="opacity:.7">${edit?'إغلاق':'بعدين'}</button></div></div>`;
   document.body.appendChild(bg);
   const ok=bg.querySelector('.fz-ok');
   const upd=()=>{ok.disabled=!pick;ok.textContent=pick?(edit&&pick===cur?'حفظ':'أنا مع جمهور '+CL[pick]+' 💪'):'اختار ناديك'};upd();
-  bg.querySelectorAll('.fz-grid button').forEach(b=>b.onclick=()=>{pick=b.dataset.c;bg.querySelectorAll('.fz-grid button').forEach(x=>x.classList.toggle('on',x===b));upd();try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}});
+  bg.querySelectorAll('.fz-grid button').forEach(b=>b.onclick=()=>{if(b.disabled)return;pick=b.dataset.c;bg.querySelectorAll('.fz-grid button').forEach(x=>x.classList.toggle('on',x===b));upd();try{navigator.vibrate&&navigator.vibrate(12)}catch(e){}});
   const close=()=>bg.remove();
   bg.onclick=e=>{if(e.target===bg)close()};
   bg.querySelector('.fz-close').onclick=close;
@@ -119,7 +148,7 @@ function render(){
       card.onclick=e=>{e.preventDefault();open()};feat.parentNode.insertBefore(card,feat)}}
   else if(card)card.remove();
 }
-window.EL3FAN={club,name,set,open,render,sync,tok};
+window.EL3FAN={club,name,set,open,render,sync,tok,lock};
 const go=()=>{render();sync()};
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go();
 })();

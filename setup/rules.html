@@ -4,142 +4,149 @@
 li{margin-bottom:14px}b{color:#F0D99A}a{color:#D7B465}
 button{font-family:inherit;width:100%;padding:14px;border:0;border-radius:14px;background:linear-gradient(#F0D99A,#D7B465);color:#071D2B;font-weight:700;font-size:16px;margin:8px 0}
 textarea{width:100%;height:110px;background:#0C2638;color:#FFF5E5;border:1px solid #D7B46566;border-radius:12px;direction:ltr;font-size:11px}</style></head>
-<body><div class="w"><h1>👥 تحديث قواعد Firebase — «جماهير الأندية»</h1>
+<body><div class="w"><h1>🔒 تحديث قواعد Firebase — «تغيير النادي مرة في الموسم»</h1>
 <p style="opacity:.75">دقيقة وحدة بس. القواعد اليديدة فيها «منو اللاعب؟» و«قيّم اللاعبين» زي ما هي، + تسجيل نادي كل مشجع وعدد جماهير كل نادي.</p>
 <ol>
 <li>اضغط الزر عشان تنسخ القواعد:<button id="cp">📋 انسخ القواعد</button><textarea id="r" readonly>{
- &quot;rules&quot;: {
-  &quot;.read&quot;: false,
-  &quot;.write&quot;: false,
-  &quot;p&quot;: {
-   &quot;$d&quot;: {
-    &quot;$m&quot;: {
-     &quot;$u&quot;: {
-      &quot;.write&quot;: &quot;auth != null &amp;&amp; auth.uid == $u &amp;&amp; !data.exists()&quot;,
-      &quot;.validate&quot;: &quot;newData.hasChildren([&#x27;g&#x27;,&#x27;c&#x27;,&#x27;d&#x27;]) &amp;&amp; ($m == &#x27;easy&#x27; || $m == &#x27;pro&#x27;) &amp;&amp; $d.matches(/^[0-9]{1,4}$/) &amp;&amp; newData.child(&#x27;d&#x27;).isNumber() &amp;&amp; $d == &#x27;&#x27; + newData.child(&#x27;d&#x27;).val() &amp;&amp; now &gt;= 1794859200000 + (newData.child(&#x27;d&#x27;).val() - 1) * 86400000 &amp;&amp; now &lt; 1794859200000 + (newData.child(&#x27;d&#x27;).val() + 1) * 86400000 &amp;&amp; newData.child(&#x27;g&#x27;).isNumber() &amp;&amp; newData.child(&#x27;g&#x27;).val() &gt;= 0 &amp;&amp; newData.child(&#x27;g&#x27;).val() &lt;= 6 &amp;&amp; newData.child(&#x27;c&#x27;).isString() &amp;&amp; newData.child(&#x27;c&#x27;).val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united)?$/) &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;s&#x27;).child($d).child($m).child(&#x27;n&#x27;).val() == (root.child(&#x27;s&#x27;).child($d).child($m).child(&#x27;n&#x27;).exists() ? root.child(&#x27;s&#x27;).child($d).child($m).child(&#x27;n&#x27;).val() : 0) + 1&quot;,
-      &quot;d&quot;: {
-       &quot;.validate&quot;: true
+ "rules": {
+  ".read": false,
+  ".write": false,
+  "p": {
+   "$d": {
+    "$m": {
+     "$u": {
+      ".write": "auth != null &amp;&amp; auth.uid == $u &amp;&amp; !data.exists()",
+      ".validate": "newData.hasChildren(['g','c','d']) &amp;&amp; ($m == 'easy' || $m == 'pro') &amp;&amp; $d.matches(/^[0-9]{1,4}$/) &amp;&amp; newData.child('d').isNumber() &amp;&amp; $d == '' + newData.child('d').val() &amp;&amp; now &gt;= 1794859200000 + (newData.child('d').val() - 1) * 86400000 &amp;&amp; now &lt; 1794859200000 + (newData.child('d').val() + 1) * 86400000 &amp;&amp; newData.child('g').isNumber() &amp;&amp; newData.child('g').val() &gt;= 0 &amp;&amp; newData.child('g').val() &lt;= 6 &amp;&amp; newData.child('c').isString() &amp;&amp; newData.child('c').val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united)?$/) &amp;&amp; newData.parent().parent().parent().parent().child('s').child($d).child($m).child('n').val() == (root.child('s').child($d).child($m).child('n').exists() ? root.child('s').child($d).child($m).child('n').val() : 0) + 1",
+      "d": {
+       ".validate": true
       },
-      &quot;g&quot;: {
-       &quot;.validate&quot;: true
+      "g": {
+       ".validate": true
       },
-      &quot;c&quot;: {
-       &quot;.validate&quot;: true
+      "c": {
+       ".validate": true
       },
-      &quot;$other&quot;: {
-       &quot;.validate&quot;: false
+      "$other": {
+       ".validate": false
       }
      }
     }
    }
   },
-  &quot;s&quot;: {
-   &quot;.read&quot;: true,
-   &quot;$d&quot;: {
-    &quot;$m&quot;: {
-     &quot;$f&quot;: {
-      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists()&quot;,
-      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; ($f == &#x27;n&#x27; || ($f == &#x27;w&#x27; &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val() &gt; 0) || $f == &#x27;g&#x27; + newData.parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val())&quot;
+  "s": {
+   ".read": true,
+   "$d": {
+    "$m": {
+     "$f": {
+      ".write": "auth != null &amp;&amp; !root.child('p').child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).exists()",
+      ".validate": "newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; ($f == 'n' || ($f == 'w' &amp;&amp; newData.parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val() &gt; 0) || $f == 'g' + newData.parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val())"
      }
     }
    }
   },
-  &quot;c&quot;: {
-   &quot;.read&quot;: true,
-   &quot;$d&quot;: {
-    &quot;$m&quot;: {
-     &quot;$c&quot;: {
-      &quot;n&quot;: {
-       &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists()&quot;,
-       &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;c&#x27;).val() == $c&quot;
+  "c": {
+   ".read": true,
+   "$d": {
+    "$m": {
+     "$c": {
+      "n": {
+       ".write": "auth != null &amp;&amp; !root.child('p').child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).exists()",
+       ".validate": "newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('c').val() == $c"
       },
-      &quot;t&quot;: {
-       &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).exists()&quot;,
-       &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;c&#x27;).val() == $c &amp;&amp; newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val() &gt; 0 &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + 7 - newData.parent().parent().parent().parent().parent().child(&#x27;p&#x27;).child($d).child($m).child(auth.uid).child(&#x27;g&#x27;).val()&quot;
+      "t": {
+       ".write": "auth != null &amp;&amp; !root.child('p').child($d).child($m).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).exists()",
+       ".validate": "newData.isNumber() &amp;&amp; newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('c').val() == $c &amp;&amp; newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val() &gt; 0 &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + 7 - newData.parent().parent().parent().parent().parent().child('p').child($d).child($m).child(auth.uid).child('g').val()"
       },
-      &quot;$o&quot;: {
-       &quot;.validate&quot;: false
+      "$o": {
+       ".validate": false
       }
      }
     }
    }
   },
-  &quot;rv&quot;: {
-   &quot;$k&quot;: {
-    &quot;$u&quot;: {
-     &quot;.write&quot;: &quot;auth != null &amp;&amp; auth.uid == $u &amp;&amp; !data.exists()&quot;,
-     &quot;.validate&quot;: &quot;newData.hasChildren([&#x27;t&#x27;,&#x27;r&#x27;]) &amp;&amp; $k.matches(/^[0-9]{3,8}_[0-9]{13}$/) &amp;&amp; newData.child(&#x27;t&#x27;).isNumber() &amp;&amp; $k.endsWith(&#x27;_&#x27; + newData.child(&#x27;t&#x27;).val()) &amp;&amp; now &gt;= newData.child(&#x27;t&#x27;).val() + 6000000 &amp;&amp; now &lt; newData.child(&#x27;t&#x27;).val() + 180000000 &amp;&amp; newData.parent().parent().parent().child(&#x27;rn&#x27;).child($k).val() == (root.child(&#x27;rn&#x27;).child($k).exists() ? root.child(&#x27;rn&#x27;).child($k).val() : 0) + 1&quot;,
-     &quot;t&quot;: {
-      &quot;.validate&quot;: true
+  "rv": {
+   "$k": {
+    "$u": {
+     ".write": "auth != null &amp;&amp; auth.uid == $u &amp;&amp; !data.exists()",
+     ".validate": "newData.hasChildren(['t','r']) &amp;&amp; $k.matches(/^[0-9]{3,8}_[0-9]{13}$/) &amp;&amp; newData.child('t').isNumber() &amp;&amp; $k.endsWith('_' + newData.child('t').val()) &amp;&amp; now &gt;= newData.child('t').val() + 6000000 &amp;&amp; now &lt; newData.child('t').val() + 180000000 &amp;&amp; newData.parent().parent().parent().child('rn').child($k).val() == (root.child('rn').child($k).exists() ? root.child('rn').child($k).val() : 0) + 1",
+     "t": {
+      ".validate": true
      },
-     &quot;r&quot;: {
-      &quot;$p&quot;: {
-       &quot;.validate&quot;: &quot;$p.matches(/^c?[0-9]{1,7}$/) &amp;&amp; newData.isNumber() &amp;&amp; newData.val() &gt;= 1 &amp;&amp; newData.val() &lt;= 10 &amp;&amp; newData.val() % 1 == 0&quot;
+     "r": {
+      "$p": {
+       ".validate": "$p.matches(/^c?[0-9]{1,7}$/) &amp;&amp; newData.isNumber() &amp;&amp; newData.val() &gt;= 1 &amp;&amp; newData.val() &lt;= 10 &amp;&amp; newData.val() % 1 == 0"
       }
      },
-     &quot;st&quot;: {
-      &quot;.validate&quot;: &quot;newData.isString() &amp;&amp; newData.val().matches(/^c?[0-9]{1,7}$/)&quot;
+     "st": {
+      ".validate": "newData.isString() &amp;&amp; newData.val().matches(/^c?[0-9]{1,7}$/)"
      },
-     &quot;$other&quot;: {
-      &quot;.validate&quot;: false
+     "$other": {
+      ".validate": false
      }
     }
    }
   },
-  &quot;rn&quot;: {
-   &quot;.read&quot;: true,
-   &quot;$k&quot;: {
-    &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
-    &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1)&quot;
+  "rn": {
+   ".read": true,
+   "$k": {
+    ".write": "auth != null &amp;&amp; !root.child('rv').child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().child('rv').child($k).child(auth.uid).exists()",
+    ".validate": "newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1)"
    }
   },
-  &quot;ra&quot;: {
-   &quot;.read&quot;: true,
-   &quot;$k&quot;: {
-    &quot;$p&quot;: {
-     &quot;n&quot;: {
-      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
-      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;r&#x27;).child($p).exists()&quot;
+  "ra": {
+   ".read": true,
+   "$k": {
+    "$p": {
+     "n": {
+      ".write": "auth != null &amp;&amp; !root.child('rv').child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).exists()",
+      ".validate": "newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).child('r').child($p).exists()"
      },
-     &quot;s&quot;: {
-      &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
-      &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + newData.parent().parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;r&#x27;).child($p).val()&quot;
+     "s": {
+      ".write": "auth != null &amp;&amp; !root.child('rv').child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).exists()",
+      ".validate": "newData.isNumber() &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + newData.parent().parent().parent().parent().child('rv').child($k).child(auth.uid).child('r').child($p).val()"
      },
-     &quot;$o&quot;: {
-      &quot;.validate&quot;: false
+     "$o": {
+      ".validate": false
      }
     }
    }
   },
-  &quot;rs&quot;: {
-   &quot;.read&quot;: true,
-   &quot;$k&quot;: {
-    &quot;$p&quot;: {
-     &quot;.write&quot;: &quot;auth != null &amp;&amp; !root.child(&#x27;rv&#x27;).child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).exists()&quot;,
-     &quot;.validate&quot;: &quot;newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().child(&#x27;rv&#x27;).child($k).child(auth.uid).child(&#x27;st&#x27;).val() == $p&quot;
+  "rs": {
+   ".read": true,
+   "$k": {
+    "$p": {
+     ".write": "auth != null &amp;&amp; !root.child('rv').child($k).child(auth.uid).exists() &amp;&amp; newData.parent().parent().parent().child('rv').child($k).child(auth.uid).exists()",
+     ".validate": "newData.isNumber() &amp;&amp; ((!data.exists() &amp;&amp; newData.val() == 1) || newData.val() == data.val() + 1) &amp;&amp; newData.parent().parent().parent().child('rv').child($k).child(auth.uid).child('st').val() == $p"
     }
    }
   },
-  &quot;f&quot;: {
-   &quot;$u&quot;: {
-    &quot;.write&quot;: &quot;auth != null &amp;&amp; auth.uid == $u&quot;,
-    &quot;.validate&quot;: &quot;newData.hasChildren([&#x27;c&#x27;]) &amp;&amp; newData.child(&#x27;c&#x27;).isString() &amp;&amp; newData.child(&#x27;c&#x27;).val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) &amp;&amp; (data.child(&#x27;c&#x27;).val() == newData.child(&#x27;c&#x27;).val() || newData.parent().parent().child(&#x27;fc&#x27;).child(newData.child(&#x27;c&#x27;).val()).val() == (root.child(&#x27;fc&#x27;).child(newData.child(&#x27;c&#x27;).val()).exists() ? root.child(&#x27;fc&#x27;).child(newData.child(&#x27;c&#x27;).val()).val() : 0) + 1)&quot;,
-    &quot;c&quot;: {
-     &quot;.validate&quot;: true
+  "f": {
+   "$u": {
+    ".read": "auth != null &amp;&amp; auth.uid == $u",
+    ".write": "auth != null &amp;&amp; auth.uid == $u",
+    ".validate": "newData.hasChildren(['c','t']) &amp;&amp; newData.child('c').isString() &amp;&amp; newData.child('c').val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) &amp;&amp; (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1) &amp;&amp; (!data.child('t').exists() ? newData.child('t').val() == now &amp;&amp; newData.child('x').val() == data.child('x').val() : data.child('c').val() == newData.child('c').val() ? newData.child('t').val() == data.child('t').val() &amp;&amp; newData.child('x').val() == data.child('x').val() : now - data.child('t').val() &lt; 86400000 ? newData.child('t').val() == data.child('t').val() &amp;&amp; newData.child('x').val() == data.child('x').val() : data.child('c').val() == 'none' ? newData.child('t').val() == now &amp;&amp; newData.child('x').val() == data.child('x').val() : (!data.child('x').exists() || now &gt;= 1785528000000 + (data.child('x').val() + 1) * 31557600000) &amp;&amp; newData.child('t').val() == now &amp;&amp; newData.child('x').isNumber() &amp;&amp; now &gt;= 1785528000000 + newData.child('x').val() * 31557600000 &amp;&amp; now &lt; 1785528000000 + (newData.child('x').val() + 1) * 31557600000)",
+    "c": {
+     ".validate": true
     },
-    &quot;n&quot;: {
-     &quot;.validate&quot;: &quot;newData.isString() &amp;&amp; newData.val().length &lt;= 16&quot;
+    "n": {
+     ".validate": "newData.isString() &amp;&amp; newData.val().length &lt;= 16"
     },
-    &quot;$other&quot;: {
-     &quot;.validate&quot;: false
+    "t": {
+     ".validate": "newData.isNumber()"
+    },
+    "x": {
+     ".validate": "newData.isNumber()"
+    },
+    "$other": {
+     ".validate": false
     }
    }
   },
-  &quot;fc&quot;: {
-   &quot;.read&quot;: true,
-   &quot;$c&quot;: {
-    &quot;.write&quot;: &quot;auth != null&quot;,
-    &quot;.validate&quot;: &quot;$c.matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) &amp;&amp; newData.isNumber() &amp;&amp; ((newData.parent().parent().child(&#x27;f&#x27;).child(auth.uid).child(&#x27;c&#x27;).val() == $c &amp;&amp; root.child(&#x27;f&#x27;).child(auth.uid).child(&#x27;c&#x27;).val() != $c &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + 1) || (root.child(&#x27;f&#x27;).child(auth.uid).child(&#x27;c&#x27;).val() == $c &amp;&amp; newData.parent().parent().child(&#x27;f&#x27;).child(auth.uid).child(&#x27;c&#x27;).val() != $c &amp;&amp; newData.val() == data.val() - 1))&quot;
+  "fc": {
+   ".read": true,
+   "$c": {
+    ".write": "auth != null",
+    ".validate": "$c.matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) &amp;&amp; newData.isNumber() &amp;&amp; ((newData.parent().parent().child('f').child(auth.uid).child('c').val() == $c &amp;&amp; root.child('f').child(auth.uid).child('c').val() != $c &amp;&amp; newData.val() == (data.exists() ? data.val() : 0) + 1) || (root.child('f').child(auth.uid).child('c').val() == $c &amp;&amp; newData.parent().parent().child('f').child(auth.uid).child('c').val() != $c &amp;&amp; newData.val() == data.val() - 1))"
    }
   }
  }

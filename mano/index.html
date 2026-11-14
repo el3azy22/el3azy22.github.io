@@ -477,6 +477,7 @@ function crowdLine(){
   if(S.win&&CW.faster!=null)return `⚡ أسرع من ${PC(AR(CW.faster))} من الجماهير`;
   return CW.pct<50?`👥 ${PC(AR(CW.pct))} بس عرفوه اليوم`:`👥 ${PC(AR(CW.pct))} من الجماهير عرفوه اليوم`;
 }
+window.addEventListener('el3fan',()=>crowdFlow());
 function pickHTML(again){
   return `<div class="card clubc"><div class="lbl">🏆 تحدي الأندية الأسبوعي</div>
    <div style="font-size:16px;font-weight:700">${again?'غيّر ناديك':'أي نادي تشجع؟'}</div>
@@ -523,7 +524,7 @@ async function crowdFlow(again){
     <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبوا</span></div>
     ${T.map((o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):'–'}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):''}</span></div>`).join('')}
     <div class="cfoot">المعدل = نقاط جمهور النادي ÷ عدد اللي لعبوا (من أول محاولة 6 نقاط … سادس محاولة نقطة)<br>يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
-  $('#chgClub').onclick=()=>crowdFlow(true);
+  $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
 }
 
 /* ---------- result image ---------- */
