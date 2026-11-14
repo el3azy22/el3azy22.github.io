@@ -358,15 +358,18 @@ $('#confirmGo').onclick=async()=>{
   catch(e){toast(e.message==='late'?'التقييم سكّر لهالمباراة':'ما انرسل، جرّب مرة ثانية');}
   b.disabled=false;b.textContent='اعتمد';
 };
+/* هوية المشجع الموحدة للمنصة كلها (نفس الحساب المجهول في كل الأقسام) */
+const PID={get(k,old){try{const v=localStorage.getItem('el3azy_'+k);if(v!=null)return JSON.parse(v);const o=old&&localStorage.getItem(old);return o!=null?JSON.parse(o):null}catch(e){return null}},set(k,v){try{localStorage.setItem('el3azy_'+k,JSON.stringify(v))}catch(e){}}};
+const FBK=()=>FB.auth?'fb_emu':'fb'; // المحاكي له هوية بروحه عشان ما يخرب الحقيقية
 async function fbTok(){
-  let a=store.get('fb',null);
+  let a=PID.get(FBK(),FB.auth?null:'el3azy_rate_fb');
   if(a&&a.exp>now()+6e4)return a;
   let r=null;
   if(a&&a.r){r=await fetch((FB.auth?FB.auth+'securetoken.googleapis.com/':'https://securetoken.googleapis.com/')+'v1/token?key='+FB.key,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.r)}).then(x=>x.ok?x.json():null).catch(()=>null);
     if(r&&r.id_token)a={t:r.id_token,r:r.refresh_token,u:r.user_id,exp:now()+r.expires_in*1e3};else r=null}
   if(!r){r=await fetch((FB.auth?FB.auth+'identitytoolkit.googleapis.com/':'https://identitytoolkit.googleapis.com/')+'v1/accounts:signUp?key='+FB.key,{method:'POST',headers:{'content-type':'application/json'},body:'{"returnSecureToken":true}'}).then(x=>x.json());
     if(!r.idToken)throw new Error('auth');a={t:r.idToken,r:r.refreshToken,u:r.localId,exp:now()+r.expiresIn*1e3}}
-  store.set('fb',a);return a;
+  PID.set(FBK(),a);return a;
 }
 async function submit(){
   const m=M,k=key(m);

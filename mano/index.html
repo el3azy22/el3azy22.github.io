@@ -438,17 +438,19 @@ let CW=null; // crowd stats for this day+mode
 if(CROWD)$('#clubStep').hidden=false;
 const AR1=v=>v.toFixed(1);
 const nf=n=>Number(n).toLocaleString('en-US');
+/* هوية المشجع الموحدة للمنصة كلها (نفس الحساب المجهول في كل الأقسام) */
+const PID={get(k,old){try{const v=localStorage.getItem('el3azy_'+k);if(v!=null)return JSON.parse(v);const o=old&&localStorage.getItem(old);return o!=null?JSON.parse(o):null}catch(e){return null}},set(k,v){try{localStorage.setItem('el3azy_'+k,JSON.stringify(v))}catch(e){}}};
 async function fbTok(){
-  let a=store.get('fb',null);
+  let a=PID.get('fb','el3azy_mano_fb');
   if(a&&a.exp>Date.now()+6e4)return a;
   let r=null;
   if(a&&a.r){r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.key,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.r)}).then(x=>x.ok?x.json():null).catch(()=>null);
     if(r&&r.id_token)a={t:r.id_token,r:r.refresh_token,u:r.user_id,exp:Date.now()+r.expires_in*1e3};else r=null}
   if(!r){r=await fetch('https://identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FB.key,{method:'POST',headers:{'content-type':'application/json'},body:'{"returnSecureToken":true}'}).then(x=>x.json());
     if(!r.idToken)throw new Error('auth');a={t:r.idToken,r:r.refreshToken,u:r.localId,exp:Date.now()+r.expiresIn*1e3}}
-  store.set('fb',a);return a;
+  PID.set('fb',a);return a;
 }
-const myClub=()=>store.get('club',null); // null = ما انسأل، '' = ما يشجع حد
+const myClub=()=>PID.get('club','el3azy_mano_club'); // null = ما انسأل، '' = ما يشجع حد · نادي المشجع للمنصة كلها
 async function crowdSubmit(){
   const k='sub_'+DAY+'_'+mode;if(store.get(k,null))return;
   const c=myClub();if(c===null)return;
@@ -483,7 +485,7 @@ async function crowdFlow(again){
   if(myClub()===null||again){
     box.innerHTML=pickHTML(again);
     if(cb&&!again)cb.innerHTML='';
-    box.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const c=b.dataset.c;store.set('club',c);gc('club-'+(c||'none'));toast(c?'💪 يلا '+D.clubs[c]+'!':'تمام 👍');crowdFlow()});
+    box.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>{const c=b.dataset.c;PID.set('club',c);gc('club-'+(c||'none'));toast(c?'💪 يلا '+D.clubs[c]+'!':'تمام 👍');crowdFlow()});
     return;
   }
   if(cb)cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 الجماهير اليوم</div><div class="loading" style="padding:8px 0">لحظة...</div></div>`;
@@ -626,7 +628,7 @@ function askClub(){
   $('#cgrid').querySelectorAll('button').forEach(b=>b.onclick=()=>{pickC=b.dataset.c;$('#cgrid').querySelectorAll('button').forEach(x=>x.classList.toggle('on',x===b));ok.disabled=false;ok.textContent='أنا مع جمهور '+D.clubs[pickC]+' 💪';vib(15)});
   $('#clubM').hidden=false;
 }
-function setClub(c){store.set('club',c);gc('club-'+(c||'none'));$('#clubM').hidden=true;toast(c?'💪 يلا '+D.clubs[c]+'!':'تمام 👍');crowdFlow()}
+function setClub(c){PID.set('club',c);gc('club-'+(c||'none'));$('#clubM').hidden=true;toast(c?'💪 يلا '+D.clubs[c]+'!':'تمام 👍');crowdFlow()}
 $('#clubOk').onclick=()=>{if(pickC)setClub(pickC)};
 $('#clubNone').onclick=()=>setClub('');
 $('#clubLater').onclick=()=>{$('#clubM').hidden=true};
