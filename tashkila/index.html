@@ -502,7 +502,7 @@ async function drawCard(){
     rr(x,cx-tw/2,top,tw,h,h/2);x.strokeStyle='rgba(215,180,101,.65)';x.lineWidth=1.6;x.stroke();
     x.fillStyle='#FFF5E5';x.fillText(nm,cx,top+h/2+1)};
   FMS[fm].forEach(([fx,fy],i)=>{
-    const p=xi[i];if(!p)return;const cx=P.x+P.w*fx/100,cy=P.y+P.h*fy/100-16,R=42;const k=kit(FMS[fm][i][2]);
+    const p=xi[i];if(!p)return;const cx=P.x+P.w*fx/100,cy=P.y+P.h*(FMS[fm][i][2]==='GK'?fy:fy-5)/100-16,R=42; /* الدفاع والوسط والهجوم خطوة لقدام */const k=kit(FMS[fm][i][2]);
     {const im=PH[i],r=48,c0=cy-2;
       x.save();x.shadowColor='rgba(0,0,0,.55)';x.shadowBlur=16;x.shadowOffsetY=6;x.beginPath();x.arc(cx,c0,r+5,0,7);x.fillStyle='#fff';x.fill();x.restore();
       x.beginPath();x.arc(cx,c0,r+3,0,7);x.fillStyle=k.body;x.fill();
