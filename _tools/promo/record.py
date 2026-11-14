@@ -45,7 +45,7 @@ async def main():
     await ctx.route('**/gc.zgo.at/**',lambda r:r.fulfill(status=200,content_type='text/javascript',body=''))
     pg=await ctx.new_page()
     pg.on('console',lambda m:print('[console]',m.type,m.text[:200]) if m.type=='error' else None)
-    await pg.goto(A.base+'/_tools/promo/'+STAGE)
+    await pg.goto(A.base+'/_tools/promo/'+STAGE+'?tl='+TLF)
     await pg.wait_for_function('window.ready===true',timeout=60000);await pg.wait_for_timeout(1500)
     print('prep:',await pg.evaluate('prep()'));await pg.wait_for_timeout(1500)
     if A.shots:

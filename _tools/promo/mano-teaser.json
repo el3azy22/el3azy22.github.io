@@ -1,0 +1,60 @@
+{
+ "_help": "مقطع «منو اللاعب؟» القصير لتغريدة أول تحدي (20 ثانية). نفس طريقة timeline.json — شوف README.txt",
+ "fps": 30,
+ "duration": 20,
+ "demo": {
+  "tashkilaClub": "ain",
+  "formation": "4-3-3",
+  "manoAnswer": "renato-fabrizio-tapia-cortijo",
+  "manoGuesses": [
+   "kristjan-asllani",
+   "karim-el-berkaoui",
+   "renato-fabrizio-tapia-cortijo"
+  ]
+ },
+ "music": {
+  "lufs": -14,
+  "fadeIn": 0.5,
+  "fadeOut": 1.5,
+  "sfxGainDb": -9,
+  "segments": [
+   {
+    "file": "../mano/video/platform-theme.m4a",
+    "trackStart": 39.8,
+    "at": 0
+   }
+  ]
+ },
+ "scenes": [
+  {
+   "id": "mano",
+   "start": 0,
+   "sfx": null,
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "*منو اللاعب؟* كل يوم *لاعب سري* من الدوري"
+    },
+    {
+     "at": 3.4,
+     "text": "كل محاولة غلط تفتح لك *تلميح* يديد"
+    },
+    {
+     "at": 6.8,
+     "text": "عندك *6 محاولات*… *تعرفه؟*"
+    }
+   ]
+  },
+  {
+   "id": "outro",
+   "start": 13.6,
+   "sfx": "chime",
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "أول تحدي *الثلاثاء 17 نوفمبر*"
+    }
+   ]
+  }
+ ]
+}

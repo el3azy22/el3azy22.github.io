@@ -293,7 +293,7 @@ const SC={
  soon(b){$('#phone').classList.remove('on');tag('');$$('#soon .feat').forEach((e,i)=>b(.04+i*.17,()=>e.classList.add('on')));b(.66,()=>$('#soon .more').classList.add('on'))},
  unity(b){$('#glow').classList.add('on');b(.02,()=>$('#unity').classList.add('go'));$$('#unity .o').forEach((e,i)=>b(.03+i*.014,()=>e.classList.add("in")));
   $$('#unity .chip').forEach((e,i)=>b(.56+i*.07,()=>e.classList.add('on')))},
- outro(b){b(.03,()=>$('#outro .box').classList.add('go'));b(.3,()=>sweep())}
+ outro(b){$('#phone').classList.remove('on');tag('');b(.03,()=>$('#outro .box').classList.add('go'));b(.3,()=>sweep())}
 };
 function sweep(){const s=$('#sweep');s.classList.remove('run');void s.offsetWidth;s.classList.add('run')}
 
@@ -301,7 +301,7 @@ function sweep(){const s=$('#sweep');s.classList.remove('run');void s.offsetWidt
 let TL=null,AP={};window.ready=false;
 const loaded=f=>new Promise(r=>{if(f.contentDocument&&f.contentDocument.readyState==='complete'&&f.contentWindow.location.href!=='about:blank')r();else f.addEventListener('load',()=>r(),{once:true})});
 (async()=>{
-  TL=await (await fetch('timeline.json?'+performance.now())).json();
+  TL=await (await fetch((new URLSearchParams(location.search).get('tl')||'timeline.json')+'?'+performance.now())).json();
   const D=await (await fetch('../../mano/data.json')).json();D.players.forEach(p=>{PL[p.id]=p;AP[p.id]=p.ap||0});
   await Promise.all([loaded($('#fMano')),loaded($('#fTash')),document.fonts.ready]);
   window.ready=true;
