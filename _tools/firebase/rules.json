@@ -110,6 +110,28 @@
      ".validate": "newData.isNumber() && ((!data.exists() && newData.val() == 1) || newData.val() == data.val() + 1) && newData.parent().parent().parent().child('rv').child($k).child(auth.uid).child('st').val() == $p"
     }
    }
+  },
+  "f": {
+   "$u": {
+    ".write": "auth != null && auth.uid == $u",
+    ".validate": "newData.hasChildren(['c']) && newData.child('c').isString() && newData.child('c').val().matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1)",
+    "c": {
+     ".validate": true
+    },
+    "n": {
+     ".validate": "newData.isString() && newData.val().length <= 16"
+    },
+    "$other": {
+     ".validate": false
+    }
+   }
+  },
+  "fc": {
+   ".read": true,
+   "$c": {
+    ".write": "auth != null",
+    ".validate": "$c.matches(/^(ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united|none)$/) && newData.isNumber() && ((newData.parent().parent().child('f').child(auth.uid).child('c').val() == $c && root.child('f').child(auth.uid).child('c').val() != $c && newData.val() == (data.exists() ? data.val() : 0) + 1) || (root.child('f').child(auth.uid).child('c').val() == $c && newData.parent().parent().child('f').child(auth.uid).child('c').val() != $c && newData.val() == data.val() - 1))"
+   }
   }
  }
 }

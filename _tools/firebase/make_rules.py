@@ -58,4 +58,21 @@ rules["rules"].update({
    "$o":{".validate":False}}}},
  "rs":{".read":True,"$k":{"$p":{".write":rfresh(rs_after),".validate":f"newData.isNumber() && {inc} && {RV(rs_after)}.child('st').val() == $p"}}},
 })
+# ── هوية المشجع ── f/$u = {c: النادي أو none, n: الاسم الاختياري}   fc/$c = عدد مشجعي النادي (مقروء)
+FCL=CL+"|none"
+rules["rules"].update({
+ "f":{"$u":{
+   ".write":"auth != null && auth.uid == $u",
+   ".validate":(f"newData.hasChildren(['c']) && newData.child('c').isString() && newData.child('c').val().matches(/^({FCL})$/)"
+     " && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1)"),
+   "c":{".validate":True},
+   "n":{".validate":"newData.isString() && newData.val().length <= 16"},
+   "$other":{".validate":False}}},
+ "fc":{".read":True,"$c":{
+   ".write":"auth != null",
+   ".validate":(f"$c.matches(/^({FCL})$/) && newData.isNumber() && ("
+     "(newData.parent().parent().child('f').child(auth.uid).child('c').val() == $c && root.child('f').child(auth.uid).child('c').val() != $c && newData.val() == (data.exists() ? data.val() : 0) + 1)"
+     " || (root.child('f').child(auth.uid).child('c').val() == $c && newData.parent().parent().child('f').child(auth.uid).child('c').val() != $c && newData.val() == data.val() - 1))")}},
+})
+
 json.dump(rules,open('rules.json','w'),ensure_ascii=False,indent=1)

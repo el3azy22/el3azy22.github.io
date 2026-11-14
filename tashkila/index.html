@@ -590,6 +590,7 @@ document.addEventListener('dblclick',e=>e.preventDefault());
 /* تحميل القوائم من squads.json */
 fetch('squads.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(d=>{NATL=d.national||null;CLUBS=d.clubs||[];buildClubs()}).catch(()=>toast('ما قدرنا نحمل القوائم، حدّث الصفحة'));
 </script>
+<script src="../assets/fan.js"></script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

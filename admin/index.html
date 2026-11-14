@@ -124,11 +124,11 @@ async function gc(path,params){
 }
 const fb=p=>fetch(FB+p).then(r=>r.ok?r.json():null).catch(()=>null);
 // one fetch for everything; each range is computed locally => switching is instant
-let DATA=null,REFS={},FBS={},FBC={},MD=null;
+let DATA=null,REFS={},FBS={},FBC={},FBF={},MD=null;
 async function fetchAll(){
   const a=SITE_START,b=dubaiToday()+DAYMS;
-  const [hits,tot,s,c]=await Promise.all([gc('/stats/hits',{start:iso(a),end:iso(b),limit:100,daily:true}),sleep(300).then(()=>gc('/stats/total',{start:iso(a),end:iso(b)})),fb('/s.json'),fb('/c.json')]);
-  DATA={hits:hits.hits||[],tot:tot.stats||[]};FBS=s||{};FBC=c||{};REFS={};
+  const [hits,tot,s,c,fcn]=await Promise.all([gc('/stats/hits',{start:iso(a),end:iso(b),limit:100,daily:true}),sleep(300).then(()=>gc('/stats/total',{start:iso(a),end:iso(b)})),fb('/s.json'),fb('/c.json'),fb('/fc.json')]);
+  DATA={hits:hits.hits||[],tot:tot.stats||[]};FBS=s||{};FBC=c||{};FBF=fcn||{};REFS={};
   const D=Math.floor((dubaiToday()-LAUNCH)/DAYMS)+1;
   if(D>=1&&!MD)MD=await fetch('../mano/data.json').then(r=>r.json()).catch(()=>null);
 }
@@ -217,8 +217,10 @@ function render(){
     Object.entries(FBC).forEach(([d,v])=>{d=+d;if(d<f||d>f+6||!v)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([x,y])=>{tt[x]=tt[x]||{n:0,t:0};tt[x].n+=y.n||0;tt[x].t+=y.t||0}))});
     const rk=Object.entries(tt).filter(([,x])=>x.n>=3).map(([x,y])=>[CLUBS[x]||x,y.t/y.n,{img:'../mano/assets/'+x+'.png',txt:(y.t/y.n).toFixed(1)}]).sort((x,y)=>y[1]-x[1]);
     h+=`<div class="lbl">🏆 تحدي الأندية · الأسبوع ${wk}</div><div class="card"><p class="cap">متوسط نقاط جمهور كل نادي في «منو اللاعب؟» (٦ نقاط لو عرفه من أول محاولة، وتقل مع كل محاولة).</p>${rk.length?bars(rk):'<div class="empty">يطلع الترتيب لما يلعب ٣ مشجعين أو أكثر لكل نادي</div>'}</div>`}
-  const picks=Object.entries(ev).filter(([x])=>/^club-/.test(x)).map(([x,v])=>{const c=x.slice(5);return [c==='none'?'ما يشجع نادي':(CLUBS[c]||c),v,c==='none'?{}:{img:'../mano/assets/'+c+'.png'}]}).sort((x,y)=>y[1]-x[1]);
-  h+=`<div class="lbl">جماهير الأندية</div><div class="card"><p class="cap">كم شخص اختار إنه يشجع كل نادي (يسألهم «منو اللاعب؟» أول مرة يلعبون).</p>${picks.length?bars(picks):'<div class="empty">'+(pre?'يبدا العد مع إطلاق اللعبة':'ما فيه اختيارات في هالفترة')+'</div>'}</div>`;
+  { // جماهير الأندية: من قاعدة البيانات (كل مشجع مرة وحدة، ولو غيّر ناديه ينحسب لليديد بس)
+    const F=Object.entries(FBF).filter(([,v])=>v>0),tot=F.reduce((x,[,v])=>x+v,0),neu=FBF.none||0;
+    const picks=F.filter(([c])=>c!=='none').map(([c,v])=>[CLUBS[c]||c,v,{img:'../mano/assets/'+c+'.png',txt:nf(v)}]).sort((x,y)=>y[1]-x[1]);
+    h+=`<div class="lbl">👥 جماهير الأندية</div><div class="card"><p class="cap"><b>${nf(tot)}</b> مشجع اختاروا لين الحين (من بداية المنصة، مب حسب الفترة)${neu?` · منهم ${nf(neu)} محايد`:''}. كل مشجع ينحسب مرة وحدة، ولو غيّر ناديه ينحسب لليديد.</p>${picks.length?bars(picks):'<div class="empty">للحين ما اختار أحد ناديه</div>'}</div>`}
   $('#app').innerHTML=h;bindSeg();loadRefs(a,b);
 }
 async function loadRefs(a,b){
