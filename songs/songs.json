@@ -15,7 +15,8 @@
    "title": "أغنية الوصل",
    "sub": "الإمبراطور",
    "file": "",
-   "lyrics": ""
+   "lyrics": "",
+   "cover": "wasl.jpg"
   },
   {
    "id": "jazira",
@@ -23,7 +24,8 @@
    "title": "أغنية الجزيرة",
    "sub": "فخر بوظبي",
    "file": "",
-   "lyrics": ""
+   "lyrics": "",
+   "cover": "jazira.jpg"
   }
  ]
 }
