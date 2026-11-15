@@ -86,6 +86,12 @@ h2:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transpare
 .tool .go{margin-inline-start:auto;color:var(--gold);font-size:22px;flex-shrink:0}
 .badge{display:inline-block;font-size:11px;font-weight:600;border-radius:20px;padding:2px 9px;margin-inline-start:6px;vertical-align:middle;background:var(--gold);color:var(--navy)}
 .badge.new{background:var(--green);color:#fff}
+.timer.mini{margin-top:9px;padding:7px 10px;border-radius:11px}
+.timer.mini span{font-size:11.5px}
+.timer.mini time{font-size:15px;gap:6px}
+.timer.mini time em{font-size:12px}
+.timer.mini.on{border-color:rgba(46,158,102,.55);background:rgba(46,158,102,.12)}
+.timer.mini.on span{opacity:1;color:#8fe3b5;font-weight:600}
 .live{display:block;margin-top:6px;font-size:12.5px;font-weight:600;color:var(--gold2,#F6E3AE)}
 .live time{direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
 .live.on{color:#8fe3b5}
@@ -125,6 +131,15 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div class="timer"><span id="fLbl">اللاعب الياي بعد</span><time id="fTime">--:--:--</time></div>
   <div class="cta" id="fCta">العب الحين</div>
 </a>
+<a class="feat in" style="animation-delay:.38s" href="predict/" id="predFeat" hidden>
+  <div class="top">
+    <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg></div>
+    <div><span class="tag"><i></i><span id="pfTag">يوم الجولة</span></span><b class="t">دوري التوقعات</b></div>
+  </div>
+  <div class="d">توقع نتايج الجولة قبل لا تنقفل. كل مباراة تقفل مع صافرتها، ونقاطك تنحسب لجمهور ناديك.</div>
+  <div class="timer"><span>أول صافرة بعد</span><time id="pfTime">--:--:--</time></div>
+  <div class="cta">توقع الحين</div>
+</a>
 
 <h2 class="in" style="animation-delay:.42s">أدوات الجماهير</h2>
 <a class="tool in" style="animation-delay:.48s" href="tashkila/">
@@ -134,23 +149,23 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 </a>
 <a class="tool in" style="animation-delay:.54s" href="rate/" id="rateLive" hidden>
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
-  <div><b>قيّم اللاعبين <span class="badge new">يديد</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span><span class="live" id="rateLine"></span></div>
+  <div><b>قيّم اللاعبين <span class="badge new">يديد</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span><div class="timer mini" id="rateBox" hidden><span id="rateLbl"></span><time id="rateLine"></time></div></div>
   <div class="go">‹</div>
 </a>
 <a class="tool in" style="animation-delay:.58s" href="predict/" id="predLive" hidden>
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg></div>
-  <div><b>دوري التوقعات <span class="badge new">يديد</span></b><span class="d">توقع نتيجة كل مباراة قبل الصافرة، واجمع النقاط لك ولجمهور ناديك</span><span class="live" id="predLine"></span></div>
+  <div><b>دوري التوقعات <span class="badge new">يديد</span></b><span class="d">توقع نتيجة كل مباراة قبل الصافرة، واجمع النقاط لك ولجمهور ناديك</span><div class="timer mini" id="predBox" hidden><span id="predLbl"></span><time id="predLine"></time></div></div>
   <div class="go">‹</div>
 </a>
 
 <h2 class="in" style="animation-delay:.6s" id="soonH">ينطلقون الثلاثاء 17 نوفمبر</h2>
 <div class="tool soon in" style="animation-delay:.64s" id="rateSoon">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
-  <div><b>قيّم اللاعبين <span class="badge">الثلاثاء</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span><span class="live soonL"></span></div>
+  <div><b>قيّم اللاعبين <span class="badge">الثلاثاء</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span><div class="timer mini"><span>ينطلق بعد</span><time class="soonL">--:--:--</time></div></div>
 </div>
 <div class="tool soon in" style="animation-delay:.68s" id="predSoon">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg></div>
-  <div><b>دوري التوقعات <span class="badge">الثلاثاء</span></b><span class="d">توقع نتيجة كل مباراة قبل الصافرة، واجمع النقاط لك ولجمهور ناديك</span><span class="live soonL"></span></div>
+  <div><b>دوري التوقعات <span class="badge">الثلاثاء</span></b><span class="d">توقع نتيجة كل مباراة قبل الصافرة، واجمع النقاط لك ولجمهور ناديك</span><div class="timer mini"><span>ينطلق بعد</span><time class="soonL">--:--:--</time></div></div>
 </div>
 
 <div class="qr"><img src="assets/qr/portal.png" alt="باركود منصة العازي"><div>صوّر الباركود وشارك المنصة</div></div>
@@ -189,8 +204,8 @@ document.getElementById('crests').innerHTML=Object.entries(C).map(([c,f])=>`<img
 // قبل الإطلاق: عد تنازلي تحت «قيّم اللاعبين» و«دوري التوقعات»
 (()=>{const L=Date.UTC(2026,10,16,20),els=document.querySelectorAll('.soonL');if(!els.length||Date.now()>=L)return;
  const f=()=>{const ms=L-Date.now();if(ms<=0){location.reload();return}const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
-  const t=`${d?(d===1?'يوم و':d===2?'يومين و':d+' أيام و'):''}<time>${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}</time>`;
-  els.forEach(e=>e.innerHTML='⏱ ينطلق بعد '+t)};f();setInterval(f,1000)})();
+  const t=(d?'<em>'+(d===1?'يوم':d===2?'يومين':d+' أيام')+' و</em>':'')+`<bdi>${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}</bdi>`;
+  els.forEach(e=>e.innerHTML=t)};f();setInterval(f,1000)})();
 // «قيّم اللاعبين» و«دوري التوقعات» يبينون مع أول تحدي: الثلاثاء 17 نوفمبر 12 بالليل (الإمارات). للتجربة قبلها: ?live
 (()=>{const on=Date.now()>=Date.UTC(2026,10,16,20)||/[?&](live|rate)/.test(location.search);if(!on)return;
  [['rateLive','rateSoon'],['predLive','predSoon']].forEach(([a,b])=>{document.getElementById(a).hidden=false;document.getElementById(b).hidden=true});
@@ -199,20 +214,27 @@ document.getElementById('crests').innerHTML=Object.entries(C).map(([c,f])=>`<img
 function liveLines(){
   const CN={ain:'العين',wahda:'الوحدة',jazira:'الجزيرة',shababahli:'شباب الأهلي',sharjah:'الشارقة',wasl:'الوصل',nasr:'النصر',baniyas:'بني ياس',ajman:'عجمان',kalba:'كلباء',khorfakkan:'خورفكان',dhafra:'الظفرة',hatta:'حتا',united:'يونايتد'};
   const day=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{weekday:'long',timeZone:'Asia/Dubai'}).format(t);
-  const left=ms=>{const s=Math.max(0,Math.floor(ms/1e3)),d=Math.floor(s/86400);if(d>=1)return d===1?'يوم':d===2?'يومين':d<=10?d+' أيام':d+' يوم';const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return `<time>${h}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}</time>`};
+  const p2=n=>String(n).padStart(2,'0');
+  const cd=ms=>{const s=Math.max(0,Math.floor(ms/1e3)),d=Math.floor(s/86400);return (d?'<em>'+(d===1?'يوم':d===2?'يومين':d<=10?d+' أيام':d+' يوم')+' و</em>':'')+`<bdi>${p2(Math.floor(s%86400/3600))}:${p2(Math.floor(s%3600/60))}:${p2(s%60)}</bdi>`};
+  const $=i=>document.getElementById(i),show=(box,lbl,html,on)=>{$(box).hidden=false;$(box).classList.toggle('on',!!on);$(lbl).textContent=html[0];$(box).querySelector('time').innerHTML=html[1]};
   const v=Math.floor(Date.now()/12e4);
   Promise.all([fetch('predict/data.json?v='+v).then(r=>r.json()).catch(()=>null),fetch('rate/data.json?v='+v).then(r=>r.json()).catch(()=>null)]).then(([P,R])=>{
     const tick=()=>{const T=Date.now();
-      if(P){const nx=P.matches.filter(m=>m.t>T).sort((a,b)=>a.t-b.t)[0],pe=document.getElementById('predLine');
-        if(nx){const inRound=P.matches.some(m=>m.wk===nx.wk&&m.t<=T);
-          pe.innerHTML=inRound?`⏱ الصافرة الياية بعد ${left(nx.t-T)}`:`⏱ الجولة ${nx.wk} تبدا بعد ${left(nx.t-T)}`}else pe.textContent=''}
-      const re=document.getElementById('rateLine');
+      if(P){const nx=P.matches.filter(m=>m.t>T).sort((a,b)=>a.t-b.t)[0];
+        if(nx){const started=P.matches.some(m=>m.wk===nx.wk&&m.t<=T);
+          // يوم الجولة: كرت كبير من 24 ساعة قبل أول صافرة لين تبدا
+          const big=!started&&nx.t-T<24*3600e3;
+          $('predFeat').hidden=!big;$('predLive').hidden=big;
+          if(big){$('pfTag').textContent='الجولة '+nx.wk+' · تقفل مع أول صافرة';$('pfTime').innerHTML=cd(nx.t-T)}
+          show('predBox','predLbl',started?['الصافرة الياية بعد',cd(nx.t-T)]:['الجولة '+nx.wk+' تبدا بعد',cd(nx.t-T)])}
+        else{$('predBox').hidden=true;$('predFeat').hidden=true;$('predLive').hidden=false}}
       const open=R?R.matches.filter(m=>m.st===6&&T>=m.t+100*60e3&&T<m.t+50*3600e3):[];
-      if(open.length){re.className='live on';const m=open[open.length-1];re.textContent=open.length>1?`🟢 مفتوح الحين: ${open.length} مباريات`:`🟢 مفتوح الحين: ${CN[m.h.c]} × ${CN[m.a.c]}`}
-      else if(P){const nx=P.matches.filter(m=>m.t>T-4*3600e3&&m.st!==6).sort((a,b)=>a.t-b.t)[0];re.className='live';
-        re.textContent=nx?`⏱ يفتح ${day(nx.t)} بعد أول مباراة`:''}};
+      if(open.length){const m=open[open.length-1];show('rateBox','rateLbl',['🟢 مفتوح الحين',open.length>1?open.length+' مباريات':`${CN[m.h.c]} × ${CN[m.a.c]}`],true)}
+      else if(P){const nx=P.matches.filter(m=>m.t>T-4*3600e3&&m.st!==6).sort((a,b)=>a.t-b.t)[0];
+        if(nx){const end=nx.t+105*60e3;show('rateBox','rateLbl',end>T?['يفتح بعد أول مباراة',cd(end-T)]:['يفتح بعد شوي','<bdi>…</bdi>'])}else $('rateBox').hidden=true}};
     tick();setInterval(tick,1000)});
 }
+
 </script>
 <script src="assets/fan.js"></script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
