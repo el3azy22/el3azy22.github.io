@@ -6,8 +6,7 @@
 <meta name="theme-color" content="#071D2B">
 <link rel="icon" type="image/png" href="../assets/icon/favicon-64.png">
 <link rel="apple-touch-icon" href="../assets/icon/apple-touch-icon.png">
-<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>@font-face{font-family:'Readex Pro';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap}</style>
 <style>
 :root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F6E3AE;--gold3:#B08A3E;--ivory:#FFF5E5;--muted:rgba(255,245,229,.62);--green:#3DBE7A;--red:#E06A5A;
  --sadu:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M0 11 9 2.5 18 11' fill='none' stroke='%23D7B465' stroke-width='1.3'/%3E%3Cpath d='M9 6.6 11.2 8.8 9 11 6.8 8.8Z' fill='%23D7B465'/%3E%3C/svg%3E")}
@@ -207,16 +206,18 @@ function render(){
   else{
     if(MD&&MD.schedule){const p=MD.players.find(x=>x.id===MD.schedule[(DAY-1)%MD.schedule.length]);
       if(p)h+=`<div class="today"><img src="${p.ph?'../mano/assets/p/'+esc(p.id)+'.webp':'../mano/assets/'+p.c+'.png'}" onerror="this.style.visibility='hidden'" alt=""><div><div class="x">لاعب اليوم (لا تكشفه 🤫)</div><div class="nm">${esc(p.n)}</div><div class="x">${esc(MD.clubs[p.c]||'')}</div></div></div>`}
+    if(MD&&MD.schedule_pro&&MD.schedule_pro.length){const p=MD.players.find(x=>x.id===MD.schedule_pro[(DAY-1)%MD.schedule_pro.length]);
+      if(p)h+=`<div class="today"><img src="${p.ph?'../mano/assets/p/'+esc(p.id)+'.webp':'../mano/assets/'+p.c+'.png'}" onerror="this.style.visibility='hidden'" alt=""><div><div class="x">🧠 لاعب تحدي الخبير</div><div class="nm">${esc(p.n)}</div><div class="x">${esc(MD.clubs[p.c]||'')}</div></div></div>`}
     const day=FBS[DAY]||{};
     ['easy','pro'].forEach(m=>{const s=day[m]||{};const n=s.n||0,w=s.w||0;
-      h+=`<div class="mini"><b>${m==='easy'?'🙂 الوضع العادي':'🧠 وضع الخبير'}:</b> خلصوا التحدي ${nf(n)} · عرفوه ${pct(w,n)}%</div>`;
+      h+=`<div class="mini"><b>${m==='easy'?'🕵️ لاعب اليوم':'🧠 تحدي الخبير'}:</b> خلصوا التحدي ${nf(n)} · عرفوه ${pct(w,n)}%</div>`;
       h+=n?bars([1,2,3,4,5,6].map(i=>['عرفوه من المحاولة '+i,s['g'+i]||0]).concat([['ما عرفوه',n-w,{cls:'lose'}]])):'<div class="empty">ما حد خلص هالوضع لين الحين</div>'});
   }
   h+=`</div>`;
   if(DAY>=1){const wk=Math.floor((DAY-1)/7)+1,f=(wk-1)*7+1,tt={};
-    Object.entries(FBC).forEach(([d,v])=>{d=+d;if(d<f||d>f+6||!v)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([x,y])=>{tt[x]=tt[x]||{n:0,t:0};tt[x].n+=y.n||0;tt[x].t+=y.t||0}))});
+    Object.entries(FBC).forEach(([d,v])=>{d=+d;if(d<f||d>f+6||!v)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([x,y])=>{tt[x]=tt[x]||{n:0,t:0};if(m==='easy')tt[x].n+=y.n||0;tt[x].t+=y.t||0}))});
     const rk=Object.entries(tt).filter(([,x])=>x.n>=3).map(([x,y])=>[CLUBS[x]||x,y.t/y.n,{img:'../mano/assets/'+x+'.png',txt:(y.t/y.n).toFixed(1)}]).sort((x,y)=>y[1]-x[1]);
-    h+=`<div class="lbl">🏆 تحدي الأندية · الأسبوع ${wk}</div><div class="card"><p class="cap">متوسط نقاط جمهور كل نادي في «منو اللاعب؟» (٦ نقاط لو عرفه من أول محاولة، وتقل مع كل محاولة).</p>${rk.length?bars(rk):'<div class="empty">يطلع الترتيب لما يلعب ٣ مشجعين أو أكثر لكل نادي</div>'}</div>`}
+    h+=`<div class="lbl">🏆 تحدي الأندية · الأسبوع ${wk}</div><div class="card"><p class="cap">معدل نقاط جمهور كل نادي في «منو اللاعب؟»: نقاط لاعب اليوم وتحدي الخبير ÷ عدد المشجعين (٦ نقاط لو عرفه من أول محاولة، وتقل مع كل محاولة).</p>${rk.length?bars(rk):'<div class="empty">يطلع الترتيب لما يلعب ٣ مشجعين أو أكثر لكل نادي</div>'}</div>`}
   { // جماهير الأندية: من قاعدة البيانات (كل مشجع مرة وحدة، ولو غيّر ناديه ينحسب لليديد بس)
     const F=Object.entries(FBF).filter(([,v])=>v>0),tot=F.reduce((x,[,v])=>x+v,0),neu=FBF.none||0;
     const picks=F.filter(([c])=>c!=='none').map(([c,v])=>[CLUBS[c]||c,v,{img:'../mano/assets/'+c+'.png',txt:nf(v)}]).sort((x,y)=>y[1]-x[1]);

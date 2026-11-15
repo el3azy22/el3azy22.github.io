@@ -14,9 +14,7 @@
 <meta name="twitter:site" content="@el3azy22">
 <link rel="icon" href="assets/logo.png">
 <link rel="apple-touch-icon" href="assets/logo.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>@font-face{font-family:'Readex Pro';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap}</style>
 <style>
 :root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F0D99A;--ivory:#FFF5E5;--green:#2E9E66;--yellow:#C4952B;--gray:#243F52;--red:#B4473F}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -126,6 +124,10 @@ footer a{color:inherit}
 .step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
 .step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
 .step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
+.seg button.lock{opacity:.6}.seg button.lock small{color:var(--gold)}
+.btn.pro{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.3}.btn.pro small{font-size:11.5px;font-weight:500;opacity:.75}
+.gotp{font-size:14px;margin:2px 0 8px;opacity:.9}.gotp b{color:var(--gold)}
+.mypts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}.mypts div{background:rgba(215,180,101,.08);border:1px solid rgba(215,180,101,.3);border-radius:14px;padding:10px 6px}.mypts b{display:block;font-size:24px;color:var(--gold)}.mypts span{font-size:11.5px;opacity:.75}
 .pts{margin-top:12px;background:rgba(255,245,229,.04);border:1px solid rgba(215,180,101,.28);border-radius:14px;padding:11px 12px 10px;text-align:right}
 .pts h4{font-size:14px;color:var(--gold);margin:0 0 8px;font-weight:700}
 .pts .r{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
@@ -210,8 +212,8 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
   </header>
 
   <div class="seg" id="modeSeg">
-    <button class="on" data-m="easy">🙂 عادي<small>التلميحات تنفتح</small></button>
-    <button data-m="pro">🧠 خبير<small>قارن وخمّن</small></button>
+    <button class="on" data-m="easy">🕵️ لاعب اليوم<small>التلميحات تنفتح</small></button>
+    <button data-m="pro">🧠 تحدي الخبير<small id="proSub">لاعب ثاني أصعب</small></button>
   </div>
 
   <main id="app"><div class="loading">لحظة...</div></main>
@@ -224,16 +226,17 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
 <div class="modal" id="howto" hidden><div class="mbox">
   <div style="font-size:40px">🕵️</div>
   <h2>كيف تلعب «منو اللاعب؟»</h2>
-  <div class="step"><i>1</i><div><b>كل يوم لاعب سري</b><span>من لاعبين دوري أدنوك للمحترفين</span></div></div>
-  <div class="step"><i>2</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك 6 محاولات</span></div></div>
-  <div class="step"><i>3</i><div><b>كل غلطة تفتح لك تلميح 🔓</b><span>الجنسية، المركز، العمر، النادي، الرقم...</span></div></div>
-  <div class="step"><i>4</i><div><b>عرفته؟ شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
-  <div class="step" id="clubStep" hidden><i>5</i><div><b>ناديك ينافس 🏆</b><span>نتيجتك كل يوم تعطي جمهور ناديك نقاط</span></div></div>
-  <div class="pts" id="clubPts" hidden><h4>🏆 نقاط ناديك من كل تحدي</h4>
-   <div style="font-size:12px;opacity:.75;margin-bottom:6px">حسب المحاولة اللي عرفت فيها اللاعب:</div>
+  <div class="step"><i>1</i><div><b>لاعب اليوم 🕵️</b><span>لاعب سري واحد للكل من دوري أدنوك للمحترفين</span></div></div>
+  <div class="step"><i>2</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك 6 محاولات، وكل غلطة تفتح تلميح 🔓</span></div></div>
+  <div class="step"><i>3</i><div><b>بعدها ينفتح تحدي الخبير 🧠</b><span>لاعب ثاني أصعب، وكل تخمين يقارن لاعبك باللاعب السري بالألوان</span></div></div>
+  <div class="step"><i>4</i><div><b>شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
+  <div class="pts" id="clubPts" hidden><h4>🏆 نقاطك ونقاط ناديك</h4>
+   <div style="font-size:12px;opacity:.75;margin-bottom:6px">في كل تحدي، حسب المحاولة اللي عرفت فيها اللاعب:</div>
    <div class="att"><div><b>6</b>من 1</div><div><b>5</b>من 2</div><div><b>4</b>من 3</div><div><b>3</b>من 4</div><div><b>2</b>من 5</div><div><b>1</b>من 6</div><div class="z"><b>0</b>ما عرفته</div></div>
-   <p>كل وضع (العادي والخبير) ينحسب بروحه. نقاط جمهور كل نادي تتجمع طول الأسبوع، والترتيب <b>بمعدل نقاط المشجع</b> مب بالمجموع، عشان الجمهور الكبير ما يفوز بالعدد بس. النادي يدخل الترتيب من 3 مشاركات من جمهوره، وكل أسبوع يتعلن بطل يديد.</p></div>
-  <p style="font-size:12px;opacity:.7;margin-top:12px;line-height:1.8">تبا تحدي أصعب؟ جرّب <b style="color:var(--gold)">وضع الخبير 🧠</b>: كل تخمين يقارن لاعبك باللاعب السري بالألوان.</p>
+   <div class="r" style="margin-top:6px"><span>لاعب اليوم<small>أقصى شي</small></span><b>6</b></div>
+   <div class="r"><span>تحدي الخبير<small>نقاط زيادة فوق لاعب اليوم</small></span><b>+6</b></div>
+   <div class="r"><span>أقصى شي في اليوم</span><b>12</b></div>
+   <p>نقاطك تنضاف لك ولجمهور ناديك. ترتيب الأندية أسبوعي: مجموع نقاط الجمهور من التحديين ÷ عدد مشجعينه اللي لعبوا لاعب اليوم، يعني تحدي الخبير <b>دايماً يزيد</b> معدل ناديك وما ينقصه، والجمهور الكبير ما يفوز بالعدد بس. النادي يدخل الترتيب من 3 مشجعين، وكل أسبوع يتعلن بطل يديد.</p></div>
   <button class="btn" id="howGo">يلا نلعب</button>
 </div></div>
 
@@ -248,7 +251,8 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
 
 <div class="modal" id="statsM" hidden><div class="mbox">
   <h2>📊 إحصائياتي</h2>
-  <div class="seg" id="statSeg" style="margin-top:0"><button class="on" data-m="easy">🙂 عادي</button><button data-m="pro">🧠 خبير</button></div>
+  <div id="myPts"></div>
+  <div class="seg" id="statSeg" style="margin-top:0"><button class="on" data-m="easy">🕵️ لاعب اليوم</button><button data-m="pro">🧠 الخبير</button></div>
   <div id="statsBody"></div>
   <button class="btn ghost" id="statsClose">تمام</button>
 </div></div>
@@ -299,10 +303,10 @@ function init(data){
   const raw=dubaiDayIndex(D.start);
   if(raw<0&&!/[?&]preview\b/.test(location.search)){prelaunch(raw);return}
   const idx=Math.max(0,raw);
-  DAY=idx+1;ANS=BY[D.schedule[idx%D.schedule.length]];
-  YEST=idx>0?BY[D.schedule[(idx-1)%D.schedule.length]]:null;
+  DAY=idx+1;
   $('#dayLbl').innerHTML='تحدي اليوم <bdi dir="ltr">#'+AR(DAY)+'</bdi>';
-  document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);b.onclick=()=>{mode=b.dataset.m;store.set('mode',mode);document.querySelectorAll('#modeSeg button').forEach(x=>x.classList.toggle('on',x===b));load()}});
+  if(mode==='pro'&&!easyDone())mode='easy';
+  document.querySelectorAll('#modeSeg button').forEach(b=>{b.onclick=()=>{const m=b.dataset.m;if(m===mode)return;if(m==='pro'&&!easyDone()){toast('🔒 خلّص لاعب اليوم أول، وبعدها ينفتح تحدي الخبير');vib(30);return}setMode(m)}});
   if(!store.get('seenHow',false))$('#howto').hidden=false;
   load();
 }
@@ -312,8 +316,15 @@ function prelaunch(raw){
   $('#app').innerHTML=`<div class="card result"><div class="emo">🕵️</div><h2>أول تحدي يبدا<br><span style="white-space:nowrap">الثلاثاء 17 نوفمبر</span></h2><p style="opacity:.8;line-height:1.8;margin-bottom:10px">كل يوم لاعب سري من دوري أدنوك للمحترفين، وعندك 6 محاولات تعرفه.</p><div class="next">باقي على أول لاعب<b id="pl" style="direction:rtl">--</b></div></div>`;
   $('#dayLbl').textContent='قريباً';tick();setInterval(tick,1000);
 }
+// «تحدي الخبير»: لاعب ثاني أصعب (schedule_pro)، ينفتح بعد ما يخلص لاعب اليوم
+const ansFor=(m,i)=>{const sc=m==='pro'&&D.schedule_pro&&D.schedule_pro.length?D.schedule_pro:D.schedule;return BY[sc[i%sc.length]]};
+const easyDone=()=>!!(store.get('g_'+DAY+'_easy',null)||{}).done;
+const MODEN={easy:'لاعب اليوم',pro:'تحدي الخبير'};
+function setMode(m){mode=m;store.set('mode',m);load();scrollTo({top:0,behavior:'smooth'})}
+function paintSeg(){const ok=easyDone();document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);if(b.dataset.m==='pro')b.classList.toggle('lock',!ok)});
+  const ps=$('#proSub');if(ps){const pd=(store.get('g_'+DAY+'_pro',null)||{}).done;ps.textContent=!ok?'🔒 ينفتح بعد لاعب اليوم':pd?'✓ خلّصته':'لاعب ثاني أصعب'}}
 function load(){
-  CW=null;
+  CW=null;ANS=ansFor(mode,DAY-1);YEST=DAY>1?ansFor(mode,DAY-2):null;paintSeg();
   const k='g_'+DAY+'_'+mode;
   const saved=store.get(k,null);
   S={k,guesses:[],done:false,win:false};
@@ -342,7 +353,7 @@ function render(){
   let h=`<div class="card">
    <div class="hero">
      ${S.done?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">؟</span></span></span>`}
-     <div style="flex:1"><b>${S.done?ANS.n:'لاعب اليوم السري'}</b>
+     <div style="flex:1"><b>${S.done?ANS.n:(mode==='easy'?'لاعب اليوم السري':'لاعب الخبير السري')}</b>
        <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'كل تخمين يقارن لاعبك باللاعب السري')}</div>
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
    </div>`;
@@ -362,7 +373,7 @@ function render(){
   }
   h+=`</div>`;
   if(S.done)h+=resultHTML()+(CROWD?'<div id="crowd"></div><div id="clubs"></div>':'');
-  if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · تحدي <bdi dir="ltr">#${AR(DAY-1)}</bdi></div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
+  if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · ${MODEN[mode]} <bdi dir="ltr">#${AR(DAY-1)}</bdi></div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
   $('#app').innerHTML=h;
   if(!S.done)bindInput();else bindResult();
 }
@@ -390,7 +401,7 @@ function guess(id){
   const win=id===ANS.id;
   if(win){S.done=true;S.win=true}else if(S.guesses.length>=MAX){S.done=true}
   save();
-  if(S.done)record();
+  if(S.done){record();paintSeg()}
   render();
   if(S.guesses.length===1)gc('start-'+mode);
   if(win){gc('win-'+mode);vib([30,40,60]);confetti();const n=S.guesses.length;sfx(n===1?'mainoon':n<=4?'kafu':'sawaha')}
@@ -407,6 +418,11 @@ function record(){
   if(S.win){st.wins++;st.dist[S.guesses.length-1]++;st.streak=(st.lastWinDay===DAY-1?st.streak:0)+1;st.best=Math.max(st.best,st.streak);st.lastWinDay=DAY}else st.streak=0;
   st.lastDay=DAY;store.set('stats_'+mode,st);
 }
+function myPoints(){
+  const wk=Math.floor((DAY-1)/WEEK),f=wk*WEEK+1;let w=0,all=0;
+  for(let d=1;d<=DAY;d++)['easy','pro'].forEach(m=>{const g=store.get('g_'+d+'_'+m,null);if(g&&g.win&&g.guesses){const p=7-g.guesses.length;all+=p;if(d>=f)w+=p}});
+  return {w,all}}
+function ptsHTML(){const p=myPoints();return `<div class="mypts"><div><b>${AR(p.w)}</b><span>نقاطك هالأسبوع</span></div><div><b>${AR(p.all)}</b><span>نقاطك من البداية</span></div></div>`}
 function statsHTML(m){
   const st=store.get('stats_'+m,{played:0,wins:0,streak:0,best:0,dist:[0,0,0,0,0,0]});
   const mx=Math.max(1,...st.dist);const cur=(S&&S.win&&m===mode)?S.guesses.length-1:-1;
@@ -420,7 +436,7 @@ function shareText(){
   let grid;
   if(mode==='easy')grid=S.guesses.map(id=>id===ANS.id?'✅':'❌').join('');
   else{const em={ok:'🟩',near:'🟨','':'⬛'};grid=S.guesses.map(id=>{const r=cmp(BY[id]);return [r.c,r.p,r.n,r.a,r.no].map(x=>em[x]).join('')}).join('\n')}
-  return `🕵️ منو اللاعب؟ تحدي ${AR(DAY)}${mode==='easy'?'':' 🧠'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}${crowdLine()?'\n'+crowdLine():''}\n\nتقدر تعرفه أسرع؟ 👇\n${SITE}`;
+  return `🕵️ منو اللاعب؟ تحدي ${AR(DAY)}${mode==='easy'?'':' · تحدي الخبير 🧠'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}${crowdLine()?'\n'+crowdLine():''}\n\nتقدر تعرفه أسرع؟ 👇\n${SITE}`;
 }
 function resultHTML(){
   const st=store.get('stats_'+mode,{streak:0});
@@ -429,11 +445,12 @@ function resultHTML(){
    <h2>${S.win?(S.guesses.length===1?'من أول محاولة! مينوون معلومات 🔥':'كفووو! عرفته'):'هالمرة ما ضبطت'}</h2>
    <div class="ans">${ph(ANS,70)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
      <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
+   <div class="gotp">${S.win?`🏆 <b>${'\u2066+'+(7-S.guesses.length)+'\u2069'}</b> نقاط لك${myClub()?' ولجمهور '+D.clubs[myClub()]:''}`:`ما جبت نقاط هالمرة${mode==='easy'?'، عوّضها في تحدي الخبير':''}`}</div>
    ${st.streak>1&&S.win?`<div style="font-size:14px;margin-bottom:6px">سلسلتك: <b style="color:var(--gold)">${AR(st.streak)} أيام 🔥</b></div>`:''}
    <div style="font-size:12.5px;opacity:.7">نتيجتك جاهزة (من غير اسم اللاعب):</div>
    <img class="cardimg" id="cardImg" alt="صورة نتيجتك">
    <button class="btn" id="imgBtn">𝕏 شارك نتيجتك</button>
-   ${!store.get('g_'+DAY+'_'+(mode==='easy'?'pro':'easy'),{}).done?`<button class="btn ghost" id="otherBtn">جرّب ${mode==='easy'?'وضع الخبير 🧠':'الوضع العادي 🙂'}</button>`:''}
+   ${mode==='easy'&&!(store.get('g_'+DAY+'_pro',null)||{}).done?`<button class="btn pro" id="otherBtn">🧠 تحدي الخبير<small>لاعب ثاني أصعب · نقاط زيادة لك ولناديك</small></button>`:mode==='pro'?`<button class="btn ghost" id="otherBtn">🕵️ ارجع لاعب اليوم</button>`:''}
    <div class="next">اللاعب الياي بعد<b id="cd">--:--:--</b></div>
   </div>`;
 }
@@ -441,7 +458,7 @@ function bindResult(){
   const t=shareText();
   buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{const im=$('#cardImg');if(im)im.remove()});
   $('#imgBtn').onclick=shareImage;
-  const o=$('#otherBtn');if(o)o.onclick=()=>{document.querySelector(`#modeSeg [data-m=${mode==='easy'?'pro':'easy'}]`).click();scrollTo({top:0,behavior:'smooth'})};
+  const o=$('#otherBtn');if(o)o.onclick=()=>setMode(mode==='easy'?'pro':'easy');
   clearInterval(timer);const f=x=>String(x).padStart(2,'0');
   const tick=()=>{const s=Math.floor(msToDubaiMidnight()/1000);const e=$('#cd');if(!e)return;e.textContent=`${f(s/3600|0)}:${f(s%3600/60|0)}:${f(s%60)}`;if(s<=1)setTimeout(()=>location.reload(),1500)};
   tick();timer=setInterval(tick,1000);
@@ -455,7 +472,7 @@ const FB={key:'AIzaSyCJVYgLTqvj2k1KnvLYo6Z1feOS4E8fj94',db:'https://el3azy-3b64e
 const CROWD=!!(FB.key&&FB.db);
 const MINP=3,WEEK=7;
 let CW=null; // crowd stats for this day+mode
-if(CROWD){$('#clubStep').hidden=false;$('#clubPts').hidden=false}
+if(CROWD)$('#clubPts').hidden=false;
 const AR1=v=>v.toFixed(1);
 const nf=n=>Number(n).toLocaleString('en-US');
 /* هوية المشجع الموحدة للمنصة كلها (نفس الحساب المجهول في كل الأقسام) */
@@ -471,10 +488,12 @@ async function fbTok(){
   PID.set('fb',a);return a;
 }
 const myClub=()=>PID.get('club','el3azy_mano_club'); // null = ما انسأل، '' = ما يشجع حد · نادي المشجع للمنصة كلها
-async function crowdSubmit(){
-  const k='sub_'+DAY+'_'+mode;if(store.get(k,null))return;
+async function crowdSubmit(){if(mode==='pro')await submitMode('easy');await submitMode(mode)}
+async function submitMode(m){
+  const k='sub_'+DAY+'_'+m;if(store.get(k,null))return;
+  const st=store.get('g_'+DAY+'_'+m,null);if(!st||!st.done)return;
   const c=myClub();if(c===null)return;
-  const g=S.win?S.guesses.length:0,d=DAY,m=mode,a=await fbTok(),inc=n=>({'.sv':{increment:n}});
+  const g=st.win?st.guesses.length:0,d=DAY,a=await fbTok(),inc=n=>({'.sv':{increment:n}});
   const b={[`p/${d}/${m}/${a.u}`]:{d,g,c},[`s/${d}/${m}/n`]:inc(1)};
   if(g){b[`s/${d}/${m}/w`]=inc(1);b[`s/${d}/${m}/g${g}`]=inc(1)}
   if(c){b[`c/${d}/${m}/${c}/n`]=inc(1);if(g)b[`c/${d}/${m}/${c}/t`]=inc(7-g)}
@@ -484,7 +503,7 @@ async function crowdSubmit(){
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 function tally(raw,from,to){
   const T={};CLUBS_ORDER.forEach(k=>T[k]={k,n:0,t:0});
-  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){T[k].n+=x.n||0;T[k].t+=x.t||0}}))});
+  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){if(m==='easy')T[k].n+=x.n||0;T[k].t+=x.t||0}}))});
   return Object.values(T).map(o=>(o.avg=o.n>=MINP?o.t/o.n:-1,o)).sort((a,b)=>b.avg-a.avg||b.n-a.n||CLUBS_ORDER.indexOf(a.k)-CLUBS_ORDER.indexOf(b.k));
 }
 function crowdLine(){
@@ -521,7 +540,7 @@ async function crowdFlow(again){
     let better=n-w;for(let j=g+1;j<=6;j++)better+=s['g'+j]||0;
     CW={n,pct:Math.round(w/n*100),faster:g&&n>1?Math.round(better/(n-1)*100):null};
     const rows=[1,2,3,4,5,6].map(i=>[AR(i),s['g'+i]||0,i===g]).concat([['❌',n-w,!g]]);const mx=Math.max(1,...rows.map(r=>r[1]));
-    cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 الجماهير اليوم · ${mode==='easy'?'الوضع العادي':'وضع الخبير'}</div>
+    cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 الجماهير اليوم · ${MODEN[mode]}</div>
       <div class="big"><b>${PC(AR(CW.pct))}</b>عرفوه اليوم</div>
       ${g&&n>=5?`<div class="fast">⚡ أسرع من <b>${PC(AR(CW.faster))}</b> من اللي لعبوا</div>`:''}
       <div class="dist">${rows.map(r=>`<div><span style="width:16px">${r[0]}</span><i class="${r[2]?'hl':''}" style="width:${Math.max(8,r[1]/mx*100)}%">${PC(AR(Math.round(r[1]/n*100)))}</i></div>`).join('')}</div>
@@ -529,16 +548,17 @@ async function crowdFlow(again){
     if(crowdLine())buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{});
   }else if(cb)cb.innerHTML='';
   // club card
-  const T=tally(c,f,f+WEEK-1),me=myClub(),sub=store.get('sub_'+DAY+'_'+mode,null);
+  const T=tally(c,f,f+WEEK-1),me=myClub(),se=store.get('sub_'+DAY+'_easy',null),sp=store.get('sub_'+DAY+'_pro',null);
+  const pe=se&&se.g?7-se.g:0,pp=sp&&sp.g?7-sp.g:0;
   const champ=wk>1?tally(c,pf,f-1)[0]:null;
   const left=Math.ceil((f+WEEK-1-DAY)+msToDubaiMidnight()/864e5);
   const mx=Math.max(.1,...T.map(o=>o.avg));
   box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 تحدي الأندية · الأسبوع ${AR(wk)}</div>
     ${champ&&champ.avg>=0?`<div class="champ">${crest(champ.k,30)}<div><b>بطل الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">بمعدل ${AR1(champ.avg)} نقطة</div></div></div>`:''}
-    ${me&&sub&&sub.c===me?`<div class="mine">${sub.g?`✅ <b>${"\u2066+"+(7-sub.g)+"\u2069"}</b> نقاط لجمهور ${D.clubs[me]} اليوم`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}، باجر تعوّضها 💪`}</div>`:''}
+    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ <b>${"\u2066+"+(pe+pp)+"\u2069"}</b> نقاط لجمهور ${D.clubs[me]} اليوم${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:''}
     <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبوا</span></div>
     ${T.map((o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):'–'}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):''}</span></div>`).join('')}
-    <div class="cfoot">المعدل = نقاط جمهور النادي ÷ عدد اللي لعبوا (من أول محاولة 6 نقاط … سادس محاولة نقطة)<br>النادي يدخل الترتيب من ${AR(MINP)} مشاركات · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+    <div class="cfoot">المعدل = نقاط الجمهور من لاعب اليوم وتحدي الخبير ÷ عدد مشجعينه اللي لعبوا<br>النادي يدخل الترتيب من ${AR(MINP)} مشجعين · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
 }
 
@@ -562,7 +582,7 @@ async function buildCard(){
   if(logo)x.drawImage(logo,W-80-190,64,190,190);
   x.textAlign='right';x.fillStyle='#D7B465';x.font=`600 36px ${F}`;x.fillText('تحدي العازي اليومي',W-80-190-30,108);
   x.fillStyle='#FFF5E5';x.font=`700 92px ${F}`;x.fillText('منو اللاعب؟',W-80-190-30,178);
-  const tag=`تحدي ${AR(DAY)}  ·  ${mode==='easy'?'الوضع العادي':'وضع الخبير'}`;
+  const tag=`تحدي ${AR(DAY)}  ·  ${MODEN[mode]}`;
   x.font=`600 32px ${F}`;const tw=x.measureText(tag).width+44;
   x.fillStyle='rgba(215,180,101,.14)';rr(x,W-80-190-30-tw,238,tw,54,27);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
   x.fillStyle='#D7B465';x.fillText(tag,W-80-190-30-22,266);
@@ -658,7 +678,7 @@ $('#clubLater').onclick=()=>{$('#clubM').hidden=true};
 $('#helpBtn').onclick=()=>$('#howto').hidden=false;
 $('#howGo').onclick=()=>{$('#howto').hidden=true;sfx('welcome');store.set('seenHow',true);const i=$('#gIn');i&&i.focus()};
 let sm=mode;
-$('#statsBtn').onclick=()=>{sm=mode;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm);$('#statsM').hidden=false};
+$('#statsBtn').onclick=()=>{sm=mode;$('#myPts').innerHTML=D?ptsHTML():'';document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm);$('#statsM').hidden=false};
 document.querySelectorAll('#statSeg button').forEach(b=>b.onclick=()=>{sm=b.dataset.m;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#statsBody').innerHTML=statsHTML(sm)});
 $('#statsClose').onclick=()=>$('#statsM').hidden=true;
 document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m){m.hidden=true;if(m.id==='howto')store.set('seenHow',true)}});

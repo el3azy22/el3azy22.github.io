@@ -6,9 +6,7 @@
 <meta name="robots" content="noindex,nofollow">
 <title>استوديو المحتوى · منصة العازي</title>
 <link rel="icon" href="../../assets/icon/favicon-64.png">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>@font-face{font-family:'Readex Pro';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap}</style>
 <style>
 :root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--ivory:#FFF5E5}
 *{box-sizing:border-box;margin:0;padding:0}
@@ -101,6 +99,7 @@ function crestAt(x,im,c,cx,cy,base,a=1){if(!im)return;const f=CREST[c]||[1,1];co
 let D,BY,TODAY,CR={},LOGO,SADUI;
 const dubaiIdx=()=>{const n=new Date(Date.now()+4*3600e3);const t=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate());const [y,m,d]=D.start.split('-').map(Number);return Math.floor((t-Date.UTC(y,m-1,d))/864e5)};
 const ansOf=d=>BY[D.schedule[(d-1)%D.schedule.length]];
+const proOf=d=>{const sc=D.schedule_pro&&D.schedule_pro.length?D.schedule_pro:null;return sc?BY[sc[(d-1)%sc.length]]:null};
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 
 /* الإطار المشترك */
@@ -153,7 +152,7 @@ async function cardA(d){
 
 /* B: جواب أمس */
 async function cardB(d){
-  const p=ansOf(d);
+  const p=ansOf(d),q=proOf(d);
   let se,sp;
   if(DEMO){se={n:412,w:288,g1:21,g2:57,g3:83,g4:66,g5:39,g6:22};sp={n:136,w:51}}
   else{[se,sp]=await Promise.all(['easy','pro'].map(m=>fetch(`${FB}/s/${d}/${m}.json`).then(r=>r.json()).catch(()=>null)))}
@@ -173,26 +172,28 @@ async function cardB(d){
   segs(x,cx,812,[[D.clubs[p.c],`600 30px ${F}`,'#D7B465'],['  ·  ',`500 30px ${F}`,'rgba(255,245,229,.4)'],[POS[p.p],`500 30px ${F}`,'rgba(255,245,229,.85)'],['  ·  ',`500 30px ${F}`,'rgba(255,245,229,.4)'],[p.nat,`500 30px ${F}`,'rgba(255,245,229,.85)'],['  ·  ',`500 30px ${F}`,'rgba(255,245,229,.4)'],['رقم ',`500 30px ${F}`,'rgba(255,245,229,.85)'],[String(p.no),`600 30px ${F}`,'rgba(255,245,229,.85)']]);
   // أرقام الجماهير
   const pe=se.n?Math.round(se.w/se.n*100):null,pp=sp.n?Math.round(sp.w/sp.n*100):null;
-  const box=(X,label,pc,n)=>{rr(x,X,862,400,200,26);x.fillStyle='rgba(20,56,79,.6)';x.fill();x.strokeStyle='rgba(215,180,101,.35)';x.lineWidth=2;x.stroke();
+  const box=(X,label,pc,n,sub)=>{rr(x,X,862,400,200,26);x.fillStyle='rgba(20,56,79,.6)';x.fill();x.strokeStyle='rgba(215,180,101,.35)';x.lineWidth=2;x.stroke();
     x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText(label,X+200,906);
     x.direction='ltr';x.fillStyle='#D7B465';x.font=`700 76px ${F}`;x.fillText(pc==null?'—':pctTxt(pc),X+200,975);x.direction='rtl';
-    x.fillStyle='rgba(255,245,229,.55)';x.font=`500 24px ${F}`;segs(x,X+200,1030,n?[['لعبوا: ',`500 24px ${F}`,'rgba(255,245,229,.55)'],[n.toLocaleString('en-US'),`600 24px ${F}`,'rgba(255,245,229,.75)']]:[['ما لعب أحد',`500 24px ${F}`,'rgba(255,245,229,.55)']])};
-  box(W/2+20,'الوضع العادي',pe,se.n);box(W/2-420,'وضع الخبير',pp,sp.n);
+    x.fillStyle='rgba(255,245,229,.55)';x.font=`500 24px ${F}`;segs(x,X+200,1030,sub||(n?[['لعبوا: ',`500 24px ${F}`,'rgba(255,245,229,.55)'],[n.toLocaleString('en-US'),`600 24px ${F}`,'rgba(255,245,229,.75)']]:[['ما لعب أحد',`500 24px ${F}`,'rgba(255,245,229,.55)']]))};
+  box(W/2+20,'عرفوه',pe,se.n);
+  // «تحدي الخبير» له لاعب ثاني: اسمه تحت نسبته
+  box(W/2-420,'🧠 تحدي الخبير',pp,sp.n,q?[[q.n,`600 24px ${F}`,'#F0D99A']]:null);
   // أكثر محاولة
   if(se.w){let bi=1;for(let i=2;i<=6;i++)if((se['g'+i]||0)>(se['g'+bi]||0))bi=i;
     segs(x,cx,1110,[['أغلب الجماهير عرفوه من المحاولة ',`500 28px ${F}`,'rgba(255,245,229,.7)'],[String(bi),`700 30px ${F}`,'#D7B465']]);
     const one=se.g1||0;if(one)segs(x,cx,1160,[['و',`500 28px ${F}`,'rgba(255,245,229,.7)'],[one.toLocaleString('en-US'),`700 30px ${F}`,'#F0D99A'],[' عرفوه من أول محاولة 🔥',`500 28px ${F}`,'rgba(255,245,229,.7)']])}
   footer(x,W,'تحدي اليوم بدا');
   const tot=(se.n||0)+(sp.n||0);
-  const line=pe==null?'':pe<50?`${pe}% بس عرفوه في الوضع العادي`:`${pe}% من الجماهير عرفوه في الوضع العادي`;
-  const text=`✅ جواب تحدي #${d}: ${p.n}\n${line}${pp!=null?`، و${pp}% في وضع الخبير`:''}${line?'.':''}${tot?`\nلعبوا أمس: ${tot.toLocaleString('en-US')}`:''}\n\nتحدي اليوم بدا 👇\n${URL_M}`;
+  const line=pe==null?'':pe<50?`${pe}% بس عرفوه`:`${pe}% من الجماهير عرفوه`;
+  const text=`✅ جواب لاعب اليوم #${d}: ${p.n}${line?'\n'+line+'.':''}${q?`\n🧠 جواب تحدي الخبير: ${q.n}${pp!=null?` (عرفوه ${pp}%)`:''}`:''}${se.n?`\nلعبوا أمس: ${se.n.toLocaleString('en-US')}`:''}\n\nتحدي اليوم بدا 👇\n${URL_M}`;
   return {cv,text,empty:!tot&&!DEMO};
 }
 
 /* C: تحدي الأندية */
 function tally(raw,from,to){
   const T={};ORDER.forEach(k=>T[k]={k,n:0,t:0});
-  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,o])=>{if(T[k]&&o){T[k].n+=o.n||0;T[k].t+=o.t||0}}))});
+  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,o])=>{if(T[k]&&o){if(m==='easy')T[k].n+=o.n||0;T[k].t+=o.t||0}}))});
   return Object.values(T).map(o=>(o.avg=o.n>=MINP?o.t/o.n:-1,o)).sort((a,b)=>b.avg-a.avg||b.n-a.n||ORDER.indexOf(a.k)-ORDER.indexOf(b.k));
 }
 async function cardC(wk){

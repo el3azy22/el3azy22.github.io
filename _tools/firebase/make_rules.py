@@ -13,7 +13,8 @@ rules={"rules":{
  ".read":False,".write":False,
  "p":{"$d":{"$m":{"$u":{
    ".write":"auth != null && auth.uid == $u && !data.exists()",
-   ".validate":("newData.hasChildren(['g','c','d']) && ($m == 'easy' || $m == 'pro') && $d.matches(/^[0-9]{1,4}$/)"
+   # «تحدي الخبير» (pro) ينفتح بعد لاعب اليوم: نتيجته ما تنقبل إلا من مشجع عنده نتيجة لاعب اليوم في نفس اليوم
+   ".validate":("newData.hasChildren(['g','c','d']) && ($m == 'easy' || ($m == 'pro' && newData.parent().parent().child('easy').child($u).exists())) && $d.matches(/^[0-9]{1,4}$/)"
      " && newData.child('d').isNumber() && $d == '' + newData.child('d').val()"
      f" && now >= {L} + (newData.child('d').val() - 1) * {DAYMS} && now < {L} + (newData.child('d').val() + 1) * {DAYMS}"
      " && newData.child('g').isNumber() && newData.child('g').val() >= 0 && newData.child('g').val() <= 6"

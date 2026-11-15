@@ -182,7 +182,8 @@ def main():
     today = max(0, (now - start).days)  # 0 = اليوم الأول
     sched = md['schedule']
     gone_ids = {p['id'] for p in gone}
-    used = set(sched)
+    pro = md.setdefault('schedule_pro', [])
+    used = set(sched) | set(pro)
     spare = [p for p in md['players'] if p['id'] not in used and p['id'] in seen and p.get('ap', 0) >= 5 and p.get('nat') and p.get('a') and p.get('no')]
     spare.sort(key=lambda p: -p.get('ap', 0))
     for i in range(today + 1, len(sched)):  # اليوم الحالي ما يتغير
@@ -192,6 +193,20 @@ def main():
                 nw = spare.pop(0); sched[i] = nw['id']; ch.append(f'جدول منو اللاعب يوم {i + 1}: {old} ← {nw["n"]} (طلع من الدوري)')
             else:
                 pr.append(f'جدول منو اللاعب يوم {i + 1}: {old} طلع من الدوري وما في بديل')
+    # «تحدي الخبير»: نفس الشي، والبديل من اللي شاركوا 1–4 مباريات. ونضيف أي لاعب صار مؤهل لآخر الجدول
+    pro_ok = lambda p: p['id'] not in used and p['id'] in seen and 1 <= p.get('ap', 0) <= 4 and p.get('ph') and p.get('nat') and p.get('a') and p.get('no')
+    pspare = sorted([p for p in md['players'] if pro_ok(p)], key=lambda p: -p.get('ap', 0))
+    for i in range(today + 1, len(pro)):
+        if pro[i] in gone_ids:
+            old = mp[pro[i]]['n']
+            if pspare:
+                nw = pspare.pop(0); pro[i] = nw['id']; used.add(nw['id']); ch.append(f'تحدي الخبير يوم {i + 1}: {old} ← {nw["n"]} (طلع من الدوري)')
+            else:
+                pr.append(f'تحدي الخبير يوم {i + 1}: {old} طلع من الدوري وما في بديل')
+    added = [p for p in pspare if p['id'] not in used]
+    for p in added:
+        pro.append(p['id']); used.add(p['id'])
+    if added: ch.append(f'تحدي الخبير: انضاف {len(added)} لاعب لآخر الجدول (صار {len(pro)} يوم)')
 
     if len(ch) > 60:
         pr.append(f'تغييرات كثيرة ({len(ch)}) في يوم واحد، ما طبقناها. لازم مراجعة'); rep['changes'] = ch[:80]; return finish(rep, False)
