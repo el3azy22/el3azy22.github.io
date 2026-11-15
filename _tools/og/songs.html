@@ -19,7 +19,7 @@ const mode=location.hash.slice(1)||'sq';const sq=mode==='sq';
 const W=sq?1080:1200,H=sq?1080:630,cx=sq?540:895,cy=sq?520:315,R=sq?380:232,S=sq?88:52;
 let h=`<div id="${sq?'sq':'og'}"><div class="f"></div><div class="ring" style="left:${cx-R}px;top:${cy-R}px;width:${2*R}px;height:${2*R}px"></div>`;
 Object.entries(C).forEach(([c,f],i)=>{const a=-Math.PI/2+i*2*Math.PI/14;h+=`<img class="c" src="/mano/assets/${c}.png" style="left:${cx+R*Math.cos(a)}px;top:${cy+R*Math.sin(a)}px;width:${S*f[0]}px;height:${S*f[1]}px">`});
-if(sq)h+=`<div class="t"><div class="note" style="font-size:60px;margin-bottom:-20px">♪</div><h1 style="font-size:176px">دورينا</h1><div class="k" style="font-size:38px;margin-top:4px">أغنية دوري أدنوك للمحترفين</div></div><div style="position:absolute;bottom:44px;left:0;right:0;text-align:center;font-size:28px;opacity:.75">العازي · el3azy.com/songs</div>`;
+if(sq)h+=`<div class="t" style="top:${cy-38}px"><div class="note" style="font-size:60px;margin-bottom:-20px">♪</div><h1 style="font-size:176px">دورينا</h1><div class="k" style="font-size:38px;margin-top:4px">أغنية دوري أدنوك للمحترفين</div></div><div style="position:absolute;bottom:44px;left:0;right:0;text-align:center;font-size:28px;opacity:.75">العازي · el3azy.com/songs</div>`;
 else h+=`<div class="t" style="left:${cx}px"><div class="note" style="font-size:36px">♪</div><h1 style="font-size:88px">دورينا</h1></div>
  <div style="position:absolute;right:auto;left:80px;top:118px;width:500px;text-align:right">
  <div style="color:#D7B465;font-size:30px;font-weight:600">منصة العازي</div>
