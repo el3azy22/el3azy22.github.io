@@ -5,9 +5,10 @@
    "club": null,
    "title": "دورينا",
    "sub": "أغنية دوري أدنوك للمحترفين",
-   "file": "",
+   "file": "dorina.mp3",
    "lyrics": "",
-   "cover": "dorina.jpg"
+   "cover": "dorina.jpg",
+   "dur": 253
   },
   {
    "id": "wasl",
