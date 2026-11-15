@@ -1591,7 +1591,7 @@ function paintFan(){const e=$('hdrSub');if(!e)return;const f=fanClub(),id=fanId(
   if(f){e.innerHTML='تلعب لجمهور <b>'+f.name+'</b>';e.onclick=null;e.classList.remove('ask');}
   else if(id===''){e.textContent='وصّل فريقك قبل الصافرة';e.onclick=null;e.classList.remove('ask');}
   else{e.innerHTML='<u>اختار ناديك</u> عشان تنحسب نقاطك لجمهوره';e.onclick=openFan;e.classList.add('ask');}}
-addEventListener('el3fan',()=>{paintFan();if(typeof LAST!=='undefined'&&LAST&&state==='over')paintResultFan();});
+addEventListener('el3fan',()=>{paintFan();try{paintRoundCard();}catch(e){}if(typeof LAST!=='undefined'&&LAST&&state==='over')paintResultFan();});
 function paintResultFan(){const f=fanClub();
   if(MODE==='free'){$('rFan').textContent='لعب حر';$('rDot').style.background=(f||club).c1;$('rFanS').textContent='للتدريب، ما ينحسب لناديك. «مرحلة اليوم» و«تحدي الجولة» هم اللي ينحسبون'+(f?' لجمهور '+f.name:'')+'.';$('rFanC').onclick=null;return;}
   if(fanId()===''){$('rFan').textContent='محايد';$('rDot').style.background='#55606b';$('rFanS').textContent='انت محايد في بطاقة المشجع، فنتيجتك ما تنحسب لنادي. اختار ناديك عشان تنحسب لجمهوره.';$('rFanC').onclick=openFan;return;}
@@ -1651,12 +1651,12 @@ function paintSeason(){const el=$('mSeason');if(!el)return;const [s,m]=passStars
   el.innerHTML='<div class="sh"><b>موسم <bdi dir="ltr">'+SEASON.name+'</bdi></b><span>الجولة '+ROUND+' من '+SEASON.rounds+' · باقي '+left+' يوم</span></div><div class="sbar"><i style="width:'+(pr*100).toFixed(1)+'%"></i><em style="right:'+(13/26*100)+'%" title="الدور الثاني"></em></div>'+
     '<button class="pass" id="bPass"><span>ملاعبي</span><b>'+s+' / '+m+' ★</b><small>'+badgeState().filter(b=>b.on).length+' / '+BADGES.length+' وسام</small></button>';
   $('bPass').onclick=openPass;paintRoundCard();}
-function paintRoundCard(){const el=$('mRound');if(!el)return;const fx=fixtures(),mine=fx.filter(m=>m.h===club.id||m.a===club.id),rest=fx.filter(m=>!mine.includes(m));
-  const list=[...mine,...rest].slice(0,5);const wk=list.length?list[0].wk:ROUND+1;
+function paintRoundCard(){const el=$('mRound');if(!el)return;const fc=fanClub()||club,fx=fixtures(),mine=fx.filter(m=>m.h===fc.id||m.a===fc.id),rest=fx.filter(m=>!mine.includes(m));
+  const list=[...mine,...rest];/* كل مباريات الجولة: مباراة نادي المشجع فوق، والباقي بالوقت */const wk=list.length?list[0].wk:ROUND+1;
   let h='<div class="rh"><b>الجولة '+wk+'</b><small>بباص ناديك لملعب صاحب الأرض، والصافرة بموعد المباراة الحقيقي. يقفل مع صافرتها.</small></div>';
   if(!list.length)h+='<div class="rm none">مباريات الجولة الياية تنزل هنا أول ما تنشرها الرابطة.</div>';
   for(const m of list){const H=HOST(m.h),A=HOST(m.a),d=derby(m),best=PROG.rounds[m.id]||0,sel=MODE==='round'&&RMATCH&&RMATCH.id===m.id;
-    h+='<button class="rm'+(sel?' sel':'')+((m.h===club.id||m.a===club.id)?' mine':'')+'" data-id="'+m.id+'"><span class="tm"><i style="background:'+H.c1+'"></i>'+H.name+' × '+A.name+'<i style="background:'+A.c1+'"></i></span><small>'+STADS[m.h].st+' · '+kickStr(m.t)+(d?' · <em>'+d+'</em>':'')+(best?' · '+'★'.repeat(best):'')+'</small></button>';}
+    h+='<button class="rm'+(sel?' sel':'')+((m.h===fc.id||m.a===fc.id)?' mine':'')+'" data-id="'+m.id+'"><span class="tm"><i style="background:'+H.c1+'"></i>'+H.name+' × '+A.name+'<i style="background:'+A.c1+'"></i></span><small>'+STADS[m.h].st+' · '+kickStr(m.t)+(d?' · <em>'+d+'</em>':'')+(best?' · '+'★'.repeat(best):'')+'</small></button>';}
   el.innerHTML=h;el.querySelectorAll('.rm[data-id]').forEach(b=>b.onclick=()=>{if(state!=='menu')return;const m=list.find(x=>x.id===b.dataset.id);pickRound(m);});}
 function useFanBus(){const f=fanClub();if(!f||f===club)return;club=f;try{carB.go(CLUBS.indexOf(f),false,true);}catch(e){}busSl.forEach((_,k)=>paintBusSlide(k));setTimeout(loadRated,0);}
 function setTab(m){document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));document.querySelectorAll('#mPanel [data-p]').forEach(d=>d.hidden=d.dataset.p!==m);}
