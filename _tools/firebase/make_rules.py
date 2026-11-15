@@ -62,10 +62,12 @@ rules["rules"].update({
 FCL=CL+"|none"
 S0=1785528000000; YMS=31557600000   # 1 أغسطس 2026 00:00 الإمارات · سنة = 365.25 يوم
 KEEPX="newData.child('x').val() == data.child('x').val()"
+# حساب المدير (Claude): يقرا f ويقدر يشيل حسابات وهمية ويصحح fc. الحساب مجهول ومفتاحه برا المستودع
+ADMIN=os.environ.get("ADMIN","Vt7pBIwn9jhQCI2LSORFpnU3aCa2"); ISADM=f"auth != null && auth.uid == '{ADMIN}'"
 rules["rules"].update({
- "f":{"$u":{
+ "f":{".read":ISADM,"$u":{
    ".read":"auth != null && auth.uid == $u",
-   ".write":"auth != null && auth.uid == $u",
+   ".write":f"(auth != null && auth.uid == $u) || ({ISADM} && !newData.exists())",
    ".validate":(f"newData.hasChildren(['c','t']) && newData.child('c').isString() && newData.child('c').val().matches(/^({FCL})$/)"
      " && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1)"
      # تغيير النادي: 24 ساعة تعديل بعد كل اختيار، وبعدها تغيير واحد في الموسم (x = رقم الموسم اللي غيّر فيه).
@@ -83,7 +85,7 @@ rules["rules"].update({
    "$other":{".validate":False}}},
  "fc":{".read":True,"$c":{
    ".write":"auth != null",
-   ".validate":(f"$c.matches(/^({FCL})$/) && newData.isNumber() && ("
+   ".validate":(f"$c.matches(/^({FCL})$/) && newData.isNumber() && ({ISADM} && newData.val() >= 0 || "
      "(newData.parent().parent().child('f').child(auth.uid).child('c').val() == $c && root.child('f').child(auth.uid).child('c').val() != $c && newData.val() == (data.exists() ? data.val() : 0) + 1)"
      " || (root.child('f').child(auth.uid).child('c').val() == $c && newData.parent().parent().child('f').child(auth.uid).child('c').val() != $c && newData.val() == data.val() - 1))")}},
 })
