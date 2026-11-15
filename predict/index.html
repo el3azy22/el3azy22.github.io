@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دوري التوقعات | العازي</title>
+<meta name="description" content="توقع نتايج مباريات دوري أدنوك للمحترفين، واجمع النقاط لك ولجمهور ناديك.">
+<meta name="theme-color" content="#071D2B">
+<meta property="og:title" content="دوري التوقعات — منصة العازي">
+<meta property="og:description" content="توقع نتيجة كل مباراة قبل الصافرة، واجمع النقاط لك ولجمهور ناديك.">
+<meta property="og:image" content="https://el3azy.com/predict/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@el3azy22">
+<link rel="icon" href="../mano/assets/logo.png">
+<link rel="apple-touch-icon" href="../mano/assets/logo.png">
+<link rel="preload" href="../tashkila/assets/ReadexPro.ttf" as="font" type="font/ttf" crossorigin>
+<style>
+@font-face{font-family:Readex;src:url(../tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap}
+:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F6E3AE;--gold3:#B08A3E;--ivory:#FFF5E5;
+ --sadu:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M0 11 9 2.5 18 11' fill='none' stroke='%23D7B465' stroke-width='1.3'/%3E%3Cpath d='M9 6.6 11.2 8.8 9 11 6.8 8.8Z' fill='%23D7B465'/%3E%3C/svg%3E");--green:#2E9E66;--yellow:#C4952B;--gray:#243F52;--red:#B4473F}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--navy)}
+body{font-family:Readex,system-ui,sans-serif;color:var(--ivory);min-height:100vh;padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom));
+background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.20),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),var(--navy);background-attachment:fixed}
+.sadu{height:12px;margin:10px auto 4px;background:var(--sadu) center/18px 12px repeat-x;opacity:.75;-webkit-mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+.ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;flex-shrink:0;background:radial-gradient(circle at 30% 18%,rgba(240,217,154,.28),transparent 60%),linear-gradient(160deg,#16405A,#0A2232);border:1px solid rgba(215,180,101,.6);box-shadow:inset 0 1px 0 rgba(255,240,200,.22),inset 0 -6px 12px rgba(0,0,0,.25),0 6px 14px rgba(0,0,0,.35)}
+.ic svg{width:26px;height:26px;fill:none;stroke:url(#gg);stroke-width:1.8;stroke-linejoin:round}.ic svg .s{fill:url(#gg);fill-opacity:.18}
+.ic.big{width:72px;height:72px;border-radius:22px;margin:0 auto 6px}.ic.big svg{width:42px;height:42px}
+.wrap{max-width:500px;margin:0 auto;padding:0 14px}
+button{font-family:inherit;cursor:pointer;color:inherit}
+header{display:flex;align-items:center;gap:10px;padding:12px 0 6px}
+header a.home{display:block;flex-shrink:0;line-height:0}
+header .logo{height:62px;width:auto}
+header .ttl{flex:1}
+header h1{font-size:24px;font-weight:700;line-height:1.2}
+header .sub{font-size:12px;color:var(--gold);font-weight:600}
+.icon{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.06);color:var(--gold);font-size:18px;font-weight:700;display:grid;place-items:center}
+.crests14{display:flex;justify-content:space-between;align-items:center;padding:6px 2px 12px;opacity:.85}
+.card{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.lbl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gold);font-weight:600;margin-bottom:8px}
+.lbl:after,.day:after,.coachh:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(215,180,101,.45))}
+.day{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--gold);margin:18px 2px 10px}
+/* match card */
+.mc{display:block;width:100%;text-align:inherit;background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;padding:12px 12px 10px;margin-bottom:10px;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:.15s}
+.mc:active{transform:scale(.985)}
+.mc.open{border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.2),transparent 55%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 35%,rgba(215,180,101,.25) 65%,var(--gold)) border-box;box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
+.tm{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:13.5px;font-weight:600;text-align:center;min-width:0}
+.tm .cw{height:46px;display:grid;place-items:center}
+.sc{font-size:28px;font-weight:700;direction:ltr;letter-spacing:1px;white-space:nowrap;color:var(--ivory)}
+.sc.t{font-size:16px;color:var(--gold);font-weight:600;letter-spacing:0;direction:rtl}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 11px;font-size:12px;font-weight:600;background:var(--navy3)}
+.chip.go{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.chip.ok{background:rgba(46,158,102,.25);color:#8fe3b5}
+.mfoot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11.5px;opacity:.95}
+.mfoot .n{opacity:.6}
+/* match view */
+.back{background:none;border:0;color:var(--gold);font-size:14px;font-weight:600;padding:6px 2px 10px}
+.mh .sc{font-size:38px}
+.mh .tm{font-size:15px}
+.mh .meta{text-align:center;font-size:11.5px;opacity:.6;margin-top:8px}
+.seg{display:flex;background:var(--navy2);border:1px solid rgba(255,245,229,.06);border-radius:14px;padding:4px;margin:4px 0 12px;position:sticky;top:6px;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.seg button{flex:1;border:0;background:none;font-weight:600;font-size:14px;padding:9px 6px;border-radius:10px;opacity:.6;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s}
+.seg button.on{background:var(--navy3);opacity:1;color:var(--gold)}
+.seg em{font-style:normal;font-size:11px;opacity:.75;font-weight:500}
+.pr{background:rgba(7,29,43,.55);border:1px solid rgba(255,245,229,.06);border-radius:16px;padding:9px 10px 10px;margin-bottom:8px;transition:.2s}
+.pr.done{border-color:rgba(215,180,101,.35)}
+.pr .top{display:flex;align-items:center;gap:10px}
+.pr .nm{flex:1;min-width:0}
+.pr .nm b{display:block;font-size:15px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:-2px 0 -3px}
+.pr .nm small{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;opacity:.65;margin-top:2px;align-items:center}
+.pr .nm small i{font-style:normal;direction:ltr;unicode-bidi:isolate}
+.val{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:20px;font-weight:700;background:rgba(255,245,229,.05);border:1px dashed rgba(255,245,229,.18);color:rgba(255,245,229,.35);flex-shrink:0}
+.val.v{border:0;color:var(--navy)}
+.star{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.3);background:none;font-size:19px;filter:grayscale(1);opacity:.45;flex-shrink:0;transition:.2s}
+.star.on{filter:none;opacity:1;background:rgba(215,180,101,.18);border-color:var(--gold);animation:pop .35s}
+.nums{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:9px}
+.nums button{border:0;height:34px;border-radius:9px;background:rgba(255,245,229,.06);font-size:14px;font-weight:600;transition:.12s}
+.nums button.on{color:var(--navy);transform:scale(1.08);box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.ph{position:relative;flex-shrink:0;border-radius:50%;background:radial-gradient(circle at 50% 35%,#1d4a66,#0C2638 70%);border:2px solid rgba(215,180,101,.5);overflow:hidden;display:grid;place-items:center}
+.ph img{width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.ph.fb img{object-position:50% 0}
+.coachh{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gold);font-weight:600;margin:16px 2px 8px}
+.bar{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));z-index:6;background:linear-gradient(180deg,var(--navy3),var(--navy2));border:1px solid rgba(215,180,101,.5);border-radius:18px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.5);margin-top:14px}
+.bar .info{flex:1;font-size:12.5px;line-height:1.5}
+.bar .info b{color:var(--gold)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);border:0;border-radius:15px;font-weight:700;font-size:16px;padding:14px;margin-top:8px;text-decoration:none;min-height:50px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(215,180,101,.22)}
+.btn.sm{width:auto;padding:12px 16px;margin:0;font-size:15px}
+.btn[disabled]{opacity:.45}
+.btn.ghost{background:rgba(255,245,229,.07);color:var(--ivory);border:1px solid rgba(255,245,229,.18);box-shadow:none}
+/* results */
+.mvp{display:flex;align-items:center;gap:14px;border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.28),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 35%,rgba(215,180,101,.25) 65%,var(--gold)) border-box;border-radius:18px;padding:12px;margin-bottom:12px}
+.mvp .t{font-size:12px;color:var(--gold);font-weight:600}
+.mvp b{font-size:19px;display:block;margin:2px 0}
+.mvp small{font-size:12px;opacity:.7}
+.rr{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.05)}
+.rr:last-child{border:0}
+.rr .k{width:18px;text-align:center;font-size:12px;opacity:.55}
+.rr .nm{flex:1;min-width:0}
+.rr .nm b{display:block;font-size:14.5px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:-2px 0 -3px}
+.rr .nm small{font-size:11px;opacity:.6}
+.rr .me{font-size:11px;opacity:.75;text-align:center;width:42px;line-height:1.3}
+.rr .me b{display:block;font-size:14px;opacity:1}
+.avg{width:50px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:700;color:var(--navy);flex-shrink:0}
+.avg.na{background:rgba(255,245,229,.06);color:rgba(255,245,229,.4);font-size:14px}
+.note{font-size:12px;opacity:.65;line-height:1.8;text-align:center;margin:6px 0}
+.cardimg{display:block;width:100%;border-radius:16px;margin:4px 0;border:1px solid rgba(215,180,101,.35);box-shadow:0 10px 30px rgba(0,0,0,.35);aspect-ratio:4/5;background:var(--navy)}
+.empty{text-align:center;padding:26px 10px;opacity:.8;line-height:1.9}
+.loading{text-align:center;padding:60px 0;opacity:.7}
+footer{text-align:center;font-size:12.5px;opacity:.6;line-height:1.9;margin:30px 0 6px}
+footer .sadu{width:90px;margin:0 auto 10px}
+footer a{color:var(--gold);text-decoration:none;font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(3,14,22,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:30;display:grid;place-items:center;padding:18px}
+.modal[hidden]{display:none}
+.mbox{background:linear-gradient(165deg,var(--navy3),var(--navy));border:1px solid rgba(215,180,101,.4);border-radius:24px;padding:22px 20px;max-width:390px;width:100%;text-align:center;animation:pop .35s;max-height:90vh;overflow-y:auto}
+.mbox h2{color:var(--gold2);font-size:21px;margin:4px 0 12px}
+.step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
+.step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
+.toast{position:fixed;top:calc(16px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--gold);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:30px;z-index:40;transition:transform .3s;box-shadow:0 8px 24px rgba(0,0,0,.35);white-space:nowrap;font-size:14px}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@keyframes pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
+@media (max-width:360px){header h1{font-size:20px}header .logo{height:50px}.nums button{height:31px;font-size:13px}.pr .nm b{font-size:14px}}
+
+.topnav{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:2px 0 4px}
+.topnav a,.topnav button{display:inline-grid;place-items:center;width:38px;height:38px;padding:0;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.07);color:#F6E3AE;font:600 13px inherit;font-family:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.topnav a:active,.topnav button:active{transform:scale(.96)}
+.topnav svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* ── دوري التوقعات ── */
+.rounds{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:none}
+.rounds::-webkit-scrollbar{display:none}
+.rounds button{flex-shrink:0;border:1px solid rgba(215,180,101,.35);background:rgba(12,38,56,.8);border-radius:20px;padding:7px 13px;font-size:13px;font-weight:600;opacity:.75;white-space:nowrap}
+.rounds button.on{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);opacity:1;border-color:transparent}
+.lockb{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(215,180,101,.09);border:1px solid rgba(215,180,101,.4);border-radius:14px;padding:9px 12px;margin-bottom:10px;font-size:12.5px}
+.lockb b{color:var(--gold2);font-size:15px;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.clubask{display:flex;align-items:center;gap:10px;border:1px dashed rgba(215,180,101,.55);border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;line-height:1.7;background:none;width:100%;text-align:right}
+.clubask b{display:block;font-size:14px;color:var(--gold2)}
+.pm{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;padding:11px 10px 9px;margin-bottom:9px;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:border-color .2s}
+.pm.dbl{border-color:var(--gold);box-shadow:0 0 0 1px rgba(215,180,101,.35),0 8px 24px rgba(0,0,0,.25)}
+.pm .row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px}
+.pm .tm{font-size:13px}
+.pm .tm .cw{height:40px}
+.stp{display:flex;align-items:center;gap:6px}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px}
+.nb button{width:34px;height:24px;border-radius:8px;border:1px solid rgba(215,180,101,.4);background:rgba(215,180,101,.06);color:var(--gold2);font-size:16px;line-height:1;font-weight:700;padding:0}
+.nb button:active{transform:scale(.92)}
+.nb b{width:44px;height:46px;border-radius:13px;background:var(--navy);border:1.5px solid rgba(215,180,101,.65);display:grid;place-items:center;font-size:23px;font-weight:700}
+.nb b.e{border-style:dashed;color:rgba(255,245,229,.3);font-weight:500}
+.stp .dash{opacity:.45;font-size:18px}
+.res{text-align:center;min-width:96px}
+.res .fin{font-size:27px;font-weight:700;letter-spacing:1px}
+.res .mine{font-size:12px;opacity:.75;margin-top:2px}
+
+.res .kt{font-size:12px;color:var(--gold);font-weight:600}
+.pmf{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:11.5px;min-height:24px}
+.pmf .when{opacity:.6}
+.pmf .crowd{color:var(--gold2);opacity:.9}
+.dbtn{border:1px solid rgba(215,180,101,.35);background:none;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:var(--gold2);opacity:.75;white-space:nowrap}
+.dbtn.on{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);opacity:1;border-color:transparent}
+.dbtn:disabled{opacity:.3}
+.sv{font-size:11px;opacity:.7;white-space:nowrap}
+.sv.ok{color:#8fe3b5;opacity:1}.sv.err{color:#ef8f86;opacity:1}
+.pts{display:inline-block;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;background:rgba(255,245,229,.08)}
+.pts.p5{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy)}
+.pts.p3{background:rgba(46,158,102,.3);color:#9ff0c4}
+.pts.p2{background:rgba(155,196,106,.22);color:#cfe9a8}
+.rulesn{font-size:11.5px;opacity:.72;text-align:center;line-height:1.9;margin:10px 0 4px}
+.rulesn b{color:var(--gold2)}
+.meb{display:flex;align-items:center;gap:12px;border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.25),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 40%,rgba(215,180,101,.25)) border-box;border-radius:18px;padding:12px 14px;margin-bottom:12px}
+.meb .rk{font-size:30px;font-weight:700;color:var(--gold2);min-width:56px;text-align:center;direction:ltr}
+.meb .t{flex:1;min-width:0}.meb .t b{font-size:16px;display:block}.meb .t small{font-size:12px;opacity:.7}
+.lb{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;overflow:hidden;margin-bottom:12px}
+.lb .r{display:grid;grid-template-columns:30px 28px 1fr auto;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:14px}
+.lb .r:last-child{border:0}
+.lb .r i{font-style:normal;text-align:center;opacity:.6;font-weight:600;font-size:13px}
+.lb .r .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .r b{color:var(--gold2);direction:ltr}
+.lb .r.you{background:rgba(215,180,101,.13)}
+.lb .r small{opacity:.55;font-size:11px;margin-right:4px}
+.lb .gap{text-align:center;opacity:.4;padding:2px 0;font-size:12px}
+.cl{display:grid;grid-template-columns:30px 30px 1fr auto;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:14px}
+.cl:last-child{border:0}
+.cl i{font-style:normal;text-align:center;opacity:.6;font-weight:600}
+.cl .v{text-align:left;direction:ltr}.cl .v b{color:var(--gold2);font-size:16px;display:block}.cl .v small{opacity:.55;font-size:11px}
+.cl.na{opacity:.55}
+.cl.mine{background:rgba(215,180,101,.13)}
+.h3{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--gold);margin:16px 2px 9px}
+.h3:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(215,180,101,.45))}
+@media (max-width:360px){.nb b{width:40px;height:42px;font-size:21px}.nb button{width:30px}.pm .tm{font-size:12px}.res{min-width:86px}}
+</style>
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F6E3AE"/><stop offset=".55" stop-color="#D7B465"/><stop offset="1" stop-color="#B08A3E"/></linearGradient></defs></svg>
+<div class="toast" id="toast"></div>
+<div class="wrap">
+  <nav class="topnav" aria-label="التنقل">
+    <a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg></a>
+  </nav>
+  <header>
+    <a class="home" href="../" aria-label="منصة العازي"><img class="logo" src="../mano/assets/logo.png" alt="العازي"></a>
+    <div class="ttl"><h1>دوري التوقعات</h1><div class="sub" id="sub">دوري أدنوك · <button id="helpBtn" style="background:none;border:0;color:var(--ivory);opacity:.75;font:500 12px inherit;font-family:inherit;text-decoration:underline;text-decoration-color:rgba(215,180,101,.5);text-underline-offset:3px;padding:0">كيف تلعب؟</button></div></div>
+  </header>
+  <div class="sadu" aria-hidden="true"></div>
+  <div class="seg" id="tabs" role="tablist">
+    <button class="on" data-t="me" role="tab">توقعاتي</button><button data-t="lb" role="tab">الترتيب</button><button data-t="cl" role="tab">الأندية</button>
+  </div>
+  <div class="rounds" id="rounds"></div>
+  <main id="app"><div class="loading">لحظة...</div></main>
+  <footer><div class="sadu" aria-hidden="true"></div>أداة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener" dir="ltr">@el3azy22</a> · <a href="../">منصة العازي</a><br>المواعيد والنتايج من موقع اتحاد الكرة · بدون جوائز</footer>
+</div>
+
+<div class="modal" id="howto" hidden><div class="mbox">
+  <div class="ic big"><svg viewBox="0 0 32 32"><circle class="s" cx="16" cy="16" r="11"/><path d="M16 9.5l3.6 2.6-1.4 4.2h-4.4l-1.4-4.2z"/><path d="M16 5v4.5M26.5 12.6l-6.9-.5M22.6 24.9l-4.4-8.6M9.4 24.9l4.4-8.6M5.5 12.6l6.9-.5"/></svg></div>
+  <h2>كيف تلعب دوري التوقعات</h2>
+  <div class="step"><i>1</i><div><b>توقع نتيجة كل مباراة</b><span>تقدر تعدل توقعك لين صافرة البداية، وبعدها ينقفل</span></div></div>
+  <div class="step"><i>2</i><div><b>اجمع النقاط</b><span>النتيجة بالضبط 5 · الفائز مع الفارق 3 · الفائز بس 2. والتعادل الصح بنتيجة ثانية 3</span></div></div>
+  <div class="step"><i>3</i><div><b>⭐ ضاعف مباراة وحدة</b><span>في كل جولة تختار مباراة وحدة تنضاعف نقاطها</span></div></div>
+  <div class="step"><i>4</i><div><b>نقاطك تنحسب لجمهور ناديك</b><span>ترتيب للجولة وللموسم، وترتيب لجماهير الأندية</span></div></div>
+  <button class="btn" id="howGo">يلا نتوقع</button>
+</div></div>
+
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const SITE='https://el3azy.com/predict/',A='../mano/assets/';
+const FB={key:'AIzaSyCJVYgLTqvj2k1KnvLYo6Z1feOS4E8fj94',db:'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app'};
+const Q=new URLSearchParams(location.search);
+const OFF=Q.has('now')?(+Q.get('now')-Date.now()):0,now=()=>Date.now()+OFF;  // للاختبار بس
+if(Q.has('emu')){FB.db='http://127.0.0.1:9000';FB.ns='?ns=demo-el3azy-default-rtdb';FB.auth='http://127.0.0.1:9099/'}
+const dbu=p=>FB.db+'/'+p+'.json'+(FB.ns||'');
+const CL={ain:'العين',wahda:'الوحدة',jazira:'الجزيرة',shababahli:'شباب الأهلي',sharjah:'الشارقة',wasl:'الوصل',nasr:'النصر',baniyas:'بني ياس',ajman:'عجمان',kalba:'كلباء',khorfakkan:'خورفكان',dhafra:'الظفرة',hatta:'حتا',united:'يونايتد'};
+const CREST={jazira:[1,1],sharjah:[.979,1.133],dhafra:[.92,1.106],ain:[.83,1.197],nasr:[1,1],wahda:[.91,1.176],wasl:[.973,1.165],baniyas:[1.234,.681],hatta:[.989,1.122],khorfakkan:[1.048,1.069],shababahli:[1.037,1.074],ajman:[1.154,1.016],kalba:[.995,1],united:[.995,.995]};
+const crest=(c,s=26)=>{const f=CREST[c]||[1,1];return CL[c]?`<img src="${A}${c}.png" alt="" style="width:${Math.round(s*f[0])}px;height:${Math.round(s*f[1])}px;object-fit:contain">`:''};
+const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const nf=n=>Number(n).toLocaleString('en-US');
+const fmtDay=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{weekday:'long',day:'numeric',month:'long',timeZone:'Asia/Dubai'}).format(t);
+const fmtTime=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{hour:'numeric',minute:'2-digit',timeZone:'Asia/Dubai'}).format(t);
+const fmtDT=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{weekday:'long',hour:'numeric',minute:'2-digit',timeZone:'Asia/Dubai'}).format(t);
+const dur=ms=>{if(ms<=0)return '0:00';const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
+  return d>=1?(d===1?'يوم':d===2?'يومين':d+(d<=10?' أيام':' يوم'))+(h?' و'+(h===1?'ساعة':h===2?'ساعتين':h+(h<=10?' ساعات':' ساعة')):''):`${h}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`};
+let toastT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),2200)}
+const vib=p=>{try{navigator.vibrate&&navigator.vibrate(p)}catch(e){}};
+const gc=n=>{try{window.goatcounter&&window.goatcounter.count&&window.goatcounter.count({path:n,title:n,event:true})}catch(e){}};
+const FIN=6;
+const SC=(h,a,sp='')=>h+sp+'\u200F-\u200F'+sp+a; // نتيجة تنقرا صح في النص العربي: رقم المستضيف يمين
+const points=(ph,pa,sh,sa)=>{if(ph===sh&&pa===sa)return 5;const s=x=>(x>0)-(x<0);if(s(ph-pa)!==s(sh-sa))return 0;return ph-pa===sh-sa?3:2};
+
+/* الهوية: نفس الحساب المجهول وبطاقة المشجع في كل المنصة */
+const PID={get(k,old){try{const v=localStorage.getItem('el3azy_'+k);if(v!=null)return JSON.parse(v);const o=old&&localStorage.getItem(old);return o!=null?JSON.parse(o):null}catch(e){return null}},set(k,v){try{localStorage.setItem('el3azy_'+k,JSON.stringify(v))}catch(e){}}};
+const FBK=FB.auth?'fb_emu':'fb';
+async function tok(){
+  let a=PID.get(FBK,FB.auth?null:'el3azy_mano_fb');
+  if(a&&a.exp>Date.now()+6e4)return a;
+  let r=null;const base=FB.auth||'https://';
+  if(a&&a.r){r=await fetch(base+'securetoken.googleapis.com/v1/token?key='+FB.key,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(a.r)}).then(x=>x.ok?x.json():null).catch(()=>null);
+    if(r&&r.id_token)a={t:r.id_token,r:r.refresh_token,u:r.user_id,exp:Date.now()+r.expires_in*1e3};else r=null}
+  if(!r){r=await fetch(base+'identitytoolkit.googleapis.com/v1/accounts:signUp?key='+FB.key,{method:'POST',headers:{'content-type':'application/json'},body:'{"returnSecureToken":true}'}).then(x=>x.json());
+    if(!r.idToken)throw new Error('auth');a={t:r.idToken,r:r.refreshToken,u:r.localId,exp:Date.now()+r.expiresIn*1e3}}
+  PID.set(FBK,a);return a;
+}
+const authq=(p,a)=>dbu(p)+(FB.ns?'&':'?')+'auth='+a.t;
+/* النادي والاسم لازم يطابقون بطاقة المشجع في السيرفر (القواعد تتأكد) */
+async function who(a){
+  if(!FB.auth&&window.EL3FAN){try{await EL3FAN.sync()}catch(e){}}
+  const f=await fetch(authq('f/'+a.u,a)).then(r=>r.ok?r.json():null).catch(()=>null);
+  return {c:f&&f.c?f.c:'none',n:f&&typeof f.n==='string'?f.n:''};
+}
+
+/* التوقعات المحلية: el3azy_pred = {mid:{h,a,x}} (نسخة من اللي انحفظ في السيرفر) */
+const LS=FB.auth?'pred_emu':'pred';
+let MY=PID.get(LS)||{};
+const saveLocal=()=>PID.set(LS,MY);
+let LK={};const LT=m=>LK[m.id]!=null?Math.min(m.t,LK[m.id]):0; // موعد القفل (القواعد تقفل على الموعد اللي فيها)
+let D=null,TB=null,RD=[],CUR=null,TAB='me',draft={},status={},timers={};
+
+function roundsOf(ms){
+  const g={};ms.forEach(m=>(g[m.wk]=g[m.wk]||[]).push(m));
+  return Object.keys(g).map(k=>{const L=g[k].sort((a,b)=>a.t-b.t||a.id-b.id);return {wk:+k,ms:L,t0:L[0].t,t1:L[L.length-1].t}})
+    .sort((a,b)=>a.t0-b.t0||a.wk-b.wk);
+}
+function pickRound(){
+  const T=now();
+  // الجولة اللي فيها مباراة ما خلصت (أو جاية) وأقرب موعد
+  let best=null;
+  RD.forEach(r=>{const open=r.ms.filter(m=>m.st!==FIN&&m.t+3*3600e3>T);if(open.length){const t=Math.min(...open.map(m=>m.t));if(!best||t<best.t)best={r,t}}});
+  return best?best.r.wk:(RD.length?RD[RD.length-1].wk:null);
+}
+const rlabel=r=>{const late=RD.some(x=>x.wk>r.wk&&x.t0<r.t0);return 'الجولة '+r.wk+(late?' (المؤجلة)':'')};
+function renderRounds(){
+  const T=now();
+  const show=RD.filter(r=>r.t0<T+21*864e5||r.wk===CUR);
+  $('#rounds').innerHTML=show.map(r=>`<button data-w="${r.wk}" class="${r.wk===CUR?'on':''}">${rlabel(r)}</button>`).join('');
+  $('#rounds').querySelectorAll('button').forEach(b=>b.onclick=()=>{CUR=+b.dataset.w;draft={};render();renderRounds()});
+  const on=$('#rounds .on');on&&on.scrollIntoView({inline:'center',block:'nearest'});
+  const r=RD.find(x=>x.wk===CUR);$('#sub').firstChild.textContent=(r?rlabel(r):'دوري أدنوك')+' · ';
+}
+
+/* ── توقعاتي ── */
+const val=(m,s)=>{const d=draft[m.id];if(d&&d[s]!=null)return d[s];const p=MY[m.id];return p?p[s]:null};
+function card(m){
+  const T=now(),open=T<LT(m),p=MY[m.id],r=RD.find(x=>x.wk===m.wk),soon=!LK[m.id]&&T<m.t;
+  const dblId=r.ms.find(x=>MY[x.id]&&MY[x.id].x)?.id,isD=dblId===m.id;
+  const dblLocked=dblId&&LT(r.ms.find(x=>x.id===dblId))<=T;
+  let mid,foot='';
+  if(soon){mid=`<div class="res"><div class="kt">قريب</div><div class="mine">التوقع يفتح قريب</div></div>`;foot=`<span class="when">${fmtDT(m.t)}</span>`}
+  else if(open){
+    const h=val(m,'h'),a=val(m,'a');
+    const nb=(s,v)=>`<div class="nb"><button data-m="${m.id}" data-s="${s}" data-d="1" aria-label="زيادة">+</button><b class="${v==null?'e':''}">${v==null?'–':v}</b><button data-m="${m.id}" data-s="${s}" data-d="-1" aria-label="نقص">−</button></div>`;
+    mid=`<div class="stp">${nb('h',h)}<span class="dash">-</span>${nb('a',a)}</div>`; // من اليمين: المستضيف
+    const st=status[m.id];
+    const sv=st==='saving'?'<span class="sv">يحفظ...</span>':st==='ok'?'<span class="sv ok">✓ انحفظ</span>':st==='err'?'<span class="sv err">⚠ ما انحفظ</span>':p?'<span class="sv ok">✓ محفوظ</span>':'';
+    const dis=!p||(dblLocked&&!isD);
+    foot=`<span class="when">${fmtDT(m.t)}</span>${sv}<button class="dbtn ${isD?'on':''}" data-x="${m.id}" ${dis?'disabled':''}>⭐ ${isD?'مضاعفة':'ضاعف'}</button>`;
+  }else{
+    const fin=m.st===FIN&&m.sh!=null;
+    const mine=p?`<div class="mine">توقعك <b style="color:var(--gold2)">${SC(p.h,p.a)}</b>${p.x?' ⭐':''}</div>`:'<div class="mine">ما توقعت</div>';
+    if(fin){const pt=p?points(p.h,p.a,m.sh,m.sa)*(p.x?2:1):null,base=p?points(p.h,p.a,m.sh,m.sa):0;
+      mid=`<div class="res"><div class="fin">${SC(m.sh,m.sa,' ')}</div>${mine}</div>`;
+      foot=`<span class="when">انتهت</span>${p?`<span class="pts p${base}">+${pt}${p.x&&pt?' ⭐':''}</span>`:''}`;
+    }else{
+      mid=`<div class="res"><div class="kt">🔒 انقفل</div>${mine}</div>`;
+      foot=`<span class="when">${T<m.t?fmtDT(m.t):m.t+2.2*3600e3>T?'المباراة شغالة':'بانتظار النتيجة الرسمية'}</span>`;
+    }
+    if(m.cr&&m.cr.n){const c=m.cr,w=c.hw>=c.aw&&c.hw>=c.d?[c.hw,'فوز '+CL[m.h]]:c.aw>=c.d?[c.aw,'فوز '+CL[m.a]]:[c.d,'التعادل'];
+      foot+=`<span class="crowd">👥 <bdi dir="ltr">${w[0]}%</bdi> توقعوا ${w[1]}</span>`}
+  }
+  return `<div class="pm ${isD?'dbl':''}" id="m${m.id}"><div class="row">
+    <div class="tm"><div class="cw">${crest(m.h,38)}</div>${CL[m.h]}</div>${mid}<div class="tm"><div class="cw">${crest(m.a,38)}</div>${CL[m.a]}</div>
+  </div><div class="pmf">${foot}</div></div>`;
+}
+function renderMe(){
+  const r=RD.find(x=>x.wk===CUR);if(!r){$('#app').innerHTML='<div class="empty">ما في مباريات حالياً</div>';return}
+  const T=now(),next=r.ms.filter(m=>LT(m)>T).sort((a,b)=>LT(a)-LT(b))[0];
+  const done=r.ms.filter(m=>MY[m.id]).length,openN=r.ms.filter(m=>LT(m)>T).length;
+  let h='';
+  if(window.EL3FAN&&EL3FAN.club()===null)h+=`<button class="clubask" id="askClub"><span style="font-size:26px">📣</span><span><b>اختار ناديك</b>عشان نقاطك تنحسب لجمهوره في ترتيب الأندية</span></button>`;
+  if(next)h+=`<div class="lockb"><span>${openN===r.ms.length?'أول صافرة':'الصافرة الياية'}: ${CL[next.h]} × ${CL[next.a]}<br><small style="opacity:.65">كل توقع يقفل مع صافرة مباراته</small></span><b id="cd" data-t="${LT(next)}">${dur(LT(next)-T)}</b></div>`;
+  h+=r.ms.map(card).join('');
+  const myPts=r.ms.reduce((s,m)=>{const p=MY[m.id];return s+(p&&m.st===FIN&&m.sh!=null&&m.t>0&&T>=m.t?points(p.h,p.a,m.sh,m.sa)*(p.x?2:1):0)},0);
+  if(r.ms.some(m=>m.st===FIN))h+=`<div class="note">نقاطك في ${rlabel(r)}: <b style="color:var(--gold2)">${myPts}</b></div>`;
+  if(done)h+=`<button class="btn ghost" id="shareP">𝕏 شارك توقعاتك (${done} من ${r.ms.length})</button>`;
+  h+=`<p class="rulesn">النتيجة بالضبط <b>5</b> · الفائز مع الفارق <b>3</b> · الفائز بس <b>2</b><br>⭐ مباراة وحدة في كل جولة تنضاعف نقاطها</p>`;
+  $('#app').innerHTML=h;
+  $('#askClub')&&($('#askClub').onclick=()=>EL3FAN.open());
+  $('#shareP')&&($('#shareP').onclick=()=>shareRound(r));
+  document.querySelectorAll('.nb button').forEach(b=>b.onclick=()=>step(b.dataset.m,b.dataset.s,+b.dataset.d));
+  document.querySelectorAll('.dbtn').forEach(b=>b.onclick=()=>toggleDouble(b.dataset.x));
+}
+function step(id,s,d){
+  const m=D.matches.find(x=>x.id===id);if(!m||now()>=LT(m)){toast('انقفل التوقع، المباراة بدت');render();return}
+  const cur=val(m,s);let v=cur==null?(d>0?1:0):Math.max(0,Math.min(20,cur+d));
+  draft[id]=Object.assign({},draft[id],{[s]:v});
+  const o=s==='h'?'a':'h';if(val(m,o)==null)draft[id][o]=0; // أول ضغطة: الثاني يصير 0
+  vib(8);status[id]=null;
+  const el=$('#m'+id);if(el){el.outerHTML=card(m);document.querySelectorAll(`#m${id} .nb button`).forEach(b=>b.onclick=()=>step(b.dataset.m,b.dataset.s,+b.dataset.d));const x=$(`#m${id} .dbtn`);x&&(x.onclick=()=>toggleDouble(x.dataset.x))}
+  clearTimeout(timers[id]);timers[id]=setTimeout(()=>save(id),700);
+}
+let WHO=null;
+async function save(id,extra){
+  const m=D.matches.find(x=>x.id===id),dr=draft[id]||{},p=MY[id]||{};
+  const h=dr.h!=null?dr.h:p.h,a=dr.a!=null?dr.a:p.a;if(h==null||a==null)return;
+  if(now()>=LT(m)){toast('انقفل التوقع، المباراة بدت');delete draft[id];render();return}
+  status[id]='saving';refreshCard(id);
+  try{
+    const au=await tok();
+    const x=extra&&'x' in extra?extra.x:!!p.x;
+    const put=async()=>{WHO=WHO||await who(au);const rec={h,a,c:WHO.c,n:WHO.n,w:{'.sv':'timestamp'}};if(x)rec.x=true;
+      return fetch(authq('pr/'+id+'/'+au.u,au),{method:'PUT',body:JSON.stringify(rec)})};
+    let r=await put();
+    if(!r.ok&&(r.status===401||r.status===403)&&now()<LT(m)){WHO=null;r=await put()} // بطاقة المشجع تغيرت: نجيبها من يديد ونعيد
+    if(!r.ok)throw new Error('w'+r.status)
+    MY[id]={h,a};if(x)MY[id].x=true;saveLocal();
+    const nd=draft[id];if(!nd||((nd.h==null||nd.h===h)&&(nd.a==null||nd.a===a)))delete draft[id]; // لو ضغط وهو يحفظ، نخلي آخر قيمة لين تنحفظ
+    status[id]=draft[id]?'saving':'ok';gc('predict-save');
+  }catch(e){status[id]='err';toast(navigator.onLine?'ما انحفظ التوقع، جرب مرة ثانية':'ما في إنترنت، التوقع ما انحفظ')}
+  refreshCard(id);
+}
+function refreshCard(id){const m=D.matches.find(x=>x.id===id);const el=$('#m'+id);if(!el||TAB!=='me')return;el.outerHTML=card(m);
+  document.querySelectorAll(`#m${id} .nb button`).forEach(b=>b.onclick=()=>step(b.dataset.m,b.dataset.s,+b.dataset.d));const x=$(`#m${id} .dbtn`);x&&(x.onclick=()=>toggleDouble(x.dataset.x))}
+async function toggleDouble(id){
+  const m=D.matches.find(x=>x.id===id),r=RD.find(x=>x.wk===m.wk),T=now();
+  if(T>=LT(m)||!MY[id])return;
+  const old=r.ms.find(x=>MY[x.id]&&MY[x.id].x);
+  if(old&&old.id!==id&&LT(old)<=T){toast('مضاعفتك على مباراة بدت، ما تقدر تنقلها');return}
+  const on=!(MY[id].x);
+  try{
+    const au=await tok();
+    const send=async()=>{WHO=WHO||await who(au);
+      const b={};const rec=(mm,x)=>{const q=MY[mm.id];const o={h:q.h,a:q.a,c:WHO.c,n:WHO.n,w:{'.sv':'timestamp'}};if(x)o.x=true;return o};
+      b['pr/'+id+'/'+au.u]=rec(m,on);
+      if(on&&old&&old.id!==id)b['pr/'+old.id+'/'+au.u]=rec(old,false);
+      return fetch(authq('',au),{method:'PATCH',body:JSON.stringify(b)})};
+    let res=await send();
+    if(!res.ok&&(res.status===401||res.status===403)){WHO=null;res=await send()}
+    if(!res.ok)throw new Error('d'+res.status);
+    if(on&&old&&old.id!==id)delete MY[old.id].x;
+    if(on)MY[id].x=true;else delete MY[id].x;saveLocal();vib(15);toast(on?'⭐ انضاعفت نقاط هالمباراة':'شلت المضاعفة');gc('predict-double');
+  }catch(e){toast('ما انحفظ، جرب مرة ثانية')}
+  render();
+}
+/* لو المشجع غيّر ناديه أو اسمه: نحدّث توقعاته المفتوحة عشان تنحسب للنادي اليديد */
+async function resyncOpen(){
+  WHO=null;const T=now(),ids=Object.keys(MY).filter(id=>{const m=D&&D.matches.find(x=>x.id===id);return m&&LT(m)>T+3e4});
+  if(!ids.length)return;
+  try{const au=await tok();WHO=await who(au);const b={};ids.forEach(id=>{const q=MY[id],o={h:q.h,a:q.a,c:WHO.c,n:WHO.n,w:{'.sv':'timestamp'}};if(q.x)o.x=true;b['pr/'+id+'/'+au.u]=o});
+    await fetch(authq('',au),{method:'PATCH',body:JSON.stringify(b)})}catch(e){}
+}
+/* نجيب توقعات الجولة من السيرفر (جهاز يديد أو بيانات ممسوحة) */
+async function pullRound(r){
+  const a=PID.get(FBK);if(!a)return;
+  let au;try{au=await tok()}catch(e){return}
+  let ch=false;
+  await Promise.all(r.ms.map(m=>fetch(authq('pr/'+m.id+'/'+au.u,au)).then(x=>x.ok?x.json():undefined).then(v=>{
+    if(v===undefined)return;
+    if(v&&typeof v.h==='number'){const o={h:v.h,a:v.a};if(v.x)o.x=true;if(JSON.stringify(MY[m.id])!==JSON.stringify(o)){MY[m.id]=o;ch=true}}
+    else if(v===null&&MY[m.id]&&LT(m)>now()){delete MY[m.id];ch=true}
+  }).catch(()=>{})));
+  if(ch){saveLocal();if(TAB==='me')render()}
+}
+function shareRound(r){
+  const L=r.ms.filter(m=>MY[m.id]).map(m=>`${CL[m.h]} ${SC(MY[m.id].h,MY[m.id].a)} ${CL[m.a]}${MY[m.id].x?' ⭐':''}`);
+  const t=`توقعاتي في ${rlabel(r)} 🔮\n\n${L.join('\n')}\n\nتوقع انت ونافسني 👇`;
+  gc('share-predict');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank');
+}
+
+/* ── الترتيب ── */
+const myU=()=>{const a=PID.get(FBK);return a?a.u.slice(0,12):null};
+const nmOf=(n,c)=>n?esc(n):'مشجع '+(CL[c]||'محايد');
+function lbRows(rows,unit){
+  const me=myU(),i=rows.findIndex(r=>r[0]===me),N=20;
+  const row=(r,k)=>`<div class="r ${r[0]===me?'you':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i><span>${crest(r[2],24)}</span><span class="nm">${nmOf(r[1],r[2])}${r[0]===me?'<small>(انت)</small>':''}</span><b>${r[3]}</b></div>`;
+  let h=rows.slice(0,N).map(row).join('');
+  if(i>=N)h+=`<div class="gap">⋯</div>`+row(rows[i],i);
+  return h;
+}
+function renderLb(){
+  const r=RD.find(x=>x.wk===CUR),rows=(TB&&TB.rounds[CUR])||[],me=myU(),i=rows.findIndex(x=>x[0]===me);
+  let h='';
+  if(!rows.length){h+=`<div class="empty">الترتيب يطلع بعد صافرة أول مباراة في ${r?rlabel(r):'الجولة'}<br><span style="font-size:12.5px;opacity:.7">ويتحدث كل شوي وقت المباريات</span></div>`}
+  else{
+    if(i>=0){const R=rows[i];h+=`<div class="meb"><div class="rk">#${i+1}</div><div class="t"><b>${nmOf(R[1],R[2])}</b><small>${R[3]} نقطة في ${rlabel(r)} · من ${nf(rows.length)} متوقع</small></div>${crest(R[2],34)}</div>`}
+    else if(r&&r.ms.some(m=>MY[m.id]))h+=`<div class="note">ترتيبك يطلع بعد صافرة أول مباراة توقعتها</div>`;
+    h+=`<div class="h3">🏆 ترتيب ${r?rlabel(r):''}</div><div class="lb">${lbRows(rows)}</div>`;
+    if(i>=0)h+=`<button class="btn ghost" id="shareR">𝕏 شارك ترتيبك</button>`;
+  }
+  const S=(TB&&TB.season)||[],si=S.findIndex(x=>x[0]===me),mr=(TB&&TB.min&&TB.min.rounds)||3;
+  h+=`<div class="h3">🏅 ترتيب الموسم</div>`;
+  h+=S.length?`<div class="lb">${lbRows(S)}</div>`:`<div class="note">يطلع لما يشارك المشجعين في ${mr} جولات</div>`;
+  if(S.length&&si<0)h+=`<div class="note">تدخل ترتيب الموسم لما تشارك في ${mr} جولات</div>`;
+  if(TB&&TB.updated)h+=`<div class="note" style="font-size:11px">آخر تحديث: <bdi dir="ltr">${esc(TB.updated)}</bdi></div>`;
+  $('#app').innerHTML=h;
+  $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع انت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank')});
+}
+function renderCl(){
+  const rows=(TB&&TB.clubs[CUR])||[],r=RD.find(x=>x.wk===CUR),mf=(TB&&TB.min&&TB.min.fans)||10,mc=window.EL3FAN?EL3FAN.club():null;
+  let h=`<div class="h3">📣 جماهير الأندية · ${r?rlabel(r):''}</div>`;
+  const elig=rows.filter(x=>x[2]>=mf),rest=rows.filter(x=>x[2]<mf);
+  if(!rows.length)h+=`<div class="empty">ترتيب الأندية يطلع بعد أول مباراة منتهية في الجولة</div>`;
+  else{
+    h+=`<div class="lb">${elig.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${nf(c[2])} مشجع</small></span></div>`).join('')}
+      ${rest.map(c=>`<div class="cl na ${c[0]===mc?'mine':''}"><i>–</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><small>يحتاج ${mf-c[2]} مشجع</small></span></div>`).join('')}</div>`;
+    h+=`<div class="note">الترتيب بمعدل نقاط المشجع، والنادي يدخل لما يتوقع ${mf} من جمهوره</div>`;
+  }
+  const S=(TB&&TB.clubs_season)||[];
+  if(S.length)h+=`<div class="h3">🏆 الأندية في الموسم</div><div class="lb">${S.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${c[2]} جولة</small></span></div>`).join('')}</div>`;
+  if(mc===null&&window.EL3FAN)h+=`<button class="btn" id="askClub2">اختار ناديك وساعد جمهوره</button>`;
+  $('#app').innerHTML=h;$('#askClub2')&&($('#askClub2').onclick=()=>EL3FAN.open());
+}
+function render(){TAB==='me'?renderMe():TAB==='lb'?renderLb():renderCl()}
+
+document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{TAB=b.dataset.t;document.querySelectorAll('#tabs button').forEach(x=>x.classList.toggle('on',x===b));render();gc('predict-tab-'+TAB)});
+setInterval(()=>{const e=$('#cd');if(!e)return;const ms=+e.dataset.t-now();if(ms<=0){render();return}e.textContent=dur(ms)},1000);
+$('#helpBtn').onclick=()=>$('#howto').hidden=false;
+$('#howGo').onclick=()=>{$('#howto').hidden=true;PID.set('pred_how',1)};
+window.addEventListener('el3fan',()=>{resyncOpen();render()});
+
+async function load(){
+  const v=Math.floor(Date.now()/12e4);
+  try{
+    [D,TB,LK]=await Promise.all([fetch('data.json?v='+v).then(r=>r.json()),fetch('table.json?v='+v).then(r=>r.json()).catch(()=>null),fetch('lock.json?v='+v).then(r=>r.json()).catch(()=>({}))]);
+  }catch(e){$('#app').innerHTML='<div class="empty">ما قدرنا نجيب المباريات، حدّث الصفحة</div>';return}
+  RD=roundsOf(D.matches);if(CUR==null||!RD.some(r=>r.wk===CUR))CUR=+(Q.get('r')||pickRound());
+  renderRounds();render();
+  const r=RD.find(x=>x.wk===CUR);r&&pullRound(r);
+}
+load();
+setInterval(()=>{if(document.visibilityState==='visible'&&!Object.keys(draft).length)load()},5*60e3);
+if(!PID.get('pred_how'))$('#howto').hidden=false;
+gc('predict-open');
+})();
+</script>
+<script src="../assets/fan.js"></script>
+<script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body>
+</html>

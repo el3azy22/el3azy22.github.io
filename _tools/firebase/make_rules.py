@@ -88,4 +88,27 @@ rules["rules"].update({
      " || (root.child('f').child(auth.uid).child('c').val() == $c && newData.parent().parent().child('f').child(auth.uid).child('c').val() != $c && newData.val() == data.val() - 1))")}},
 })
 
-json.dump(rules,open('rules.json','w'),ensure_ascii=False,indent=1)
+# ── «دوري التوقعات» ── pr/<match_id>/<uid> = {h, a, x?, c, n, w}
+# كل مباراة لها قاعدة بموعدها الرسمي (من predict/data.json): الكتابة قبل الصافرة بس، والقراية للكل بعد الصافرة.
+# c و n لازم يطابقون بطاقة المشجع (f/uid)، و w = وقت السيرفر (الحساب يرفض أي توقع w فيه بعد الموعد الرسمي).
+# لو تغيّر موعد مباراة أو انضافت مباريات يديدة: python3 _tools/predict/build.py ثم هالملف، وتنلصق القواعد من يديد.
+_pd=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','predict','data.json')
+_ms=json.load(open(_pd,encoding='utf8'))['matches'] if os.path.exists(_pd) else []
+FCU="root.child('f').child($u)"
+NUM="newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 20"
+def _pr(T):
+  return {".read":f"now >= {T}","$u":{
+    ".read":"auth != null && auth.uid == $u",
+    ".write":f"auth != null && auth.uid == $u && now < {T}",
+    ".validate":"newData.hasChildren(['h','a','c','n','w'])",
+    "h":{".validate":NUM},"a":{".validate":NUM},
+    "x":{".validate":"newData.isBoolean()"},
+    "c":{".validate":f"newData.val() == ({FCU}.child('c').exists() ? {FCU}.child('c').val() : 'none')"},
+    "n":{".validate":f"newData.isString() && newData.val() == ({FCU}.child('n').exists() ? {FCU}.child('n').val() : '')"},
+    "w":{".validate":"newData.val() == now"},
+    "$other":{".validate":False}}}
+rules["rules"]["pr"]={m['id']:_pr(m['t']) for m in _ms}
+# نسخة من مواعيد القفل اللي في القواعد: الصفحة تقفل على الأبكر، ولوحة التحكم تنبّه لو المواعيد تغيرت
+if _ms:json.dump({m['id']:m['t'] for m in _ms},open(os.path.join(os.path.dirname(_pd),'lock.json'),'w'),separators=(',',':'))
+
+json.dump(rules,open('rules.json','w'),ensure_ascii=False,separators=(',',':'))

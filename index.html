@@ -134,13 +134,18 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div><b>قيّم اللاعبين <span class="badge new">يديد</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span></div>
   <div class="go">‹</div>
 </a>
+<a class="tool in" style="animation-delay:.58s" href="predict/" id="predLive" hidden>
+  <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg></div>
+  <div><b>دوري التوقعات <span class="badge new">يديد</span></b><span class="d">توقع نتيجة كل مباراة قبل الصافرة، واجمع النقاط لك ولجمهور ناديك</span></div>
+  <div class="go">‹</div>
+</a>
 
-<h2 class="in" style="animation-delay:.6s">قريباً</h2>
+<h2 class="in" style="animation-delay:.6s" id="soonH">قريباً</h2>
 <div class="tool soon in" style="animation-delay:.64s" id="rateSoon">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
   <div><b>قيّم اللاعبين <span class="badge">قريباً</span></b><span class="d">قيّم لاعبين فريقك بعد كل مباراة</span></div>
 </div>
-<div class="tool soon in" style="animation-delay:.68s">
+<div class="tool soon in" style="animation-delay:.68s" id="predSoon">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg></div>
   <div><b>دوري التوقعات <span class="badge">قريباً</span></b><span class="d">توقّع نتايج الجولة ونافس الجماهير في ترتيب أسبوعي</span></div>
 </div>
@@ -178,7 +183,10 @@ document.getElementById('crests').innerHTML=Object.entries(C).map(([c,f])=>`<img
   }
   tick();setInterval(tick,1000);
 })();
-(()=>{const on=Date.now()>=Date.UTC(2026,10,17,20)||location.search.includes('rate');if(on){document.getElementById('rateLive').hidden=false;document.getElementById('rateSoon').hidden=true}})();
+// «قيّم اللاعبين» و«دوري التوقعات» يبينون مع أول تحدي: الثلاثاء 17 نوفمبر 12 بالليل (الإمارات). للتجربة قبلها: ?live
+(()=>{const on=Date.now()>=Date.UTC(2026,10,16,20)||/[?&](live|rate)/.test(location.search);if(!on)return;
+ [['rateLive','rateSoon'],['predLive','predSoon']].forEach(([a,b])=>{document.getElementById(a).hidden=false;document.getElementById(b).hidden=true});
+ document.getElementById('soonH').hidden=true})();
 </script>
 <script src="assets/fan.js"></script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>

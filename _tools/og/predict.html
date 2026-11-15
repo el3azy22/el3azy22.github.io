@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<style>@font-face{font-family:R;src:url(/tashkila/assets/ReadexPro.ttf) format('truetype');font-weight:160 700}
+body{margin:0;width:1200px;height:630px;font-family:R;color:#FFF5E5;overflow:hidden;
+background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.22),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),#071D2B}
+.f{position:absolute;inset:22px;border:2px solid rgba(215,180,101,.45);border-radius:34px}
+.top{display:flex;align-items:center;justify-content:flex-start;gap:40px;padding:50px 90px 0}
+.logo{width:190px}
+.k{color:#D7B465;font-size:32px;font-weight:600}
+h1{font-size:100px;margin:0 0 14px;line-height:1.35;font-weight:700}
+.s{font-size:30px;opacity:.85}
+.m{display:flex;align-items:center;justify-content:center;gap:26px;margin-top:6px}
+.t{display:flex;flex-direction:column;align-items:center;gap:6px;font-size:24px;font-weight:600;width:150px}
+.b{width:82px;height:88px;border-radius:20px;background:#071D2B;border:3px solid #D7B465;display:grid;place-items:center;font-size:48px;font-weight:700}
+.d{font-size:40px;opacity:.5}
+.p{display:flex;gap:14px;justify-content:center;margin-top:18px}
+.p span{border-radius:30px;padding:8px 20px;font-size:23px;font-weight:700;background:rgba(255,245,229,.08)}
+.c{position:absolute;bottom:48px;left:90px;right:90px;display:flex;justify-content:space-between;align-items:center;opacity:.85}
+.p .g{background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E);color:#071D2B}</style></head><body><div class="f"></div>
+<div class="top"><img class="logo" src="/mano/assets/logo.png"><div><div class="k">منصة العازي · دوري أدنوك للمحترفين</div><h1>دوري التوقعات</h1><div class="s">توقع النتيجة قبل الصافرة · نقاطك لجمهور ناديك</div></div></div>
+<div class="m"><div class="t"><img src="/mano/assets/ain.png" style="width:56px;height:67px;object-fit:contain">العين</div><div class="b">2</div><div class="d">-</div><div class="b">1</div><div class="t"><img src="/mano/assets/wahda.png" style="width:61px;height:67px;object-fit:contain">الوحدة</div></div>
+<div class="p"><span class="g">بالضبط 5</span><span>الفائز والفارق 3</span><span>الفائز 2</span><span>⭐ مضاعفة</span></div>
+<div class="c" id="c"></div>
+<script>const C={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};document.getElementById('c').innerHTML=Object.entries(C).map(([c,f])=>`<img src="/mano/assets/${c}.png" style="width:${Math.round(40*f[0])}px;height:${Math.round(40*f[1])}px;object-fit:contain">`).join('')</script>
+</body></html>

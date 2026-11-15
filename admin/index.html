@@ -196,7 +196,7 @@ function render(){
     for(let t=first;t<b;t+=DAYMS)pts.push([String(new Date(t).getUTCDate()),dd[t]||0])}
   h+=`<div class="lbl">${single?'الزوار في كل ساعة':'الزوار في كل يوم'}</div><div class="card"><p class="cap">${single?'كل عمود = ساعة من اليوم (بتوقيت الإمارات)، والرقم = كم شخص زار المنصة فيها.':'كل عمود = يوم، والرقم تحته = تاريخ اليوم في الشهر، وفوقه أعلى يوم.'}</p>${cols(pts)}</div>`;
   // sections
-  const SEC=[['/','الصفحة الرئيسية'],['/tashkila','اختار تشكيلتك'],['/mano','منو اللاعب؟'],['/rate','قيّم اللاعبين']];
+  const SEC=[['/','الصفحة الرئيسية'],['/tashkila','اختار تشكيلتك'],['/mano','منو اللاعب؟'],['/rate','قيّم اللاعبين'],['/predict','دوري التوقعات']];
   h+=`<div class="lbl">أي قسم يدخلونه أكثر</div><div class="card"><p class="cap">كم زيارة لكل قسم في الفترة.</p>${bars(SEC.map(([x,t])=>[t,pg[x]||0]))}</div>`;
   // referrers (async, cached)
   h+=`<div class="lbl">من وين يجون الزوار</div><div class="card"><p class="cap">من أي مكان ضغطوا على رابط المنصة.</p><div id="refs"><div class="empty">لحظة...</div></div></div>`;
@@ -221,7 +221,19 @@ function render(){
     const F=Object.entries(FBF).filter(([,v])=>v>0),tot=F.reduce((x,[,v])=>x+v,0),neu=FBF.none||0;
     const picks=F.filter(([c])=>c!=='none').map(([c,v])=>[CLUBS[c]||c,v,{img:'../mano/assets/'+c+'.png',txt:nf(v)}]).sort((x,y)=>y[1]-x[1]);
     h+=`<div class="lbl">👥 جماهير الأندية</div><div class="card"><p class="cap"><b>${nf(tot)}</b> مشجع اختاروا لين الحين (من بداية المنصة، مب حسب الفترة)${neu?` · منهم ${nf(neu)} محايد`:''}. كل مشجع ينحسب مرة وحدة، ولو غيّر ناديه ينحسب لليديد.</p>${picks.length?bars(picks):'<div class="empty">للحين ما اختار أحد ناديه</div>'}</div>`}
-  $('#app').innerHTML=h;bindSeg();loadRefs(a,b);
+  h+=`<div class="lbl">🔮 دوري التوقعات</div><div class="card" id="predC"><div class="empty">لحظة...</div></div>`;
+  $('#app').innerHTML=h;bindSeg();loadRefs(a,b);loadPred();
+}
+async function loadPred(){ // المشاركين + تنبيه لو مواعيد المباريات تغيرت عن اللي في قواعد Firebase
+  const v=Date.now(),[D,L,TB]=await Promise.all(['data','lock','table'].map(f=>fetch('../predict/'+f+'.json?v='+v).then(r=>r.ok?r.json():null).catch(()=>null)));
+  const el=$('#predC');if(!el)return;if(!D){el.innerHTML='<div class="empty">ما قدرنا نجيب البيانات</div>';return}
+  const T=Date.now(),fut=D.matches.filter(m=>m.t>T),bad=fut.filter(m=>!L||L[m.id]!==m.t);
+  let h='';
+  if(bad.length)h+=`<p class="cap" style="color:#ef8f86"><b>⚠ ${bad.length} مباراة موعدها تغيّر أو انضافت</b> ولازم نحدّث قواعد Firebase عشان التوقع يفتح ويقفل صح. قول لـClaude «حدّث قواعد التوقعات».</p>`;
+  else h+=`<p class="cap">✅ قواعد Firebase مطابقة لمواعيد المباريات الجاية (${fut.length} مباراة).</p>`;
+  const R=TB&&TB.rounds?Object.entries(TB.rounds):[];
+  if(R.length)h+=bars(R.map(([w,rows])=>['الجولة '+w+' · متوقعين',rows.length]));else h+='<div class="empty">الترتيب يطلع بعد صافرة أول مباراة فيها توقعات</div>';
+  el.innerHTML=h;
 }
 async function loadRefs(a,b){
   const key=range;let st=REFS[key];

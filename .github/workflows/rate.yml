@@ -1,4 +1,4 @@
-# «قيّم اللاعبين»: يسحب التشكيلات والتبديلات والنتايج من موقع اتحاد الكرة وينشر rate/data.json
+# «قيّم اللاعبين» + «دوري التوقعات»: يسحب المباريات والنتايج من موقع اتحاد الكرة وينشر rate/data.json و predict/*.json
 # GitHub يأخّر الجداول (*/10 كانت تشتغل تقريباً مرة بالساعة)، فكل تشغيل في وقت المباريات
 # يظل شغّال لين ~3 ساعات ويسحب البيانات كل 8 دقايق. التشغيلات الجاية تنتظر في الطابور وتكمّل وراه، فما في فراغ.
 name: rate-data
@@ -36,9 +36,10 @@ jobs:
           if [ "$h" -lt 11 ] || [ "$h" -ge 22 ]; then deadline=$start; fi
           while :; do
             python3 _tools/rate/build.py || echo "::warning::build.py فشل في هالدورة"
-            git add rate/data.json rate/p
+            python3 _tools/predict/build.py || echo "::warning::predict فشل في هالدورة"
+            git add rate/data.json rate/p predict/data.json predict/table.json _tools/predict/cache
             if ! git diff --cached --quiet; then
-              git commit -m "قيّم اللاعبين: تحديث المباريات" -q
+              git commit -m "قيّم اللاعبين + دوري التوقعات: تحديث المباريات" -q
               git pull --rebase -q && git push -q || echo "::warning::push فشل في هالدورة"
             fi
             now=$(date -u +%s)
