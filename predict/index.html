@@ -458,11 +458,11 @@ function renderCl(){
   const rows=(TB&&TB.clubs[CUR])||[],r=RD.find(x=>x.wk===CUR),mf=(TB&&TB.min&&TB.min.fans)||10,mc=window.EL3FAN?EL3FAN.club():null;
   let h=`<div class="h3">📣 جماهير الأندية · ${r?rlabel(r):''}</div>`;
   const elig=rows.filter(x=>x[2]>=mf),rest=rows.filter(x=>x[2]<mf);
-  if(!rows.length)h+=`<div class="empty">ترتيب الأندية يطلع بعد أول مباراة منتهية في الجولة</div>`;
+  if(!rows.length)h+=`<div class="empty">ترتيب الأندية يطلع بعد أول مباراة منتهية في الجولة</div><div class="note">نقاط كل مشجع تنحسب لناديه، والترتيب بمعدل نقاط المشجع مب بالمجموع، عشان الجمهور الكبير ما يفوز بالعدد بس. والنادي يدخل لما يتوقع ${mf} من جمهوره</div>`;
   else{
     h+=`<div class="lb">${elig.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${nf(c[2])} مشجع</small></span></div>`).join('')}
       ${rest.map(c=>`<div class="cl na ${c[0]===mc?'mine':''}"><i>–</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><small>يحتاج ${mf-c[2]} مشجع</small></span></div>`).join('')}</div>`;
-    h+=`<div class="note">الترتيب بمعدل نقاط المشجع، والنادي يدخل لما يتوقع ${mf} من جمهوره</div>`;
+    h+=`<div class="note">الترتيب بمعدل نقاط المشجع مب بالمجموع، والنادي يدخل لما يتوقع ${mf} من جمهوره</div>`;
   }
   const S=(TB&&TB.clubs_season)||[];
   if(S.length)h+=`<div class="h3">🏆 الأندية في الموسم</div><div class="lb">${S.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${c[2]} جولة</small></span></div>`).join('')}</div>`;

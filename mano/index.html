@@ -217,7 +217,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
   <div class="step"><i>2</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك 6 محاولات</span></div></div>
   <div class="step"><i>3</i><div><b>كل غلطة تفتح لك تلميح 🔓</b><span>الجنسية، المركز، العمر، النادي، الرقم...</span></div></div>
   <div class="step"><i>4</i><div><b>عرفته؟ شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
-  <div class="step" id="clubStep" hidden><i>5</i><div><b>ناديك ينافس 🏆</b><span>كل لاعب تعرفه يعطي ناديك نقاط: 6 من أول محاولة وتنقص مع كل محاولة. وكل أسبوع يطلع أقوى جمهور بمعدل النقاط</span></div></div>
+  <div class="step" id="clubStep" hidden><i>5</i><div><b>ناديك ينافس 🏆</b><span>كل لاعب تعرفه يعطي ناديك نقاط: 6 من أول محاولة وتنقص مع كل محاولة. وكل أسبوع يطلع أقوى جمهور بمعدل النقاط (من 3 مشجعين)</span></div></div>
   <p style="font-size:12px;opacity:.7;margin-top:12px;line-height:1.8">تبا تحدي أصعب؟ جرّب <b style="color:var(--gold)">وضع الخبير 🧠</b>: كل تخمين يقارن لاعبك باللاعب السري بالألوان.</p>
   <button class="btn" id="howGo">يلا نلعب</button>
 </div></div>
@@ -523,7 +523,7 @@ async function crowdFlow(again){
     ${me&&sub&&sub.c===me?`<div class="mine">${sub.g?`✅ <b>${"\u2066+"+(7-sub.g)+"\u2069"}</b> نقاط لجمهور ${D.clubs[me]} اليوم`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}، باجر تعوّضها 💪`}</div>`:''}
     <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبوا</span></div>
     ${T.map((o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):'–'}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):''}</span></div>`).join('')}
-    <div class="cfoot">المعدل = نقاط جمهور النادي ÷ عدد اللي لعبوا (من أول محاولة 6 نقاط … سادس محاولة نقطة)<br>يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+    <div class="cfoot">المعدل = نقاط جمهور النادي ÷ عدد اللي لعبوا (من أول محاولة 6 نقاط … سادس محاولة نقطة)<br>النادي يدخل الترتيب لما يلعب من جمهوره ${AR(MINP)} · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
 }
 
