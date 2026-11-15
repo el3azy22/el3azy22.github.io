@@ -397,7 +397,8 @@ function renderList(){
   const L=$('list');L.innerHTML='';const q=$('q').value.trim();
   const all=club.p.concat(extra[club.id]||[]);
   const used=new Set(xi.filter(Boolean).map(key));
-  const f=all.filter(p=>!q||p[1].includes(q)||String(p[0]??'')===q);
+  const NQ=x=>String(x||'').replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/\s+/g,'');const nq=NQ(q);
+  const f=all.filter(p=>!q||NQ(p[1]).includes(nq)||NQ(p[6]).includes(nq)||String(p[0]??'')===q);
   if(!all.length){L.innerHTML='<div class="empty-list">قائمة '+club.name+' مب متوفرة لين الحين. أضف اللاعب يدوي من الزر فوق.</div>';return}
   if(!f.length){L.innerHTML='<div class="empty-list">ما لقيت لاعب بهالاسم. تقدر تضيفه يدوي من الزر فوق.</div>';return}
   // تجميع

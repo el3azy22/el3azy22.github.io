@@ -19,6 +19,24 @@ for c in [t['national']]+t['clubs']:
 for pid,(nat,cc) in {k:v for k,v in F.get('_nat',{}).items() if not k.startswith('_')}.items():
   mp=byid.get(pid)
   if mp and (mp['nat'],mp['f'])!=(nat,cc): log.append(f"   mano {pid}: {mp['nat']} -> {nat}");mp['nat'],mp['f']=nat,cc
+# توحيد إملاء الأسماء (_tools/name_fixes.json): كلمة كاملة بكلمة، في الاسم الكامل والاسم القصير
+NF=json.load(open(f'{R}/_tools/name_fixes.json'));W=NF['words'];SKIP=set(NF.get('_skip',[]))
+fixw=lambda s:' '.join(W.get(w,w) for w in s.split(' ')) if isinstance(s,str) else s
+skip_ids=set();nlog=0
+for c in [t['national']]+t['clubs']:
+  for p in c['p']:
+    if f"{c['id']}#{p[0]}" in SKIP:
+      if p[5]: skip_ids.add(p[5])
+      continue
+    for i in (1,6):
+      if len(p)>i:
+        v=fixw(p[i])
+        if v!=p[i]: p[i]=v;nlog+=1
+for mp in m['players']:
+  if mp['id'] in skip_ids: continue
+  v=fixw(mp['n'])
+  if v!=mp['n']: mp['n']=v;nlog+=1
+log.append(f'   names: {nlog}')
 json.dump(t,open(f'{R}/tashkila/squads.json','w'),ensure_ascii=False,separators=(',',':'))
 json.dump(m,open(f'{R}/mano/data.json','w'),ensure_ascii=False,separators=(',',':'))
 print('\n'.join(log));print(len([l for l in log if not l.startswith('   ')]),'fixes')

@@ -151,14 +151,19 @@ def main():
 
     # اللي طلعوا من قوائم الرابطة: لاعبين الاتحاد بس نتأكد منهم في موقع الاتحاد
     fa_names = {}
+    # مقارنة الأسماء بدون الهمزات والتاء المربوطة والألف المقصورة (أسماءنا موحدة الإملاء في _tools/name_fixes.json)
+    def nk(x):
+        x = re.sub(r'[\u064B-\u0652\u0640]', '', x)
+        x = re.sub('[أإآ]', 'ا', x).replace('ة', 'ه').replace('ى', 'ي')
+        return re.sub(r'\s+', '', x)
     def fa_has(club, slug, name):
         if club not in fa_names:
             try:
                 d = json.loads(fetch(f'https://www.uaefa.ae/api/players?club_id={FA_CLUB[club]}&lang=ar'))
-                fa_names[club] = {re.sub(r'\s+', '', (p.get('shortname') or '')) for p in d.get('players', [])}
+                fa_names[club] = {nk(p.get('shortname') or '') for p in d.get('players', [])}
             except Exception:
                 fa_names[club] = None
-        return None if fa_names[club] is None else re.sub(r'\s+', '', name) in fa_names[club]
+        return None if fa_names[club] is None else nk(name) in fa_names[club]
     rev = {v: k for k, v in TK_ID.items()}
     for cid, c in clubs.items():
         for e in list(c['p']):
