@@ -1,0 +1,34 @@
+# مزامنة يومية لقوائم الأندية من موقع الرابطة (واتحاد الكرة): لاعبين يدد، انتقالات، أرقام، صور، وجدول «منو اللاعب؟»
+# التقرير في _tools/sync/report.json، وClaude يراجعه كل يوم ويتصرف، ويبلّغ إبراهيم بس لو في شي يحتاجه
+name: squads-sync
+on:
+  schedule:
+    - cron: '23 1 * * *'   # 5:23 الصبح بتوقيت الإمارات
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: rate-data
+  cancel-in-progress: false
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install pillow
+      - name: sync
+        run: |
+          git config user.name "el3azy-bot"
+          git config user.email "el3azy-bot@users.noreply.github.com"
+          python3 _tools/predict/build.py || echo "::warning::predict فشل"
+          python3 _tools/sync/sync.py
+          git add -A tashkila/squads.json mano/data.json mano/assets/p _tools/sync/report.json predict/data.json predict/table.json _tools/predict/cache
+          if ! git diff --cached --quiet; then
+            git commit -m "مزامنة القوائم من المواقع الرسمية" -q
+            git pull --rebase -q && git push -q
+          fi
+          python3 -c "import json,sys;r=json.load(open('_tools/sync/report.json'));sys.exit(1 if r['problems'] else 0)" || echo "::warning::في ملاحظات في تقرير المزامنة"
