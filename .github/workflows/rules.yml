@@ -9,7 +9,7 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: rate-data
+  group: firebase-rules
   cancel-in-progress: false
 jobs:
   deploy:
