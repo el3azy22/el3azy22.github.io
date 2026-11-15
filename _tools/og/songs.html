@@ -1,0 +1,30 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<style>@font-face{font-family:R;src:url(/tashkila/assets/ReadexPro.ttf) format('truetype');font-weight:160 700}
+body{margin:0;font-family:R;color:#FFF5E5;overflow:hidden;background:radial-gradient(ellipse at 80% -10%,rgba(215,180,101,.28),transparent 55%),radial-gradient(ellipse at 10% 110%,rgba(20,56,79,.95),transparent 55%),#071D2B}
+#sq{position:relative;width:1080px;height:1080px}
+#og{position:relative;width:1200px;height:630px}
+.f{position:absolute;inset:22px;border:2px solid rgba(215,180,101,.45);border-radius:40px}
+.ring{position:absolute;border-radius:50%;border:2px dashed rgba(215,180,101,.35)}
+.c{position:absolute;transform:translate(-50%,-50%);object-fit:contain;filter:drop-shadow(0 6px 10px rgba(0,0,0,.4))}
+.t{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);text-align:center}
+.t .k{color:#D7B465;font-weight:600}
+.t h1{margin:0;font-weight:700;line-height:1.1;background:linear-gradient(180deg,#F6E3AE,#D7B465 60%,#B08A3E);-webkit-background-clip:text;color:transparent}
+.t .s{opacity:.85}
+.note{color:#D7B465}
+</style></head><body>
+<div id="box"></div>
+<script>
+const C={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};
+const mode=location.hash.slice(1)||'sq';const sq=mode==='sq';
+const W=sq?1080:1200,H=sq?1080:630,cx=sq?540:850,cy=sq?540:315,R=sq?400:250,S=sq?92:58;
+let h=`<div id="${sq?'sq':'og'}"><div class="f"></div><div class="ring" style="left:${cx-R}px;top:${cy-R}px;width:${2*R}px;height:${2*R}px"></div>`;
+Object.entries(C).forEach(([c,f],i)=>{const a=-Math.PI/2+i*2*Math.PI/14;h+=`<img class="c" src="/mano/assets/${c}.png" style="left:${cx+R*Math.cos(a)}px;top:${cy+R*Math.sin(a)}px;width:${S*f[0]}px;height:${S*f[1]}px">`});
+if(sq)h+=`<div class="t"><div class="note" style="font-size:70px">♪</div><h1 style="font-size:190px">دورينا</h1><div class="k" style="font-size:38px;margin-top:10px">أغنية دوري أدنوك للمحترفين</div><div class="s" style="font-size:30px;margin-top:18px">العازي</div></div>`;
+else h+=`<div class="t" style="left:${cx}px"><div class="note" style="font-size:36px">♪</div><h1 style="font-size:96px">دورينا</h1></div>
+ <div style="position:absolute;right:auto;left:90px;top:120px;width:470px;text-align:right">
+ <div style="color:#D7B465;font-size:30px;font-weight:600">منصة العازي</div>
+ <div style="font-size:66px;font-weight:700;line-height:1.25;margin:10px 0">أغاني دورينا<br>وأنديتنا</div>
+ <div style="font-size:28px;opacity:.85">اسمعها ونزّلها مجاناً</div>
+ <div style="margin-top:26px;display:inline-block;background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E);color:#071D2B;font-weight:700;font-size:26px;padding:10px 26px;border-radius:30px;direction:ltr">el3azy.com/songs</div></div>`;
+document.getElementById('box').innerHTML=h+'</div>';
+</script></body></html>

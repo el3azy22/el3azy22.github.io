@@ -1,0 +1,29 @@
+{
+ "songs": [
+  {
+   "id": "dorina",
+   "club": null,
+   "title": "دورينا",
+   "sub": "أغنية دوري أدنوك للمحترفين",
+   "file": "",
+   "lyrics": "",
+   "cover": "dorina.jpg"
+  },
+  {
+   "id": "wasl",
+   "club": "wasl",
+   "title": "أغنية الوصل",
+   "sub": "الإمبراطور",
+   "file": "",
+   "lyrics": ""
+  },
+  {
+   "id": "jazira",
+   "club": "jazira",
+   "title": "أغنية الجزيرة",
+   "sub": "فخر بوظبي",
+   "file": "",
+   "lyrics": ""
+  }
+ ]
+}
