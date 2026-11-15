@@ -1,0 +1,35 @@
+# نشر قواعد Firebase تلقائياً لما تتغير (بدل النسخ واللصق اليدوي من setup/rules.html)
+# يحتاج سر FIREBASE_SA في GitHub: مفتاح حساب خدمة صلاحيته «Firebase Realtime Database Admin» بس
+name: firebase-rules
+on:
+  push:
+    branches: [main]
+    paths: ['_tools/firebase/make_rules.py', '_tools/firebase/rules.json', '_tools/firebase/deploy.py']
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: rate-data
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install google-auth requests
+      - name: deploy
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: |
+          git config user.name "el3azy-bot"
+          git config user.email "el3azy-bot@users.noreply.github.com"
+          python3 _tools/firebase/deploy.py
+          git add _tools/firebase/rules.json predict/lock.json setup/rules.html
+          if ! git diff --cached --quiet; then
+            git commit -m "قواعد Firebase: نشر تلقائي" -q
+            git pull --rebase -q && git push -q
+          fi

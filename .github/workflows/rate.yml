@@ -21,8 +21,10 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install pillow
+      - run: pip install pillow google-auth requests
       - name: loop
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
         run: |
           git config user.name "el3azy-bot"
           git config user.email "el3azy-bot@users.noreply.github.com"
@@ -37,7 +39,8 @@ jobs:
           while :; do
             python3 _tools/rate/build.py || echo "::warning::build.py فشل في هالدورة"
             python3 _tools/predict/build.py || echo "::warning::predict فشل في هالدورة"
-            git add rate/data.json rate/p predict/data.json predict/table.json _tools/predict/cache
+            python3 _tools/firebase/deploy.py || echo "::warning::نشر القواعد فشل في هالدورة"
+            git add rate/data.json rate/p predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json setup/rules.html
             if ! git diff --cached --quiet; then
               git commit -m "قيّم اللاعبين + دوري التوقعات: تحديث المباريات" -q
               git pull --rebase -q && git push -q || echo "::warning::push فشل في هالدورة"

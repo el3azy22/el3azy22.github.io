@@ -19,14 +19,17 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install pillow
+      - run: pip install pillow google-auth requests
       - name: sync
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
         run: |
           git config user.name "el3azy-bot"
           git config user.email "el3azy-bot@users.noreply.github.com"
           python3 _tools/predict/build.py || echo "::warning::predict فشل"
+          python3 _tools/firebase/deploy.py || echo "::warning::نشر القواعد فشل"
           python3 _tools/sync/sync.py
-          git add -A tashkila/squads.json mano/data.json mano/assets/p _tools/sync/report.json predict/data.json predict/table.json _tools/predict/cache
+          git add -A tashkila/squads.json mano/data.json mano/assets/p _tools/sync/report.json predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json setup/rules.html
           if ! git diff --cached --quiet; then
             git commit -m "مزامنة القوائم من المواقع الرسمية" -q
             git pull --rebase -q && git push -q
