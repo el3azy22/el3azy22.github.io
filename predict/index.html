@@ -118,6 +118,17 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
 .step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
 .step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
+.pts{margin-top:12px;background:rgba(255,245,229,.04);border:1px solid rgba(215,180,101,.28);border-radius:14px;padding:11px 12px 10px;text-align:right}
+.pts h4{font-size:14px;color:var(--gold);margin:0 0 8px;font-weight:700}
+.pts .r{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+.pts .r:last-of-type{border-bottom:0}.pts .r small{display:block;font-size:10.5px;opacity:.55}
+.pts .r b{color:var(--gold);font-size:14px;white-space:nowrap;direction:ltr}
+.pts .att{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px}
+.pts .att div{background:rgba(255,245,229,.05);border-radius:8px;padding:5px 0 4px;line-height:1.35}
+.pts .att b{display:block;color:var(--gold);font-size:15px}.pts .att .z b{color:#e08a8a}
+.pts p{font-size:11.5px;opacity:.72;margin:9px 0 0;line-height:1.75;font-weight:400}
+.pts .r span{font-weight:600}.pts .r small{font-weight:400}.pts .psc{white-space:nowrap;unicode-bidi:isolate}
+
 .toast{position:fixed;top:calc(16px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--gold);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:30px;z-index:40;transition:transform .3s;box-shadow:0 8px 24px rgba(0,0,0,.35);white-space:nowrap;font-size:14px}
 .toast.on{transform:translateX(-50%) translateY(0)}
 @keyframes pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
@@ -216,9 +227,14 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div class="ic big"><svg viewBox="0 0 32 32"><circle class="s" cx="16" cy="16" r="11"/><path d="M16 9.5l3.6 2.6-1.4 4.2h-4.4l-1.4-4.2z"/><path d="M16 5v4.5M26.5 12.6l-6.9-.5M22.6 24.9l-4.4-8.6M9.4 24.9l4.4-8.6M5.5 12.6l6.9-.5"/></svg></div>
   <h2>كيف تلعب دوري التوقعات</h2>
   <div class="step"><i>1</i><div><b>توقع نتيجة كل مباراة</b><span>تقدر تعدل لين صافرة البداية، وبعدها ينقفل. اللي ما توقعها ما تنحسب له</span></div></div>
-  <div class="step"><i>2</i><div><b>اجمع النقاط</b><span>النتيجة بالضبط 5 · الفائز مع الفارق 3 (والتعادل الصح بنتيجة ثانية) · الفائز بس 2</span></div></div>
-  <div class="step"><i>3</i><div><b>⭐ ضاعف مباراة وحدة</b><span>مباراة وحدة في كل جولة، وتقدر تنقلها لين ما تبدا المباراة اللي عليها</span></div></div>
-  <div class="step"><i>4</i><div><b>نقاطك تنحسب لجمهور ناديك</b><span>ترتيب للجولة وللموسم (من 3 جولات)، والأندية بمعدل نقاط جمهورها (من 10 مشجعين)</span></div></div>
+  <div class="step"><i>2</i><div><b>⭐ ضاعف مباراة وحدة</b><span>مباراة وحدة في كل جولة، وتقدر تنقلها لين ما تبدا المباراة اللي عليها</span></div></div>
+  <div class="pts"><h4>🎯 نقاطك في كل مباراة</h4>
+   <div class="r"><span>النتيجة بالضبط<small>توقعت <span class="psc">2‏-‏1</span> وخلصت <span class="psc">2‏-‏1</span></small></span><b>5</b></div>
+   <div class="r"><span>الفائز والفارق<small>توقعت <span class="psc">2‏-‏1</span> وخلصت <span class="psc">3‏-‏2</span>، أو تعادل <span class="psc">1‏-‏1</span> وخلصت <span class="psc">0‏-‏0</span></small></span><b>3</b></div>
+   <div class="r"><span>الفائز بس<small>توقعت <span class="psc">2‏-‏1</span> وخلصت <span class="psc">3‏-‏0</span></small></span><b>2</b></div>
+   <div class="r"><span>غير جذي</span><b>0</b></div>
+   <div class="r"><span>⭐ المباراة المضاعفة</span><b>×2</b></div>
+   <p>نقاطك تتجمع في ترتيب الجولة وترتيب الموسم (تدخله لما تشارك في 3 جولات). وجمهور ناديك يترتب <b>بمعدل نقاط مشجعينه</b> مب بالمجموع، والنادي يدخل لما يتوقع من جمهوره 10.</p></div>
   <button class="btn" id="howGo">يلا نتوقع</button>
 </div></div>
 

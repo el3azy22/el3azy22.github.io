@@ -126,6 +126,17 @@ footer a{color:inherit}
 .step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
 .step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
 .step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
+.pts{margin-top:12px;background:rgba(255,245,229,.04);border:1px solid rgba(215,180,101,.28);border-radius:14px;padding:11px 12px 10px;text-align:right}
+.pts h4{font-size:14px;color:var(--gold);margin:0 0 8px;font-weight:700}
+.pts .r{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+.pts .r:last-of-type{border-bottom:0}.pts .r small{display:block;font-size:10.5px;opacity:.55}
+.pts .r b{color:var(--gold);font-size:14px;white-space:nowrap;direction:ltr}
+.pts .att{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px}
+.pts .att div{background:rgba(255,245,229,.05);border-radius:8px;padding:5px 0 4px;line-height:1.35}
+.pts .att b{display:block;color:var(--gold);font-size:15px}.pts .att .z b{color:#e08a8a}
+.pts p{font-size:11.5px;opacity:.72;margin:9px 0 0;line-height:1.75;font-weight:400}
+.pts .r span{font-weight:600}.pts .r small{font-weight:400}.pts .psc{white-space:nowrap;unicode-bidi:isolate}
+
 .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0 16px}
 .stats div{background:rgba(7,29,43,.7);border-radius:12px;padding:10px 2px}
 .stats b{display:block;font-size:22px;color:var(--gold)}
@@ -217,7 +228,11 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
   <div class="step"><i>2</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك 6 محاولات</span></div></div>
   <div class="step"><i>3</i><div><b>كل غلطة تفتح لك تلميح 🔓</b><span>الجنسية، المركز، العمر، النادي، الرقم...</span></div></div>
   <div class="step"><i>4</i><div><b>عرفته؟ شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
-  <div class="step" id="clubStep" hidden><i>5</i><div><b>ناديك ينافس 🏆</b><span>كل لاعب تعرفه يعطي ناديك نقاط: 6 من أول محاولة وتنقص مع كل محاولة. وكل أسبوع يطلع أقوى جمهور بمعدل النقاط (من 3 مشجعين)</span></div></div>
+  <div class="step" id="clubStep" hidden><i>5</i><div><b>ناديك ينافس 🏆</b><span>نتيجتك كل يوم تعطي جمهور ناديك نقاط</span></div></div>
+  <div class="pts" id="clubPts" hidden><h4>🏆 نقاط ناديك من كل تحدي</h4>
+   <div style="font-size:12px;opacity:.75;margin-bottom:6px">حسب المحاولة اللي عرفت فيها اللاعب:</div>
+   <div class="att"><div><b>6</b>من 1</div><div><b>5</b>من 2</div><div><b>4</b>من 3</div><div><b>3</b>من 4</div><div><b>2</b>من 5</div><div><b>1</b>من 6</div><div class="z"><b>0</b>ما عرفته</div></div>
+   <p>كل وضع (العادي والخبير) ينحسب بروحه. نقاط جمهور كل نادي تتجمع طول الأسبوع، والترتيب <b>بمعدل نقاط المشجع</b> مب بالمجموع، عشان الجمهور الكبير ما يفوز بالعدد بس. النادي يدخل الترتيب من 3 مشاركات من جمهوره، وكل أسبوع يتعلن بطل يديد.</p></div>
   <p style="font-size:12px;opacity:.7;margin-top:12px;line-height:1.8">تبا تحدي أصعب؟ جرّب <b style="color:var(--gold)">وضع الخبير 🧠</b>: كل تخمين يقارن لاعبك باللاعب السري بالألوان.</p>
   <button class="btn" id="howGo">يلا نلعب</button>
 </div></div>
@@ -440,7 +455,7 @@ const FB={key:'AIzaSyCJVYgLTqvj2k1KnvLYo6Z1feOS4E8fj94',db:'https://el3azy-3b64e
 const CROWD=!!(FB.key&&FB.db);
 const MINP=3,WEEK=7;
 let CW=null; // crowd stats for this day+mode
-if(CROWD)$('#clubStep').hidden=false;
+if(CROWD){$('#clubStep').hidden=false;$('#clubPts').hidden=false}
 const AR1=v=>v.toFixed(1);
 const nf=n=>Number(n).toLocaleString('en-US');
 /* هوية المشجع الموحدة للمنصة كلها (نفس الحساب المجهول في كل الأقسام) */
@@ -523,7 +538,7 @@ async function crowdFlow(again){
     ${me&&sub&&sub.c===me?`<div class="mine">${sub.g?`✅ <b>${"\u2066+"+(7-sub.g)+"\u2069"}</b> نقاط لجمهور ${D.clubs[me]} اليوم`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}، باجر تعوّضها 💪`}</div>`:''}
     <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبوا</span></div>
     ${T.map((o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):'–'}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):''}</span></div>`).join('')}
-    <div class="cfoot">المعدل = نقاط جمهور النادي ÷ عدد اللي لعبوا (من أول محاولة 6 نقاط … سادس محاولة نقطة)<br>النادي يدخل الترتيب لما يلعب من جمهوره ${AR(MINP)} · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+    <div class="cfoot">المعدل = نقاط جمهور النادي ÷ عدد اللي لعبوا (من أول محاولة 6 نقاط … سادس محاولة نقطة)<br>النادي يدخل الترتيب من ${AR(MINP)} مشاركات · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
 }
 
