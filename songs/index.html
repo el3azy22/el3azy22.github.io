@@ -34,8 +34,8 @@ header{display:flex;align-items:center;gap:10px;padding:12px 0 6px}
 header a.home{display:block;flex-shrink:0;line-height:0}
 header .logo{height:62px;width:auto}
 header .ttl{flex:1}
-header h1{font-size:24px;font-weight:700;line-height:1.2}
-header .sub{font-size:12px;color:var(--gold);font-weight:600}
+header h1{font-size:24px;font-weight:700;line-height:1.5}
+header .sub{font-size:12px;color:var(--gold);font-weight:600;line-height:1.6;margin-top:2px}
 .card{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:22px;padding:16px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
 /* المشغل */
 .player{text-align:center;border-color:rgba(215,180,101,.35)}
@@ -44,7 +44,7 @@ header .sub{font-size:12px;color:var(--gold);font-weight:600}
 .cover img.art{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .cover img.main{width:62%;height:62%;object-fit:contain;filter:drop-shadow(0 8px 16px rgba(0,0,0,.4))}
 .cover .ring{position:absolute;inset:10px;border-radius:18px;border:1px dashed rgba(215,180,101,.25)}
-.cover .eq{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);display:flex;gap:3px;align-items:flex-end;height:16px;opacity:0;transition:opacity .3s}
+.cover .eq{position:absolute;top:10px;left:10px;display:flex;gap:3px;align-items:flex-end;height:26px;padding:5px 7px;border-radius:9px;background:rgba(7,29,43,.75);opacity:0;transition:opacity .3s}
 .playing .cover .eq{opacity:1}
 .eq i{width:3px;background:var(--gold);border-radius:2px;animation:eq 1s ease-in-out infinite}
 .eq i:nth-child(2){animation-delay:.2s}.eq i:nth-child(3){animation-delay:.4s}.eq i:nth-child(4){animation-delay:.1s}.eq i:nth-child(5){animation-delay:.3s}
