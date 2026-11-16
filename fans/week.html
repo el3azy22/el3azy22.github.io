@@ -21,7 +21,7 @@ header .s{font-size:27px;color:var(--gold);font-weight:600;margin-top:4px}
 .lead .n{text-align:center}.lead .n b{font-size:60px;color:var(--gold2);direction:ltr}.lead .n small{display:block;font-size:20px;opacity:.7}
 .cols{position:absolute;top:402px;left:64px;right:64px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .col{background:rgba(12,38,56,.75);border:1px solid rgba(255,245,229,.09);border-radius:26px;overflow:hidden}
-.r{display:grid;grid-template-columns:36px 46px 46px 1fr 62px 66px;align-items:center;gap:8px;height:74px;padding:0 16px;border-bottom:1px solid rgba(255,245,229,.06);font-size:26px}
+.r{display:grid;grid-template-columns:34px 36px 46px 1fr 62px 66px;align-items:center;gap:6px;height:74px;padding:0 16px;border-bottom:1px solid rgba(255,245,229,.06);font-size:26px}
 .r:last-child{border:0}
 .r i{font-style:normal;text-align:center;font-weight:700;opacity:.75;font-size:24px}
 .r .c{display:grid;place-items:center;height:46px}
@@ -30,7 +30,7 @@ header .s{font-size:27px;color:var(--gold);font-weight:600;margin-top:4px}
 .r .t{text-align:center;font-weight:700;font-size:30px;color:var(--gold2)}
 .r .m{font-size:19px;font-weight:700;text-align:center;direction:ltr;white-space:nowrap}.m.up{color:#7fe0a6}.m.dn{color:#ff9d8f}.m.eq{opacity:.35}
 .r.p1{background:linear-gradient(90deg,transparent,rgba(215,180,101,.22));box-shadow:inset -5px 0 0 #D7B465}.r.p2{background:linear-gradient(90deg,transparent,rgba(200,210,225,.14));box-shadow:inset -5px 0 0 #C9D2DE}.r.p3{background:linear-gradient(90deg,transparent,rgba(205,140,90,.17));box-shadow:inset -5px 0 0 #C98A5A}.r.p1 i{color:var(--gold2);opacity:1}
-.hd{display:grid;grid-template-columns:36px 46px 46px 1fr 90px 76px;white-space:nowrap;gap:8px;padding:10px 16px 6px;font-size:17px;opacity:.6}
+.hd{display:grid;grid-template-columns:34px 36px 46px 1fr 62px 66px;white-space:nowrap;gap:6px;padding:10px 16px 6px;font-size:17px;opacity:.6}
 .hd span:nth-last-child(-n+2){text-align:center}
 .stars{position:absolute;top:1040px;left:64px;right:64px}
 .stars .l{font-size:25px;color:var(--gold);font-weight:600;margin-bottom:12px}
@@ -70,11 +70,11 @@ fetch('/fans/data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
  const story=q===D.done?D.story:'';
  document.getElementById('lead').innerHTML=`${crest(R[0][0],96)}<div><div class="k">🏆 المتصدر</div><b>جمهور ${CL[R[0][0]]}</b></div>${story?`<div class="sty">🚀 ${esc(story)}</div>`:'<div style="flex:1"></div>'}<div class="n"><b>${R[0][1]}</b><small>نقطة</small></div>`;
  const row=(r,k)=>`<div class="r ${k<3&&r[1]?'p'+(k+1):''}"><i>${k+1}</i><span class="m ${r[3]>0?'up':r[3]<0?'dn':'eq'}">${r[3]>0?'▲'+r[3]:r[3]<0?'▼'+(-r[3]):'–'}</span><span class="c">${crest(r[0],40)}</span><span class="nm">${CL[r[0]]}</span><span class="w">+${r[2]}</span><span class="t">${r[1]}</span></div>`;
- const hd='<div class="hd"><span>#</span><span></span><span></span><span>النادي</span><span>آخر أسبوع</span><span>المجموع</span></div>';
+ const hd='<div class="hd"><span>#</span><span></span><span></span><span>النادي</span><span>الأسبوع</span><span>المجموع</span></div>';
  document.getElementById('cols').innerHTML=`<div class="col">${hd}${R.slice(0,7).map(row).join('')}</div><div class="col">${hd}${R.slice(7).map((r,k)=>row(r,k+7)).join('')}</div>`;
  const S=W.stars||[];
- if(S.length)document.getElementById('stars').innerHTML=S.slice(0,3).map((x,k)=>{const r=x[3]||k+1;return `<div class="st ${r==1?'g1':''}"><span class="md">${['🥇','🥈','🥉'][r-1]}</span>${crest(x[1],44)}<div><b>${esc(x[0])}</b><small><span class="p">${x[2]}</span> نقطة</small></div></div>`}).join('');
- {const ex=S.length-3+(W.more||0);if(ex>0)document.getElementById('stl').innerHTML+=` <span style="opacity:.7;font-size:20px">· و${ex} غيرهم بنفس النقاط</span>`}
+ if(S.length){document.getElementById('stars').innerHTML=S.slice(0,3).map((x,k)=>{const r=x[3]||k+1;return `<div class="st ${r==1?'g1':''}"><span class="md">${['🥇','🥈','🥉'][r-1]}</span>${crest(x[1],44)}<div><b>${esc(x[0])}</b><small><span class="p">${x[2]}</span> نقطة</small></div></div>`}).join('');
+  const ex=S.length-3+(W.more||0);if(ex>0)document.getElementById('stl').innerHTML+=` <span style="opacity:.7;font-size:20px">· و${ex} غيرهم بنفس النقاط</span>`}
  else document.querySelector('.stars').style.display='none';
  document.body.dataset.ok=1;
 });
