@@ -1,0 +1,77 @@
+"""رحلة «منو اللاعب؟» من الواجهة ضد محاكي Firebase: الحفظ، الخبير، وانقطاع الاتصال قبل التأكيد.
+يحتاج: المحاكي (9000) + python3 -m http.server 8765 من جذر المستودع + Chrome.
+  python3 _tools/tests/ui_mano.py"""
+import asyncio, base64, json, os, sys, time
+import requests
+from playwright.async_api import async_playwright
+sys.path.insert(0, os.path.dirname(__file__))
+import test_rules as T
+
+PROD = 'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app'
+D = json.load(open(os.path.join(T.ROOT, 'mano', 'data.json')))
+E, P = D['schedule'], D['schedule_pro']
+day = (int(time.time() * 1000) - 1794859200000) // 86400000 + 1
+
+
+def fake_signup(uid):
+    async def h(route):
+        await route.fulfill(content_type='application/json', body=json.dumps({'idToken': T.tok(uid), 'refreshToken': 'r', 'localId': uid, 'expiresIn': '3600'}))
+    return h
+
+
+def to_emu(lose_patch=False):
+    async def h(route):
+        r = route.request
+        u = r.url.replace(PROD, T.B).replace('.json?', f'.json?ns={T.NS}&').replace('.json', '.json' if '?' in r.url else f'.json?ns={T.NS}')
+        resp = requests.request(r.method, u, data=r.post_data)
+        if lose_patch and r.method == 'PATCH':
+            await route.fulfill(status=503, body='')   # وصل السيرفر بس الرد ضاع
+        else:
+            await route.fulfill(status=resp.status_code, body=resp.text, content_type='application/json')
+    return h
+
+
+async def play(b, uid, club, easy, pro=None, lose=False):
+    seed = {f'g_{day}_easy': easy, 'seenHow': True, 'mode': 'pro' if pro else 'easy'}
+    if pro:
+        seed[f'g_{day}_pro'] = pro
+    js = ';'.join(f"localStorage.setItem('el3azy_mano_{k}',{json.dumps(json.dumps(v))})" for k, v in seed.items())
+    js += f";localStorage.setItem('el3azy_club',JSON.stringify('{club}'))"
+    ctx = await b.new_context(viewport={'width': 390, 'height': 800})
+    await ctx.add_init_script(js)
+    pg = await ctx.new_page()
+    await pg.route('**/identitytoolkit.googleapis.com/**', fake_signup(uid))
+    await pg.route('**/securetoken.googleapis.com/**', lambda r: r.abort())
+    await pg.route(PROD + '/**', to_emu(lose))
+    await pg.goto('http://localhost:8765/mano/'); await pg.wait_for_timeout(3000)
+    st = await pg.evaluate(f"[localStorage.getItem('el3azy_mano_sub_{day}_easy'),localStorage.getItem('el3azy_mano_sub_{day}_pro')]")
+    await ctx.close()
+    return [json.loads(x) if x else None for x in st]
+
+
+async def main():
+    T.load_rules(1794859200000, []); T.reset()
+    print(f'— رحلة منو اللاعب (اليوم {day}) —')
+    async with async_playwright() as p:
+        b = await p.chromium.launch(executable_path='/usr/bin/google-chrome')
+        win2 = {'guesses': [E[5], E[day - 1]], 'done': True, 'win': True}
+        st = await play(b, 'ua1', 'wahda', win2)
+        T.check('لاعب اليوم من محاولتين: الجهاز يسجل إنه انحفظ', st[0], {'g': 2, 'c': 'wahda'})
+        T.check('السيرفر: سجل المشجع', {k: v for k, v in T.get(f'p/{day}/easy/ua1').json().items() if k != 't'}, {'c': 'wahda', 'd': day, 'g': 2})
+        T.check('السيرفر: نقاط الوحدة = 5', T.get(f'c/{day}/easy/wahda').json(), {'n': 1, 't': 5})
+        prof = {'guesses': [E[3]] * 5 + [P[day - 1]], 'done': True, 'win': True}
+        st = await play(b, 'ua2', 'ain', win2, prof)
+        T.check('لاعب اليوم + الخبير من 6 محاولات', st, [{'g': 2, 'c': 'ain'}, {'g': 6, 'c': 'ain'}])
+        T.check('السيرفر: نقاط العين في الخبير = 1', T.get(f'c/{day}/pro/ain').json(), {'n': 1, 't': 1})
+        st = await play(b, 'ua3', 'wasl', win2, lose=True)
+        T.check('انقطع الرد بعد الحفظ: الجهاز يتأكد ويعتمد المحفوظ', st[0], {'g': 2, 'c': 'wasl'})
+        T.check('ما انحسبت مرتين', T.get(f'c/{day}/easy/wasl').json(), {'n': 1, 't': 5})
+        lose6 = {'guesses': [E[3]] * 6, 'done': True, 'win': False}
+        st = await play(b, 'ua4', 'nasr', lose6)
+        T.check('ما عرفه: ينحسب لعبة بدون نقاط', (st[0], T.get(f'c/{day}/easy/nasr').json()), ({'g': 0, 'c': 'nasr'}, {'n': 1}))
+        T.check('عداد اللاعبين اليوم = 4 والعارفين = 3', (T.get(f's/{day}/easy').json().get('n'), T.get(f's/{day}/easy').json().get('w')), (4, 3))
+        await b.close()
+    print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
+    sys.exit(1 if T.fail else 0)
+
+asyncio.run(main())

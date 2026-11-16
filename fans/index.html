@@ -327,7 +327,7 @@ function stepsH(){return `<div class="steps"><div><i>1</i><b>اختار<br>نا�
 function myH(rk,pts,when){const my=MY();if(!my)return '';return `<div class="mine-line"><div class="ml">${crest(my,28)}<span>ناديك <b>${CL[my]}</b> ${pts?`في <b>المركز ${rk}</b> ${when}`:`ما دخل ترتيب ${when} لين الحين`}</span></div><div class="go"><a href="../mano/">🕵️ العب اليوم</a><a href="../predict/">🔮 توقع المباريات</a></div></div>`}
 function askH(){return MY()===null&&window.EL3FAN?`<button class="ask" id="ask"><span style="font-size:24px">📣</span><span><b>اختار ناديك</b>عشان نقاطك تنحسب لجمهوره</span></button>`:''}
 const predOn=w=>!!(w&&w.pred&&w.rows.some(r=>r.p&&r.p[2]>0));
-const f1=x=>(Math.round(x*10)/10).toFixed(1);
+const f1=x=>(Math.round(x*100)/100).toFixed(2);
 function brk(r,w){const one=(ic,nm,x,unit,on)=>`<span>${ic} ${nm}: ${x&&x[0]?`معدل <b>${f1(x[1])}</b> · المركز ${15-x[0]} = <b>${x[0]}</b> ${x[0]>10?'نقطة':'نقاط'}`:(x&&x[2]?`${x[2]} ${unit} بس، ما وصل الحد الأدنى`:'ما شارك')}</span>`;
  return `<span class="brk">${one('🕵️','منو اللاعب؟',r.m,r.m[2]>10?'لعبة':'لعبات')}${r.p?(predOn(w)?one('🔮','التوقعات',r.p,r.p[2]>10?'مشجع':'مشجعين'):`<span>🔮 التوقعات: تنحسب بعد مباريات جولة الدوري</span>`):''}</span>`}
 function season(){
@@ -338,9 +338,10 @@ function season(){
    <div class="meta"><span>${wk?`الأسبوع ${wk.w} يخلص بعد <b>${left()}</b>`:''}</span></div></div>`;
   h+=`<div class="cap">🏆 مجموع نقاط النادي من كل الأسابيع اللي خلصت · اضغط على النادي تشوف التفاصيل</div><div class="tbl"><div class="th"><span>#</span><span></span><span></span><span>النادي</span><span>آخر أسبوع</span><span>المجموع</span></div>`;
   let sep=false;
+  const SR=[];S.forEach((r,k)=>SR[k]=k&&r.tot===S[k-1].tot&&r.firsts===S[k-1].firsts&&(D.fc[r.c]||0)===(D.fc[S[k-1].c]||0)?SR[k-1]:k+1);
   S.forEach((r,k)=>{if(!r.tot&&!sep){sep=true;h+=`<div class="sep">ما جمعوا نقاط لين الحين</div>`}
    const w=L.rows.find(x=>x.c===r.c);
-   h+=`<button class="tr ${r.c===my?'mine':''} ${k<3&&r.tot?'p'+(k+1):''} ${r.tot?'':'out'}"><i>${k+1}</i>${mvH(r.prev,r.rank)}<span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk">+${r.wk}</span><span class="tot">${r.tot}</span>${brk(w,L)}</button>`});
+   h+=`<button class="tr ${r.c===my?'mine':''} ${k<3&&r.tot?'p'+(k+1):''} ${r.tot?'':'out'}"><i>${SR[k]}</i>${mvH(r.prev,r.rank)}<span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk">+${r.wk}</span><span class="tot">${r.tot}</span>${brk(w,L)}</button>`});
   h+=`</div>`+starsH(L.stars,`نجوم الأسبوع ${L.w}`,L.more,false)+howH();
   return h}
 function week(w){
@@ -351,8 +352,9 @@ function week(w){
   else h+=myH(R.findIndex(r=>r.c===my)+1,(R.find(r=>r.c===my)||{}).pts,w.live?'هالأسبوع':'في الأسبوع '+w.w);
   h+=`<div class="cap">📊 الترتيب بـ<b>معدل نقاط المشجع</b>: المركز الأول ياخذ <b>14</b> نقطة، والثاني <b>13</b>، ولين الأخير ياخذ <b>1</b> · اضغط على النادي تشوف التفاصيل</div><div class="tbl wv"><div class="th"><span>#</span><span></span><span></span><span>النادي</span><span style="text-align:center">معدل المشجع</span><span>النقاط</span></div>`;
   let sep=false;
+  const pl=r=>r.m[2]+(r.p?r.p[2]:0),WR=[];R.forEach((r,k)=>WR[k]=k&&r.pts===R[k-1].pts&&pl(r)===pl(R[k-1])&&(D.fc[r.c]||0)===(D.fc[R[k-1].c]||0)?WR[k-1]:k+1);
   R.forEach((r,k)=>{if(!r.pts&&!sep){sep=true;h+=`<div class="sep">ما دخلوا الترتيب لين الحين · النادي يدخل من ${D.min.mano} لعبات في «منو اللاعب؟»</div>`}
-   h+=`<button class="tr ${r.c===my?'mine':''} ${r.pts?'':'out'}"><i>${k+1}</i><span></span><span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk" style="opacity:.9">${r.pts?`${predOn(w)?'<em>🕵️</em>':''}${f1(r.m[1])}${predOn(w)?` &nbsp;<em>🔮</em>${r.p&&r.p[0]?f1(r.p[1]):'–'}`:''}`:'–'}</span><span class="tot">${r.pts}</span>${brk(r,w)}</button>`});
+   h+=`<button class="tr ${r.c===my?'mine':''} ${r.pts?'':'out'}"><i>${WR[k]}</i><span></span><span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk" style="opacity:.9">${r.pts?`${predOn(w)?'<em>🕵️</em>':''}${f1(r.m[1])}${predOn(w)?` &nbsp;<em>🔮</em>${r.p&&r.p[0]?f1(r.p[1]):'–'}`:''}`:'–'}</span><span class="tot">${r.pts}</span>${brk(r,w)}</button>`});
   h+=`</div><div class="card how" style="font-size:12px">${w.live?`الأرقام تتحدث وهي شغالة، والأسبوع يخلص ${w.to} 12 بالليل وتنضاف نقاطه لجدول الموسم.`:`الأسبوع ${w.w}: ${w.from} – ${w.to}.`}${w.pred?'':' هالأسبوع ما فيه جولة دوري، فالنقاط من «منو اللاعب؟» بس.'}</div>`;
   h+=starsH(w.stars,w.live?'نجوم الأسبوع لين الحين':`نجوم الأسبوع ${w.w}`,w.more,w.live);
   if(D.done===0)h+=howH();
@@ -378,8 +380,11 @@ async function liveMano(){
   const c=await fetch(`${FBDB}/c.json?orderBy=${encodeURIComponent('"$key"')}&startAt=${encodeURIComponent('"'+d0+'"')}&endAt=${encodeURIComponent('"'+d1+'"')}`).then(r=>r.json());
   const T={};ORD.forEach(k=>T[k]={n:0,t:0});
   Object.entries(c||{}).forEach(([d,v])=>{if(!v||+d<d0||+d>d1)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){if(m==='easy')T[k].n+=x.n||0;T[k].t+=x.t||0}}))});
-  const ok=ORD.filter(k=>T[k].n>=MINM).sort((a,b)=>T[b].t/T[b].n-T[a].t/T[a].n||T[b].n-T[a].n||ORD.indexOf(a)-ORD.indexOf(b));
-  w.rows.forEach(r=>{const t=T[r.c],i=ok.indexOf(r.c);r.m=[i<0?0:14-i,t.n?Math.round(t.t/t.n*100)/100:0,t.n];r.pts=r.m[0]+(r.p?r.p[0]:0)});
+  // نفس قاعدة build.py: المعدل (لين خانتين) ← اللعبات، وإذا تساووا في الاثنين ياخذون نفس النقاط
+  const av=k=>Math.round(T[k].t/T[k].n*100)/100,same=(a,b)=>av(a)===av(b)&&T[a].n===T[b].n;
+  const ok=ORD.filter(k=>T[k].n>=MINM).sort((a,b)=>av(b)-av(a)||T[b].n-T[a].n||ORD.indexOf(a)-ORD.indexOf(b));
+  const RK={};ok.forEach((k,i)=>RK[k]=i&&same(k,ok[i-1])?RK[ok[i-1]]:i+1);
+  w.rows.forEach(r=>{const t=T[r.c];r.m=[RK[r.c]?15-RK[r.c]:0,t.n?Math.round(t.t/t.n*100)/100:0,t.n];r.pts=r.m[0]+(r.p?r.p[0]:0)});
   w.rows.sort((a,b)=>b.pts-a.pts||(b.m[2]+(b.p?b.p[2]:0))-(a.m[2]+(a.p?a.p[2]:0))||(D.fc[b.c]||0)-(D.fc[a.c]||0)||ORD.indexOf(a.c)-ORD.indexOf(b.c));
 }
 async function load(){

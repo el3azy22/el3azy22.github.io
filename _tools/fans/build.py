@@ -72,13 +72,38 @@ def dlabel(ms):
 
 def rank_points(rows, minimum):
     """rows: [(club, avg, n)] → {club: [points, avg, n]} (اللي ما وصل الحد 0)."""
-    ok = sorted([r for r in rows if r[2] >= minimum], key=lambda r: (-r[1], -r[2], CLUBS.index(r[0])))
+    # المعدل الأعلى، وإذا تساوى (لين خانتين عشريتين) الأكثر لعبات. وإذا تساووا في الاثنين ياخذون نفس النقاط
+    k = lambda r: (-round(r[1], 2), -r[2])
+    ok = sorted([r for r in rows if r[2] >= minimum], key=lambda r: (k(r), CLUBS.index(r[0])))
     out = {c: [0, 0, 0] for c in CLUBS}
     for c, avg, n in rows:
         out[c] = [0, round(avg, 2), n]
-    for i, (c, avg, n) in enumerate(ok):
-        out[c] = [15 - (i + 1), round(avg, 2), n]
+    rk = 0
+    for i, r in enumerate(ok):
+        if i == 0 or k(r) != k(ok[i - 1]):
+            rk = i + 1
+        out[r[0]] = [15 - rk, round(r[1], 2), r[2]]
     return out
+
+
+def rank_fans(ind, hide=(), top=10):
+    """ترتيب المشجعين (نجوم الأسبوع): النقاط ← نقاط تحدي الخبير ← مرات «من أول محاولة» ← الأسبق لمجموع نقاطه (at).
+    إذا تساووا في كل هذا يتشاركون نفس المركز. يرجع أول `top` مراكز، و more = اللي يتشاركون آخر مركز معروض وما انعرضوا.
+    ind: {uid12: {pts, pro, one, at, c, nm}}"""
+    key = lambda x: (-x['pts'], -x['pro'], -x['one'], x['at'])
+    cand = sorted([dict(s, u=u, nm=s['nm'].strip()) for u, s in ind.items()
+                   if s['nm'].strip() and s['pts'] > 0 and u not in hide and s['c'] in NAME], key=lambda x: (key(x), x['nm']))
+    stars, more, rk = [], 0, 0
+    for i, x in enumerate(cand):
+        if i == 0 or key(x) != key(cand[i - 1]):
+            rk = i + 1
+        if rk > top:
+            break
+        if len(stars) < top:
+            stars.append([x['nm'], x['c'], x['pts'], rk, x['pro'], x['one'], x['u']])
+        else:
+            more += 1
+    return stars, more
 
 
 def main():
@@ -177,21 +202,7 @@ def main():
                 s['nm'] = s['nm'] or nm
                 if s['c'] in ('none', None):
                     s['c'] = c
-        # ترتيب المشجعين: النقاط ← نقاط تحدي الخبير ← مرات «من أول محاولة» ← الأسبق لمجموع نقاطه.
-        # إذا تساووا في كل هذا يتشاركون نفس المركز. نعرض أول 10 مراكز (ومن يتشارك آخر مركز معروض ينحسب في more)
-        key = lambda x: (-x['pts'], -x['pro'], -x['one'], x['at'])
-        cand = sorted([dict(s, u=u, nm=s['nm'].strip()) for u, s in ind.items()
-                       if s['nm'].strip() and s['pts'] > 0 and u not in hide and s['c'] in NAME], key=lambda x: (key(x), x['nm']))
-        stars, more, rk = [], 0, 0
-        for i, x in enumerate(cand):
-            if i == 0 or key(x) != key(cand[i - 1]):
-                rk = i + 1
-            if rk > 10:
-                break
-            if len(stars) < 10:
-                stars.append([x['nm'], x['c'], x['pts'], rk, x['pro'], x['one'], x['u']])
-            else:
-                more += 1
+        stars, more = rank_fans(ind, hide)
         weeks.append({'w': w, 'from': dlabel(START + (d0 - 1) * DAYMS), 'to': dlabel(START + (d1 - 1) * DAYMS),
                       'live': w == cur, 'pred': bool(pred), 'rows': rows, 'stars': stars, 'more': more,
                       'max': 14 * (1 + (1 if pred else 0))})

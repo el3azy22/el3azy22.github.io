@@ -533,7 +533,9 @@ const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 function tally(raw,from,to){
   const T={};CLUBS_ORDER.forEach(k=>T[k]={k,n:0,t:0});
   Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){if(m==='easy')T[k].n+=x.n||0;T[k].t+=x.t||0}}))});
-  return Object.values(T).map(o=>(o.avg=o.n>=MINP?o.t/o.n:-1,o)).sort((a,b)=>b.avg-a.avg||b.n-a.n||CLUBS_ORDER.indexOf(a.k)-CLUBS_ORDER.indexOf(b.k));
+  // المعدل (لين خانتين) ← اللعبات. إذا تساووا في الاثنين يتشاركون المركز (rk) — نفس قاعدة «دوري الجماهير»
+  const L=Object.values(T).map(o=>(o.avg=o.n>=MINP?Math.round(o.t/o.n*100)/100:-1,o)).sort((a,b)=>b.avg-a.avg||b.n-a.n||CLUBS_ORDER.indexOf(a.k)-CLUBS_ORDER.indexOf(b.k));
+  L.forEach((o,i)=>o.rk=o.avg<0?0:i&&o.avg===L[i-1].avg&&o.n===L[i-1].n?L[i-1].rk:i+1);return L;
 }
 function crowdLine(){
   if(!CW||CW.n<5)return '';
@@ -585,7 +587,7 @@ async function crowdFlow(again){
   const left=Math.floor((f+WEEK-1-DAY)+msToDubaiMidnight()/864e5);
   const mx=Math.max(.1,...T.map(o=>o.avg));
   const ok=T.filter(o=>o.avg>=0),out=T.filter(o=>o.avg<0);
-  const rowH=(o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):''}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):'0'}</span></div>`;
+  const rowH=(o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(o.rk):''}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?o.avg.toFixed(2):'—'}</span><span class="n">${o.n?nf(o.n):'0'}</span></div>`;
   box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 ترتيب جماهير الأندية · الأسبوع ${AR(wk)}</div>
     ${champ&&champ.avg>=0?`<div class="champ">${crest(champ.k,30)}<div><b>متصدر الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">بمعدل ${AR1(champ.avg)} نقطة للمشجع</div></div></div>`:''}
     ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وكلها تنحسب لجمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:''}
