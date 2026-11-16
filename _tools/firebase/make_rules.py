@@ -9,6 +9,8 @@ fresh=lambda after:f"auth != null && !root.child('p').child($d).child($m).child(
 g=lambda after:f"{P(after)}.child('g').val()"
 s_after="newData.parent().parent().parent().parent()"
 c_after="newData.parent().parent().parent().parent().parent()"
+CA="newData.parent().parent().parent().parent().child('c').child($d).child($m).child(newData.child('c').val())"   # بعد الكتابة
+CR="root.child('c').child($d).child($m).child(newData.child('c').val())"                                        # قبل الكتابة
 rules={"rules":{
  ".read":False,".write":False,
  "p":{"$d":{"$m":{"$u":{
@@ -21,9 +23,12 @@ rules={"rules":{
      f" && now >= {L} + (newData.child('d').val() - 1) * {DAYMS} && now < {L} + newData.child('d').val() * {DAYMS} + {GRACE}"
      # نتيجة الخبير لازم تكون لنفس نادي نتيجة لاعب اليوم (عشان نقاطه تنحسب لنفس الجمهور اللي انحسبت له لعبته)
      " && ($m == 'easy' || newData.child('c').val() == newData.parent().parent().child('easy').child($u).child('c').val())"
-     " && newData.child('g').isNumber() && newData.child('g').val() >= 0 && newData.child('g').val() <= 6"
+     " && newData.child('g').isNumber() && newData.child('g').val() % 1 == 0 && newData.child('g').val() >= 0 && newData.child('g').val() <= 6"
      f" && newData.child('c').isString() && newData.child('c').val().matches(/^({CL})?$/)"
-     " && newData.parent().parent().parent().parent().child('s').child($d).child($m).child('n').val() == (root.child('s').child($d).child($m).child('n').exists() ? root.child('s').child($d).child($m).child('n').val() : 0) + 1"),
+     " && newData.parent().parent().parent().parent().child('s').child($d).child($m).child('n').val() == (root.child('s').child($d).child($m).child('n').exists() ? root.child('s').child($d).child($m).child('n').val() : 0) + 1"
+     # اللعبة لازم تنحسب لناديها كاملة: لعبة +1 دايماً، ونقاط +(7 − المحاولات) لو عرفه (ما يقدر يرسل الفوز ويخفي الخسارة)
+     f" && (newData.child('c').val() == '' || ({CA}.child('n').val() == ({CR}.child('n').exists() ? {CR}.child('n').val() : 0) + 1"
+     f" && (newData.child('g').val() == 0 || {CA}.child('t').val() == ({CR}.child('t').exists() ? {CR}.child('t').val() : 0) + 7 - newData.child('g').val())))"),
    # t (اختياري): وقت السيرفر لحظة الحل، لفك التعادل في «نجوم الأسبوع» (الأسبق)
    "d":{".validate":True},"g":{".validate":True},"c":{".validate":True},"t":{".validate":"newData.val() == now"},"$other":{".validate":False}}}}},
  "s":{".read":True,"$d":{"$m":{"$f":{
@@ -54,7 +59,10 @@ rules["rules"].update({
      f" && now >= newData.child('t').val() + {100*60000} && now < newData.child('t').val() + {50*H}"
      f" && newData.parent().parent().parent().child('rn').child($k).val() == (root.child('rn').child($k).exists() ? root.child('rn').child($k).val() : 0) + 1"),
    "t":{".validate":True},
-   "r":{"$p":{".validate":f"$p.matches({PID}) && newData.isNumber() && newData.val() >= 1 && newData.val() <= 10 && newData.val() % 1 == 0"}},
+   # كل لاعب تقيّمه لازم يزيد عدده +1 ومجموعه بنفس التقييم (ما ينفع مجموع بدون عدد)
+   "r":{"$p":{".validate":(f"$p.matches({PID}) && newData.isNumber() && newData.val() >= 1 && newData.val() <= 10 && newData.val() % 1 == 0"
+     " && newData.parent().parent().parent().parent().parent().child('ra').child($k).child($p).child('n').val() == (root.child('ra').child($k).child($p).child('n').exists() ? root.child('ra').child($k).child($p).child('n').val() : 0) + 1"
+     " && newData.parent().parent().parent().parent().parent().child('ra').child($k).child($p).child('s').val() == (root.child('ra').child($k).child($p).child('s').exists() ? root.child('ra').child($k).child($p).child('s').val() : 0) + newData.val()")}},
    "st":{".validate":f"newData.isString() && newData.val().matches({PID})"},
    "$other":{".validate":False}}}},
  "rn":{".read":True,"$k":{".write":rfresh(rn_after),".validate":f"newData.isNumber() && {inc}"}},
@@ -73,9 +81,12 @@ ADMIN=os.environ.get("ADMIN","Vt7pBIwn9jhQCI2LSORFpnU3aCa2"); ISADM=f"auth != nu
 rules["rules"].update({
  "f":{".read":ISADM,"$u":{
    ".read":"auth != null && auth.uid == $u",
-   ".write":f"(auth != null && auth.uid == $u) || ({ISADM} && !newData.exists())",
+   # المشجع ما يقدر يمسح بطاقته (كان يسمح بتغيير النادي بلا حد)؛ المسح للمدير بس
+   ".write":f"(auth != null && auth.uid == $u && newData.exists()) || ({ISADM} && !newData.exists())",
    ".validate":(f"newData.hasChildren(['c','t']) && newData.child('c').isString() && newData.child('c').val().matches(/^({FCL})$/)"
      " && (data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(newData.child('c').val()).val() == (root.child('fc').child(newData.child('c').val()).exists() ? root.child('fc').child(newData.child('c').val()).val() : 0) + 1)"
+     # تغيير النادي: الجديد +1 والقديم −1 مع بعض (عدد المشجعين ما يتضخم)
+     " && (!data.child('c').exists() || data.child('c').val() == newData.child('c').val() || newData.parent().parent().child('fc').child(data.child('c').val()).val() == root.child('fc').child(data.child('c').val()).val() - 1)"
      # تغيير النادي: 24 ساعة تعديل بعد كل اختيار، وبعدها تغيير واحد في الموسم (x = رقم الموسم اللي غيّر فيه).
      # الموسم يبدا 1 أغسطس (S0 = 1 أغسطس 2026 بتوقيت الإمارات) ويتجدد كل سنة تلقائياً. «محايد» يختار نادي أي وقت.
      f" && (!data.child('t').exists() ? newData.child('t').val() == now && {KEEPX}"

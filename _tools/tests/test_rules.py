@@ -86,6 +86,14 @@ def mano_tests():
     bad = mano_body('u4', 3, 'easy', 2, 'ain'); bad['p/3/easy/u4'] = {'d': 3, 'g': 2, 'c': 'ain', 't': TS}
     del bad['s/3/easy/n']
     check('بدون زيادة عداد اللاعبين ترفض', patch('u4', bad), 401)
+    bad = mano_body('u4', 3, 'easy', 1, 'ain'); del bad['c/3/easy/ain/n']
+    check('غش: نقاط النادي بدون عداد اللعبة ترفض', patch('u4', bad), 401)
+    bad = mano_body('u4', 3, 'easy', 0, 'ain'); del bad['c/3/easy/ain/n']
+    check('غش: خسارة بدون ما تنحسب للنادي ترفض', patch('u4', bad), 401)
+    bad = mano_body('u4', 3, 'easy', 1, 'ain'); del bad['c/3/easy/ain/t']
+    check('فوز بدون نقاط النادي يرفض', patch('u4', bad), 401)
+    bad = mano_body('u4', 3, 'easy', 1, 'ain'); bad['p/3/easy/u4']['g'] = 0.001; bad['c/3/easy/ain/t'] = inc(6.999)
+    check('غش: محاولات بكسور (0.001) ترفض', patch('u4', bad), 401)
     check('مشجع يكتب نتيجة باسم مشجع ثاني ترفض', patch('u5', mano_body('u6', 3, 'easy', 2, 'ain')), 401)
     check('نتيجة بدون نادي تنقبل (ما تنحسب لنادي)', patch('u7', mano_body('u7', 3, 'easy', 0, '')), 200)
     check('المشجع يقرا نتيجته', get('p/3/easy/u1', 'u1').status_code, 200)
@@ -145,6 +153,10 @@ def rate_tests():
     check('تقييم 0 يرفض', patch('r3', body('r3', k_open, {'101': 0})), 401)
     b = body('r4', k_open, {'101': 6}); b[f'ra/5001_{k_open}/101/s'] = inc(10)
     check('غش: مجموع غير التقييم يرفض', patch('r4', b), 401)
+    b = body('r5', k_open, {'101': 10}); del b[f'ra/5001_{k_open}/101/n']
+    check('غش: مجموع التقييم بدون العدد يرفض', patch('r5', b), 401)
+    b = body('r6', k_open, {'101': 1}); del b[f'ra/5001_{k_open}/101/s']
+    check('غش: عدد بدون المجموع يرفض', patch('r6', b), 401)
     a = get(f'ra/5001_{k_open}/101').json()
     check('مجموع لاعب 101 بعد التقييمات المقبولة', a, {'n': 1, 's': 7})
 
@@ -159,6 +171,9 @@ def fan_tests():
     t1 = get('f/f1').json()['t']
     check('تغيير النادي خلال 24 ساعة ينقبل (+1 للجديد −1 للقديم)', patch('f1', {'f/f1': {'c': 'wasl', 'n': 'سالم', 't': t1}, 'fc/wasl': inc(), 'fc/ain': inc(-1)}), 200)
     check('عدد المشجعين بعد التغيير', (get('fc/ain').json(), get('fc/wasl').json()), (0, 1))
+    t2 = get('f/f1').json()['t']
+    check('غش: تغيير النادي بزيادة الجديد بدون نقص القديم يرفض', patch('f1', {'f/f1': {'c': 'ain', 'n': 'سالم', 't': t2}, 'fc/ain': inc()}), 401)
+    check('المشجع ما يقدر يمسح بطاقته (عشان يتخطى حد تغيير النادي)', requests.delete(url('f/f1', 'f1')).status_code, 401)
     check('اسم أطول من 16 حرف يرفض', patch('f1', {'f/f1': {'c': 'wasl', 'n': 'س' * 17, 't': t1}}), 401)
     check('مشجع يقرا بطاقة غيره يرفض', get('f/f1', 'f9').status_code, 401)
 
