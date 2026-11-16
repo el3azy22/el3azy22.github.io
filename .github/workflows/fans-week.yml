@@ -22,7 +22,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - run: pip install pillow google-auth requests playwright && python -m playwright install --with-deps chromium
+      - run: pip install pillow google-auth requests playwright && python -m playwright install --with-deps chromium && sudo apt-get install -y -q fonts-noto-color-emoji
       - name: build + render
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
@@ -32,9 +32,14 @@ jobs:
           git config user.email "el3azy-bot@users.noreply.github.com"
           python3 _tools/fans/build.py
           python3 _tools/fans/render.py
-          if [ -n "$NOW" ]; then ls -la fans; python3 -c "import json;d=json.load(open('fans/data.json'));print('cur',d['cur'],'done',d['done'],'names',d['names'],[w['stars'] for w in d['weeks']])"; exit 0; fi
+          if [ -n "$NOW" ]; then mkdir -p _test && cp fans/week.png _test/ 2>/dev/null; ls -la fans; python3 -c "import json;d=json.load(open('fans/data.json'));print('cur',d['cur'],'done',d['done'],'names',d['names'],[w['stars'] for w in d['weeks']])"; exit 0; fi
           git add fans
           if ! git diff --cached --quiet; then
             git commit -m "دوري الجماهير: جدول الجولة وصورة الأسبوع" -q
             for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done
           fi
+      - uses: actions/upload-artifact@v4
+        if: ${{ inputs.now != '' }}
+        with:
+          name: week-test
+          path: _test/
