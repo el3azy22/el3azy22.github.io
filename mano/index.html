@@ -125,6 +125,13 @@ footer a{color:inherit}
 .step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
 .step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
 .seg button.lock{opacity:.6}.seg button.lock small{color:var(--gold)}
+.prohow{margin:12px 0 0;padding:10px 12px;border-radius:14px;background:rgba(215,180,101,.08);border:1px dashed rgba(215,180,101,.45);font-size:12.5px;line-height:1.8;text-align:right}.prohow b{color:var(--gold)}
+.nextpro{margin:10px 0 14px;padding:14px 14px 12px;border-radius:18px;text-align:center;border:1.5px solid transparent;background:radial-gradient(ellipse at 50% 0%,rgba(215,180,101,.25),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,#F6E3AE,#B08A3E 40%,rgba(215,180,101,.3) 70%,#D7B465) border-box;animation:npin .6s ease .4s both}
+.nextpro .t{font-size:17px;font-weight:700;color:var(--gold2,#F6E3AE)}.nextpro .d{font-size:13px;opacity:.88;line-height:1.7;margin:4px 0 10px}.nextpro .d b{color:var(--gold)}
+.nextpro .btn.pro{margin:0;animation:nppulse 1.8s ease-in-out 1.2s infinite}
+@keyframes npin{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes nppulse{0%,100%{box-shadow:0 0 0 0 rgba(215,180,101,.0)}50%{box-shadow:0 0 0 6px rgba(215,180,101,.28)}}
+.seg button.glow{box-shadow:inset 0 0 0 1.5px rgba(215,180,101,.8);animation:nppulse 1.8s ease-in-out infinite}
 .btn.pro{display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.3}.btn.pro small{font-size:11.5px;font-weight:500;opacity:.75}
 .gotp{font-size:14px;margin:2px 0 8px;opacity:.9}.gotp b{color:var(--gold)}
 .mypts{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:0 0 12px}.mypts div{background:rgba(215,180,101,.08);border:1px solid rgba(215,180,101,.3);border-radius:14px;padding:10px 6px}.mypts b{display:block;font-size:24px;color:var(--gold)}.mypts span{font-size:11.5px;opacity:.75}
@@ -322,7 +329,7 @@ const easyDone=()=>!!(store.get('g_'+DAY+'_easy',null)||{}).done;
 const MODEN={easy:'لاعب اليوم',pro:'تحدي الخبير'};
 function setMode(m){mode=m;store.set('mode',m);load();scrollTo({top:0,behavior:'smooth'})}
 function paintSeg(){const ok=easyDone();document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);if(b.dataset.m==='pro')b.classList.toggle('lock',!ok)});
-  const ps=$('#proSub');if(ps){const pd=(store.get('g_'+DAY+'_pro',null)||{}).done;ps.textContent=!ok?'🔒 ينفتح بعد لاعب اليوم':pd?'✓ خلّصته':'لاعب ثاني أصعب'}}
+  const ps=$('#proSub');if(ps){const pd=(store.get('g_'+DAY+'_pro',null)||{}).done;ps.textContent=!ok?'🔒 ينفتح بعد لاعب اليوم':pd?'✓ خلّصته':'🔓 انفتح لك · لاعب ثاني';const pb=ps.closest('button');if(pb)pb.classList.toggle('glow',ok&&!pd&&mode!=='pro')}}
 function load(){
   CW=null;ANS=ansFor(mode,DAY-1);YEST=DAY>1?ansFor(mode,DAY-2):null;paintSeg();
   const k='g_'+DAY+'_'+mode;
@@ -354,7 +361,7 @@ function render(){
    <div class="hero">
      ${S.done?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">؟</span></span></span>`}
      <div style="flex:1"><b>${S.done?ANS.n:(mode==='easy'?'لاعب اليوم السري':'لاعب الخبير السري')}</b>
-       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'كل تخمين يقارن لاعبك باللاعب السري')}</div>
+       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'لاعب ثاني غير لاعب اليوم · كل تخمين يقارن لاعبك باللاعب السري')}</div>
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
    </div>`;
   if(mode==='easy'){
@@ -362,6 +369,7 @@ function render(){
     const shown=S.done?6:Math.min(used+1,6);
     h+=`<div class="clues">${CL.map((c,i)=>i<shown?`<div class="clue open"><span>تلميح ${AR(i+1)} · ${c[0]}</span><b>${c[1]()}</b></div>`:`<div class="clue"><span>تلميح ${AR(i+1)}</span><b>🔒 ينفتح لو غلطت</b></div>`).join('')}</div>`;
   }else{
+    if(!S.guesses.length)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارنه لك باللاعب السري في 5 أشياء: <b>النادي، المركز، الجنسية، العمر، رقم القميص</b>. من المقارنة تقرب له لين تعرفه.</div>`;
     h+=`<div class="legend"><span><i style="background:var(--green)"></i>نفسه</span><span><i style="background:var(--yellow)"></i>قريب</span><span>⬆ السري أكبر</span><span>⬇ السري أصغر</span></div>`;
   }
   if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
@@ -447,10 +455,11 @@ function resultHTML(){
      <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
    <div class="gotp">${S.win?`🏆 <b>${'\u2066+'+(7-S.guesses.length)+'\u2069'}</b> نقاط لك${myClub()?' ولجمهور '+D.clubs[myClub()]:''}`:`ما جبت نقاط هالمرة${mode==='easy'?'، عوّضها في تحدي الخبير':''}`}</div>
    ${st.streak>1&&S.win?`<div style="font-size:14px;margin-bottom:6px">سلسلتك: <b style="color:var(--gold)">${AR(st.streak)} أيام 🔥</b></div>`:''}
+   ${mode==='easy'&&!(store.get('g_'+DAY+'_pro',null)||{}).done?`<div class="nextpro"><div class="t">🧠 الحين دورك في تحدي الخبير</div><div class="d">لاعب سري <b>ثاني غير لاعب اليوم</b> وأصعب منه، ونقاطه <b>تنضاف فوق نقاطك</b> (لين 6 زيادة) لك ولناديك</div><button class="btn pro" id="otherBtn">ابدا تحدي الخبير ‹</button></div>`:''}
    <div style="font-size:12.5px;opacity:.7">نتيجتك جاهزة (من غير اسم اللاعب):</div>
    <img class="cardimg" id="cardImg" alt="صورة نتيجتك">
    <button class="btn" id="imgBtn">𝕏 شارك نتيجتك</button>
-   ${mode==='easy'&&!(store.get('g_'+DAY+'_pro',null)||{}).done?`<button class="btn pro" id="otherBtn">🧠 تحدي الخبير<small>لاعب ثاني أصعب · نقاط زيادة لك ولناديك</small></button>`:mode==='pro'?`<button class="btn ghost" id="otherBtn">🕵️ ارجع لاعب اليوم</button>`:''}
+   ${mode==='pro'?`<button class="btn ghost" id="otherBtn">🕵️ ارجع لاعب اليوم</button>`:''}
    <div class="next">اللاعب الياي بعد<b id="cd">--:--:--</b></div>
   </div>`;
 }
