@@ -13,20 +13,22 @@
   {
    "id": "wasl",
    "club": "wasl",
-   "title": "أغنية الوصل",
-   "sub": "الإمبراطور",
-   "file": "",
+   "title": "وصل أحمد",
+   "sub": "وصلاوي.. أسلوب حياة",
+   "file": "wasl.mp3",
    "lyrics": "",
-   "cover": "wasl.jpg"
+   "cover": "wasl.jpg",
+   "dur": 143
   },
   {
    "id": "jazira",
    "club": "jazira",
-   "title": "أغنية الجزيرة",
-   "sub": "فخر بوظبي",
-   "file": "",
+   "title": "فخر منصور",
+   "sub": "الجزيرة.. فخر بوظبي",
+   "file": "jazira.mp3",
    "lyrics": "",
-   "cover": "jazira.jpg"
+   "cover": "jazira.jpg",
+   "dur": 82
   }
  ]
 }
