@@ -168,8 +168,8 @@ function bindSeg(){document.querySelectorAll('.seg button').forEach(x=>x.onclick
 function render(){
   if(!DATA)return;
   const [a,b]=span();
-  const ev={},pg={};
-  DATA.hits.forEach(h=>{const v=sumRange(h,a,b);if(!v)return;if(h.event)ev[h.path]=(ev[h.path]||0)+v;else{const key='/'+h.path.replace(/^\/+/,'').split(/[/?#]/)[0];pg[key]=(pg[key]||0)+v}});
+  const ev={},pg={},SV={};
+  DATA.hits.forEach(h=>{const v=sumRange(h,a,b);if(!v)return;if(h.event)ev[h.path]=(ev[h.path]||0)+v;else{const sm=h.path.match(/^\/?songs\/?\?s=([a-z0-9-]+)/);if(sm)SV[sm[1]]=(SV[sm[1]]||0)+v;const key='/'+h.path.replace(/^\/+/,'').split(/[/?#]/)[0];pg[key]=(pg[key]||0)+v}});
   const sumEv=re=>Object.entries(ev).filter(([x])=>re.test(x)).reduce((s,[,v])=>s+v,0);
   const visits=Object.values(pg).reduce((s,v)=>s+v,0);
   const starts=sumEv(/^start-/),wins=sumEv(/^win-/),loses=sumEv(/^lose-/),shM=sumEv(/^share-(easy|pro)$/);
@@ -180,9 +180,9 @@ function render(){
   const per=RNAME[range];
   h+=`<div class="card sum"><b>${per}:</b> انفتحت صفحات المنصة <b>${nf(visits)}</b> مرة، ونشر الناس نتايجهم وتشكيلاتهم <b>${nf(shares)}</b> مرة${starts?`، ولعب «منو اللاعب؟» <b>${nf(starts)}</b> شخص`:''}${subs?`، وانرسل <b>${nf(subs)}</b> تقييم`:''}.</div>`;
   h+=`<div class="kpis">`;
-  h+=k('👥','زيارات المنصة',nf(visits),'كم مرة انفتحت صفحات المنصة. الشخص اللي يفتح أكثر من قسم، أو يرجع يوم ثاني، ينحسب أكثر من مرة.');
+  h+=k('👥','زيارات المنصة',nf(visits),'كم مرة انفتحت صفحات المنصة. الشخص اللي يفتح أكثر من قسم، أو يرجع يوم ثاني، ينحسب أكثر من مرة. الرقم الحقيقي أعلى تقريباً ١٠–٢٥٪، لأن اللي عنده مانع إعلانات ما تنحسب زيارته.');
   h+=k('📤','مشاركات',nf(shares),'كم مرة ضغط أحد «شارك» ونشر صورته أو نتيجته. كل مشاركة توصل المنصة لناس يدد.',`التشكيلة ${nf(shT)} · منو اللاعب ${nf(shM)} · التقييم ${nf(shR)} · الأغاني ${nf(shS)}`);
-  if(pre&&!starts&&!subs){h+=k('🕵️','«منو اللاعب؟» و«قيّم اللاعبين»','قريباً','أرقام اللعب والتقييمات تبدا تنحسب مع الإطلاق: «منو اللاعب؟» الثلاثاء ١٧ نوفمبر، و«قيّم اللاعبين» ١٨ نوفمبر.')}else{
+  if(pre&&!starts&&!subs){h+=k('🕵️','«منو اللاعب؟» و«قيّم اللاعبين»','قريباً','أرقام اللعب والتقييمات تبدا تنحسب مع الإطلاق: «منو اللاعب؟» الثلاثاء ١٧ نوفمبر، و«قيّم اللاعبين» الخميس ١٩ نوفمبر بعد أول مباراة.')}else{
   h+=k('🕵️','لعبوا «منو اللاعب؟»',pre&&!starts?'—':nf(starts),pre&&!starts?'تنطلق اللعبة الثلاثاء ١٧ نوفمبر.':'كم شخص بدا التحدي اليومي (أول تخمين).',starts?`عادي ${nf(ev['start-easy'])} · خبير ${nf(ev['start-pro'])}`:'');
   h+=k('✅','عرفوا اللاعب',(wins+loses)?pct(wins,wins+loses)+'%':'—',(wins+loses)?`من ${nf(wins+loses)} خلصوا التحدي، ${nf(wins)} عرفوه و${nf(loses)} ما عرفوه.`:'تطلع النسبة لما يخلص الناس التحدي.');
   h+=k('⭐','تقييمات اللاعبين',subs?nf(subs):'—',subs?'كم جمهور أرسل تقييمه لمباراة.':'«قيّم اللاعبين» ينطلق ١٨ نوفمبر.',opens?`فتحوا صفحات مباريات ${nf(opens)} مرة`:'');
@@ -224,9 +224,9 @@ function render(){
     const picks=F.filter(([c])=>c!=='none').map(([c,v])=>[CLUBS[c]||c,v,{img:'../mano/assets/'+c+'.png',txt:nf(v)}]).sort((x,y)=>y[1]-x[1]);
     h+=`<div class="lbl">👥 جماهير الأندية</div><div class="card"><p class="cap"><b>${nf(tot)}</b> مشجع اختاروا لين الحين (من بداية المنصة، مب حسب الفترة)${neu?` · منهم ${nf(neu)} محايد`:''}. كل مشجع ينحسب مرة وحدة، ولو غيّر ناديه ينحسب لليديد.</p>${picks.length?bars(picks):'<div class="empty">للحين ما اختار أحد ناديه</div>'}</div>`}
   { // أغاني دورينا وأنديتنا: تشغيل وتنزيل ومشاركة لكل أغنية (حسب الفترة)
-    const rows=SONGS.filter(o=>o.file).map(o=>({o,pl:ev['play-'+o.id]||0,dl:ev['dl-'+o.id]||0,sh:ev['share-'+o.id]||0})).sort((x,y)=>(y.pl+y.dl)-(x.pl+x.dl));
+    const rows=SONGS.filter(o=>o.file).map(o=>({o,vi:SV[o.id]||0,pl:ev['play-'+o.id]||0,dl:ev['dl-'+o.id]||0,sh:ev['share-'+o.id]||0})).sort((x,y)=>(y.vi+y.pl)-(x.vi+x.pl));
     const td='padding:9px 4px;text-align:center;font-weight:700;font-size:15px',th='padding:4px;text-align:center;font-size:12px;opacity:.7;font-weight:600';
-    h+=`<div class="lbl">🎵 أغاني دورينا وأنديتنا</div><div class="card"><p class="cap">زيارات صفحة الأغاني <b>${nf(pg['/songs']||0)}</b> في الفترة.</p>${rows.length?`<table style="width:100%;border-collapse:collapse"><tr><th style="${th};text-align:start">الأغنية</th><th style="${th}">▶️ تشغيل</th><th style="${th}">⬇️ تنزيل</th><th style="${th}">📤 مشاركة</th></tr>${rows.map(r=>`<tr style="border-top:1px solid rgba(255,245,229,.08)"><td style="padding:9px 4px"><span style="display:flex;align-items:center;gap:8px;font-weight:600"><img src="${r.o.club?'../mano/assets/'+r.o.club+'.png':'../mano/assets/logo.png'}" style="width:24px;height:24px;object-fit:contain" alt="">${esc(r.o.title)}</span></td><td style="${td}">${nf(r.pl)}</td><td style="${td}">${nf(r.dl)}</td><td style="${td}">${nf(r.sh)}</td></tr>`).join('')}</table>`:'<div class="empty">لحظة...</div>'}</div>`}
+    h+=`<div class="lbl">🎵 أغاني دورينا وأنديتنا</div><div class="card"><p class="cap">زيارات صفحة الأغاني <b>${nf(pg['/songs']||0)}</b> في الفترة. 🔗 = كم واحد دخل من رابط الأغنية نفسها (مثل اللي تنشره في X). ▶️ = كم مرة انشغلت: من ١٦ نوفمبر ١١ بالليل مرة وحدة لكل زيارة، وقبلها كانت كل ضغطة تشغيل تنحسب، فالأرقام القديمة أعلى من الحقيقي.</p>${rows.length?`<table style="width:100%;border-collapse:collapse"><tr><th style="${th};text-align:start">الأغنية</th><th style="${th}">🔗 من رابطها</th><th style="${th}">▶️ تشغيل</th><th style="${th}">⬇️ تنزيل</th><th style="${th}">📤 مشاركة</th></tr>${rows.map(r=>`<tr style="border-top:1px solid rgba(255,245,229,.08)"><td style="padding:9px 4px"><span style="display:flex;align-items:center;gap:8px;font-weight:600"><img src="${r.o.club?'../mano/assets/'+r.o.club+'.png':'../mano/assets/logo.png'}" style="width:24px;height:24px;object-fit:contain" alt="">${esc(r.o.title)}</span></td><td style="${td}">${nf(r.vi)}</td><td style="${td}">${nf(r.pl)}</td><td style="${td}">${nf(r.dl)}</td><td style="${td}">${nf(r.sh)}</td></tr>`).join('')}</table>`:'<div class="empty">لحظة...</div>'}</div>`}
   h+=`<div class="lbl">🔮 دوري التوقعات</div><div class="card" id="predC"><div class="empty">لحظة...</div></div>`;
   $('#app').innerHTML=h;bindSeg();loadRefs(a,b);loadPred();
 }
