@@ -207,6 +207,11 @@ def main():
     for p in added:
         pro.append(p['id']); used.add(p['id'])
     if added: ch.append(f'تحدي الخبير: انضاف {len(added)} لاعب لآخر الجدول (صار {len(pro)} يوم)')
+    # تنبيه قبل ما يخلص أي جدول بشهر (بعدها اللعبة ترجع تعيد لاعبين من أول الموسم)
+    for nm, L in (('لاعب اليوم', sched), ('تحدي الخبير', pro)):
+        left = len(L) - today - 1
+        if left < 30:
+            pr.append(f'جدول {nm} باقي له {left} يوم بس، لازم نمدده قبل ما يخلص')
 
     if len(ch) > 60:
         pr.append(f'تغييرات كثيرة ({len(ch)}) في يوم واحد، ما طبقناها. لازم مراجعة'); rep['changes'] = ch[:80]; return finish(rep, False)
