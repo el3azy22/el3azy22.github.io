@@ -192,7 +192,7 @@ def main():
             season.append({'c': t['c'], 'tot': t['tot'], 'wk': lastw[t['c']], 'rank': i + 1, 'prev': prev.get(t['c'], i + 1),
                            'firsts': t['firsts']})
     story = ''
-    if done:
+    if done and season and season[0]['tot'] > 0:
         L = done[-1]
         top = max(L['rows'], key=lambda r: r['pts'])
         lead = season[0]
