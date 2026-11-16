@@ -518,13 +518,16 @@ async function crowdSubmit(){if(mode==='pro')await submitMode('easy');await subm
 async function submitMode(m){
   const k='sub_'+DAY+'_'+m;if(store.get(k,null))return;
   const st=store.get('g_'+DAY+'_'+m,null);if(!st||!st.done)return;
-  const c=myClub();if(c===null)return;
+  // الخبير ينحسب لنفس النادي اللي انحسبت له لعبة لاعب اليوم (القواعد على السيرفر تفرض هذا)
+  const se=m==='pro'?store.get('sub_'+DAY+'_easy',null):null,c=se?se.c:myClub();if(c===null)return;
   const g=st.win?st.guesses.length:0,d=DAY,a=await fbTok(),inc=n=>({'.sv':{increment:n}});
   const b={[`p/${d}/${m}/${a.u}`]:{d,g,c,t:{".sv":"timestamp"}},[`s/${d}/${m}/n`]:inc(1)};
   if(g){b[`s/${d}/${m}/w`]=inc(1);b[`s/${d}/${m}/g${g}`]=inc(1)}
   if(c){b[`c/${d}/${m}/${c}/n`]=inc(1);if(g)b[`c/${d}/${m}/${c}/t`]=inc(7-g)}
   const r=await fetch(FB.db+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});
-  if(r.ok)store.set(k,{g,c});
+  if(r.ok){store.set(k,{g,c});return}
+  // لو النتيجة وصلت السيرفر قبل وانقطع الاتصال قبل التأكيد: السيرفر يرفض التكرار، فنقرا المحفوظ ونعتمده
+  try{const x=await fetch(FB.db+`/p/${d}/${m}/${a.u}.json?auth=`+a.t).then(r=>r.ok?r.json():null);if(x&&x.d===d)store.set(k,{g:x.g,c:x.c})}catch(e){}
 }
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 function tally(raw,from,to){

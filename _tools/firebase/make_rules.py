@@ -1,6 +1,6 @@
 import json
 import os
-L=int(os.environ.get("L","1794859200000")); DAYMS=86400000
+L=int(os.environ.get("L","1794859200000")); DAYMS=86400000; GRACE=15*60000
 CL="ajman|ain|dhafra|jazira|nasr|wahda|wasl|baniyas|hatta|kalba|khorfakkan|shababahli|sharjah|united"
 R="newData.parent().parent().parent().parent()"  # root-after from s/$d/$m/$f
 P=lambda base:f"{base}.child('p').child($d).child($m).child(auth.uid)"
@@ -12,11 +12,15 @@ c_after="newData.parent().parent().parent().parent().parent()"
 rules={"rules":{
  ".read":False,".write":False,
  "p":{"$d":{"$m":{"$u":{
+   ".read":"auth != null && auth.uid == $u",   # المشجع يتأكد إن نتيجته انحفظت (لو انقطع الاتصال قبل التأكيد)
    ".write":"auth != null && auth.uid == $u && !data.exists()",
    # «تحدي الخبير» (pro) ينفتح بعد لاعب اليوم: نتيجته ما تنقبل إلا من مشجع عنده نتيجة لاعب اليوم في نفس اليوم
    ".validate":("newData.hasChildren(['g','c','d']) && ($m == 'easy' || ($m == 'pro' && newData.parent().parent().child('easy').child($u).exists())) && $d.matches(/^[0-9]{1,4}$/)"
      " && newData.child('d').isNumber() && $d == '' + newData.child('d').val()"
-     f" && now >= {L} + (newData.child('d').val() - 1) * {DAYMS} && now < {L} + (newData.child('d').val() + 1) * {DAYMS}"
+     # النتيجة تنقبل في يومها بس، مع سماح 15 دقيقة بعد 12 بالليل (اللي خلّص 11:59 والطلب وصل متأخر)
+     f" && now >= {L} + (newData.child('d').val() - 1) * {DAYMS} && now < {L} + newData.child('d').val() * {DAYMS} + {GRACE}"
+     # نتيجة الخبير لازم تكون لنفس نادي نتيجة لاعب اليوم (عشان نقاطه تنحسب لنفس الجمهور اللي انحسبت له لعبته)
+     " && ($m == 'easy' || newData.child('c').val() == newData.parent().parent().child('easy').child($u).child('c').val())"
      " && newData.child('g').isNumber() && newData.child('g').val() >= 0 && newData.child('g').val() <= 6"
      f" && newData.child('c').isString() && newData.child('c').val().matches(/^({CL})?$/)"
      " && newData.parent().parent().parent().parent().child('s').child($d).child($m).child('n').val() == (root.child('s').child($d).child($m).child('n').exists() ? root.child('s').child($d).child($m).child('n').val() : 0) + 1"),
