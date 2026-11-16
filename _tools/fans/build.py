@@ -213,15 +213,15 @@ def main():
         if len(done) == 1:
             story = f"جمهور {NAME[lead['c']]} يفتتح دوري الجماهير في الصدارة بـ{lead['tot']} نقطة"
             if top['c'] != lead['c']:
-                story += f"، و{NAME[top['c']]} أخذ أعلى نقاط في الجولة ({top['pts']})"
+                story += f"، و{NAME[top['c']]} أخذ أعلى نقاط في الأسبوع ({top['pts']})"
         else:
             ups = sorted(season, key=lambda s: -(s['prev'] - s['rank']))
             parts = []
             if ups and ups[0]['prev'] - ups[0]['rank'] >= 1:
                 k = ups[0]['prev'] - ups[0]['rank']
                 parts.append(f"{NAME[ups[0]['c']]} صعد {'مركز' if k == 1 else ('مركزين' if k == 2 else str(k) + ' مراكز')}")
-            parts.append(f"{NAME[top['c']]} أخذ أعلى نقاط في الجولة ({top['pts']})" if top['c'] != (ups[0]['c'] if parts else None)
-                         else f"وأخذ أعلى نقاط في الجولة ({top['pts']})")
+            parts.append(f"{NAME[top['c']]} أخذ أعلى نقاط في الأسبوع ({top['pts']})" if top['c'] != (ups[0]['c'] if parts else None)
+                         else f"وأخذ أعلى نقاط في الأسبوع ({top['pts']})")
             lead_prev = [c for c, r in prev.items() if r == 1]
             if lead_prev and lead_prev[0] != lead['c']:
                 parts.append(f"و{NAME[lead['c']]} خطف الصدارة من {NAME[lead_prev[0]]}")
