@@ -140,6 +140,7 @@ const IC={play:'<svg viewBox="0 0 24 24"><path d="M8 5.5v13l11-6.5z"/></svg>',pa
 const au=$('#au');let S=[],cur=null;
 const cover=s=>s.cover?'./'+s.cover:s.club?`../mano/assets/${s.club}.png`:'../mano/assets/logo.png';
 const file=s=>s.file?'./'+s.file:'';
+const PLAYED={}; // «تشغيل» ينحسب مرة وحدة لكل أغنية في كل زيارة (الإيقاف والرجوع ما يزيد العدد)
 const dlName=s=>`${s.title} - العازي.mp3`;
 
 fetch('songs.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json()).then(d=>{S=d.songs||[];
@@ -202,7 +203,7 @@ function bind(){
   document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const x=S.find(y=>y.id===b.dataset.id);if(!x||x===cur)return;pick(x,true)});
   const tl=$('#toLeague');if(tl)tl.onclick=()=>pick(S.find(x=>!x.club),true);
   document.querySelectorAll('.clubs .soon').forEach(b=>b.onclick=()=>toast('أغنية '+b.textContent.trim()+' قريباً 🎶'));
-  $('#pp').onclick=()=>{if(!s.file)return;if(au.paused){if(au.dataset.id!==s.id){au.src=file(s);au.dataset.id=s.id}au.play().catch(()=>toast('ما قدرنا نشغلها، جرّب مرة ثانية'));gc('play-'+s.id)}else au.pause()};
+  $('#pp').onclick=()=>{if(!s.file)return;if(au.paused){if(au.dataset.id!==s.id){au.src=file(s);au.dataset.id=s.id}au.play().catch(()=>toast('ما قدرنا نشغلها، جرّب مرة ثانية'));if(!PLAYED[s.id]){PLAYED[s.id]=1;gc('play-'+s.id)}}else au.pause()};
   $('#bk').onclick=()=>{if(au.dataset.id===s.id)au.currentTime=Math.max(0,au.currentTime-10)};
   $('#fw').onclick=()=>{if(au.dataset.id===s.id&&au.duration)au.currentTime=Math.min(au.duration-.5,au.currentTime+10)};
   $('#seek').oninput=e=>{if(au.dataset.id!==s.id){au.src=file(s);au.dataset.id=s.id}const go=()=>{au.currentTime=e.target.value/1000*au.duration};au.duration?go():au.addEventListener('loadedmetadata',go,{once:true})};
