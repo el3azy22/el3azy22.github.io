@@ -317,6 +317,8 @@ function init(data){
   document.querySelectorAll('#modeSeg button').forEach(b=>{b.onclick=()=>{const m=b.dataset.m;if(m===mode)return;if(m==='pro'&&!easyDone()){toast('🔒 خلّص لاعب اليوم أول، وبعدها ينفتح تحدي الخبير');vib(30);return}setMode(m)}});
   if(!store.get('seenHow',false))$('#howto').hidden=false;
   load();
+  /* لو الصفحة ظلت مفتوحة وعدّى 12 بالليل: نحدّثها عشان يطلع لاعب اليوم اليديد (وما تنحسب تخمينات على لاعب أمس) */
+  const dayChk=()=>{if(dubaiDayIndex(D.start)+1!==DAY)location.reload()};setInterval(dayChk,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)dayChk()});
 }
 function prelaunch(raw){
   document.querySelector('#modeSeg').style.display='none';
