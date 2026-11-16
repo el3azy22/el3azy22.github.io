@@ -1,5 +1,5 @@
 """يسوي لكل أغنية صفحة مشاركة خاصة: /songs/<id>/ فيها صورة معاينة X بغلاف الأغنية وشعار ناديها،
-وتحوّل الزائر لـ /songs/?s=<id>. شغّله بعد إضافة أي أغنية في songs/songs.json (والسيرفر شغال على 8765 من جذر المستودع):
+وتحوّل الزائر لـ /songs/?s=<id>، ويسوي نسخة فيديو (mp4) بالغلاف للحفظ في الاستديو. شغّله بعد إضافة أي أغنية في songs/songs.json (والسيرفر شغال على 8765 من جذر المستودع):
   python3 -m http.server 8765 &   python3 _tools/og/make_song_pages.py"""
 import asyncio,json,html,os
 from playwright.async_api import async_playwright
@@ -38,6 +38,10 @@ async def main():
       desc=f"«{s['title']}» {who}. اسمعها ونزّلها مجاناً على منصة العازي."
       v=str(abs(hash(json.dumps(s,ensure_ascii=False)))%10**6)
       open(os.path.join(dr,'index.html'),'w',encoding='utf-8').write(PAGE.format(t=html.escape(s['title']),d=html.escape(desc),id=s['id'],v=v))
+      mp4=os.path.join(ROOT,'songs',s['file'].replace('.mp3','.mp4'))   # نسخة فيديو بالغلاف للحفظ في الاستديو
+      if not os.path.exists(mp4):
+        import subprocess
+        subprocess.run(['ffmpeg','-v','error','-y','-loop','1','-framerate','5','-i',os.path.join(ROOT,'songs',s['cover']),'-i',os.path.join(ROOT,'songs',s['file']),'-map','0:v','-map','1:a','-vf','scale=1080:1080,format=yuv420p','-c:v','libx264','-preset','veryfast','-tune','stillimage','-crf','24','-r','5','-c:a','aac','-b:a','192k','-shortest','-movflags','+faststart','-metadata','title='+s['title'],'-metadata','artist=العازي',mp4],check=True)
       print('✓',s['id'])
     await b.close()
 asyncio.run(main())
