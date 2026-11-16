@@ -71,6 +71,11 @@ header a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1
     <div id="bC"><img class="prev" id="iC" alt=""><div class="tw" id="tC"></div>
     <div class="btns"><button class="btn" data-share="C">شارك الصورة</button><button class="btn g" data-copy="C">انسخ النص</button></div></div>
   </section>
+  <section class="card" id="cD">
+    <h2>🏆 دوري الجماهير <small>جدول الموسم بعد كل جولة</small></h2>
+    <p class="when">تنزل تلقائياً كل ثلاثاء بعد 12 بالليل (نهاية الجولة). انشرها الثلاثاء الساعة 8 بالليل.</p>
+    <div id="bD"><div class="empty">أول صورة تطلع الثلاثاء 24 نوفمبر، بعد ما تخلص الجولة الأولى.</div></div>
+  </section>
 </div>
 <script>
 (()=>{
@@ -267,6 +272,23 @@ async function init(){
 }
 init().catch(e=>{document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="empty">ما قدرنا نحمّل البيانات، حدّث الصفحة.</div>')});
 })();
+</script>
+<script>
+/* «دوري الجماهير»: الصورة تتصور تلقائياً في GitHub Actions (fans-week) بعد نهاية كل جولة */
+(async()=>{try{
+  const j=await fetch('../../fans/week.json?v='+Date.now()).then(r=>r.ok?r.json():null);if(!j||!j.w)return;
+  const blob=await fetch('../../fans/week.png?v='+j.w+'-'+Date.now()).then(r=>r.blob());
+  const url=URL.createObjectURL(blob),name=`el3azy-fans-${j.w}.png`;
+  const text=`🏆 دوري الجماهير · الجولة ${j.w}\n${j.story?'🚀 '+j.story+'\n':''}\nوين ناديك؟ 👀\nel3azy.com/fans`;
+  const box=document.getElementById('bD');
+  box.innerHTML=`<img class="prev" src="${url}" alt=""><div class="tw"></div><div class="btns"><button class="btn" id="shD">شارك الصورة</button><button class="btn g" id="cpD">انسخ النص</button></div>`;
+  box.querySelector('.tw').textContent=text;
+  document.getElementById('shD').onclick=async()=>{const f=new File([blob],name,{type:'image/png'});
+    if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f]});return}catch(e){if(e&&e.name==='AbortError')return}}
+    const a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove()};
+  document.getElementById('cpD').onclick=async()=>{try{await navigator.clipboard.writeText(text)}catch(e){const t=document.createElement('textarea');t.value=text;document.body.appendChild(t);t.select();document.execCommand('copy');t.remove()}
+    const b=document.getElementById('cpD');b.textContent='✓ انسخ';setTimeout(()=>b.textContent='انسخ النص',1500)};
+}catch(e){}})();
 </script>
 </body>
 </html>

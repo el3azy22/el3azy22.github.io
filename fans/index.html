@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>دوري الجماهير | العازي</title>
+<meta name="description" content="ترتيب جماهير أندية دوري أدنوك للمحترفين على منصة العازي: كل أسبوع جولة، وكل نقطة يجمعها المشجع تنحسب لجمهور ناديه.">
+<meta property="og:title" content="دوري الجماهير — منصة العازي">
+<meta property="og:description" content="أقوى جمهور في دوري أدنوك: جدول الموسم وترتيب الجولة ونجومها.">
+<meta property="og:image" content="https://el3azy.com/fans/og.jpg">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:site" content="@el3azy22">
+<link rel="apple-touch-icon" href="../mano/assets/logo.png">
+<link rel="preload" href="../tashkila/assets/ReadexPro.ttf" as="font" type="font/ttf" crossorigin>
+<meta name="theme-color" content="#071D2B">
+<link rel="icon" href="../mano/assets/logo.png">
+<style>
+@font-face{font-family:Readex;src:url(../tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap}
+:root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F6E3AE;--gold3:#B08A3E;--ivory:#FFF5E5;
+ --sadu:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M0 11 9 2.5 18 11' fill='none' stroke='%23D7B465' stroke-width='1.3'/%3E%3Cpath d='M9 6.6 11.2 8.8 9 11 6.8 8.8Z' fill='%23D7B465'/%3E%3C/svg%3E");--green:#2E9E66;--yellow:#C4952B;--gray:#243F52;--red:#B4473F}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html,body{background:var(--navy)}
+body{font-family:Readex,system-ui,sans-serif;color:var(--ivory);min-height:100vh;padding:env(safe-area-inset-top) 0 calc(24px + env(safe-area-inset-bottom));
+background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.20),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),var(--navy);background-attachment:fixed}
+.sadu{height:12px;margin:10px auto 4px;background:var(--sadu) center/18px 12px repeat-x;opacity:.75;-webkit-mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
+.ic{width:46px;height:46px;border-radius:15px;display:grid;place-items:center;flex-shrink:0;background:radial-gradient(circle at 30% 18%,rgba(240,217,154,.28),transparent 60%),linear-gradient(160deg,#16405A,#0A2232);border:1px solid rgba(215,180,101,.6);box-shadow:inset 0 1px 0 rgba(255,240,200,.22),inset 0 -6px 12px rgba(0,0,0,.25),0 6px 14px rgba(0,0,0,.35)}
+.ic svg{width:26px;height:26px;fill:none;stroke:url(#gg);stroke-width:1.8;stroke-linejoin:round}.ic svg .s{fill:url(#gg);fill-opacity:.18}
+.ic.big{width:72px;height:72px;border-radius:22px;margin:0 auto 6px}.ic.big svg{width:42px;height:42px}
+.wrap{max-width:500px;margin:0 auto;padding:0 14px}
+button{font-family:inherit;cursor:pointer;color:inherit}
+header{display:flex;align-items:center;gap:10px;padding:12px 0 6px}
+header a.home{display:block;flex-shrink:0;line-height:0}
+header .logo{height:62px;width:auto}
+header .ttl{flex:1}
+header h1{font-size:24px;font-weight:700;line-height:1.2}
+header .sub{font-size:12px;color:var(--gold);font-weight:600}
+.icon{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.06);color:var(--gold);font-size:18px;font-weight:700;display:grid;place-items:center}
+.crests14{display:flex;justify-content:space-between;align-items:center;padding:6px 2px 12px;opacity:.85}
+.card{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:20px;padding:14px;margin-bottom:12px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.lbl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gold);font-weight:600;margin-bottom:8px}
+.lbl:after,.day:after,.coachh:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(215,180,101,.45))}
+.day{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--gold);margin:18px 2px 10px}
+/* match card */
+.mc{display:block;width:100%;text-align:inherit;background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;padding:12px 12px 10px;margin-bottom:10px;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:.15s}
+.mc:active{transform:scale(.985)}
+.mc.open{border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.2),transparent 55%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 35%,rgba(215,180,101,.25) 65%,var(--gold)) border-box;box-shadow:0 14px 30px rgba(0,0,0,.4)}
+.teams{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}
+.tm{display:flex;flex-direction:column;align-items:center;gap:5px;font-size:13.5px;font-weight:600;text-align:center;min-width:0}
+.tm .cw{height:46px;display:grid;place-items:center}
+.sc{font-size:28px;font-weight:700;direction:ltr;letter-spacing:1px;white-space:nowrap;color:var(--ivory)}
+.sc.t{font-size:16px;color:var(--gold);font-weight:600;letter-spacing:0;direction:rtl}
+.chip{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:4px 11px;font-size:12px;font-weight:600;background:var(--navy3)}
+.chip.go{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);box-shadow:inset 0 1px 0 rgba(255,255,255,.5)}
+.chip.ok{background:rgba(46,158,102,.25);color:#8fe3b5}
+.mfoot{display:flex;justify-content:space-between;align-items:center;margin-top:10px;font-size:11.5px;opacity:.95}
+.mfoot .n{opacity:.6}
+/* match view */
+.back{background:none;border:0;color:var(--gold);font-size:14px;font-weight:600;padding:6px 2px 10px}
+.mh .sc{font-size:38px}
+.mh .tm{font-size:15px}
+.mh .meta{text-align:center;font-size:11.5px;opacity:.6;margin-top:8px}
+.seg{display:flex;background:var(--navy2);border:1px solid rgba(255,245,229,.06);border-radius:14px;padding:4px;margin:4px 0 12px;position:sticky;top:6px;z-index:5;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.seg button{flex:1;border:0;background:none;font-weight:600;font-size:14px;padding:9px 6px;border-radius:10px;opacity:.6;display:flex;align-items:center;justify-content:center;gap:7px;transition:.2s}
+.seg button.on{background:var(--navy3);opacity:1;color:var(--gold)}
+.seg em{font-style:normal;font-size:11px;opacity:.75;font-weight:500}
+.pr{background:rgba(7,29,43,.55);border:1px solid rgba(255,245,229,.06);border-radius:16px;padding:9px 10px 10px;margin-bottom:8px;transition:.2s}
+.pr.done{border-color:rgba(215,180,101,.35)}
+.pr .top{display:flex;align-items:center;gap:10px}
+.pr .nm{flex:1;min-width:0}
+.pr .nm b{display:block;font-size:15px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:-2px 0 -3px}
+.pr .nm small{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;opacity:.65;margin-top:2px;align-items:center}
+.pr .nm small i{font-style:normal;direction:ltr;unicode-bidi:isolate}
+.val{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:20px;font-weight:700;background:rgba(255,245,229,.05);border:1px dashed rgba(255,245,229,.18);color:rgba(255,245,229,.35);flex-shrink:0}
+.val.v{border:0;color:var(--navy)}
+.star{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.3);background:none;font-size:19px;filter:grayscale(1);opacity:.45;flex-shrink:0;transition:.2s}
+.star.on{filter:none;opacity:1;background:rgba(215,180,101,.18);border-color:var(--gold);animation:pop .35s}
+.nums{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;margin-top:9px}
+.nums button{border:0;height:34px;border-radius:9px;background:rgba(255,245,229,.06);font-size:14px;font-weight:600;transition:.12s}
+.nums button.on{color:var(--navy);transform:scale(1.08);box-shadow:0 3px 10px rgba(0,0,0,.35)}
+.ph{position:relative;flex-shrink:0;border-radius:50%;background:radial-gradient(circle at 50% 35%,#1d4a66,#0C2638 70%);border:2px solid rgba(215,180,101,.5);overflow:hidden;display:grid;place-items:center}
+.ph img{width:100%;height:100%;object-fit:cover;object-position:50% 15%}
+.ph.fb img{object-position:50% 0}
+.coachh{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--gold);font-weight:600;margin:16px 2px 8px}
+.bar{position:sticky;bottom:calc(10px + env(safe-area-inset-bottom));z-index:6;background:linear-gradient(180deg,var(--navy3),var(--navy2));border:1px solid rgba(215,180,101,.5);border-radius:18px;padding:10px;display:flex;align-items:center;gap:10px;box-shadow:0 12px 30px rgba(0,0,0,.5);margin-top:14px}
+.bar .info{flex:1;font-size:12.5px;line-height:1.5}
+.bar .info b{color:var(--gold)}
+.btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);border:0;border-radius:15px;font-weight:700;font-size:16px;padding:14px;margin-top:8px;text-decoration:none;min-height:50px;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 6px 16px rgba(215,180,101,.22)}
+.btn.sm{width:auto;padding:12px 16px;margin:0;font-size:15px}
+.btn[disabled]{opacity:.45}
+.btn.ghost{background:rgba(255,245,229,.07);color:var(--ivory);border:1px solid rgba(255,245,229,.18);box-shadow:none}
+/* results */
+.mvp{display:flex;align-items:center;gap:14px;border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.28),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 35%,rgba(215,180,101,.25) 65%,var(--gold)) border-box;border-radius:18px;padding:12px;margin-bottom:12px}
+.mvp .t{font-size:12px;color:var(--gold);font-weight:600}
+.mvp b{font-size:19px;display:block;margin:2px 0}
+.mvp small{font-size:12px;opacity:.7}
+.rr{display:flex;align-items:center;gap:10px;padding:8px 6px;border-bottom:1px solid rgba(255,255,255,.05)}
+.rr:last-child{border:0}
+.rr .k{width:18px;text-align:center;font-size:12px;opacity:.55}
+.rr .nm{flex:1;min-width:0}
+.rr .nm b{display:block;font-size:14.5px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:-2px 0 -3px}
+.rr .nm small{font-size:11px;opacity:.6}
+.rr .me{font-size:11px;opacity:.75;text-align:center;width:42px;line-height:1.3}
+.rr .me b{display:block;font-size:14px;opacity:1}
+.avg{width:50px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:700;color:var(--navy);flex-shrink:0}
+.avg.na{background:rgba(255,245,229,.06);color:rgba(255,245,229,.4);font-size:14px}
+.note{font-size:12px;opacity:.65;line-height:1.8;text-align:center;margin:6px 0}
+.cardimg{display:block;width:100%;border-radius:16px;margin:4px 0;border:1px solid rgba(215,180,101,.35);box-shadow:0 10px 30px rgba(0,0,0,.35);aspect-ratio:4/5;background:var(--navy)}
+.empty{text-align:center;padding:26px 10px;opacity:.8;line-height:1.9}
+.loading{text-align:center;padding:60px 0;opacity:.7}
+footer{text-align:center;font-size:12.5px;opacity:.6;line-height:1.9;margin:30px 0 6px}
+footer .sadu{width:90px;margin:0 auto 10px}
+footer a{color:var(--gold);text-decoration:none;font-weight:600}
+.modal{position:fixed;inset:0;background:rgba(3,14,22,.82);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);z-index:30;display:grid;place-items:center;padding:18px}
+.modal[hidden]{display:none}
+.mbox{background:linear-gradient(165deg,var(--navy3),var(--navy));border:1px solid rgba(215,180,101,.4);border-radius:24px;padding:22px 20px;max-width:390px;width:100%;text-align:center;animation:pop .35s;max-height:90vh;overflow-y:auto}
+.mbox h2{color:var(--gold2);font-size:21px;margin:4px 0 12px}
+.step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
+.step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
+.step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
+.pts{margin-top:12px;background:rgba(255,245,229,.04);border:1px solid rgba(215,180,101,.28);border-radius:14px;padding:11px 12px 10px;text-align:right}
+.pts h4{font-size:14px;color:var(--gold);margin:0 0 8px;font-weight:700}
+.pts .r{display:flex;justify-content:space-between;align-items:center;gap:10px;font-size:12.5px;padding:6px 0;border-bottom:1px dashed rgba(255,255,255,.08)}
+.pts .r:last-of-type{border-bottom:0}.pts .r small{display:block;font-size:10.5px;opacity:.55}
+.pts .r b{color:var(--gold);font-size:14px;white-space:nowrap;direction:ltr}
+.pts .att{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px}
+.pts .att div{background:rgba(255,245,229,.05);border-radius:8px;padding:5px 0 4px;line-height:1.35}
+.pts .att b{display:block;color:var(--gold);font-size:15px}.pts .att .z b{color:#e08a8a}
+.pts p{font-size:11.5px;opacity:.72;margin:9px 0 0;line-height:1.75;font-weight:400}
+.pts .r span{font-weight:600}.pts .r small{font-weight:400}.pts .psc{white-space:nowrap;unicode-bidi:isolate}
+
+.toast{position:fixed;top:calc(16px + env(safe-area-inset-top));left:50%;transform:translateX(-50%) translateY(-120px);background:var(--gold);color:var(--navy);font-weight:700;padding:10px 18px;border-radius:30px;z-index:40;transition:transform .3s;box-shadow:0 8px 24px rgba(0,0,0,.35);white-space:nowrap;font-size:14px}
+.toast.on{transform:translateX(-50%) translateY(0)}
+@keyframes pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
+.shake{animation:shake .4s}
+@keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
+@media (max-width:360px){header h1{font-size:20px}header .logo{height:50px}.nums button{height:31px;font-size:13px}.pr .nm b{font-size:14px}}
+
+.topnav{display:flex;justify-content:flex-end;align-items:center;gap:8px;padding:2px 0 4px}
+.topnav a,.topnav button{display:inline-grid;place-items:center;width:38px;height:38px;padding:0;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.07);color:#F6E3AE;font:600 13px inherit;font-family:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.topnav a:active,.topnav button:active{transform:scale(.96)}
+.topnav svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+/* ── دوري التوقعات ── */
+.rounds{display:flex;gap:7px;overflow-x:auto;padding:2px 2px 10px;margin:0 -2px;scrollbar-width:none}
+.rounds::-webkit-scrollbar{display:none}
+.rounds button{flex-shrink:0;border:1px solid rgba(215,180,101,.35);background:rgba(12,38,56,.8);border-radius:20px;padding:7px 13px;font-size:13px;font-weight:600;opacity:.75;white-space:nowrap}
+.rounds button.on{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);opacity:1;border-color:transparent}
+.lockb{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(215,180,101,.09);border:1px solid rgba(215,180,101,.4);border-radius:14px;padding:9px 12px;margin-bottom:10px;font-size:12.5px}
+.lockb b{color:var(--gold2);font-size:15px;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.clubask{display:flex;align-items:center;gap:10px;border:1px dashed rgba(215,180,101,.55);border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;line-height:1.7;background:none;width:100%;text-align:right}
+.clubask b{display:block;font-size:14px;color:var(--gold2)}
+.pm{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;padding:11px 10px 9px;margin-bottom:9px;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:border-color .2s}
+.pm.dbl{border-color:var(--gold);box-shadow:0 0 0 1px rgba(215,180,101,.35),0 8px 24px rgba(0,0,0,.25)}
+.pm .row{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:4px}
+.pm .tm{font-size:13px}
+.pm .tm .cw{height:40px}
+.stp{display:flex;align-items:center;gap:6px}
+.nb{display:flex;flex-direction:column;align-items:center;gap:3px}
+.nb button{width:34px;height:24px;border-radius:8px;border:1px solid rgba(215,180,101,.4);background:rgba(215,180,101,.06);color:var(--gold2);font-size:16px;line-height:1;font-weight:700;padding:0}
+.nb button:active{transform:scale(.92)}
+.nb b{width:44px;height:46px;border-radius:13px;background:var(--navy);border:1.5px solid rgba(215,180,101,.65);display:grid;place-items:center;font-size:23px;font-weight:700}
+.nb b.e{border-style:dashed;color:rgba(255,245,229,.3);font-weight:500}
+.stp .dash{opacity:.45;font-size:18px}
+.res{text-align:center;min-width:96px}
+.res .fin{font-size:27px;font-weight:700;letter-spacing:1px}
+.res .mine{font-size:12px;opacity:.75;margin-top:2px}
+
+.res .kt{font-size:12px;color:var(--gold);font-weight:600}
+.pmf{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-top:8px;font-size:11.5px;min-height:24px}
+.pmf .when{opacity:.6}
+.pmf .crowd{color:var(--gold2);opacity:.9}
+.dbtn{border:1px solid rgba(215,180,101,.35);background:none;border-radius:20px;padding:3px 10px;font-size:12px;font-weight:600;color:var(--gold2);opacity:.75;white-space:nowrap}
+.dbtn.on{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);opacity:1;border-color:transparent}
+.dbtn:disabled{opacity:.3}
+.sv{font-size:11px;opacity:.7;white-space:nowrap}
+.sv.ok{color:#8fe3b5;opacity:1}.sv.err{color:#ef8f86;opacity:1}
+.pts{display:inline-block;border-radius:20px;padding:2px 10px;font-size:12px;font-weight:700;background:rgba(255,245,229,.08)}
+.pts.p5{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy)}
+.pts.p3{background:rgba(46,158,102,.3);color:#9ff0c4}
+.pts.p2{background:rgba(155,196,106,.22);color:#cfe9a8}
+.rulesn{font-size:11.5px;opacity:.72;text-align:center;line-height:1.9;margin:10px 0 4px}
+.rulesn b{color:var(--gold2)}
+.meb{display:flex;align-items:center;gap:12px;border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.25),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 40%,rgba(215,180,101,.25)) border-box;border-radius:18px;padding:12px 14px;margin-bottom:12px}
+.meb .rk{font-size:30px;font-weight:700;color:var(--gold2);min-width:56px;text-align:center;direction:ltr}
+.meb .t{flex:1;min-width:0}.meb .t b{font-size:16px;display:block}.meb .t small{font-size:12px;opacity:.7}
+.lb{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;overflow:hidden;margin-bottom:12px}
+.lb .r{display:grid;grid-template-columns:30px 28px 1fr auto;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:14px}
+.lb .r:last-child{border:0}
+.lb .r i{font-style:normal;text-align:center;opacity:.6;font-weight:600;font-size:13px}
+.lb .r .nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb .r b{color:var(--gold2);direction:ltr}
+.lb .r.you{background:rgba(215,180,101,.13)}
+.lb .r small{opacity:.55;font-size:11px;margin-right:4px}
+.lb .gap{text-align:center;opacity:.4;padding:2px 0;font-size:12px}
+.cl{display:grid;grid-template-columns:30px 30px 1fr auto;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:14px}
+.cl:last-child{border:0}
+.cl i{font-style:normal;text-align:center;opacity:.6;font-weight:600}
+.cl .v{text-align:left;direction:ltr}.cl .v b{color:var(--gold2);font-size:16px;display:block}.cl .v small{opacity:.55;font-size:11px}
+.cl.na{opacity:.55}
+.cl.mine{background:rgba(215,180,101,.13)}
+.h3{display:flex;align-items:center;gap:10px;font-size:14px;font-weight:600;color:var(--gold);margin:16px 2px 9px}
+.h3:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(215,180,101,.45))}
+@media (max-width:360px){.nb b{width:40px;height:42px;font-size:21px}.nb button{width:30px}.pm .tm{font-size:12px}.res{min-width:86px}}
+
+/* ===== دوري الجماهير ===== */
+.hero{position:relative;border-radius:22px;padding:16px 16px 14px;margin-bottom:12px;overflow:hidden;border:1.5px solid transparent;
+ background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.22),transparent 55%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 35%,rgba(215,180,101,.25) 65%,var(--gold)) border-box}
+.hero .k{font-size:12px;color:var(--gold);font-weight:600}
+.hero .lead{display:flex;align-items:center;gap:12px;margin-top:8px}
+.hero .lead .cw{width:58px;height:58px;display:grid;place-items:center;flex-shrink:0}
+.hero .lead b{display:block;font-size:20px;line-height:1.35}
+.hero .lead span{font-size:12.5px;opacity:.8}
+.hero .story{margin-top:10px;font-size:13px;background:rgba(7,29,43,.55);border:1px solid rgba(215,180,101,.3);border-radius:14px;padding:7px 10px;line-height:1.6}.hero .story b{color:var(--gold2)}
+.hero .meta{display:flex;justify-content:space-between;margin-top:12px;font-size:12px;opacity:.85}
+.hero .meta b{color:var(--gold2)}
+.tbl{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;overflow:hidden;margin-bottom:12px}
+.th,.tr{display:grid;grid-template-columns:24px 30px 30px 1fr 44px 50px;align-items:center;gap:6px;padding:8px 10px}
+.th{font-size:11px;opacity:.6;font-weight:600;border-bottom:1px solid rgba(255,245,229,.08)}
+.th span:nth-last-child(-n+2){text-align:center}
+.tr{border-bottom:1px solid rgba(255,245,229,.06);font-size:14px;width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:inherit}
+.tr:last-of-type{border-bottom:0}
+.tr i{font-style:normal;text-align:center;font-weight:700;font-size:13px;opacity:.75}
+.tr .mv{font-size:12px;text-align:center;font-weight:700;direction:ltr;white-space:nowrap}
+.mv.up{color:#7fe0a6}.mv.dn{color:#ff9d8f}.mv.eq{opacity:.35}
+.tr .cw{height:28px;display:grid;place-items:center}
+.tr .nm{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tr .wk{direction:ltr;text-align:center;font-weight:600;color:var(--gold);font-size:13px}
+.tr .tot{text-align:center;font-weight:700;font-size:17px;color:var(--gold2)}
+.tr.p1{background:linear-gradient(90deg,transparent,rgba(215,180,101,.20));box-shadow:inset -3px 0 0 #D7B465}.tr.p2{background:linear-gradient(90deg,transparent,rgba(200,210,225,.13));box-shadow:inset -3px 0 0 #C9D2DE}.tr.p3{background:linear-gradient(90deg,transparent,rgba(205,140,90,.15));box-shadow:inset -3px 0 0 #C98A5A}
+.tr.mine{background:rgba(215,180,101,.13);outline:1.5px solid rgba(215,180,101,.55);outline-offset:-1.5px}
+.tr.top1 i{color:var(--gold2)}
+.tr.z{opacity:.5}
+.brk{display:none;grid-column:1/-1;font-size:11.5px;opacity:.8;padding:2px 0 2px;gap:8px;flex-wrap:wrap}
+.tr.open .brk{display:flex}
+.brk span{background:var(--navy3);border-radius:12px;padding:2px 9px}
+.stars{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px}
+.st{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;padding:12px 6px 10px;text-align:center;position:relative}
+.st.g1{border-color:rgba(215,180,101,.6);background:radial-gradient(ellipse at 50% 0%,rgba(215,180,101,.22),transparent 65%),linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9))}
+.st .md{font-size:22px;line-height:1}
+.st .cw{height:34px;display:grid;place-items:center;margin:6px 0 4px}
+.st b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.st small{display:block;font-size:11px;opacity:.65}
+.st .p{margin-top:6px;font-weight:700;color:var(--gold2);font-size:16px}
+.hw{margin-bottom:12px}.hw summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:var(--gold);padding:12px 14px;border:1px solid rgba(215,180,101,.35);border-radius:16px;background:rgba(215,180,101,.06)}.hw summary::-webkit-details-marker{display:none}.hw summary:after{content:'＋';font-size:16px}.hw[open] summary:after{content:'－'}.hw[open] summary{border-radius:16px 16px 0 0}.hw .how{border-radius:0 0 18px 18px;margin:0;border-top:0}
+.how{font-size:12.5px;line-height:1.9;opacity:.9}
+.how b{color:var(--gold2)}
+.pts2{margin-top:8px;border:1px solid rgba(215,180,101,.25);border-radius:14px;overflow:hidden}
+.pts2 .r{display:flex;justify-content:space-between;padding:7px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:13px}
+.pts2 .r:last-child{border:0}.pts2 .r b{color:var(--gold2)}
+.tr .nm small{display:block;font-size:10.5px;opacity:.55;font-weight:500;line-height:1.2}
+.sep{padding:8px 12px 6px;font-size:11.5px;color:var(--gold);opacity:.85;border-top:1px dashed rgba(215,180,101,.35);text-align:center}
+.tr.out{opacity:.55}
+.tbl.wv .th,.tbl.wv .tr{grid-template-columns:24px 0 30px 1fr 74px 44px}.tbl.wv .wk{white-space:nowrap;font-size:12.5px;direction:rtl}.tbl.wv .wk em{font-style:normal;font-size:10px;opacity:.75;margin-left:1px}
+.empty{padding:22px 12px;text-align:center;opacity:.75;line-height:1.9;font-size:13px}
+.ask{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:12px;padding:12px 14px;border-radius:16px;border:1px dashed rgba(215,180,101,.55);background:rgba(215,180,101,.07);font-size:13px;text-align:right}
+.ask b{display:block;font-size:14px;color:var(--gold2)}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F6E3AE"/><stop offset=".55" stop-color="#D7B465"/><stop offset="1" stop-color="#B08A3E"/></linearGradient></defs></svg>
+<div class="wrap">
+  <nav class="topnav" aria-label="التنقل"><a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg></a></nav>
+  <header>
+    <a class="home" href="../"><img class="logo" src="../mano/assets/logo.png" alt="العازي"></a>
+    <div class="ttl"><h1>دوري الجماهير</h1><div class="sub">أقوى جمهور في دوري أدنوك · موسم 26/27</div></div>
+  </header>
+  <div class="sadu"></div>
+  <div class="seg" id="tabs"></div>
+  <main id="app"><div class="empty">لحظة...</div></main>
+  <footer><div class="sadu"></div>أداة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener" dir="ltr">@el3azy22</a> · <a href="../">منصة العازي</a><br>بدون جوائز</footer>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+const gc=n=>{try{window.goatcounter&&window.goatcounter.count&&window.goatcounter.count({path:n,title:n,event:true})}catch(e){}};
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const CL={ain:'العين',wahda:'الوحدة',jazira:'الجزيرة',shababahli:'شباب الأهلي',sharjah:'الشارقة',wasl:'الوصل',nasr:'النصر',baniyas:'بني ياس',ajman:'عجمان',kalba:'كلباء',khorfakkan:'خورفكان',dhafra:'الظفرة',hatta:'حتا',united:'يونايتد'};
+const CF={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};
+const crest=(c,s)=>`<img src="../mano/assets/${c}.png" alt="" style="width:${s*CF[c][0]}px;height:${s*CF[c][1]}px;object-fit:contain">`;
+const fans=n=>n?`${n} ${n<=10&&n>2?'مشجعين':'مشجع'}`:'';
+const mvH=(prev,rank)=>{const m=prev-rank;return `<span class="mv ${m>0?'up':m<0?'dn':'eq'}">${m>0?'▲'+m:m<0?'▼'+(-m):'–'}</span>`};
+const MY=()=>window.EL3FAN?EL3FAN.club():null;
+let D=null,T='season';
+function left(){const ms=D.ends-Date.now();if(ms<=0)return 'تخلص الحين';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5);return d>1?`${d} أيام`:d===1?`يوم و${h} ساعة`:`${Math.max(1,h)} ساعة`}
+function starsH(st,t){if(!st||!st.length)return '';return `<div class="lbl">⭐ ${t}</div><div class="stars">${st.map((x,k)=>`<div class="st ${k?'':'g1'}"><div class="md">${['🥇','🥈','🥉'][k]}</div><div class="cw">${crest(x[1],30)}</div><b>${esc(x[0])}</b><small>${CL[x[1]]}</small><div class="p">${x[2]} نقطة</div></div>`).join('')}</div>`}
+function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ينحسب دوري الجماهير؟</summary><div class="card how">كل أسبوع جولة، من <b>الثلاثاء لين نهاية الإثنين</b>. في كل جولة، كل تحدي يرتب جماهير الأندية بمعدل نقاط المشجع الواحد (مب بالمجموع)، ويوزع عليهم نقاط «دوري الجماهير»:
+   <div class="pts2"><div class="r"><span>المركز الأول في التحدي</span><b>14</b></div><div class="r"><span>الثاني</span><b>13</b></div><div class="r"><span>… ونازل لين المركز 14</span><b>1</b></div><div class="r"><span>النادي اللي ما وصل الحد الأدنى من المشجعين</span><b>0</b></div></div>
+   <div style="margin-top:8px">التحديات اللي تنحسب: <b>🕵️ منو اللاعب؟</b> (النادي يدخل من ${D.min.mano} لعبات في الجولة) و<b>🔮 دوري التوقعات</b> في الأسابيع اللي فيها جولة دوري (النادي يدخل من ${D.min.pred} مشجعين). يعني أقصى شي للنادي في الجولة <b>${mx}</b>. التعادل ينفك بعدد مرات المركز الأول في التحديات، وبعدها بعدد المشجعين. اضغط على أي نادي تشوف نقاطه من كل تحدي. ونجوم الجولة من المشجعين اللي كاتبين أساميهم في بطاقة المشجع.</div></div></details>`}
+function askH(){return MY()===null&&window.EL3FAN?`<button class="ask" id="ask"><span style="font-size:24px">📣</span><span><b>اختار ناديك</b>عشان نقاطك في التحديات تنحسب لجمهوره هني</span></button>`:''}
+function brk(r){return `<span class="brk"><span>🕵️ منو اللاعب <b dir="ltr">+${r.m[0]}</b></span>${r.p?`<span>🔮 التوقعات <b dir="ltr">+${r.p[0]}</b></span>`:''}</span>`}
+function season(){
+  const S=D.season,my=MY(),wk=D.weeks.find(w=>w.live),L=D.weeks[D.done-1];
+  const lead=S[0],sec=S[1];
+  let h=askH()+`<div class="hero"><div class="k">🏆 المتصدر بعد ${D.done===1?'الجولة الأولى':D.done+' جولات'}</div><div class="lead"><div class="cw">${crest(lead.c,52)}</div><div><b>جمهور ${CL[lead.c]}</b><span>${lead.tot>sec.tot?`يتصدر بفارق ${lead.tot-sec.tot} ${lead.tot-sec.tot===1?'نقطة':'نقاط'} عن ${CL[sec.c]}`:`متساوي مع ${CL[sec.c]} بـ${lead.tot} نقطة`}</span></div></div>
+   ${D.story?`<div class="story">🚀 ${esc(D.story)}</div>`:''}
+   <div class="meta"><span>${wk?`الجولة ${wk.w} تخلص بعد <b>${left()}</b>`:''}</span><span>${my?`ناديك: <b>${CL[my]}</b> (${S.findIndex(r=>r.c===my)+1})`:''}</span></div></div>`;
+  h+=`<div class="tbl"><div class="th"><span>#</span><span></span><span></span><span>النادي</span><span>الجولة</span><span>النقاط</span></div>`;
+  let sep=false;
+  S.forEach((r,k)=>{if(!r.tot&&!sep){sep=true;h+=`<div class="sep">ما دخلوا الترتيب لين الحين · جيب ربعك 👀</div>`}
+   const w=L.rows.find(x=>x.c===r.c);
+   h+=`<button class="tr ${r.c===my?'mine':''} ${k<3&&r.tot?'p'+(k+1):''} ${r.tot?'':'out'}"><i>${k+1}</i>${mvH(r.prev,r.rank)}<span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk">+${r.wk}</span><span class="tot">${r.tot}</span>${brk(w)}</button>`});
+  h+=`</div>`+starsH(L.stars,`نجوم الجولة ${L.w}`)+howH();
+  return h}
+function week(w){
+  const my=MY();const R=w.rows;
+  let h='';
+  if(D.done===0)h+=askH()+`<div class="hero"><div class="k">🏁 الجولة ${w.w} شغالة · ${w.from} – ${w.to}</div>${R[0].pts?`<div class="lead"><div class="cw">${crest(R[0].c,52)}</div><div><b>جمهور ${CL[R[0].c]}</b><span>متصدر الجولة لين الحين</span></div></div>`:`<div class="lead"><div class="cw" style="font-size:40px">🏆</div><div><b>دوري الجماهير بدا!</b><span>العب «منو اللاعب؟»${w.pred?' وتوقع الجولة':''}، وخلّ ناديك أول نادي يدخل الجدول</span></div></div>`}
+    <div class="meta"><span>الجولة تخلص بعد <b>${left()}</b></span><span>${my?`ناديك: <b>${CL[my]}</b> ${(R.find(r=>r.c===my)||{}).pts?'('+(R.findIndex(r=>r.c===my)+1)+')':'(ما دخل بعد)'}`:''}</span></div></div>`;
+  h+=`<div class="tbl wv"><div class="th"><span>#</span><span></span><span></span><span>النادي</span><span style="text-align:center">التحديات</span><span>الجولة</span></div>`;
+  let sep=false;
+  R.forEach((r,k)=>{if(!r.pts&&!sep){sep=true;h+=`<div class="sep">ما اكتمل جمهورهم في التحديات · ${'يدخل النادي من '+D.min.mano+' لعبات في «منو اللاعب؟»'}</div>`}
+   h+=`<button class="tr ${r.c===my?'mine':''} ${r.pts?'':'out'}"><i>${k+1}</i><span></span><span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk" style="opacity:.9"><em>🕵️</em>${r.m[0]}${w.pred?` &nbsp;<em>🔮</em>${r.p?r.p[0]:0}`:''}</span><span class="tot">${r.pts}</span>${brk(r)}</button>`});
+  h+=`</div><div class="card how" style="font-size:12px">${w.live?`الأرقام تتحدث وهي شغالة، والجولة تخلص ${w.to} 12 بالليل وتنضاف نقاطها لجدول الموسم.`:`الجولة ${w.w}: ${w.from} – ${w.to}.`}${w.pred?'':' هالأسبوع ما فيه جولة دوري، فالنقاط من «منو اللاعب؟» بس.'}</div>`;
+  h+=starsH(w.stars,w.live?'نجوم الجولة لين الحين':`نجوم الجولة ${w.w}`);
+  if(D.done===0)h+=howH();
+  return h}
+function draw(){
+  if(!D||!D.cur){$('#app').innerHTML='<div class="empty">دوري الجماهير يبدا مع أول تحدي، الثلاثاء 17 نوفمبر 🏁</div>';$('#tabs').innerHTML='';return}
+  const live=D.weeks.find(w=>w.live);
+  const tabs=[];if(D.done)tabs.push(['season','جدول الموسم']);if(live)tabs.push(['w'+live.w,`الجولة ${live.w} (الحين)`]);
+  if(D.done)tabs.push(['w'+D.done,`الجولة ${D.done}`]);
+  if(!tabs.some(t=>t[0]===T))T=tabs[0][0];
+  $('#tabs').innerHTML=tabs.length>1?tabs.map(t=>`<button class="${t[0]===T?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join(''):'';
+  $('#tabs').style.display=tabs.length>1?'':'none';
+  $('#app').innerHTML=T==='season'?season():week(D.weeks.find(w=>'w'+w.w===T));
+  document.querySelectorAll('#app button.tr').forEach(b=>b.onclick=()=>b.classList.toggle('open'));
+  document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{T=b.dataset.t;gc('fans-tab-'+T);draw()});
+  $('#ask')&&($('#ask').onclick=()=>EL3FAN.open());
+}
+fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;draw()}).catch(()=>{$('#app').innerHTML='<div class="empty">ما قدرنا نحمّل الترتيب، جرّب مرة ثانية</div>'});
+window.addEventListener('el3fan',draw);
+</script>
+<script src="../assets/fan.js"></script>
+<script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body></html>

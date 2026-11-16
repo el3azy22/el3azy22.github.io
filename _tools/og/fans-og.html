@@ -1,0 +1,23 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<!-- صورة معاينة X لصفحة «دوري الجماهير» 1200x630 · صوّر #og -->
+<style>@font-face{font-family:R;src:url(/tashkila/assets/ReadexPro.ttf) format('truetype');font-weight:160 700}
+body{margin:0;font-family:R;color:#FFF5E5;background:#071D2B}
+#og{position:relative;width:1200px;height:630px;overflow:hidden;background:radial-gradient(ellipse at 80% -10%,rgba(215,180,101,.28),transparent 55%),radial-gradient(ellipse at 10% 110%,rgba(20,56,79,.95),transparent 55%),#071D2B}
+.f{position:absolute;inset:22px;border:2px solid rgba(215,180,101,.45);border-radius:40px}
+.tx{position:absolute;right:80px;top:0;bottom:0;width:560px;display:flex;flex-direction:column;justify-content:center}
+.k{color:#D7B465;font-size:30px;font-weight:600}
+h1{margin:4px 0 0;font-size:96px;line-height:1.3;background:linear-gradient(180deg,#FFFBF2 25%,#F1DDAE 70%,#D7B465);-webkit-background-clip:text;color:transparent}
+.s{font-size:30px;opacity:.88;margin-top:4px}
+.u{align-self:flex-start;margin-top:26px;direction:ltr;font-size:30px;font-weight:700;color:#071D2B;padding:6px 26px 11px;border-radius:30px;background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E)}
+.pod{position:absolute;left:70px;top:70px;width:470px;height:490px}
+.rw{position:absolute;left:0;right:0;height:52px;display:flex;align-items:center;gap:14px;padding:0 18px;border-radius:16px;background:rgba(12,38,56,.8);border:1px solid rgba(255,245,229,.08);font-size:24px;font-weight:600}
+.rw i{font-style:normal;width:26px;text-align:center;opacity:.7}.rw b{margin-right:auto;width:120px;height:10px;border-radius:6px;background:linear-gradient(90deg,#B08A3E,#F6E3AE)}
+</style></head><body><div id="og"><div class="f"></div>
+<div class="tx"><div class="k">🏆 منصة العازي</div><h1>دوري الجماهير</h1><div class="s">أقوى جمهور في دوري أدنوك.. وين ناديك؟</div><div class="u">el3azy.com/fans</div></div>
+<div class="pod" id="pod"></div></div>
+<script>
+const CF={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};
+const K=Object.keys(CF);let h='';
+for(let i=0;i<7;i++){const a=K[i*2],b=K[i*2+1];h+=`<div class="rw" style="top:${i*70}px;opacity:${1-i*.08}"><i>${i+1}</i><img src="/mano/assets/${a}.png" style="width:${40*CF[a][0]}px;height:${40*CF[a][1]}px;object-fit:contain"><img src="/mano/assets/${b}.png" style="width:${40*CF[b][0]}px;height:${40*CF[b][1]}px;object-fit:contain;opacity:.55"><b style="width:${180-i*20}px"></b></div>`}
+document.getElementById('pod').innerHTML=h;document.body.dataset.ok=1;
+</script></body></html>

@@ -1,4 +1,4 @@
-# «قيّم اللاعبين» + «دوري التوقعات»: يسحب المباريات والنتايج من موقع اتحاد الكرة وينشر rate/data.json و predict/*.json
+# «قيّم اللاعبين» + «دوري التوقعات» + «دوري الجماهير»: يسحب المباريات والنتايج من موقع اتحاد الكرة وينشر rate/data.json و predict/*.json
 # GitHub يأخّر الجداول (*/10 كانت تشتغل تقريباً مرة بالساعة)، فكل تشغيل في وقت المباريات
 # يظل شغّال لين ~3 ساعات ويسحب البيانات كل 8 دقايق. التشغيلات الجاية تنتظر في الطابور وتكمّل وراه، فما في فراغ.
 name: rate-data
@@ -40,7 +40,8 @@ jobs:
             python3 _tools/rate/build.py || echo "::warning::build.py فشل في هالدورة"
             python3 _tools/predict/build.py || echo "::warning::predict فشل في هالدورة"
             python3 _tools/firebase/deploy.py || echo "::warning::نشر القواعد فشل في هالدورة"
-            git add rate/data.json rate/p predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json setup/rules.html
+            python3 _tools/fans/build.py || echo "::warning::دوري الجماهير فشل في هالدورة"
+            git add rate/data.json rate/p predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json setup/rules.html fans/data.json
             if ! git diff --cached --quiet; then
               git commit -m "قيّم اللاعبين + دوري التوقعات: تحديث المباريات" -q
               git pull --rebase -q && git push -q || echo "::warning::push فشل في هالدورة"
