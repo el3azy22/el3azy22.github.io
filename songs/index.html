@@ -172,7 +172,7 @@ function bind(){
 }
 function pick(x,play){au.pause();cur=x;history.replaceState(null,'',x===S[0]?location.pathname:'?s='+x.id);render();scrollTo({top:0,behavior:'smooth'});if(play&&x.file)$('#pp').click()}
 async function share(){
-  const s=cur,url=SITE+(s===S[0]?'':'?s='+s.id);
+  const s=cur,url=SITE+(s.file?s.id+'/':'?s='+s.id); // صفحة الأغنية الخاصة: معاينة X بغلافها وشعار ناديها
   const text=`🎵 ${s.title}${s.club?' — '+CL[s.club]:' — أغنية دوري أدنوك للمحترفين'}\nاسمعها ونزّلها مجاناً 👇\n${url}`;
   gc('share-'+s.id);
   if(navigator.share){try{await navigator.share({text});return}catch(e){if(e&&e.name==='AbortError')return}}

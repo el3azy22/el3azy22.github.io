@@ -1,0 +1,24 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<!-- صورة معاينة X لأغنية وحدة 1200x630 · ?id=wasl · صوّر #og (يسويها make_song_pages.py) -->
+<style>@font-face{font-family:R;src:url(/tashkila/assets/ReadexPro.ttf) format('truetype');font-weight:160 700}
+body{margin:0;font-family:R;color:#FFF5E5;overflow:hidden;background:#071D2B}
+#og{position:relative;width:1200px;height:630px;overflow:hidden;background:radial-gradient(ellipse at 80% -10%,rgba(215,180,101,.26),transparent 55%),radial-gradient(ellipse at 10% 110%,rgba(20,56,79,.95),transparent 55%),#071D2B}
+.f{position:absolute;inset:22px;border:2px solid rgba(215,180,101,.45);border-radius:40px}
+.cov{position:absolute;right:62px;top:55px;width:520px;height:520px;border-radius:30px;box-shadow:0 22px 50px rgba(0,0,0,.55),0 0 0 2px rgba(215,180,101,.55)}
+.tx{position:absolute;left:70px;top:0;bottom:0;width:530px;display:flex;flex-direction:column;justify-content:center;text-align:right}
+.k{color:#D7B465;font-size:28px;font-weight:600;display:flex;align-items:center;gap:12px;justify-content:flex-start}
+.k img{width:46px;height:46px;object-fit:contain}
+h1{margin:6px 0 0;font-size:84px;line-height:1.35;font-weight:700;background:linear-gradient(180deg,#FFFBF2 25%,#F1DDAE 70%,#D7B465);-webkit-background-clip:text;color:transparent;padding-bottom:.08em}
+.s{font-size:30px;opacity:.85;margin-top:2px}
+.l{font-size:27px;margin-top:22px;opacity:.9}
+.u{align-self:flex-start;margin-top:22px;direction:ltr;font-size:28px;font-weight:700;color:#071D2B;padding:6px 24px 10px;border-radius:30px;background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E)}
+</style></head><body><div id="og"></div>
+<script>
+const CL={ain:'العين',wahda:'الوحدة',jazira:'الجزيرة',shababahli:'شباب الأهلي',sharjah:'الشارقة',wasl:'الوصل',nasr:'النصر',baniyas:'بني ياس',ajman:'عجمان',kalba:'كلباء',khorfakkan:'خورفكان',dhafra:'الظفرة',hatta:'حتا',united:'يونايتد'};
+const id=new URLSearchParams(location.search).get('id');
+fetch('/songs/songs.json?v='+Date.now()).then(r=>r.json()).then(d=>{const s=d.songs.find(x=>x.id===id);
+ document.getElementById('og').innerHTML=`<div class="f"></div><img class="cov" src="/songs/${s.cover}">
+ <div class="tx"><div class="k">${s.club?`<img src="/mano/assets/${s.club}.png">أغنية ${CL[s.club]}`:'♪ منصة العازي'}</div>
+ <h1>${s.title}</h1><div class="s">${s.sub||''}</div><div class="l">اسمعها ونزّلها مجاناً على منصة العازي</div>
+ <div class="u">el3azy.com/songs/${s.id}</div></div>`;document.body.dataset.ok=1});
+</script></body></html>
