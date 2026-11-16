@@ -4,6 +4,10 @@ on:
   schedule:
     - cron: '40 20 * * 1'
   workflow_dispatch:
+    inputs:
+      now:
+        description: 'للتجربة بس: وقت بالملي ثانية (ما يرفع شي)'
+        required: false
 permissions:
   contents: write
 concurrency:
@@ -22,12 +26,14 @@ jobs:
       - name: build + render
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+          NOW: ${{ inputs.now }}
         run: |
           git config user.name "el3azy-bot"
           git config user.email "el3azy-bot@users.noreply.github.com"
           python3 _tools/fans/build.py
           python3 _tools/fans/render.py
-          git add fans/data.json fans/week.png fans/week.json fans/og.jpg
+          if [ -n "$NOW" ]; then ls -la fans; python3 -c "import json;d=json.load(open('fans/data.json'));print('cur',d['cur'],'done',d['done'],'names',d['names'],[w['stars'] for w in d['weeks']])"; exit 0; fi
+          git add fans
           if ! git diff --cached --quiet; then
             git commit -m "دوري الجماهير: جدول الجولة وصورة الأسبوع" -q
             for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done
