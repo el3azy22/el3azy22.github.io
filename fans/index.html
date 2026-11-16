@@ -239,9 +239,16 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .st b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .st small{display:block;font-size:11px;opacity:.65}
 .st .p{margin-top:6px;font-weight:700;color:var(--gold2);font-size:16px}
+.stn{font-size:12px;opacity:.75;text-align:center;margin:-4px 0 12px;line-height:1.7}.stn b{color:var(--gold2)}
 .hw{margin-bottom:12px}.hw summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:var(--gold);padding:12px 14px;border:1px solid rgba(215,180,101,.35);border-radius:16px;background:rgba(215,180,101,.06)}.hw summary::-webkit-details-marker{display:none}.hw summary:after{content:'＋';font-size:16px}.hw[open] summary:after{content:'－'}.hw[open] summary{border-radius:16px 16px 0 0}.hw .how{border-radius:0 0 18px 18px;margin:0;border-top:0}
 .how{font-size:12.5px;line-height:1.9;opacity:.9}
 .how b{color:var(--gold2)}
+.hs{padding:12px 0;border-bottom:1px solid rgba(255,245,229,.07)}.hs:first-child{padding-top:2px}
+.hh{font-size:13.5px;font-weight:700;color:var(--gold);margin-bottom:6px}
+.hs p{margin:0}.hs ul{margin:0;padding:0 18px 0 0}.hs li{margin:2px 0}.hs li::marker{color:var(--gold)}
+.hc{display:flex;gap:10px;align-items:center;background:rgba(255,245,229,.04);border:1px solid rgba(255,245,229,.07);border-radius:12px;padding:8px 10px;margin-top:6px}.hc>span{font-size:20px}.hc b{display:block;font-size:13.5px}.hc small{display:block;font-size:11.5px;opacity:.75;line-height:1.6}
+.pts2 .r.mx{background:rgba(215,180,101,.1)}
+.tip{margin-top:12px;font-size:12px;opacity:.8;text-align:center}
 .pts2{margin-top:8px;border:1px solid rgba(215,180,101,.25);border-radius:14px;overflow:hidden}
 .pts2 .r{display:flex;justify-content:space-between;padding:7px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:13px}
 .pts2 .r:last-child{border:0}.pts2 .r b{color:var(--gold2)}
@@ -278,10 +285,21 @@ const mvH=(prev,rank)=>{const m=prev-rank;return `<span class="mv ${m>0?'up':m<0
 const MY=()=>window.EL3FAN?EL3FAN.club():null;
 let D=null,T='season';
 function left(){const ms=D.ends-Date.now();if(ms<=0)return 'تخلص الحين';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5);return d>1?`${d} أيام`:d===1?`يوم و${h} ساعة`:`${Math.max(1,h)} ساعة`}
-function starsH(st,t){if(!st||!st.length)return '';return `<div class="lbl">⭐ ${t}</div><div class="stars">${st.map((x,k)=>`<div class="st ${k?'':'g1'}"><div class="md">${['🥇','🥈','🥉'][k]}</div><div class="cw">${crest(x[1],30)}</div><b>${esc(x[0])}</b><small>${CL[x[1]]}</small><div class="p">${x[2]} نقطة</div></div>`).join('')}</div>`}
-function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ينحسب دوري الجماهير؟</summary><div class="card how">كل أسبوع جولة، من <b>الثلاثاء لين نهاية الإثنين</b>. في كل جولة، كل تحدي يرتب جماهير الأندية بمعدل نقاط المشجع الواحد (مب بالمجموع)، ويوزع عليهم نقاط «دوري الجماهير»:
-   <div class="pts2"><div class="r"><span>المركز الأول في التحدي</span><b>14</b></div><div class="r"><span>الثاني</span><b>13</b></div><div class="r"><span>… ونازل لين المركز 14</span><b>1</b></div><div class="r"><span>النادي اللي ما وصل الحد الأدنى من المشجعين</span><b>0</b></div></div>
-   <div style="margin-top:8px">التحديات اللي تنحسب: <b>🕵️ منو اللاعب؟</b> (النادي يدخل من ${D.min.mano} لعبات في الجولة) و<b>🔮 دوري التوقعات</b> في الأسابيع اللي فيها جولة دوري (النادي يدخل من ${D.min.pred} مشجعين). يعني أقصى شي للنادي في الجولة <b>${mx}</b>. التعادل ينفك بعدد مرات المركز الأول في التحديات، وبعدها بعدد المشجعين. اضغط على أي نادي تشوف نقاطه من كل تحدي. ونجوم الجولة من المشجعين اللي كاتبين أساميهم في بطاقة المشجع.</div></div></details>`}
+function starsH(st,t,more){if(!st||!st.length)return '';const R=st.map((x,k)=>x[3]||k+1),tie=R.some((r,k)=>R.indexOf(r)!==k)||more;return `<div class="lbl">⭐ ${t}</div><div class="stars">${st.map((x,k)=>`<div class="st ${R[k]==1?'g1':''}"><div class="md">${['🥇','🥈','🥉'][R[k]-1]}</div><div class="cw">${crest(x[1],30)}</div><b>${esc(x[0])}</b><small>${CL[x[1]]}</small><div class="p">${x[2]} نقطة</div></div>`).join('')}</div>${tie?`<div class="stn">${more?`و<b>${more}</b> ${more>10?'مشجع':'مشجعين'} ثانيين بنفس النقاط. `:''}اللي نقاطهم متساوية يتشاركون نفس المركز.</div>`:''}`}
+function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ينحسب دوري الجماهير؟</summary><div class="card how">
+<div class="hs"><div class="hh">🗓️ الجولة</div><p>كل أسبوع جولة، من <b>الثلاثاء</b> لين <b>نهاية الإثنين</b>.</p></div>
+<div class="hs"><div class="hh">🎯 التحديات اللي تنحسب</div>
+<div class="hc"><span>🕵️</span><div><b>منو اللاعب؟</b><small>كل يوم · النادي يدخل الترتيب من ${D.min.mano} لعبات في الجولة</small></div></div>
+<div class="hc"><span>🔮</span><div><b>دوري التوقعات</b><small>في الأسابيع اللي فيها جولة دوري · النادي يدخل من ${D.min.pred} مشجعين</small></div></div></div>
+<div class="hs"><div class="hh">📊 ترتيب الأندية في كل تحدي</div><p>بـ<b>معدل نقاط المشجع الواحد</b>، مب بمجموع النقاط. يعني النادي الصغير يقدر ينافس الكبير.</p></div>
+<div class="hs"><div class="hh">🏆 نقاط دوري الجماهير من كل تحدي</div>
+<div class="pts2"><div class="r"><span>المركز الأول</span><b>14</b></div><div class="r"><span>المركز الثاني</span><b>13</b></div><div class="r"><span>… ونازل لين المركز 14</span><b>1</b></div><div class="r"><span>النادي اللي ما وصل الحد الأدنى</span><b>0</b></div><div class="r mx"><span>أقصى شي للنادي في جولة فيها التحديين</span><b>${mx}</b></div></div></div>
+<div class="hs"><div class="hh">⚖️ إذا تعادلت الأندية</div>
+<ul><li>في <b>الجولة</b>: الأكثر مشاركات، وبعدها الأكثر مشجعين.</li><li>في <b>الموسم</b>: الأكثر مرات في المركز الأول، وبعدها الأكثر مشجعين.</li></ul></div>
+<div class="hs"><div class="hh">⭐ نجوم الجولة</div>
+<ul><li>المشجعين اللي <b>كاتبين أساميهم</b> في بطاقة المشجع.</li><li>بمجموع نقاطهم في «منو اللاعب؟» و«دوري التوقعات».</li><li>إذا تعادلوا: الأكثر نقاط في <b>تحدي الخبير</b>.</li><li>وإذا ظل التعادل، <b>يتشاركون نفس المركز</b>.</li></ul></div>
+<div class="tip">👆 اضغط على أي نادي في الجدول تشوف نقاطه من كل تحدي.</div>
+</div></details>`}
 function myH(rk,pts){const my=MY();if(!my)return '';return `<div class="mine-line">${crest(my,24)}<span>ناديك <b>${CL[my]}</b> ${pts?`في <b>المركز ${rk}</b> من 14`:'ما دخل الترتيب لين الحين'}</span></div>`}
 function askH(){return MY()===null&&window.EL3FAN?`<button class="ask" id="ask"><span style="font-size:24px">📣</span><span><b>اختار ناديك</b>عشان نقاطك في التحديات تنحسب لجمهوره هني</span></button>`:''}
 const predOn=w=>!!(w&&w.pred&&w.rows.some(r=>r.p&&r.p[2]>0));
@@ -297,7 +315,7 @@ function season(){
   S.forEach((r,k)=>{if(!r.tot&&!sep){sep=true;h+=`<div class="sep">ما دخلوا الترتيب لين الحين · جيب ربعك 👀</div>`}
    const w=L.rows.find(x=>x.c===r.c);
    h+=`<button class="tr ${r.c===my?'mine':''} ${k<3&&r.tot?'p'+(k+1):''} ${r.tot?'':'out'}"><i>${k+1}</i>${mvH(r.prev,r.rank)}<span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk">+${r.wk}</span><span class="tot">${r.tot}</span>${brk(w,L)}</button>`});
-  h+=`</div>`+starsH(L.stars,`نجوم الجولة ${L.w}`)+howH();
+  h+=`</div>`+starsH(L.stars,`نجوم الجولة ${L.w}`,L.more)+howH();
   return h}
 function week(w){
   const my=MY();const R=w.rows;
@@ -309,7 +327,7 @@ function week(w){
   R.forEach((r,k)=>{if(!r.pts&&!sep){sep=true;h+=`<div class="sep">ما اكتمل جمهورهم في التحديات · ${'يدخل النادي من '+D.min.mano+' لعبات في «منو اللاعب؟»'}</div>`}
    h+=`<button class="tr ${r.c===my?'mine':''} ${r.pts?'':'out'}"><i>${k+1}</i><span></span><span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk" style="opacity:.9"><em>🕵️</em>${r.m[0]}${predOn(w)?` &nbsp;<em>🔮</em>${r.p?r.p[0]:0}`:''}</span><span class="tot">${r.pts}</span>${brk(r,w)}</button>`});
   h+=`</div><div class="card how" style="font-size:12px">${w.live?`الأرقام تتحدث وهي شغالة، والجولة تخلص ${w.to} 12 بالليل وتنضاف نقاطها لجدول الموسم.`:`الجولة ${w.w}: ${w.from} – ${w.to}.`}${w.pred?'':' هالأسبوع ما فيه جولة دوري، فالنقاط من «منو اللاعب؟» بس.'}</div>`;
-  h+=starsH(w.stars,w.live?'نجوم الجولة لين الحين':`نجوم الجولة ${w.w}`);
+  h+=starsH(w.stars,w.live?'نجوم الجولة لين الحين':`نجوم الجولة ${w.w}`,w.more);
   if(D.done===0)h+=howH();
   return h}
 function draw(){
