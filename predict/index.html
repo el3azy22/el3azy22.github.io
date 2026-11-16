@@ -126,6 +126,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .pts .att{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px}
 .pts .att div{background:rgba(255,245,229,.05);border-radius:8px;padding:5px 0 4px;line-height:1.35}
 .pts .att b{display:block;color:var(--gold);font-size:15px}.pts .att .z b{color:#e08a8a}
+.det{margin-top:10px;text-align:right;font-size:12px}.det summary{cursor:pointer;color:var(--gold);font-weight:600;padding:6px 0;list-style:none}.det summary::-webkit-details-marker{display:none}.det summary:before{content:'＋ '}.det[open] summary:before{content:'－ '}.det ul{margin:4px 0 0;padding:0 16px 0 0;line-height:1.85;opacity:.85;font-weight:400}.det li{margin:3px 0}.det b{color:var(--gold2)}
 .pts p{font-size:11.5px;opacity:.72;margin:9px 0 0;line-height:1.75;font-weight:400}
 .pts .r span{font-weight:600}.pts .r small{font-weight:400}.pts .psc{white-space:nowrap;unicode-bidi:isolate}
 
@@ -234,7 +235,17 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
    <div class="r"><span>الفائز بس<small>توقعت <span class="psc">2‏-‏1</span> وخلصت <span class="psc">3‏-‏0</span></small></span><b>2</b></div>
    <div class="r"><span>غير جذي</span><b>0</b></div>
    <div class="r"><span>⭐ المباراة المضاعفة</span><b>×2</b></div>
-   <p>نقاطك تتجمع في ترتيب الجولة وترتيب الموسم (تدخله لما تشارك في 3 جولات). وجمهور ناديك يترتب <b>بمعدل نقاط مشجعينه</b> مب بالمجموع، والنادي يدخل لما يتوقع من جمهوره 10.</p></div>
+   <p>نقاطك تتجمع في ترتيب الجولة وترتيب الموسم (تدخله لما تشارك في 3 جولات). وجمهور ناديك يترتب <b>بمعدل نقاط مشجعينه</b> مب بالمجموع، والنادي يدخل لما يتوقع من جمهوره 10.</p>
+  <details class="det"><summary>التفاصيل والحالات الخاصة</summary><ul>
+   <li><b>القفل:</b> كل مباراة تنقفل مع صافرتها الرسمية بتوقيت الإمارات، والسيرفر يرفض أي توقع بعدها.</li>
+   <li><b>النتيجة المعتمدة:</b> النتيجة الرسمية للمباراة. النقاط تطلع بعد نهاية المباراة بدقايق.</li>
+   <li><b>المضاعفة:</b> مباراة وحدة في الجولة. لو انحفظت على أكثر من وحدة، تنحسب أول وحدة بالموعد.</li>
+   <li><b>التأجيل:</b> لو تأجلت مباراة، توقعك يظل ويتعدل لين صافرتها اليديدة. ونقاطها تنحسب لما تنلعب.</li>
+   <li><b>التعادل في الترتيب:</b> يتقدم الأكثر نتايج بالضبط، بعدها اللي خلّص توقعاته أول.</li>
+   <li><b>ترتيب الموسم:</b> تدخله لما تشارك في 3 جولات. <b>ترتيب الأندية:</b> بمعدل المشجع، والنادي يدخل من 10 مشجعين في الجولة.</li>
+   <li>توقعاتك تنحسب لناديك ولاسمك اللي في بطاقة المشجع وقت ما توقعت.</li>
+  </ul></details>
+</div>
   <button class="btn" id="howGo">يلا نتوقع</button>
 </div></div>
 

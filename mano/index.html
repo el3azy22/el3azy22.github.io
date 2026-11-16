@@ -148,6 +148,7 @@ footer a{color:inherit}
 .pts .att{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;text-align:center;font-size:11px}
 .pts .att div{background:rgba(255,245,229,.05);border-radius:8px;padding:5px 0 4px;line-height:1.35}
 .pts .att b{display:block;color:var(--gold);font-size:15px}.pts .att .z b{color:#e08a8a}
+.det{margin-top:10px;text-align:right;font-size:12px}.det summary{cursor:pointer;color:var(--gold);font-weight:600;padding:6px 0;list-style:none}.det summary::-webkit-details-marker{display:none}.det summary:before{content:'＋ '}.det[open] summary:before{content:'－ '}.det ul{margin:4px 0 0;padding:0 16px 0 0;line-height:1.85;opacity:.85;font-weight:400}.det li{margin:3px 0}.det b{color:var(--gold2)}
 .pts p{font-size:11.5px;opacity:.72;margin:9px 0 0;line-height:1.75;font-weight:400}
 .pts .r span{font-weight:600}.pts .r small{font-weight:400}.pts .psc{white-space:nowrap;unicode-bidi:isolate}
 
@@ -184,6 +185,7 @@ footer a{color:inherit}
 .clubm .btn:disabled{opacity:.4}
 .clubm .later{display:flex;justify-content:space-between;margin-top:8px}
 .champ{background:linear-gradient(90deg,rgba(215,180,101,.22),rgba(215,180,101,.05));border:1px solid rgba(215,180,101,.45);border-radius:14px;padding:8px 12px;display:flex;align-items:center;gap:10px;font-size:13.5px;margin-bottom:10px}
+.mine.warn{background:rgba(215,180,101,.12);border:1px solid rgba(215,180,101,.4)}
 .mine{background:rgba(46,158,102,.15);border-radius:12px;padding:7px 10px;font-size:13.5px;margin-bottom:8px}
 .ct{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:10px;font-size:13px}
 .ct.me{background:rgba(215,180,101,.16);outline:1px solid rgba(215,180,101,.5)}
@@ -253,7 +255,16 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
    <div class="r" style="margin-top:6px"><span>لاعب اليوم<small>أقصى شي</small></span><b>6</b></div>
    <div class="r"><span>تحدي الخبير<small>نقاط زيادة فوق لاعب اليوم</small></span><b>+6</b></div>
    <div class="r"><span>أقصى شي في اليوم</span><b>12</b></div>
-   <p>نقاطك تنضاف لك ولجمهور ناديك. ترتيب الأندية أسبوعي: مجموع نقاط الجمهور في الأسبوع من التحديين ÷ عدد مرات لعب جمهوره «لاعب اليوم» (يعني معدل نقاط المشجع في اليوم)، فتحدي الخبير <b>دايماً يزيد</b> معدل ناديك وما ينقصه، والجمهور الكبير ما يفوز بالعدد بس. النادي يدخل الترتيب من 3 لعبات في الأسبوع، وكل أسبوع يتعلن بطل يديد.</p></div>
+   <p>نقاطك تنضاف لك ولجمهور ناديك. ترتيب الأندية أسبوعي: مجموع نقاط الجمهور في الأسبوع من التحديين ÷ عدد مرات لعب جمهوره «لاعب اليوم» (يعني معدل نقاط المشجع في اليوم)، فتحدي الخبير <b>دايماً يزيد</b> معدل ناديك وما ينقصه، والجمهور الكبير ما يفوز بالعدد بس. النادي يدخل الترتيب من 3 لعبات في الأسبوع، وكل أسبوع يتعلن بطل يديد.</p>
+  <details class="det"><summary>التفاصيل والحالات الخاصة</summary><ul>
+   <li><b>الوقت:</b> لاعب يديد كل يوم الساعة 12 بالليل بتوقيت الإمارات، ولو الصفحة مفتوحة تتحدث بروحها.</li>
+   <li><b>المحاولات:</b> 6 في كل تحدي. ما تنحسب محاولة لنفس اللاعب مرتين، وما في إعادة بعد ما يخلص التحدي.</li>
+   <li><b>متى تنحسب نتيجتك لناديك؟</b> بعد ما تخلّص التحدي وتكون مختار ناديك، في نفس اليوم (لين 12:15 بالليل). وتنحسب مرة وحدة بس.</li>
+   <li><b>تحدي الخبير</b> ينحسب لنفس النادي اللي انحسبت له لعبة لاعب اليوم.</li>
+   <li><b>لو انقطع الإنترنت:</b> نتيجتك محفوظة في تلفونك، وتنرسل أول ما ترجع للصفحة في نفس اليوم.</li>
+   <li>نتيجتك وإحصائياتك محفوظة في <b>هالتلفون</b>. لو مسحت بيانات المتصفح أو لعبت من تلفون ثاني، تبدا من يديد.</li>
+  </ul></details>
+</div>
   <button class="btn" id="howGo">يلا نلعب</button>
 </div></div>
 
@@ -590,7 +601,7 @@ async function crowdFlow(again){
   const rowH=(o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(o.rk):''}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?o.avg.toFixed(2):'—'}</span><span class="n">${o.n?nf(o.n):'0'}</span></div>`;
   box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 ترتيب جماهير الأندية · الأسبوع ${AR(wk)}</div>
     ${champ&&champ.avg>=0?`<div class="champ">${crest(champ.k,30)}<div><b>متصدر الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">بمعدل ${AR1(champ.avg)} نقطة للمشجع</div></div></div>`:''}
-    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وكلها تنحسب لجمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:''}
+    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وكلها تنحسب لجمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:me&&!se?`<div class="mine warn">⏳ نتيجتك ما وصلت السيرفر لين الحين، فما انحسبت لجمهور ${D.clubs[me]}. تأكد من الإنترنت وارجع للصفحة قبل 12 بالليل، وبتنرسل بروحها.</div>`:''}
     <div class="exp">الأندية تترتب بـ<b>معدل نقاط المشجع في اليوم</b>، مب بمجموع النقاط. عشان جذي الجمهور القليل يقدر يغلب الكبير.</div>
     <div class="ct hd2"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v">المعدل</span><span class="n">لعبات</span></div>
     ${ok.map(rowH).join('')}
