@@ -73,16 +73,17 @@ header .day{font-size:12px;color:var(--gold);font-weight:600}
 .eg.w{background:rgba(46,158,102,.25);border-color:rgba(46,158,102,.5)}
 .eg>span:not(.phw){flex:1}.eg b{font-size:12.5px;font-weight:600}
 /* pro */
+.legend2{margin:12px 0 8px;padding:10px 12px;border-radius:14px;background:rgba(7,29,43,.6);border:1px solid rgba(255,245,229,.08);display:grid;gap:6px;font-size:12px;line-height:1.55;text-align:right}.legend2>div{display:flex;gap:8px;align-items:flex-start}.legend2 i{flex-shrink:0;width:14px;height:14px;border-radius:4px;margin-top:3px;background:var(--gray)}.legend2 i.ar{background:none;width:auto;height:auto;margin-top:0;font-style:normal;font-size:11px}.legend2 b{color:var(--ivory)}
 .legend{display:grid;grid-template-columns:repeat(4,1fr);gap:5px;margin:12px 0 8px}
 .legend span{background:rgba(7,29,43,.7);border-radius:9px;padding:6px 2px;font-size:11px;text-align:center}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-left:4px;vertical-align:middle}
 .heads,.row{display:grid;grid-template-columns:1.45fr repeat(5,1fr);gap:5px}
-.heads{font-size:10.5px;opacity:.55;text-align:center;margin:8px 0 6px}
+.heads{font-size:12px;font-weight:600;color:var(--gold);text-align:center;margin:10px 0 6px}
 .heads div:first-child{text-align:right}
 .row{margin-bottom:6px}
 .row>div{border-radius:10px;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:600;background:var(--gray);padding:3px;animation:flip .5s both;line-height:1.15}
 .row>div:first-child{background:transparent;align-items:flex-start;text-align:right;font-size:12.5px;font-weight:500}
-.row small{font-size:9.5px;font-weight:500;opacity:.92;margin-top:2px}
+.row small{font-size:9.5px;font-weight:600;opacity:.95;margin-top:2px;line-height:1.2}
 .row .fl{font-size:22px}
 .ok{background:var(--green)!important}.near{background:var(--yellow)!important}
 @keyframes flip{from{transform:rotateX(90deg);opacity:0}to{transform:none;opacity:1}}
@@ -350,7 +351,7 @@ function cmp(p){
   r.no=p.no==null?'':p.no===a.no?'ok':(Math.abs(p.no-a.no)<=3?'near':'');
   return r;
 }
-const arrow=(g,a)=>g==null||g===a?'':`<small>${a>g?'⬆ أكبر':'⬇ أصغر'}</small>`;
+const arrow=(g,a)=>g==null||g===a?'':`<small>${a>g?'⬆ السري أكبر':'⬇ السري أصغر'}</small>`;
 
 /* ---------- render ---------- */
 function shirtSVG(){return `<svg viewBox="0 0 100 100"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.done?'#F0D99A':'#14384F'}"/><stop offset="1" stop-color="${S.done?'#D7B465':'#0C2638'}"/></linearGradient></defs><path d="M33 8 L18 14 L4 32 L16 42 L24 34 L24 94 L76 94 L76 34 L84 42 L96 32 L82 14 L67 8 Q50 22 33 8Z" fill="url(#sg)" stroke="#D7B465" stroke-width="2.5" stroke-linejoin="round"/></svg>`}
@@ -369,10 +370,10 @@ function render(){
     const shown=S.done?6:Math.min(used+1,6);
     h+=`<div class="clues">${CL.map((c,i)=>i<shown?`<div class="clue open"><span>تلميح ${AR(i+1)} · ${c[0]}</span><b>${c[1]()}</b></div>`:`<div class="clue"><span>تلميح ${AR(i+1)}</span><b>🔒 ينفتح لو غلطت</b></div>`).join('')}</div>`;
   }else{
-    if(!S.guesses.length)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارنه لك باللاعب السري في 5 أشياء: <b>النادي، المركز، الجنسية، العمر، رقم القميص</b>. من المقارنة تقرب له لين تعرفه.</div>`;
-    h+=`<div class="legend"><span><i style="background:var(--green)"></i>نفسه</span><span><i style="background:var(--yellow)"></i>قريب</span><span>⬆ السري أكبر</span><span>⬇ السري أصغر</span></div>`;
+    if(S.guesses.length<2)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارن لك لاعبك باللاعب السري في 5 خانات: <b>النادي، المركز، الجنسية، العمر، الرقم</b>. لون كل خانة يقولك قد شو قربت، ومنها تعرف اللاعب السري.</div>`;
+    h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب منه: المركز في نفس الخط (مثلاً جناح بدال مهاجم)، العمر بفرق سنتين، أو الرقم بفرق 3</span></div><div><i></i><span><b>رمادي</b> = بعيد</span></div><div><i class="ar">⬆⬇</i><span>عمر أو رقم <b>اللاعب السري أكبر أو أصغر</b> من لاعبك</span></div></div>`;
   }
-  if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
+  if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب بالعربي أو بالإنجليزي..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
   if(mode==='easy'){
     h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],w=id===ANS.id;return `<div class="eg ${w?'w':''}">${ph(p,34)}<span>${p.n}</span><b>${w?'✅ صح!':'❌ مب هو'}</b></div>`}).join('');
   }else if(used){
@@ -391,7 +392,7 @@ function bindInput(){
   const gIn=$('#gIn'),sg=$('#sugg');
   const show=()=>{
     const q=norm(gIn.value);
-    if(!q){sg.innerHTML='<div class="empty">اكتب أول حروف اسم اللاعب، بالعربي أو بالإنجليزي</div>';sg.hidden=false;return}
+    if(!q){sg.innerHTML='';sg.hidden=true;return} // ما نغطي التخمينات بنص فاضي
     const words=q.split(' ');
     const m=D.players.filter(p=>!S.guesses.includes(p.id)&&words.every(w=>p._k.includes(w)))
       .sort((a,b)=>(b._k.startsWith(q)-a._k.startsWith(q))||(b.ap-a.ap)).slice(0,8);
