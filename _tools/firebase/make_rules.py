@@ -20,7 +20,8 @@ rules={"rules":{
      " && newData.child('g').isNumber() && newData.child('g').val() >= 0 && newData.child('g').val() <= 6"
      f" && newData.child('c').isString() && newData.child('c').val().matches(/^({CL})?$/)"
      " && newData.parent().parent().parent().parent().child('s').child($d).child($m).child('n').val() == (root.child('s').child($d).child($m).child('n').exists() ? root.child('s').child($d).child($m).child('n').val() : 0) + 1"),
-   "d":{".validate":True},"g":{".validate":True},"c":{".validate":True},"$other":{".validate":False}}}}},
+   # t (اختياري): وقت السيرفر لحظة الحل، لفك التعادل في «نجوم الأسبوع» (الأسبق)
+   "d":{".validate":True},"g":{".validate":True},"c":{".validate":True},"t":{".validate":"newData.val() == now"},"$other":{".validate":False}}}}},
  "s":{".read":True,"$d":{"$m":{"$f":{
    ".write":fresh(s_after),
    ".validate":f"newData.isNumber() && {inc} && ($f == 'n' || ($f == 'w' && {g(s_after)} > 0) || $f == 'g' + {g(s_after)})"}}}},
