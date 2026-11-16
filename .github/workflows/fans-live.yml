@@ -1,0 +1,34 @@
+# «دوري الجماهير»: تحديث كل ساعة برا وقت المباريات (2 الفجر لين 3 العصر بتوقيت الإمارات)،
+# عشان «نجوم الأسبوع» تتحدث والناس تلعب «منو اللاعب؟» الصبح. داخل وقت المباريات يحدثها rate.yml كل 8 دقايق
+name: fans-live
+on:
+  schedule:
+    - cron: '23 22,23,0-10 * * *'
+  workflow_dispatch:
+permissions:
+  contents: write
+concurrency:
+  group: fans-live
+  cancel-in-progress: true
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install google-auth requests
+      - name: build
+        env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: |
+          git config user.name "el3azy-bot"
+          git config user.email "el3azy-bot@users.noreply.github.com"
+          python3 _tools/fans/build.py
+          git add fans/data.json
+          if ! git diff --cached --quiet; then
+            git commit -m "دوري الجماهير: تحديث" -q
+            for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done
+          fi
