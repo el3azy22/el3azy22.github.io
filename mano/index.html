@@ -383,7 +383,7 @@ function bindInput(){
   const gIn=$('#gIn'),sg=$('#sugg');
   const show=()=>{
     const q=norm(gIn.value);
-    if(!q){sg.innerHTML='<div class="empty">اكتب أول حروف الاسم... مثلاً: «سفيان» أو «Benteke»</div>';sg.hidden=false;return}
+    if(!q){sg.innerHTML='<div class="empty">اكتب أول حروف اسم اللاعب، بالعربي أو بالإنجليزي</div>';sg.hidden=false;return}
     const words=q.split(' ');
     const m=D.players.filter(p=>!S.guesses.includes(p.id)&&words.every(w=>p._k.includes(w)))
       .sort((a,b)=>(b._k.startsWith(q)-a._k.startsWith(q))||(b.ap-a.ap)).slice(0,8);
