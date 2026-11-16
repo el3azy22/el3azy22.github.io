@@ -147,6 +147,11 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div><b>اختار تشكيلتك</b><span class="d">ركّب تشكيلة ناديك أو المنتخب وشاركها صورة · مب لعبة فانتزي</span></div>
   <div class="go">‹</div>
 </a>
+<a class="tool in" style="animation-delay:.5s" href="songs/" id="songsLive" hidden>
+  <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12.5 23V8.5l13-3V20"/><path class="s" d="M12.5 13.2l13-3V5.5l-13 3Z"/><ellipse class="s" cx="9" cy="23" rx="3.6" ry="3"/><ellipse class="s" cx="22" cy="20" rx="3.6" ry="3"/></svg></div>
+  <div><b>أغاني دورينا وأنديتنا <span class="badge new">يديد</span></b><span class="d">اسمع أغنية الدوري وأغاني الأندية، ونزّلها على جوالك مجاناً</span></div>
+  <div class="go">‹</div>
+</a>
 <a class="tool in" style="animation-delay:.54s" href="rate/" id="rateLive" hidden>
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
   <div><b>قيّم اللاعبين <span class="badge new">يديد</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span><div class="timer mini" id="rateBox" hidden><span id="rateLbl"></span><time id="rateLine"></time></div></div>
@@ -206,6 +211,8 @@ document.getElementById('crests').innerHTML=Object.entries(C).map(([c,f])=>`<img
  const f=()=>{const ms=L-Date.now();if(ms<=0){location.reload();return}const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
   const t=(d?'<em>'+(d===1?'يوم':d===2?'يومين':d+' أيام')+' و</em>':'')+`<bdi>${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}</bdi>`;
   els.forEach(e=>e.innerHTML=t)};f();setInterval(f,1000)})();
+// «أغاني دورينا وأنديتنا» تبين الاثنين 16 نوفمبر الساعة 1 الظهر (الإمارات). للتجربة قبلها: ?songs
+(()=>{if(Date.now()>=Date.UTC(2026,10,16,9)||/[?&]songs/.test(location.search))document.getElementById('songsLive').hidden=false})();
 // «قيّم اللاعبين» و«دوري التوقعات» يبينون مع أول تحدي: الثلاثاء 17 نوفمبر 12 بالليل (الإمارات). للتجربة قبلها: ?live
 (()=>{const on=Date.now()>=Date.UTC(2026,10,16,20)||/[?&](live|rate)/.test(location.search);if(!on)return;
  [['rateLive','rateSoon'],['predLive','predSoon']].forEach(([a,b])=>{document.getElementById(a).hidden=false;document.getElementById(b).hidden=true});
