@@ -239,7 +239,19 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .st b{display:block;font-size:13.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:.12em 0 .3em;margin:-.12em 0 -.3em}
 .st small{display:block;font-size:11px;opacity:.65}
 .st .p{margin-top:6px;font-weight:700;color:var(--gold2);font-size:16px}
-.stn{font-size:12px;opacity:.75;text-align:center;margin:-4px 0 12px;line-height:1.7}.stn b{color:var(--gold2)}
+.fl{padding:6px 10px;margin-bottom:8px}
+.fr{display:grid;grid-template-columns:30px 32px 1fr auto;align-items:center;gap:8px;padding:8px 2px;border-bottom:1px solid rgba(255,245,229,.06)}.fr:last-of-type{border-bottom:0}
+.fr .rk{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:13px;background:rgba(255,245,229,.06);color:var(--ivory)}
+.fr.m1 .rk{background:linear-gradient(160deg,#F6E3AE,#C9A24F);color:#1a1405}.fr.m2 .rk{background:linear-gradient(160deg,#EEF2F7,#AEB8C6);color:#14202c}.fr.m3 .rk{background:linear-gradient(160deg,#E7B48C,#B07A4F);color:#24150a}
+.fr.m1{background:linear-gradient(90deg,transparent,rgba(215,180,101,.10));border-radius:12px}
+.fr .cw{display:grid;place-items:center}
+.fr .fn{min-width:0}.fr .fn b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:.12em 0 .3em;margin:-.12em 0 -.3em}.fr .fn b em{font-style:normal;font-size:10.5px;background:var(--gold);color:var(--navy);border-radius:8px;padding:1px 6px;margin-right:4px;vertical-align:2px}
+.fr .fn small{font-size:11.5px;opacity:.65}.fr .fn small i{font-style:normal;color:var(--gold)}
+.fr .fp{font-weight:700;color:var(--gold2);font-size:17px;text-align:left;line-height:1.1}.fr .fp small{display:block;font-size:10.5px;font-weight:400;opacity:.6;color:var(--ivory)}
+.fr.me{outline:1.5px solid rgba(215,180,101,.6);outline-offset:-1px;border-radius:12px}
+.fm{font-size:12px;opacity:.75;text-align:center;padding:8px 0 4px}
+.stn .lk{background:none;border:0;padding:0;font:inherit;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.stn{font-size:12px;opacity:.75;text-align:center;margin:0 4px 14px;line-height:1.8}.stn b{color:var(--gold2)}
 .hw{margin-bottom:12px}.hw summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:var(--gold);padding:12px 14px;border:1px solid rgba(215,180,101,.35);border-radius:16px;background:rgba(215,180,101,.06)}.hw summary::-webkit-details-marker{display:none}.hw summary:after{content:'＋';font-size:16px}.hw[open] summary:after{content:'－'}.hw[open] summary{border-radius:16px 16px 0 0}.hw .how{border-radius:0 0 18px 18px;margin:0;border-top:0}
 .how{font-size:12.5px;line-height:1.9;opacity:.9}
 .how b{color:var(--gold2)}
@@ -291,7 +303,12 @@ const mvH=(prev,rank)=>{const m=prev-rank;return `<span class="mv ${m>0?'up':m<0
 const MY=()=>window.EL3FAN?EL3FAN.club():null;
 let D=null,T='season';
 function left(){const ms=D.ends-Date.now();if(ms<=0)return 'تخلص الحين';const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5);return d>1?`${d} أيام`:d===1?`يوم و${h} ساعة`:`${Math.max(1,h)} ساعة`}
-function starsH(st,t,more){if(!st||!st.length)return '';const R=st.map((x,k)=>x[3]||k+1),tie=R.some((r,k)=>R.indexOf(r)!==k)||more;return `<div class="lbl">⭐ ${t} <small>· أعلى المشجعين نقاط في التحديات</small></div><div class="stars">${st.map((x,k)=>`<div class="st ${R[k]==1?'g1':''}"><div class="md">${['🥇','🥈','🥉'][R[k]-1]}</div><div class="cw">${crest(x[1],30)}</div><b>${esc(x[0])}</b><small>${CL[x[1]]}</small><div class="p">${x[2]} نقطة</div></div>`).join('')}</div>${tie?`<div class="stn">${more?`و<b>${more}</b> ${more>10?'مشجع':'مشجعين'} ثانيين بنفس النقاط. `:''}اللي نقاطهم متساوية يتشاركون نفس المركز.</div>`:''}`}
+const MYU=()=>{try{return (JSON.parse(localStorage.getItem('el3azy_fb')||'null')||{}).u||''}catch(e){return ''}};
+function starsH(st,t,more,live){if(!st||!st.length)return '';const me=MYU().slice(0,12),nm=window.EL3FAN?EL3FAN.name():'';
+ const R=st.map((x,k)=>x[3]||k+1),cnt=r=>R.filter(v=>v===r).length+(r===R[R.length-1]?more||0:0);
+ return `<div class="lbl">⭐ ${t}</div><div class="card fl">${st.map((x,k)=>{const r=R[k],tie=cnt(r)>1,mine=me&&x[6]===me,nx=st[k+1],why=!tie&&nx&&nx[2]===x[2]&&R[k+1]!==r?(x[4]!==nx[4]?'تقدّم بنقاط تحدي الخبير':x[5]!==nx[5]?'تقدّم بمرات «من أول محاولة»':'تقدّم لأنه وصل لنقاطه أول'):'';return `<div class="fr ${r<=3?'m'+r:''} ${mine?'me':''}"><span class="rk">${r}</span><span class="cw">${crest(x[1],26)}</span><span class="fn"><b>${esc(x[0])}${mine?' <em>أنت</em>':''}</b><small>${CL[x[1]]}${tie?' · <i>متعادل</i>':why?' · <i>'+why+'</i>':''}</small></span><span class="fp">${x[2]}<small>نقطة</small></span></div>`}).join('')}
+ ${more?`<div class="fm">و${more} ${more>10?'مشجع':'مشجعين'} ثانيين متعادلين في المركز ${R[R.length-1]}</div>`:''}</div>
+ <div class="stn">إذا تساووا في النقاط: يتقدم الأكثر نقاط في <b>تحدي الخبير</b>، بعدها الأكثر مرات <b>«من أول محاولة»</b>، بعدها <b>اللي وصل لنقاطه أول</b>. وإذا تساووا في كل هذا، يتشاركون نفس المركز.${window.EL3FAN&&!nm?` <button class="lk" id="nmBtn">اكتب اسمك في بطاقة المشجع</button> عشان تطلع في هالترتيب.`:''}</div>`}
 function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ينحسب دوري الجماهير؟</summary><div class="card how">
 <div class="hs"><div class="hh">🗓️ الأسبوع</div><p>من <b>الثلاثاء</b> لين <b>نهاية الإثنين</b>. وفي نهايته تنضاف نقاطه لجدول الموسم.</p></div>
 <div class="hs"><div class="hh">🎯 التحديات اللي تنحسب</div>
@@ -303,7 +320,7 @@ function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ي�
 <div class="hs"><div class="hh">⚖️ إذا تعادلت الأندية</div>
 <ul><li>في <b>الأسبوع</b>: الأكثر مشاركات، وبعدها الأكثر مشجعين.</li><li>في <b>الموسم</b>: الأكثر مرات في المركز الأول، وبعدها الأكثر مشجعين.</li></ul></div>
 <div class="hs"><div class="hh">⭐ نجوم الأسبوع</div>
-<ul><li>المشجعين اللي <b>كاتبين أساميهم</b> في بطاقة المشجع.</li><li>بمجموع نقاطهم هم في «منو اللاعب؟» و«دوري التوقعات» خلال الأسبوع.</li><li>إذا تعادلوا: الأكثر نقاط في <b>تحدي الخبير</b>.</li><li>وإذا ظل التعادل، <b>يتشاركون نفس المركز</b>.</li></ul></div>
+<ul><li>المشجعين اللي <b>كاتبين أساميهم</b> في بطاقة المشجع.</li><li>بمجموع نقاطهم هم في «منو اللاعب؟» و«دوري التوقعات» خلال الأسبوع.</li><li>إذا تساووا في النقاط: الأكثر نقاط في <b>تحدي الخبير</b>، بعدها الأكثر مرات <b>«من أول محاولة»</b>، بعدها <b>اللي وصل لنقاطه أول</b>.</li><li>وإذا تساووا في كل هذا، <b>يتشاركون نفس المركز</b>.</li></ul></div>
 <div class="tip">👆 اضغط على أي نادي في الجدول تشوف نقاطه من كل تحدي.</div>
 </div></details>`}
 function stepsH(){return `<div class="steps"><div><i>1</i><b>اختار<br>ناديك</b></div><div><i>2</i><b>العب وتوقع<br>المباريات</b></div><div><i>3</i><b>نقاطك تنحسب<br>لجمهور ناديك</b></div></div>`}
@@ -324,7 +341,7 @@ function season(){
   S.forEach((r,k)=>{if(!r.tot&&!sep){sep=true;h+=`<div class="sep">ما جمعوا نقاط لين الحين</div>`}
    const w=L.rows.find(x=>x.c===r.c);
    h+=`<button class="tr ${r.c===my?'mine':''} ${k<3&&r.tot?'p'+(k+1):''} ${r.tot?'':'out'}"><i>${k+1}</i>${mvH(r.prev,r.rank)}<span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk">+${r.wk}</span><span class="tot">${r.tot}</span>${brk(w,L)}</button>`});
-  h+=`</div>`+starsH(L.stars,`نجوم الأسبوع ${L.w}`,L.more)+howH();
+  h+=`</div>`+starsH(L.stars,`نجوم الأسبوع ${L.w}`,L.more,false)+howH();
   return h}
 function week(w){
   const my=MY();const R=w.rows;
@@ -337,7 +354,7 @@ function week(w){
   R.forEach((r,k)=>{if(!r.pts&&!sep){sep=true;h+=`<div class="sep">ما دخلوا الترتيب لين الحين · النادي يدخل من ${D.min.mano} لعبات في «منو اللاعب؟»</div>`}
    h+=`<button class="tr ${r.c===my?'mine':''} ${r.pts?'':'out'}"><i>${k+1}</i><span></span><span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk" style="opacity:.9">${r.pts?`${predOn(w)?'<em>🕵️</em>':''}${f1(r.m[1])}${predOn(w)?` &nbsp;<em>🔮</em>${r.p&&r.p[0]?f1(r.p[1]):'–'}`:''}`:'–'}</span><span class="tot">${r.pts}</span>${brk(r,w)}</button>`});
   h+=`</div><div class="card how" style="font-size:12px">${w.live?`الأرقام تتحدث وهي شغالة، والأسبوع يخلص ${w.to} 12 بالليل وتنضاف نقاطه لجدول الموسم.`:`الأسبوع ${w.w}: ${w.from} – ${w.to}.`}${w.pred?'':' هالأسبوع ما فيه جولة دوري، فالنقاط من «منو اللاعب؟» بس.'}</div>`;
-  h+=starsH(w.stars,w.live?'نجوم الأسبوع لين الحين':`نجوم الأسبوع ${w.w}`,w.more);
+  h+=starsH(w.stars,w.live?'نجوم الأسبوع لين الحين':`نجوم الأسبوع ${w.w}`,w.more,w.live);
   if(D.done===0)h+=howH();
   return h}
 function draw(){
@@ -351,7 +368,7 @@ function draw(){
   $('#app').innerHTML=T==='season'?season():week(D.weeks.find(w=>'w'+w.w===T));
   document.querySelectorAll('#app button.tr').forEach(b=>b.onclick=()=>b.classList.toggle('open'));
   document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{T=b.dataset.t;gc('fans-tab-'+T);draw()});
-  $('#ask')&&($('#ask').onclick=()=>EL3FAN.open());
+  $('#ask')&&($('#ask').onclick=()=>EL3FAN.open());$('#nmBtn')&&($('#nmBtn').onclick=()=>EL3FAN.open());
 }
 /* الأسبوع الحين: نقاط «منو اللاعب؟» تنحسب مباشرة من نفس أرقام صفحة التحدي (Firebase c)، عشان الترتيبين يطابقون بعض لحظة بلحظة */
 const FBDB='https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app',ORD=Object.keys(CL),WEEK=7,MINM=3;

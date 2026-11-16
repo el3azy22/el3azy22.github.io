@@ -520,7 +520,7 @@ async function submitMode(m){
   const st=store.get('g_'+DAY+'_'+m,null);if(!st||!st.done)return;
   const c=myClub();if(c===null)return;
   const g=st.win?st.guesses.length:0,d=DAY,a=await fbTok(),inc=n=>({'.sv':{increment:n}});
-  const b={[`p/${d}/${m}/${a.u}`]:{d,g,c},[`s/${d}/${m}/n`]:inc(1)};
+  const b={[`p/${d}/${m}/${a.u}`]:{d,g,c,t:{".sv":"timestamp"}},[`s/${d}/${m}/n`]:inc(1)};
   if(g){b[`s/${d}/${m}/w`]=inc(1);b[`s/${d}/${m}/g${g}`]=inc(1)}
   if(c){b[`c/${d}/${m}/${c}/n`]=inc(1);if(g)b[`c/${d}/${m}/${c}/t`]=inc(7-g)}
   const r=await fetch(FB.db+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});

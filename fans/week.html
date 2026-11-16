@@ -74,7 +74,7 @@ fetch('/fans/data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
  document.getElementById('cols').innerHTML=`<div class="col">${hd}${R.slice(0,7).map(row).join('')}</div><div class="col">${hd}${R.slice(7).map((r,k)=>row(r,k+7)).join('')}</div>`;
  const S=W.stars||[];
  if(S.length){document.getElementById('stars').innerHTML=S.slice(0,3).map((x,k)=>{const r=x[3]||k+1;return `<div class="st ${r==1?'g1':''}"><span class="md">${['🥇','🥈','🥉'][r-1]}</span>${crest(x[1],44)}<div><b>${esc(x[0])}</b><small><span class="p">${x[2]}</span> نقطة</small></div></div>`}).join('');
-  const ex=S.length-3+(W.more||0);if(ex>0)document.getElementById('stl').innerHTML+=` <span style="opacity:.7;font-size:20px">· و${ex} غيرهم بنفس النقاط</span>`}
+  const r3=(S[2]||S[S.length-1])[3]||3,ex=S.slice(3).filter(x=>x[3]===r3).length+(S.length>3&&S[S.length-1][3]===r3?(W.more||0):0);if(ex>0)document.getElementById('stl').innerHTML+=` <span style="opacity:.7;font-size:20px">· ${ex===1?'ومشجع ثاني متعادل':'و'+ex+' مشجعين متعادلين'} في المركز ${r3}</span>`}
  else document.querySelector('.stars').style.display='none';
  document.body.dataset.ok=1;
 });

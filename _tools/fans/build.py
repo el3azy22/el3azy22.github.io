@@ -106,7 +106,7 @@ def main():
         prev_out = json.load(open(path, encoding='utf8'))
     except Exception:
         pass
-    kept = [w for w in prev_out.get('weeks', []) if not w.get('live') and w['w'] < cur and (w.get('stars') or not H) and all(len(x) > 3 for x in w.get('stars', []))] if not os.environ.get('FULL') else []
+    kept = [w for w in prev_out.get('weeks', []) if not w.get('live') and w['w'] < cur and (w.get('stars') or not H) and all(len(x) > 6 for x in w.get('stars', []))] if not os.environ.get('FULL') else []
     kept = [w for i, w in enumerate(kept) if w['w'] == i + 1]
     first = len(kept) + 1
     q = lambda: {'orderBy': '"$key"', 'startAt': '"' + str((first - 1) * WEEK + 1) + '"', 'endAt': '"' + str(cur * WEEK) + '"'}
@@ -147,7 +147,7 @@ def main():
             rows.append({'c': c, 'pts': pts, 'm': mano[c], 'p': pred[c] if pred else None})
         rows.sort(key=lambda r: (-r['pts'], -(r['m'][2] + (r['p'][2] if r['p'] else 0)), -(fc.get(r['c'], 0) or 0), CLUBS.index(r['c'])))
         # ⭐ النجوم
-        ind = defaultdict(lambda: {'pts': 0, 'pro': 0, 'c': 'none', 'nm': ''})
+        ind = defaultdict(lambda: {'pts': 0, 'pro': 0, 'one': 0, 'at': 0, 'c': 'none', 'nm': ''})
         for d, v in (p_all or {}).items():
             if not v or not (d0 <= int(d) <= d1):
                 continue
@@ -155,9 +155,14 @@ def main():
                 for u, x in (v.get(m) or {}).items():
                     g = (x or {}).get('g') or 0
                     if g:
-                        ind[u[:12]]['pts'] += 7 - g
+                        s_ = ind[u[:12]]
+                        s_['pts'] += 7 - g
                         if m == 'pro':
-                            ind[u[:12]]['pro'] += 7 - g
+                            s_['pro'] += 7 - g
+                        if g == 1:
+                            s_['one'] += 1
+                        # متى وصل لنقاطه: وقت السيرفر لحظة الحل، ولو ما في (قبل 17 نوفمبر 02:30) بداية يومه
+                        s_['at'] = max(s_['at'], (x or {}).get('t') or START + (int(d) - 1) * DAYMS)
                     ind[u[:12]]['c'] = (x or {}).get('c') or ind[u[:12]]['c']
         for u, x in (f_all or {}).items():
             if u[:12] in ind:
@@ -167,21 +172,24 @@ def main():
             for u, nm, c, p, e, n in pred_t.get('rounds', {}).get(r, []):
                 s = ind[u]
                 s['pts'] += p
+                if p:
+                    s['at'] = max(s['at'], last_t.get(int(r), 0) or last_t.get(r, 0) or 0)
                 s['nm'] = s['nm'] or nm
                 if s['c'] in ('none', None):
                     s['c'] = c
-        # الترتيب: النقاط، وبعدها نقاط تحدي الخبير. إذا ظل التعادل يتشاركون نفس المركز
-        cand = sorted([[s['nm'].strip(), s['c'], s['pts'], s['pro']] for u, s in ind.items()
-                       if s['nm'].strip() and s['pts'] > 0 and u not in hide and s['c'] in NAME],
-                      key=lambda x: (-x[2], -x[3], x[0]))
+        # ترتيب المشجعين: النقاط ← نقاط تحدي الخبير ← مرات «من أول محاولة» ← الأسبق لمجموع نقاطه.
+        # إذا تساووا في كل هذا يتشاركون نفس المركز. نعرض أول 10 مراكز (ومن يتشارك آخر مركز معروض ينحسب في more)
+        key = lambda x: (-x['pts'], -x['pro'], -x['one'], x['at'])
+        cand = sorted([dict(s, u=u, nm=s['nm'].strip()) for u, s in ind.items()
+                       if s['nm'].strip() and s['pts'] > 0 and u not in hide and s['c'] in NAME], key=lambda x: (key(x), x['nm']))
         stars, more, rk = [], 0, 0
         for i, x in enumerate(cand):
-            if i == 0 or (x[2], x[3]) != (cand[i - 1][2], cand[i - 1][3]):
+            if i == 0 or key(x) != key(cand[i - 1]):
                 rk = i + 1
-            if rk > 3:
+            if rk > 10:
                 break
-            if len(stars) < 6:
-                stars.append([x[0], x[1], x[2], rk, x[3]])
+            if len(stars) < 10:
+                stars.append([x['nm'], x['c'], x['pts'], rk, x['pro'], x['one'], x['u']])
             else:
                 more += 1
         weeks.append({'w': w, 'from': dlabel(START + (d0 - 1) * DAYMS), 'to': dlabel(START + (d1 - 1) * DAYMS),
