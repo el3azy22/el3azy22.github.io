@@ -250,6 +250,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .tr.out{opacity:.55}
 .tbl.wv .th,.tbl.wv .tr{grid-template-columns:24px 0 30px 1fr 74px 44px}.tbl.wv .wk{white-space:nowrap;font-size:12.5px;direction:rtl}.tbl.wv .wk em{font-style:normal;font-size:10px;opacity:.75;margin-left:1px}
 .empty{padding:22px 12px;text-align:center;opacity:.75;line-height:1.9;font-size:13px}
+.mine-line{display:flex;align-items:center;gap:10px;margin:-4px 0 12px;padding:9px 14px;border-radius:14px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.08);font-size:13.5px}.mine-line b{color:var(--gold2)}
 .ask{display:flex;align-items:center;gap:10px;width:100%;margin-bottom:12px;padding:12px 14px;border-radius:16px;border:1px dashed rgba(215,180,101,.55);background:rgba(215,180,101,.07);font-size:13px;text-align:right}
 .ask b{display:block;font-size:14px;color:var(--gold2)}
 </style></head><body>
@@ -281,30 +282,32 @@ function starsH(st,t){if(!st||!st.length)return '';return `<div class="lbl">⭐ 
 function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ينحسب دوري الجماهير؟</summary><div class="card how">كل أسبوع جولة، من <b>الثلاثاء لين نهاية الإثنين</b>. في كل جولة، كل تحدي يرتب جماهير الأندية بمعدل نقاط المشجع الواحد (مب بالمجموع)، ويوزع عليهم نقاط «دوري الجماهير»:
    <div class="pts2"><div class="r"><span>المركز الأول في التحدي</span><b>14</b></div><div class="r"><span>الثاني</span><b>13</b></div><div class="r"><span>… ونازل لين المركز 14</span><b>1</b></div><div class="r"><span>النادي اللي ما وصل الحد الأدنى من المشجعين</span><b>0</b></div></div>
    <div style="margin-top:8px">التحديات اللي تنحسب: <b>🕵️ منو اللاعب؟</b> (النادي يدخل من ${D.min.mano} لعبات في الجولة) و<b>🔮 دوري التوقعات</b> في الأسابيع اللي فيها جولة دوري (النادي يدخل من ${D.min.pred} مشجعين). يعني أقصى شي للنادي في الجولة <b>${mx}</b>. التعادل ينفك بعدد مرات المركز الأول في التحديات، وبعدها بعدد المشجعين. اضغط على أي نادي تشوف نقاطه من كل تحدي. ونجوم الجولة من المشجعين اللي كاتبين أساميهم في بطاقة المشجع.</div></div></details>`}
+function myH(rk,pts){const my=MY();if(!my)return '';return `<div class="mine-line">${crest(my,24)}<span>ناديك <b>${CL[my]}</b> ${pts?`في <b>المركز ${rk}</b> من 14`:'ما دخل الترتيب لين الحين'}</span></div>`}
 function askH(){return MY()===null&&window.EL3FAN?`<button class="ask" id="ask"><span style="font-size:24px">📣</span><span><b>اختار ناديك</b>عشان نقاطك في التحديات تنحسب لجمهوره هني</span></button>`:''}
-function brk(r){return `<span class="brk"><span>🕵️ منو اللاعب <b dir="ltr">+${r.m[0]}</b></span>${r.p?`<span>🔮 التوقعات <b dir="ltr">+${r.p[0]}</b></span>`:''}</span>`}
+const predOn=w=>!!(w&&w.pred&&w.rows.some(r=>r.p&&r.p[2]>0));
+function brk(r,w){return `<span class="brk"><span>🕵️ منو اللاعب <b dir="ltr">+${r.m[0]}</b></span>${r.p?(predOn(w)?`<span>🔮 التوقعات <b dir="ltr">+${r.p[0]}</b></span>`:`<span>🔮 التوقعات تنحسب بعد مباريات الجولة</span>`):''}</span>`}
 function season(){
   const S=D.season,my=MY(),wk=D.weeks.find(w=>w.live),L=D.weeks[D.done-1];
   const lead=S[0],sec=S[1];
   let h=askH()+`<div class="hero"><div class="k">🏆 المتصدر بعد ${D.done===1?'الجولة الأولى':D.done+' جولات'}</div><div class="lead"><div class="cw">${crest(lead.c,52)}</div><div><b>جمهور ${CL[lead.c]}</b><span>${lead.tot>sec.tot?`يتصدر بفارق ${lead.tot-sec.tot} ${lead.tot-sec.tot===1?'نقطة':'نقاط'} عن ${CL[sec.c]}`:`متساوي مع ${CL[sec.c]} بـ${lead.tot} نقطة`}</span></div></div>
    ${D.story?`<div class="story">🚀 ${esc(D.story)}</div>`:''}
-   <div class="meta"><span>${wk?`الجولة ${wk.w} تخلص بعد <b>${left()}</b>`:''}</span><span>${my?`ناديك: <b>${CL[my]}</b> (${S.findIndex(r=>r.c===my)+1})`:''}</span></div></div>`;
+   <div class="meta"><span>${wk?`الجولة ${wk.w} تخلص بعد <b>${left()}</b>`:''}</span></div></div>`+myH(S.findIndex(r=>r.c===my)+1,(S.find(r=>r.c===my)||{}).tot);
   h+=`<div class="tbl"><div class="th"><span>#</span><span></span><span></span><span>النادي</span><span>الجولة</span><span>النقاط</span></div>`;
   let sep=false;
   S.forEach((r,k)=>{if(!r.tot&&!sep){sep=true;h+=`<div class="sep">ما دخلوا الترتيب لين الحين · جيب ربعك 👀</div>`}
    const w=L.rows.find(x=>x.c===r.c);
-   h+=`<button class="tr ${r.c===my?'mine':''} ${k<3&&r.tot?'p'+(k+1):''} ${r.tot?'':'out'}"><i>${k+1}</i>${mvH(r.prev,r.rank)}<span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk">+${r.wk}</span><span class="tot">${r.tot}</span>${brk(w)}</button>`});
+   h+=`<button class="tr ${r.c===my?'mine':''} ${k<3&&r.tot?'p'+(k+1):''} ${r.tot?'':'out'}"><i>${k+1}</i>${mvH(r.prev,r.rank)}<span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk">+${r.wk}</span><span class="tot">${r.tot}</span>${brk(w,L)}</button>`});
   h+=`</div>`+starsH(L.stars,`نجوم الجولة ${L.w}`)+howH();
   return h}
 function week(w){
   const my=MY();const R=w.rows;
   let h='';
   if(D.done===0)h+=askH()+`<div class="hero"><div class="k">🏁 الجولة ${w.w} شغالة · ${w.from} – ${w.to}</div>${R[0].pts?`<div class="lead"><div class="cw">${crest(R[0].c,52)}</div><div><b>جمهور ${CL[R[0].c]}</b><span>متصدر الجولة لين الحين</span></div></div>`:`<div class="lead"><div class="cw" style="font-size:40px">🏆</div><div><b>دوري الجماهير بدا!</b><span>العب «منو اللاعب؟»${w.pred?' وتوقع الجولة':''}، وخلّ ناديك أول نادي يدخل الجدول</span></div></div>`}
-    <div class="meta"><span>الجولة تخلص بعد <b>${left()}</b></span><span>${my?`ناديك: <b>${CL[my]}</b> ${(R.find(r=>r.c===my)||{}).pts?'('+(R.findIndex(r=>r.c===my)+1)+')':'(ما دخل بعد)'}`:''}</span></div></div>`;
+    <div class="meta"><span>الجولة تخلص بعد <b>${left()}</b></span></div></div>`+myH(R.findIndex(r=>r.c===my)+1,(R.find(r=>r.c===my)||{}).pts);
   h+=`<div class="tbl wv"><div class="th"><span>#</span><span></span><span></span><span>النادي</span><span style="text-align:center">التحديات</span><span>الجولة</span></div>`;
   let sep=false;
   R.forEach((r,k)=>{if(!r.pts&&!sep){sep=true;h+=`<div class="sep">ما اكتمل جمهورهم في التحديات · ${'يدخل النادي من '+D.min.mano+' لعبات في «منو اللاعب؟»'}</div>`}
-   h+=`<button class="tr ${r.c===my?'mine':''} ${r.pts?'':'out'}"><i>${k+1}</i><span></span><span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk" style="opacity:.9"><em>🕵️</em>${r.m[0]}${w.pred?` &nbsp;<em>🔮</em>${r.p?r.p[0]:0}`:''}</span><span class="tot">${r.pts}</span>${brk(r)}</button>`});
+   h+=`<button class="tr ${r.c===my?'mine':''} ${r.pts?'':'out'}"><i>${k+1}</i><span></span><span class="cw">${crest(r.c,26)}</span><span class="nm">${CL[r.c]}<small>${fans(D.fc[r.c])}</small></span><span class="wk" style="opacity:.9"><em>🕵️</em>${r.m[0]}${predOn(w)?` &nbsp;<em>🔮</em>${r.p?r.p[0]:0}`:''}</span><span class="tot">${r.pts}</span>${brk(r,w)}</button>`});
   h+=`</div><div class="card how" style="font-size:12px">${w.live?`الأرقام تتحدث وهي شغالة، والجولة تخلص ${w.to} 12 بالليل وتنضاف نقاطها لجدول الموسم.`:`الجولة ${w.w}: ${w.from} – ${w.to}.`}${w.pred?'':' هالأسبوع ما فيه جولة دوري، فالنقاط من «منو اللاعب؟» بس.'}</div>`;
   h+=starsH(w.stars,w.live?'نجوم الجولة لين الحين':`نجوم الجولة ${w.w}`);
   if(D.done===0)h+=howH();
@@ -322,7 +325,24 @@ function draw(){
   document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{T=b.dataset.t;gc('fans-tab-'+T);draw()});
   $('#ask')&&($('#ask').onclick=()=>EL3FAN.open());
 }
-fetch('data.json?v='+Date.now()).then(r=>r.json()).then(d=>{D=d;draw()}).catch(()=>{$('#app').innerHTML='<div class="empty">ما قدرنا نحمّل الترتيب، جرّب مرة ثانية</div>'});
+/* الجولة الحين: نقاط «منو اللاعب؟» تنحسب مباشرة من نفس أرقام صفحة التحدي (Firebase c)، عشان الترتيبين يطابقون بعض لحظة بلحظة */
+const FBDB='https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app',ORD=Object.keys(CL),WEEK=7,MINM=3;
+async function liveMano(){
+  const w=D&&D.weeks.find(x=>x.live);if(!w)return;
+  const d0=(w.w-1)*WEEK+1,d1=w.w*WEEK;
+  const c=await fetch(`${FBDB}/c.json?orderBy=${encodeURIComponent('"$key"')}&startAt=${encodeURIComponent('"'+d0+'"')}&endAt=${encodeURIComponent('"'+d1+'"')}`).then(r=>r.json());
+  const T={};ORD.forEach(k=>T[k]={n:0,t:0});
+  Object.entries(c||{}).forEach(([d,v])=>{if(!v||+d<d0||+d>d1)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){if(m==='easy')T[k].n+=x.n||0;T[k].t+=x.t||0}}))});
+  const ok=ORD.filter(k=>T[k].n>=MINM).sort((a,b)=>T[b].t/T[b].n-T[a].t/T[a].n||T[b].n-T[a].n||ORD.indexOf(a)-ORD.indexOf(b));
+  w.rows.forEach(r=>{const t=T[r.c],i=ok.indexOf(r.c);r.m=[i<0?0:14-i,t.n?Math.round(t.t/t.n*100)/100:0,t.n];r.pts=r.m[0]+(r.p?r.p[0]:0)});
+  w.rows.sort((a,b)=>b.pts-a.pts||(b.m[2]+(b.p?b.p[2]:0))-(a.m[2]+(a.p?a.p[2]:0))||(D.fc[b.c]||0)-(D.fc[a.c]||0)||ORD.indexOf(a.c)-ORD.indexOf(b.c));
+}
+async function load(){
+  try{D=await fetch('data.json?v='+Date.now()).then(r=>r.json())}catch(e){$('#app').innerHTML='<div class="empty">ما قدرنا نحمّل الترتيب، جرّب مرة ثانية</div>';return}
+  try{await liveMano()}catch(e){}
+  draw();
+}
+load();setInterval(()=>{if(!document.hidden)liveMano().then(draw).catch(()=>{})},60000);
 window.addEventListener('el3fan',draw);
 </script>
 <script src="../assets/fan.js"></script>
