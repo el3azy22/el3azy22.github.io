@@ -65,13 +65,23 @@ def fixtures():
             if not h or not a:
                 continue
             st = int(it.get('status_id') or 0)
-            m = {'id': it['match_id'], 'wk': int(it['week_no']), 't': kick_ms(it['time']), 'h': h, 'a': a, 'st': st}
+            try:
+                t = kick_ms(it['time'])
+            except Exception:   # موعد غير محدد (تأجيل بدون موعد): المباراة ما تنعرض لين يتحدد موعدها
+                print('::warning::موعد غير مفهوم', it.get('match_id'), it.get('time'))
+                continue
+            m = {'id': it['match_id'], 'wk': int(it['week_no']), 't': t, 'h': h, 'a': a, 'st': st}
             s1, s2 = it.get('team1_score'), it.get('team2_score')
             if st == FINISHED and str(s1).isdigit() and str(s2).isdigit():
                 m['sh'], m['sa'] = int(s1), int(s2)
             out.append(m)
     out.sort(key=lambda m: (m['t'], m['id']))
     return out
+
+
+def avg2(t, n):
+    """المعدل لخانتين بتقريب نص لفوق، بحساب أعداد صحيحة (نفس الصفحات بالضبط: Math.floor((200t+n)/(2n))/100)"""
+    return (200 * t + n) // (2 * n) / 100 if n else 0
 
 
 def points(ph, pa, sh, sa):
@@ -111,7 +121,7 @@ def crowd(picks):
 
 def compute(ms, picks_by_match, now_ms):
     """picks_by_match: {mid: {uid: pick}} للمباريات اللي بدت. يرجع (crowd, table)."""
-    crowd_out, rounds = {}, defaultdict(lambda: defaultdict(lambda: {'p': 0, 'e': 0, 'n': 0, 'w': 0, 'c': 'none', 'nm': '', 'ct': 0}))
+    crowd_out, rounds = {}, defaultdict(lambda: defaultdict(lambda: {'p': 0, 'e': 0, 'n': 0, 'w': 0, 'c': 'none', 'nm': '', 'ct': 0, 'ls': 0, 'pc': defaultdict(lambda: [0, 0])}))
     by_id = {m['id']: m for m in ms}
     # ⭐ المضاعفة: أول مباراة بالموعد عليها x في كل جولة لكل مشجع
     dbl = {}
@@ -136,6 +146,10 @@ def compute(ms, picks_by_match, now_ms):
                 if dbl.get((m['wk'], u)) == m['id']:
                     pt *= 2
                 r['p'] += pt; r['n'] += 1
+                # نقاط كل توقع تنحسب لنادي المشجع وقت ما كتب هالتوقع
+                r['pc'][c][0] += pt; r['pc'][c][1] += 1
+                if pt:
+                    r['ls'] = max(r['ls'], m['t'])   # موعد آخر مباراة جابت له نقاط (لفك تعادل نجوم الأسبوع)
                 if pt and p['h'] == m['sh'] and p['a'] == m['sa']:
                     r['e'] += 1
     key = lambda kv: (-kv[1]['p'], -kv[1]['e'], kv[1]['w'])
@@ -145,18 +159,19 @@ def compute(ms, picks_by_match, now_ms):
     club_season = defaultdict(lambda: {'s': 0.0, 'r': 0})
     for wk in sorted(rounds):
         rows = sorted(rounds[wk].items(), key=key)
-        table['rounds'][str(wk)] = [[U(u), r['nm'], r['c'], r['p'], r['e'], r['n']] for u, r in rows]
+        table['rounds'][str(wk)] = [[U(u), r['nm'], r['c'], r['p'], r['e'], r['n'], r['ls']] for u, r in rows]
         cl = defaultdict(list)
         for u, r in rows:
-            if r['n'] and r['c'] != 'none':
-                cl[r['c']].append(r['p'])
+            for c, (pts, n) in r['pc'].items():
+                if n and c != 'none':
+                    cl[c].append(pts)
             s = season[u]
             s['p'] += r['p']; s['e'] += r['e']; s['r'] += 1 if r['n'] else 0; s['w'] = max(s['w'], r['w'])
             if r['ct'] >= s['ct']:
                 s['c'], s['nm'], s['ct'] = r['c'], r['nm'], r['ct']
-        crow = sorted(([c, round(sum(v) / len(v), 2), len(v)] for c, v in cl.items()), key=lambda x: (-(x[2] >= MIN_FANS), -x[1], -x[2]))
+        crow = sorted(([c, avg2(sum(v), len(v)), len(v), sum(v)] for c, v in cl.items()), key=lambda x: (-(x[2] >= MIN_FANS), -x[1], -x[2]))
         table['clubs'][str(wk)] = crow
-        for c, avg, n in crow:
+        for c, avg, n, _ in crow:
             if n >= MIN_FANS:
                 club_season[c]['s'] += avg; club_season[c]['r'] += 1
     srows = sorted(((u, s) for u, s in season.items() if s['r'] >= MIN_ROUNDS), key=key)

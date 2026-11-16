@@ -487,12 +487,14 @@ function renderCl(){
   const elig=rows.filter(x=>x[2]>=mf),rest=rows.filter(x=>x[2]<mf);
   if(!rows.length)h+=`<div class="empty">ترتيب الأندية يطلع بعد أول مباراة منتهية في الجولة</div><div class="note">نقاط كل مشجع تنحسب لناديه، والترتيب بمعدل نقاط المشجع مب بالمجموع، عشان الجمهور الكبير ما يفوز بالعدد بس. والنادي يدخل لما يتوقع ${mf} من جمهوره</div>`;
   else{
-    h+=`<div class="lb">${elig.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${nf(c[2])} مشجع</small></span></div>`).join('')}
+    const ER=[];elig.forEach((c,k)=>ER[k]=k&&c[1]===elig[k-1][1]&&c[2]===elig[k-1][2]?ER[k-1]:k+1); // التعادل الكامل = نفس المركز
+    h+=`<div class="lb">${elig.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][ER[k]-1]||ER[k]}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${nf(c[2])} مشجع</small></span></div>`).join('')}
       ${rest.map(c=>`<div class="cl na ${c[0]===mc?'mine':''}"><i>–</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><small>يحتاج ${mf-c[2]} مشجع</small></span></div>`).join('')}</div>`;
     h+=`<div class="note">الترتيب بمعدل نقاط المشجع مب بالمجموع، والنادي يدخل لما يتوقع ${mf} من جمهوره</div>`;
   }
   const S=(TB&&TB.clubs_season)||[];
-  if(S.length)h+=`<div class="h3">🏆 الأندية في الموسم</div><div class="lb">${S.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${c[2]} جولة</small></span></div>`).join('')}</div>`;
+  const SR=[];S.forEach((c,k)=>SR[k]=k&&c[1]===S[k-1][1]&&c[2]===S[k-1][2]?SR[k-1]:k+1);
+  if(S.length)h+=`<div class="h3">🏆 الأندية في الموسم</div><div class="lb">${S.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][SR[k]-1]||SR[k]}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${c[1]}</b><small>${c[2]} جولة</small></span></div>`).join('')}</div>`;
   if(mc===null&&window.EL3FAN)h+=`<button class="btn" id="askClub2">اختار ناديك وساعد جمهوره</button>`;
   $('#app').innerHTML=h;$('#askClub2')&&($('#askClub2').onclick=()=>EL3FAN.open());
 }

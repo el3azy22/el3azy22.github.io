@@ -308,7 +308,7 @@ function starsH(st,t,more,live){if(!st||!st.length)return '';const me=MYU().slic
  const R=st.map((x,k)=>x[3]||k+1),cnt=r=>R.filter(v=>v===r).length+(r===R[R.length-1]?more||0:0);
  return `<div class="lbl">⭐ ${t}</div><div class="card fl">${st.map((x,k)=>{const r=R[k],tie=cnt(r)>1,mine=me&&x[6]===me,nx=st[k+1],why=!tie&&nx&&nx[2]===x[2]&&R[k+1]!==r?(x[4]!==nx[4]?'تقدّم بنقاط تحدي الخبير':x[5]!==nx[5]?'تقدّم بمرات «من أول محاولة»':'تقدّم لأنه وصل لنقاطه أول'):'';return `<div class="fr ${r<=3?'m'+r:''} ${mine?'me':''}"><span class="rk">${r}</span><span class="cw">${crest(x[1],26)}</span><span class="fn"><b>${esc(x[0])}${mine?' <em>أنت</em>':''}</b><small>${CL[x[1]]}${tie?' · <i>متعادل</i>':why?' · <i>'+why+'</i>':''}</small></span><span class="fp">${x[2]}<small>نقطة</small></span></div>`}).join('')}
  ${more?`<div class="fm">و${more} ${more>10?'مشجع':'مشجعين'} ثانيين متعادلين في المركز ${R[R.length-1]}</div>`:''}</div>
- <div class="stn">إذا تساووا في النقاط: يتقدم الأكثر نقاط في <b>تحدي الخبير</b>، بعدها الأكثر مرات <b>«من أول محاولة»</b>، بعدها <b>اللي وصل لنقاطه أول</b>. وإذا تساووا في كل هذا، يتشاركون نفس المركز.${window.EL3FAN&&!nm?` <button class="lk" id="nmBtn">اكتب اسمك في بطاقة المشجع</button> عشان تطلع في هالترتيب.`:''}</div>`}
+ <div class="stn">إذا تساووا في النقاط: يتقدم الأكثر نقاط في <b>تحدي الخبير</b>، بعدها الأكثر مرات <b>«من أول محاولة»</b>، بعدها <b>اللي وصل لنقاطه أول</b>. وإذا تساووا في كل هذا، يتشاركون نفس المركز.${window.EL3FAN&&!nm?` <button class="lk" id="nmBtn">اكتب اسمك في بطاقة المشجع</button> عشان تطلع في هالترتيب (لازم اسم ونادي).`:''}</div>`}
 function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ينحسب دوري الجماهير؟</summary><div class="card how">
 <div class="hs"><div class="hh">🗓️ الأسبوع</div><p>من <b>الثلاثاء</b> لين <b>نهاية الإثنين</b>. وفي نهايته تنضاف نقاطه لجدول الموسم.</p></div>
 <div class="hs"><div class="hh">🎯 التحديات اللي تنحسب</div>
@@ -320,7 +320,7 @@ function howH(){const mx=28;return `<details class="hw"><summary>📘 كيف ي�
 <div class="hs"><div class="hh">⚖️ إذا تعادلت الأندية</div>
 <ul><li>في <b>الأسبوع</b>: الأكثر مشاركات، وبعدها الأكثر مشجعين.</li><li>في <b>الموسم</b>: الأكثر مرات في المركز الأول، وبعدها الأكثر مشجعين.</li></ul></div>
 <div class="hs"><div class="hh">⭐ نجوم الأسبوع</div>
-<ul><li>المشجعين اللي <b>كاتبين أساميهم</b> في بطاقة المشجع.</li><li>بمجموع نقاطهم هم في «منو اللاعب؟» و«دوري التوقعات» خلال الأسبوع.</li><li>إذا تساووا في النقاط: الأكثر نقاط في <b>تحدي الخبير</b>، بعدها الأكثر مرات <b>«من أول محاولة»</b>، بعدها <b>اللي وصل لنقاطه أول</b>.</li><li>وإذا تساووا في كل هذا، <b>يتشاركون نفس المركز</b>.</li></ul></div>
+<ul><li>المشجعين اللي <b>كاتبين أساميهم ومختارين نادي</b> في بطاقة المشجع.</li><li>بمجموع نقاطهم هم في «منو اللاعب؟» و«دوري التوقعات» خلال الأسبوع.</li><li>إذا تساووا في النقاط: الأكثر نقاط في <b>تحدي الخبير</b>، بعدها الأكثر مرات <b>«من أول محاولة»</b>، بعدها <b>اللي وصل لنقاطه أول</b>.</li><li>وإذا تساووا في كل هذا، <b>يتشاركون نفس المركز</b>.</li></ul></div>
 <div class="tip">👆 اضغط على أي نادي في الجدول تشوف نقاطه من كل تحدي.</div>
 </div></details>`}
 function stepsH(){return `<div class="steps"><div><i>1</i><b>اختار<br>ناديك</b></div><div><i>2</i><b>العب وتوقع<br>المباريات</b></div><div><i>3</i><b>نقاطك تنحسب<br>لجمهور ناديك</b></div></div>`}
@@ -381,10 +381,10 @@ async function liveMano(){
   const T={};ORD.forEach(k=>T[k]={n:0,t:0});
   Object.entries(c||{}).forEach(([d,v])=>{if(!v||+d<d0||+d>d1)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){if(m==='easy')T[k].n+=x.n||0;T[k].t+=x.t||0}}))});
   // نفس قاعدة build.py: المعدل (لين خانتين) ← اللعبات، وإذا تساووا في الاثنين ياخذون نفس النقاط
-  const av=k=>Math.round(T[k].t/T[k].n*100)/100,same=(a,b)=>av(a)===av(b)&&T[a].n===T[b].n;
+  const av=k=>Math.floor((200*T[k].t+T[k].n)/(2*T[k].n))/100,same=(a,b)=>av(a)===av(b)&&T[a].n===T[b].n;
   const ok=ORD.filter(k=>T[k].n>=MINM).sort((a,b)=>av(b)-av(a)||T[b].n-T[a].n||ORD.indexOf(a)-ORD.indexOf(b));
   const RK={};ok.forEach((k,i)=>RK[k]=i&&same(k,ok[i-1])?RK[ok[i-1]]:i+1);
-  w.rows.forEach(r=>{const t=T[r.c];r.m=[RK[r.c]?15-RK[r.c]:0,t.n?Math.round(t.t/t.n*100)/100:0,t.n];r.pts=r.m[0]+(r.p?r.p[0]:0)});
+  w.rows.forEach(r=>{const t=T[r.c];r.m=[RK[r.c]?15-RK[r.c]:0,t.n?av(r.c):0,t.n];r.pts=r.m[0]+(r.p?r.p[0]:0)});
   w.rows.sort((a,b)=>b.pts-a.pts||(b.m[2]+(b.p?b.p[2]:0))-(a.m[2]+(a.p?a.p[2]:0))||(D.fc[b.c]||0)-(D.fc[a.c]||0)||ORD.indexOf(a.c)-ORD.indexOf(b.c));
 }
 async function load(){

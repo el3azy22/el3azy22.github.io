@@ -52,8 +52,8 @@ def fb(path, q=None, h=None):
                 return json.loads(r.read().decode('utf8'))
         except Exception as e:
             if k == 2:
-                print('::warning::Firebase', path, e)
-                return None
+                # ما نكمل ببيانات ناقصة: لو انحسب الأسبوع على أصفار وانقفل، يظل غلط للأبد
+                raise RuntimeError(f'Firebase {path}: {e}')
             time.sleep(3)
 
 
@@ -68,6 +68,16 @@ def week_of_day(d):
 def dlabel(ms):
     t = datetime.fromtimestamp(ms / 1000, UAE)
     return f'{t.day} {MONTHS[t.month - 1]}'
+
+
+def avg2(t, n):
+    """المعدل لخانتين بتقريب نص لفوق، بحساب أعداد صحيحة (نفس الصفحات: Math.floor((200t+n)/(2n))/100)"""
+    return (200 * t + n) // (2 * n) / 100 if n else 0
+
+
+def final_at(w):
+    """الأسبوع w يصير نهائي بعد نهايته بـ40 دقيقة (مهلة الـ15 دقيقة للنتايج + مباريات الإثنين المتأخرة)"""
+    return START + w * WEEK * DAYMS + 40 * 60000
 
 
 def rank_points(rows, minimum):
@@ -131,9 +141,10 @@ def main():
         prev_out = json.load(open(path, encoding='utf8'))
     except Exception:
         pass
-    kept = [w for w in prev_out.get('weeks', []) if not w.get('live') and w['w'] < cur and (w.get('stars') or not H) and all(len(x) > 6 for x in w.get('stars', []))] if not os.environ.get('FULL') else []
+    kept = [w for w in prev_out.get('weeks', []) if not w.get('live') and w['w'] < cur and now >= final_at(w['w']) and (prev_out.get('names') or not H) and all(len(x) > 6 for x in w.get('stars', []))] if not os.environ.get('FULL') else []
     kept = [w for i, w in enumerate(kept) if w['w'] == i + 1]
     first = len(kept) + 1
+    counted = {r for w in kept for r in w.get('rds', [])}   # جولات توقعات انحسبت في أسبوع منتهي: ما تنحسب مرة ثانية لو تغير موعدها
     q = lambda: {'orderBy': '"$key"', 'startAt': '"' + str((first - 1) * WEEK + 1) + '"', 'endAt': '"' + str(cur * WEEK) + '"'}
     c_all = fb('c', q()) if cur else {}
     if isinstance(c_all, list):
@@ -157,15 +168,20 @@ def main():
                         if m == 'easy':
                             T[c][0] += x.get('n', 0)
                         T[c][1] += x.get('t', 0)
-        mano = rank_points([(c, t / n if n else 0, n) for c, (n, t) in T.items()], MIN_MANO)
+        mano = rank_points([(c, avg2(t, n), n) for c, (n, t) in T.items()], MIN_MANO)
         # 🔮 دوري التوقعات
-        rds = [r for r, wk in round_week.items() if wk == w]   # الأسبوع فيه جولة دوري حتى لو ما في توقعات محسوبة بعد
+        rds = sorted(r for r, wk in round_week.items() if wk == w and r not in counted)   # الأسبوع فيه جولة دوري حتى لو ما في توقعات محسوبة بعد
         pred = None
         if rds:
-            rows = []
+            # لو في الأسبوع أكثر من جولة: نجمع نقاط ومشاركات كل نادي من الجولات، والمعدل = المجموع ÷ المشاركات
+            agg = defaultdict(lambda: [0, 0])
             for r in rds:
-                rows += [(c, avg, n) for c, avg, n in pred_t.get('clubs', {}).get(r, []) if c in NAME]
-            pred = rank_points(rows, MIN_PRED)
+                for row in pred_t.get('clubs', {}).get(r, []):
+                    c, avg, n = row[:3]
+                    if c in NAME:
+                        agg[c][0] += row[3] if len(row) > 3 else round(avg * n)
+                        agg[c][1] += n
+            pred = rank_points([(c, avg2(t, n), n) for c, (t, n) in agg.items()], MIN_PRED)
         rows = []
         for c in CLUBS:
             pts = mano[c][0] + (pred[c][0] if pred else 0)
@@ -194,17 +210,18 @@ def main():
                 ind[u[:12]]['nm'] = ((x or {}).get('n') or '')[:16]
                 ind[u[:12]]['c'] = (x or {}).get('c') or ind[u[:12]]['c']
         for r in rds:
-            for u, nm, c, p, e, n in pred_t.get('rounds', {}).get(r, []):
+            for row in pred_t.get('rounds', {}).get(r, []):
+                u, nm, c, p = row[:4]
                 s = ind[u]
                 s['pts'] += p
-                if p:
-                    s['at'] = max(s['at'], last_t.get(int(r), 0) or last_t.get(r, 0) or 0)
+                if p:   # موعد آخر مباراة جابت له نقاط في الجولة
+                    s['at'] = max(s['at'], row[6] if len(row) > 6 and row[6] else last_t.get(int(r), 0))
                 s['nm'] = s['nm'] or nm
                 if s['c'] in ('none', None):
                     s['c'] = c
         stars, more = rank_fans(ind, hide)
         weeks.append({'w': w, 'from': dlabel(START + (d0 - 1) * DAYMS), 'to': dlabel(START + (d1 - 1) * DAYMS),
-                      'live': w == cur, 'pred': bool(pred), 'rows': rows, 'stars': stars, 'more': more,
+                      'live': w == cur, 'pred': bool(pred), 'rds': rds, 'rows': rows, 'stars': stars, 'more': more,
                       'max': 14 * (1 + (1 if pred else 0))})
     # جدول الموسم بعد الجولات المنتهية
     done = [x for x in weeks if not x['live']]
