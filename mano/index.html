@@ -244,7 +244,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
    <div class="r" style="margin-top:6px"><span>لاعب اليوم<small>أقصى شي</small></span><b>6</b></div>
    <div class="r"><span>تحدي الخبير<small>نقاط زيادة فوق لاعب اليوم</small></span><b>+6</b></div>
    <div class="r"><span>أقصى شي في اليوم</span><b>12</b></div>
-   <p>نقاطك تنضاف لك ولجمهور ناديك. ترتيب الأندية أسبوعي: مجموع نقاط الجمهور من التحديين ÷ عدد مشجعينه اللي لعبوا لاعب اليوم، يعني تحدي الخبير <b>دايماً يزيد</b> معدل ناديك وما ينقصه، والجمهور الكبير ما يفوز بالعدد بس. النادي يدخل الترتيب من 3 مشجعين، وكل أسبوع يتعلن بطل يديد.</p></div>
+   <p>نقاطك تنضاف لك ولجمهور ناديك. ترتيب الأندية أسبوعي: مجموع نقاط الجمهور في الأسبوع من التحديين ÷ عدد مرات لعب جمهوره «لاعب اليوم» (يعني معدل نقاط المشجع في اليوم)، فتحدي الخبير <b>دايماً يزيد</b> معدل ناديك وما ينقصه، والجمهور الكبير ما يفوز بالعدد بس. النادي يدخل الترتيب من 3 لعبات في الأسبوع، وكل أسبوع يتعلن بطل يديد.</p></div>
   <button class="btn" id="howGo">يلا نلعب</button>
 </div></div>
 
@@ -566,9 +566,9 @@ async function crowdFlow(again){
   box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 تحدي الأندية · الأسبوع ${AR(wk)}</div>
     ${champ&&champ.avg>=0?`<div class="champ">${crest(champ.k,30)}<div><b>بطل الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">بمعدل ${AR1(champ.avg)} نقطة</div></div></div>`:''}
     ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ <b>${"\u2066+"+(pe+pp)+"\u2069"}</b> نقاط لجمهور ${D.clubs[me]} اليوم${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:''}
-    <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبوا</span></div>
+    <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبات</span></div>
     ${T.map((o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):'–'}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):''}</span></div>`).join('')}
-    <div class="cfoot">المعدل = نقاط الجمهور من لاعب اليوم وتحدي الخبير ÷ عدد مشجعينه اللي لعبوا<br>النادي يدخل الترتيب من ${AR(MINP)} مشجعين · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+    <div class="cfoot">المعدل = نقاط الجمهور من لاعب اليوم وتحدي الخبير ÷ عدد لعبات «لاعب اليوم» (معدل المشجع في اليوم)<br>لعبات = كم مرة لعب جمهور النادي «لاعب اليوم» هالأسبوع · النادي يدخل الترتيب من ${AR(MINP)} لعبات · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
 }
 
