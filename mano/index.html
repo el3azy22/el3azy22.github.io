@@ -122,6 +122,10 @@ footer a{color:inherit}
 .modal[hidden]{display:none}
 .mbox{background:linear-gradient(165deg,var(--navy3),var(--navy));border:1px solid rgba(215,180,101,.4);border-radius:24px;padding:22px 20px;max-width:390px;width:100%;text-align:center;animation:pop .35s;max-height:90vh;overflow-y:auto}
 .mbox h2{color:var(--gold);font-size:21px;margin:4px 0 12px}
+.hist{margin:14px 0 4px;text-align:right}.hist .hh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:14px}.hist .hh b{color:var(--gold)}.hist .hh span{font-size:12px;opacity:.75}
+.hr{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,245,229,.07)}.hn{flex:1;min-width:0}.hn b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hn small{font-size:11.5px;opacity:.65}
+.hs{font-size:12px;font-weight:600;text-align:left;white-space:nowrap}.hs small{display:block;font-weight:400;opacity:.55;font-size:11px}.hs.w{color:#7ed492}.hs.l{color:rgba(255,245,229,.6)}
+.he{font-size:12.5px;opacity:.65;padding:10px 0;text-align:center}
 .step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
 .step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
 .step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
@@ -441,6 +445,11 @@ function statsHTML(m){
   <div class="dist"><div style="font-size:12px;opacity:.7;margin-bottom:6px">عرفته من المحاولة:</div>${st.dist.map((n,i)=>`<div><span style="width:14px">${AR(i+1)}</span><i class="${i===cur?'hl':''}" style="width:${Math.max(8,n/mx*100)}%">${AR(n)}</i></div>`).join('')}</div>`;
 }
 
+/* سجلك: كل لاعب لعبته (من المحفوظ في تلفونك)، الأحدث أول. بس الأيام اللي خلصتها، فما ينكشف لاعب يوم ما لعبته */
+function histHTML(m){
+  const L=[];for(let d=DAY;d>=1;d--){const g=store.get('g_'+d+'_'+m,null);if(!g||!g.done)continue;const p=ansFor(m,d-1);if(p)L.push({d,p,g})}
+  const won=L.filter(x=>x.g.win).length;
+  return `<div class="hist"><div class="hh"><b>📜 سجلك</b><span>${L.length?`عرفت ${AR(won)} من ${AR(L.length)}`:''}</span></div>${L.length?L.map(({d,p,g})=>`<div class="hr">${ph(p,40)}<div class="hn"><b>${p.n}</b><small>${D.clubs[p.c]} · ${POSS[p.p]}</small></div><div class="hs ${g.win?'w':'l'}">${g.win?`✅ ${g.guesses.length===1?'من أول محاولة':g.guesses.length===2?'من محاولتين':'من '+AR(g.guesses.length)+' محاولات'}`:'❌ ما عرفته'}<small>تحدي <bdi dir="ltr">#${AR(d)}</bdi></small></div></div>`).join(''):`<div class="he">اللاعبين اللي تلعبهم ${m==='pro'?'في تحدي الخبير ':''}بيتجمعون هني، يوم بعد يوم</div>`}</div>`}
 /* ---------- result ---------- */
 function shareText(){
   const n=S.guesses.length;
@@ -690,8 +699,8 @@ $('#clubLater').onclick=()=>{$('#clubM').hidden=true};
 $('#helpBtn').onclick=()=>$('#howto').hidden=false;
 $('#howGo').onclick=()=>{$('#howto').hidden=true;sfx('welcome');store.set('seenHow',true);const i=$('#gIn');i&&i.focus()};
 let sm=mode;
-$('#statsBtn').onclick=()=>{sm=mode;$('#myPts').innerHTML=D?ptsHTML():'';document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm);$('#statsM').hidden=false};
-document.querySelectorAll('#statSeg button').forEach(b=>b.onclick=()=>{sm=b.dataset.m;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#statsBody').innerHTML=statsHTML(sm)});
+$('#statsBtn').onclick=()=>{sm=mode;$('#myPts').innerHTML=D?ptsHTML():'';document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm)+histHTML(sm);$('#statsM').hidden=false};
+document.querySelectorAll('#statSeg button').forEach(b=>b.onclick=()=>{sm=b.dataset.m;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#statsBody').innerHTML=statsHTML(sm)+histHTML(sm)});
 $('#statsClose').onclick=()=>$('#statsM').hidden=true;
 document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m){m.hidden=true;if(m.id==='howto')store.set('seenHow',true)}});
 
