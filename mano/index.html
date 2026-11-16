@@ -236,7 +236,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
   <h2>كيف تلعب «منو اللاعب؟»</h2>
   <div class="step"><i>1</i><div><b>لاعب اليوم 🕵️</b><span>لاعب سري واحد للكل من دوري أدنوك للمحترفين</span></div></div>
   <div class="step"><i>2</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك 6 محاولات، وكل غلطة تفتح تلميح 🔓</span></div></div>
-  <div class="step"><i>3</i><div><b>بعدها ينفتح تحدي الخبير 🧠</b><span>لاعب ثاني أصعب، وكل تخمين يقارن لاعبك باللاعب السري بالألوان</span></div></div>
+  <div class="step"><i>3</i><div><b>بعدها ينفتح تحدي الخبير 🧠</b><span>لاعب سري ثاني أصعب. اكتب أي لاعب، ونقارنه باللاعب السري في النادي والمركز والجنسية والعمر والرقم: 🟩 نفسه، 🟨 قريب، ⬆⬇ السري أكبر أو أصغر</span></div></div>
   <div class="step"><i>4</i><div><b>شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
   <div class="pts" id="clubPts" hidden><h4>🏆 نقاطك ونقاط ناديك</h4>
    <div style="font-size:12px;opacity:.75;margin-bottom:6px">في كل تحدي، حسب المحاولة اللي عرفت فيها اللاعب:</div>
@@ -371,7 +371,7 @@ function render(){
     h+=`<div class="clues">${CL.map((c,i)=>i<shown?`<div class="clue open"><span>تلميح ${AR(i+1)} · ${c[0]}</span><b>${c[1]()}</b></div>`:`<div class="clue"><span>تلميح ${AR(i+1)}</span><b>🔒 ينفتح لو غلطت</b></div>`).join('')}</div>`;
   }else{
     if(S.guesses.length<2)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارن لك لاعبك باللاعب السري في 5 خانات: <b>النادي، المركز، الجنسية، العمر، الرقم</b>. لون كل خانة يقولك قد شو قربت، ومنها تعرف اللاعب السري.</div>`;
-    h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب منه: المركز في نفس الخط (مثلاً جناح بدال مهاجم)، العمر بفرق سنتين، أو الرقم بفرق 3</span></div><div><i></i><span><b>رمادي</b> = بعيد</span></div><div><i class="ar">⬆⬇</i><span>عمر أو رقم <b>اللاعب السري أكبر أو أصغر</b> من لاعبك</span></div></div>`;
+    h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري بالضبط</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب: <b>المركز</b> في الخط اللي جنبه في الملعب (مثلاً وسط بدال مهاجم)، أو <b>العمر</b> بفرق سنتين أو أقل، أو <b>الرقم</b> بفرق 3 أو أقل</span></div><div><i></i><span><b>رمادي</b> = بعيد. والنادي والجنسية يا أخضر يا رمادي</span></div><div><i class="ar">⬆⬇</i><span>تحت العمر والرقم: <b>اللاعب السري أكبر ⬆ أو أصغر ⬇</b> من لاعبك</span></div></div>`;
   }
   if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب بالعربي أو بالإنجليزي..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
   if(mode==='easy'){
