@@ -123,7 +123,7 @@ footer a{color:inherit}
 .mbox{background:linear-gradient(165deg,var(--navy3),var(--navy));border:1px solid rgba(215,180,101,.4);border-radius:24px;padding:22px 20px;max-width:390px;width:100%;text-align:center;animation:pop .35s;max-height:90vh;overflow-y:auto}
 .mbox h2{color:var(--gold);font-size:21px;margin:4px 0 12px}
 .hist{margin:14px 0 4px;text-align:right}.hist .hh{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px;font-size:14px}.hist .hh b{color:var(--gold)}.hist .hh span{font-size:12px;opacity:.75}
-.hr{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,245,229,.07)}.hn{flex:1;min-width:0}.hn b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.hn small{font-size:11.5px;opacity:.65}
+.hr{display:flex;align-items:center;gap:10px;padding:8px 0;border-top:1px solid rgba(255,245,229,.07)}.hn{flex:1;min-width:0}.hn b{display:block;font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:.12em 0 .3em;margin:-.12em 0 -.3em}.hn small{font-size:11.5px;opacity:.65}
 .hs{font-size:12px;font-weight:600;text-align:left;white-space:nowrap}.hs small{display:block;font-weight:400;opacity:.55;font-size:11px}.hs.w{color:#7ed492}.hs.l{color:rgba(255,245,229,.6)}
 .he{font-size:12.5px;opacity:.65;padding:10px 0;text-align:center}
 .step{display:flex;gap:12px;align-items:center;text-align:right;padding:10px 0;border-bottom:1px solid rgba(255,255,255,.06)}
@@ -163,7 +163,10 @@ footer a{color:inherit}
 .crowd .lbl,.clubc .lbl{font-size:12.5px;color:var(--gold);font-weight:600;margin-bottom:8px}
 .crowd .big{font-size:15px;margin-bottom:4px}.crowd .big b{font-size:34px;color:var(--gold2);margin-left:6px}
 .crowd .fast{display:inline-block;background:rgba(46,158,102,.18);border:1px solid rgba(46,158,102,.5);border-radius:20px;padding:4px 12px;font-size:13.5px;margin:4px 0 8px}.crowd .fast b{color:#6fdca3}
-.crowd .dist i{background:var(--navy3);justify-content:flex-start}.crowd .dist i.hl{background:var(--green)}
+.crowd .dist i{background:var(--navy3);justify-content:flex-start;flex:0 1 auto}.crowd .dist i.hl{background:var(--green)}
+.crowd .dh{font-size:12px;opacity:.7;margin:10px 0 2px}.crowd .dist .dl{width:78px;flex-shrink:0;font-size:12px;opacity:.85}.crowd .dist .tk{flex:1;min-width:0;display:flex}.crowd .dist em{width:26px;font-style:normal;font-size:11px;font-weight:700;color:#6fdca3;flex-shrink:0}
+.crowd .big small{font-size:12px;opacity:.6;margin-right:4px}.crowd .fast.lo{background:rgba(255,245,229,.06);border-color:rgba(255,245,229,.18)}.crowd .fast.lo b{color:var(--gold2)}
+.ct.sep2{display:block;text-align:center;font-size:11.5px;color:var(--gold);opacity:.85;border-top:1px dashed rgba(215,180,101,.35);border-radius:0;margin-top:4px;padding-top:7px}
 .cfoot{font-size:11.5px;opacity:.6;margin-top:8px;line-height:1.7}
 .cpick{display:grid;grid-template-columns:repeat(7,1fr);gap:6px;margin:10px 0}
 .cpick button{background:rgba(7,29,43,.7);border:1px solid rgba(215,180,101,.2);border-radius:12px;padding:8px 0 5px;display:grid;justify-items:center;align-content:center;gap:4px;color:var(--ivory);font-size:9.5px;height:66px}
@@ -185,9 +188,11 @@ footer a{color:inherit}
 .ct{display:flex;align-items:center;gap:8px;padding:5px 6px;border-radius:10px;font-size:13px}
 .ct.me{background:rgba(215,180,101,.16);outline:1px solid rgba(215,180,101,.5)}
 .ct .r{width:18px;opacity:.6;font-size:12px;text-align:center}.ct .cr{width:26px;display:grid;place-items:center}
-.ct .nm{width:78px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ct .nm{width:78px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;padding:.12em 0 .3em;margin:-.12em 0 -.3em}
 .ct .bar{flex:1;height:8px;background:rgba(255,255,255,.06);border-radius:4px;overflow:hidden}.ct .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--gold),var(--gold2));border-radius:4px}
-.ct .v{width:34px;text-align:left;font-weight:700;color:var(--gold2)}.ct .n{width:40px;text-align:left;font-size:10.5px;opacity:.55}
+.ct .v{width:42px;text-align:left;font-weight:700;color:var(--gold2)}.ct .n{width:40px;text-align:left;font-size:11px;opacity:.6}
+.ct.hd2{font-size:11px;opacity:.6;padding-bottom:0}.ct.hd2 .v{color:inherit;font-weight:500}.ct.hd2 .n{opacity:1}
+.clubc .exp{font-size:12.5px;line-height:1.7;opacity:.85;margin:2px 0 8px}.clubc .exp b{color:var(--gold2)}.cfoot b{color:var(--gold2);font-weight:600}.cfoot a{color:var(--gold)}
 .toast.on{transform:translateX(-50%) translateY(0)}
 .shake{animation:shake .4s}
 @keyframes shake{25%{transform:translateX(6px)}50%{transform:translateX(-6px)}75%{transform:translateX(3px)}}
@@ -255,7 +260,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
 <div class="modal" id="clubM" hidden><div class="mbox clubm">
   <div class="tile"><svg viewBox="2.6 2.6 26.8 26.8" fill="none" stroke="#D7B465" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5.6q5.3-1.9 10.5 0t10.5 0v4.6q-5.3 1.9-10.5 0t-10.5 0z" fill="rgba(215,180,101,.25)"/><path d="M10.8 4.7v4.5M16 5.6v4.6M21.2 6.6v4.5" stroke-width="1.3"/><path d="M5.5 6.6H3.4M5.5 9.2H3.4M26.5 6.6h2.1M26.5 9.2h2.1" stroke-width="1.2"/><circle cx="16" cy="16.3" r="2.7"/><path d="M11.6 21.2 7.6 10.6M20.4 21.2l4-10.6"/><path d="M10.6 28v-3.2a5.4 5.4 0 0 1 10.8 0V28"/></svg></div>
   <h2>تشجع أي نادي انت؟</h2>
-  <p class="why">نتيجتك كل يوم تنحسب لجمهور ناديك في <b>تحدي الأندية</b>.<br>كل ما عرفت اللاعب أسرع، ناديك يتقدم.</p>
+  <p class="why">نتيجتك كل يوم تنحسب لجمهور ناديك في <b>ترتيب الأندية</b> و<b>«دوري الجماهير»</b>.<br>كل ما عرفت اللاعب أسرع، ناديك يتقدم.</p>
   <div class="cgrid" id="cgrid"></div>
   <button class="btn" id="clubOk" disabled>اختار ناديك</button>
   <div class="later"><button class="linkb" id="clubNone">ما أشجع نادي معيّن</button><button class="linkb" id="clubLater" style="opacity:.7">بعدين</button></div>
@@ -534,7 +539,7 @@ function crowdLine(){
 }
 window.addEventListener('el3fan',()=>crowdFlow());
 function pickHTML(again){
-  return `<div class="card clubc"><div class="lbl">🏆 تحدي الأندية الأسبوعي</div>
+  return `<div class="card clubc"><div class="lbl">🏆 ترتيب جماهير الأندية</div>
    <div style="font-size:16px;font-weight:700">${again?'غيّر ناديك':'أي نادي تشجع؟'}</div>
    <div style="font-size:12.5px;opacity:.7;margin-top:3px">كل يوم نتيجتك تنحسب لجمهور ناديك${again?' (من اللعبة الياية)':'، وبعدها تشوف نسبة الجماهير'}</div>
    <div class="cpick">${CLUBS_ORDER.map(k=>`<button data-c="${k}">${crest(k,30)}<span>${D.clubs[k]}</span></button>`).join('')}</div>
@@ -561,25 +566,31 @@ async function crowdFlow(again){
     let better=n-w;for(let j=g+1;j<=6;j++)better+=s['g'+j]||0;
     CW={n,pct:Math.round(w/n*100),faster:g&&n>1?Math.round(better/(n-1)*100):null};
     const rows=[1,2,3,4,5,6].map(i=>[AR(i),s['g'+i]||0,i===g]).concat([['❌',n-w,!g]]);const mx=Math.max(1,...rows.map(r=>r[1]));
-    cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 الجماهير اليوم · ${MODEN[mode]}</div>
-      <div class="big"><b>${PC(AR(CW.pct))}</b>عرفوه اليوم</div>
-      ${g&&n>=5?`<div class="fast">⚡ أسرع من <b>${PC(AR(CW.faster))}</b> من اللي لعبوا</div>`:''}
-      <div class="dist">${rows.map(r=>`<div><span style="width:16px">${r[0]}</span><i class="${r[2]?'hl':''}" style="width:${Math.max(8,r[1]/mx*100)}%">${PC(AR(Math.round(r[1]/n*100)))}</i></div>`).join('')}</div>
-      <div class="cfoot">لعبوا اليوم: ${nf(n)}</div></div>`;
+    const fail=n-w,lose=S.done&&!S.win;
+    const you=g?`أنت عرفته من ${g===1?'أول محاولة':'المحاولة '+AR(g)}${n>=5&&CW.faster>0?`، يعني أحسن من <b>${PC(AR(CW.faster))}</b> من اللي لعبوا`:''}`:(lose?`أنت ما عرفته اليوم، ومثلك <b>${PC(AR(Math.round(Math.max(0,fail-1)/Math.max(1,n-1)*100)))}</b> من اللي لعبوا ما عرفوه`:'');
+    cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 نتايج الجماهير اليوم · ${MODEN[mode]}</div>
+      <div class="big"><b>${PC(AR(CW.pct))}</b>عرفوا اللاعب <small>من ${nf(n)} لعبوا</small></div>
+      ${you?`<div class="fast ${g?'':'lo'}">${g?'⚡':'🙈'} ${you}</div>`:''}
+      <div class="dh">كم محاولة احتاجوا؟</div>
+      <div class="dist">${rows.map((r,k)=>`<div class="${r[2]?'you':''}"><span class="dl">${k<6?(k?'المحاولة '+r[0]:'أول محاولة'):'ما عرفوه'}</span><span class="tk"><i class="${r[2]?'hl':''}" style="width:${Math.max(12,r[1]/mx*100)}%">${PC(AR(Math.round(r[1]/n*100)))}</i></span><em>${r[2]?'أنت':''}</em></div>`).join('')}</div></div>`;
     if(crowdLine())buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{});
   }else if(cb)cb.innerHTML='';
   // club card
   const T=tally(c,f,f+WEEK-1),me=myClub(),se=store.get('sub_'+DAY+'_easy',null),sp=store.get('sub_'+DAY+'_pro',null);
   const pe=se&&se.g?7-se.g:0,pp=sp&&sp.g?7-sp.g:0;
   const champ=wk>1?tally(c,pf,f-1)[0]:null;
-  const left=Math.ceil((f+WEEK-1-DAY)+msToDubaiMidnight()/864e5);
+  const left=Math.floor((f+WEEK-1-DAY)+msToDubaiMidnight()/864e5);
   const mx=Math.max(.1,...T.map(o=>o.avg));
-  box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 تحدي الأندية · الأسبوع ${AR(wk)}</div>
-    ${champ&&champ.avg>=0?`<div class="champ">${crest(champ.k,30)}<div><b>بطل الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">بمعدل ${AR1(champ.avg)} نقطة</div></div></div>`:''}
-    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ <b>${"\u2066+"+(pe+pp)+"\u2069"}</b> نقاط لجمهور ${D.clubs[me]} اليوم${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:''}
-    <div class="ct" style="font-size:10.5px;opacity:.55;padding-bottom:0"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v" style="color:inherit;font-weight:400">المعدل</span><span class="n" style="opacity:1">لعبات</span></div>
-    ${T.map((o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):'–'}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):''}</span></div>`).join('')}
-    <div class="cfoot">المعدل = نقاط الجمهور من لاعب اليوم وتحدي الخبير ÷ عدد لعبات «لاعب اليوم» (معدل المشجع في اليوم)<br>لعبات = كم مرة لعب جمهور النادي «لاعب اليوم» هالأسبوع · النادي يدخل الترتيب من ${AR(MINP)} لعبات · يخلص التحدي بعد ${AR(Math.max(1,left))} ${left>2?'أيام':'يوم'} · ${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+  const ok=T.filter(o=>o.avg>=0),out=T.filter(o=>o.avg<0);
+  const rowH=(o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.avg>=0?AR(i+1):''}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.avg>0?o.avg/mx*100:0}%"></i></span><span class="v">${o.avg>=0?AR1(o.avg):'—'}</span><span class="n">${o.n?nf(o.n):'0'}</span></div>`;
+  box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 ترتيب جماهير الأندية · الأسبوع ${AR(wk)}</div>
+    ${champ&&champ.avg>=0?`<div class="champ">${crest(champ.k,30)}<div><b>متصدر الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">بمعدل ${AR1(champ.avg)} نقطة للمشجع</div></div></div>`:''}
+    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وكلها تنحسب لجمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:''}
+    <div class="exp">الأندية تترتب بـ<b>معدل نقاط المشجع في اليوم</b>، مب بمجموع النقاط. عشان جذي الجمهور القليل يقدر يغلب الكبير.</div>
+    <div class="ct hd2"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v">المعدل</span><span class="n">لعبات</span></div>
+    ${ok.map(rowH).join('')}
+    ${out.length?`<div class="ct sep2">ما دخلوا الترتيب لين الحين · النادي يحتاج ${AR(MINP)} لعبات</div>${out.map(o=>rowH(o,0)).join('')}`:''}
+    <div class="cfoot"><b>المعدل</b> = نقاط جمهور النادي من لاعب اليوم وتحدي الخبير ÷ عدد لعباتهم. أقصى شي ${AR(12)} في اليوم.<br><b>لعبات</b> = كم مرة لعب جمهور النادي «لاعب اليوم» هالأسبوع.<br>الأسبوع يخلص بعد ${left>=2?AR(left)+(left>10?' يوم':' أيام'):left===1?'يوم':'ساعات'}، ومركز ناديك هني يعطيه نقاط في <a href="../fans/">«دوري الجماهير»</a>.<br>${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
 }
 
