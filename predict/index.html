@@ -449,7 +449,7 @@ async function pullRound(r){
 }
 function shareRound(r){
   const L=r.ms.filter(m=>MY[m.id]).map(m=>`${CL[m.h]} ${SC(MY[m.id].h,MY[m.id].a)} ${CL[m.a]}${MY[m.id].x?' ⭐':''}`);
-  const t=`توقعاتي في ${rlabel(r)} 🔮\n\n${L.join('\n')}\n\nتوقع انت ونافسني 👇`;
+  const t=`توقعاتي في ${rlabel(r)} 🔮\n\n${L.join('\n')}\n\nتوقع أنت ونافسني 👇`;
   gc('share-predict');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank');
 }
 
@@ -478,7 +478,7 @@ function renderLb(){
   h+=S.length?`<div class="lb">${lbRows(S)}</div>`:`<div class="note">يطلع بعد أول مباراة منتهية</div>`;
   if(TB&&TB.updated)h+=`<div class="note" style="font-size:11px">آخر تحديث: <bdi dir="ltr">${esc(TB.updated)}</bdi></div>`;
   $('#app').innerHTML=h;
-  $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع انت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank')});
+  $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع أنت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank')});
 }
 function renderCl(){
   // الأندية: نقاط أفضل 11 مشجع (التشكيلة) ← الأقل أخطاء ← نفس المركز. الصف: [النادي، 0، المشاركين، نقاط التشكيلة، أخطاء التشكيلة، عدد التشكيلة]
