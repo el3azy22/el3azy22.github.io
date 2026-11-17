@@ -8,11 +8,11 @@
   predict/data.json   المباريات كلها (الجولة، الموعد، الفريقين، الحالة، النتيجة) + رأي الجماهير بعد الصافرة
   predict/table.json  ترتيب كل جولة، وترتيب الموسم، وترتيب جماهير الأندية
 
-القوانين (معتمدة 14 نوفمبر 2026):
-  النتيجة بالضبط 5 · الفائز مع الفارق 3 (والتعادل الصح بنتيجة ثانية 3) · الفائز بس 2 · غير جذي 0
+القوانين (v2، 17 نوفمبر 2026 — راجع _tools/rules/README.md):
+  النتيجة بالضبط 10 · الفائز مع الفارق 6 (والتعادل الصح بنتيجة ثانية 6) · الفائز بس 4 · غير جذي 0
   ⭐ مضاعفة مباراة وحدة في كل جولة (لو انحطت على أكثر من وحدة، تنحسب أول وحدة بالموعد بس)
   التوقع ينحسب بس لو انكتب قبل الصافرة الرسمية (w = وقت السيرفر < موعد المباراة)
-  ترتيب الموسم: اللي شارك في 3 جولات أو أكثر · ترتيب الأندية: المعدل لكل مشجع، وحد أدنى 10 مشجعين
+  ترتيب الموسم: مجموع الجولات · ترتيب الأندية: مجموع نقاط جمهور النادي (التعادل: نتايج بالضبط)
   كسر التعادل: أكثر نتايج بالضبط، بعدها أقل عدد توقعات (الأدق)، بعدها الأقدم في التوقع
 """
 import json, os, re, sys, time, urllib.request
@@ -29,7 +29,7 @@ UAE = timezone(timedelta(hours=4))
 CLUB = {'4': 'nasr', '12': 'kalba', '8': 'wahda', '21': 'ajman', '31': 'dhafra', '3': 'sharjah', '2': 'wasl',
         '464': 'united', '11': 'khorfakkan', '6': 'shababahli', '20': 'hatta', '9': 'jazira', '5': 'baniyas', '1': 'ain'}
 CLUBS = set(CLUB.values())
-MIN_ROUNDS, MIN_FANS = 3, 10
+MIN_ROUNDS, MIN_FANS = 1, 0   # v2: الترتيب بالمجموع، بدون حد أدنى
 FINISHED = 6
 START = int(os.environ.get('START', '1794772800000'))  # 16 نوفمبر 2026 00:00 الإمارات: المباريات قبلها مب داخلة في اللعبة
 CACHE = os.environ.get('CACHE') or os.path.join(ROOT, '_tools', 'predict', 'cache')   # توقعات المباريات المقفولة (ما تتغير بعد الصافرة)
@@ -86,11 +86,11 @@ def avg2(t, n):
 
 def points(ph, pa, sh, sa):
     if ph == sh and pa == sa:
-        return 5
+        return 10
     sg = lambda x: (x > 0) - (x < 0)
     if sg(ph - pa) != sg(sh - sa):
         return 0
-    return 3 if ph - pa == sh - sa else 2
+    return 6 if ph - pa == sh - sa else 4
 
 
 def valid_pick(p, m):
@@ -121,7 +121,7 @@ def crowd(picks):
 
 def compute(ms, picks_by_match, now_ms):
     """picks_by_match: {mid: {uid: pick}} للمباريات اللي بدت. يرجع (crowd, table)."""
-    crowd_out, rounds = {}, defaultdict(lambda: defaultdict(lambda: {'p': 0, 'e': 0, 'n': 0, 'w': 0, 'c': 'none', 'nm': '', 'ct': 0, 'ls': 0, 'pc': defaultdict(lambda: [0, 0])}))
+    crowd_out, rounds = {}, defaultdict(lambda: defaultdict(lambda: {'p': 0, 'e': 0, 'n': 0, 'w': 0, 'c': 'none', 'nm': '', 'ct': 0, 'ls': 0, 'pc': defaultdict(lambda: [0, 0, 0])}))
     by_id = {m['id']: m for m in ms}
     # ⭐ المضاعفة: أول مباراة بالموعد عليها x في كل جولة لكل مشجع
     dbl = {}
@@ -151,32 +151,32 @@ def compute(ms, picks_by_match, now_ms):
                 if pt:
                     r['ls'] = max(r['ls'], m['t'])   # موعد آخر مباراة جابت له نقاط (لفك تعادل نجوم الأسبوع)
                 if pt and p['h'] == m['sh'] and p['a'] == m['sa']:
-                    r['e'] += 1
+                    r['e'] += 1; r['pc'][c][2] += 1
     key = lambda kv: (-kv[1]['p'], -kv[1]['e'], kv[1]['w'])
     U = lambda u: u[:12]
     table = {'rounds': {}, 'season': [], 'clubs': {}, 'clubs_season': []}
     season = defaultdict(lambda: {'p': 0, 'e': 0, 'r': 0, 'c': 'none', 'nm': '', 'ct': 0, 'w': 0})
-    club_season = defaultdict(lambda: {'s': 0.0, 'r': 0})
+    club_season = defaultdict(lambda: {'s': 0, 'r': 0, 'e': 0})
     for wk in sorted(rounds):
         rows = sorted(rounds[wk].items(), key=key)
         table['rounds'][str(wk)] = [[U(u), r['nm'], r['c'], r['p'], r['e'], r['n'], r['ls']] for u, r in rows]
-        cl = defaultdict(list)
+        cl = defaultdict(lambda: [0, 0, 0])   # النادي: [مجموع النقاط، عدد المشاركين، نتايج بالضبط]
         for u, r in rows:
-            for c, (pts, n) in r['pc'].items():
+            for c, (pts, n, e) in r['pc'].items():
                 if n and c != 'none':
-                    cl[c].append(pts)
+                    cl[c][0] += pts; cl[c][1] += 1; cl[c][2] += e
             s = season[u]
             s['p'] += r['p']; s['e'] += r['e']; s['r'] += 1 if r['n'] else 0; s['w'] = max(s['w'], r['w'])
             if r['ct'] >= s['ct']:
                 s['c'], s['nm'], s['ct'] = r['c'], r['nm'], r['ct']
-        crow = sorted(([c, avg2(sum(v), len(v)), len(v), sum(v)] for c, v in cl.items()), key=lambda x: (-(x[2] >= MIN_FANS), -x[1], -x[2]))
+        # الأندية بمجموع نقاط جمهورها (v2): المجموع ← نتايج بالضبط. الصف: [النادي، المعدل (للمعلومة)، المشاركين، المجموع، بالضبط]
+        crow = sorted(([c, avg2(t, n), n, t, e] for c, (t, n, e) in cl.items()), key=lambda x: (-x[3], -x[4]))
         table['clubs'][str(wk)] = crow
-        for c, avg, n, _ in crow:
-            if n >= MIN_FANS:
-                club_season[c]['s'] += avg; club_season[c]['r'] += 1
+        for c, avg, n, t, e in crow:
+            club_season[c]['s'] += t; club_season[c]['r'] += 1; club_season[c]['e'] += e
     srows = sorted(((u, s) for u, s in season.items() if s['r'] >= MIN_ROUNDS), key=key)
     table['season'] = [[U(u), s['nm'], s['c'], s['p'], s['e'], s['r']] for u, s in srows]
-    table['clubs_season'] = sorted(([c, round(v['s'], 2), v['r']] for c, v in club_season.items()), key=lambda x: (-x[1], -x[2]))
+    table['clubs_season'] = sorted(([c, v['s'], v['r'], v['e']] for c, v in club_season.items()), key=lambda x: (-x[1], -x[3]))
     table['min'] = {'rounds': MIN_ROUNDS, 'fans': MIN_FANS}
     return crowd_out, table
 

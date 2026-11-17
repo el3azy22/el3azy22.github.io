@@ -21,16 +21,17 @@ header .s{font-size:27px;color:var(--gold);font-weight:600;margin-top:4px}
 .lead .n{text-align:center}.lead .n b{font-size:60px;color:var(--gold2);direction:ltr}.lead .n small{display:block;font-size:20px;opacity:.7}
 .cols{position:absolute;top:402px;left:64px;right:64px;display:grid;grid-template-columns:1fr 1fr;gap:18px}
 .col{background:rgba(12,38,56,.75);border:1px solid rgba(255,245,229,.09);border-radius:26px;overflow:hidden}
-.r{display:grid;grid-template-columns:34px 36px 46px 1fr 62px 66px;align-items:center;gap:6px;height:74px;padding:0 16px;border-bottom:1px solid rgba(255,245,229,.06);font-size:26px}
+.r{display:grid;grid-template-columns:34px 34px 44px 1fr 86px 92px;align-items:center;gap:6px;height:74px;padding:0 16px;border-bottom:1px solid rgba(255,245,229,.06);font-size:26px}
 .r:last-child{border:0}
 .r i{font-style:normal;text-align:center;font-weight:700;opacity:.75;font-size:24px}
 .r .c{display:grid;place-items:center;height:46px}
-.r .nm{font-weight:600;white-space:nowrap}
+.r .nm{font-weight:600;white-space:nowrap;font-size:24px}
+.story{position:absolute;top:972px;left:64px;right:64px;text-align:center;font-size:23px;line-height:1.5;color:var(--ivory);opacity:.92}
 .r .w{direction:ltr;text-align:center;color:var(--gold);font-size:21px;font-weight:600}
-.r .t{text-align:center;font-weight:700;font-size:30px;color:var(--gold2)}
+.r .t{text-align:center;font-weight:700;font-size:28px;color:var(--gold2)}
 .r .m{font-size:19px;font-weight:700;text-align:center;direction:ltr;white-space:nowrap}.m.up{color:#7fe0a6}.m.dn{color:#ff9d8f}.m.eq{opacity:.35}
 .r.p1{background:linear-gradient(90deg,transparent,rgba(215,180,101,.22));box-shadow:inset -5px 0 0 #D7B465}.r.p2{background:linear-gradient(90deg,transparent,rgba(200,210,225,.14));box-shadow:inset -5px 0 0 #C9D2DE}.r.p3{background:linear-gradient(90deg,transparent,rgba(205,140,90,.17));box-shadow:inset -5px 0 0 #C98A5A}.r.p1 i{color:var(--gold2);opacity:1}
-.hd{display:grid;grid-template-columns:34px 36px 46px 1fr 62px 66px;white-space:nowrap;gap:6px;padding:10px 16px 6px;font-size:17px;opacity:.6}
+.hd{display:grid;grid-template-columns:34px 34px 44px 1fr 86px 92px;white-space:nowrap;gap:6px;padding:10px 16px 6px;font-size:17px;opacity:.6}
 .hd span:nth-last-child(-n+2){text-align:center}
 .stars{position:absolute;top:1040px;left:64px;right:64px}
 .stars .l{font-size:25px;color:var(--gold);font-weight:600;margin-bottom:12px}
@@ -48,7 +49,8 @@ header .s{font-size:27px;color:var(--gold);font-weight:600;margin-top:4px}
 <header><img src="/mano/assets/logo.png"><div><h1><span class="gt">دوري الجماهير</span></h1><div class="s" id="sub"></div></div></header>
 <div class="lead" id="lead"></div>
 <div class="cols" id="cols"></div>
-<div class="stars"><div class="l" id="stl">⭐ نجوم الأسبوع</div><div class="g" id="stars"></div></div>
+<div class="story" id="story" hidden></div>
+<div class="stars"><div class="l" id="stl">⭐ أعلى المشجعين في الأسبوع</div><div class="g" id="stars"></div></div>
 <div class="foot"><div class="q">وين ناديك؟ 👀</div><div class="url">el3azy.com/fans</div></div>
 </div>
 <script>
@@ -56,25 +58,27 @@ const CL={ain:'العين',wahda:'الوحدة',jazira:'الجزيرة',shababah
 const CF={ain:[.83,1.197],wahda:[.91,1.176],jazira:[1,1],shababahli:[1.037,1.074],sharjah:[.979,1.133],wasl:[.973,1.165],nasr:[1,1],baniyas:[1.234,.681],ajman:[1.154,1.016],kalba:[.995,1],khorfakkan:[1.048,1.069],dhafra:[.92,1.106],hatta:[.989,1.122],united:[.995,.995]};
 const crest=(c,s)=>`<img src="/mano/assets/${c}.png" style="width:${s*CF[c][0]}px;height:${s*CF[c][1]}px;object-fit:contain">`;
 const esc=t=>String(t).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const nf=n=>Number(n||0).toLocaleString('en-US');
 fetch('/fans/data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
  const q=+new URLSearchParams(location.search).get('w')||D.done;const W=D.weeks[q-1];
  if(!W||W.live){document.body.dataset.ok='none';return}
- // جدول الموسم لين هالجولة (لو طلبنا جولة قديمة نعيد الحساب من الجولات)
- const tot={},first={};const wks=D.weeks.slice(0,q);
- const st=ws=>{const t={};Object.keys(CL).forEach(c=>t[c]={c,tot:0,f:0,fans:D.fc[c]||0});ws.forEach(w=>w.rows.forEach(r=>{t[r.c].tot+=r.pts;t[r.c].f+=(r.m[0]===14)+(r.p&&r.p[0]===14?1:0)}));
-   return Object.values(t).sort((a,b)=>b.tot-a.tot||b.f-a.f||b.fans-a.fans)};
- const now=st(wks),prev=q>1?Object.fromEntries(st(wks.slice(0,-1)).map((x,i)=>[x.c,i+1])):{};
- const wk=Object.fromEntries(W.rows.map(r=>[r.c,r.pts]));
- const R=now.map((x,i)=>[x.c,x.tot,wk[x.c],q>1?(prev[x.c]-(i+1)):0]);
+ // v2: جدول الموسم لين هالأسبوع = مجموع نقاط كل الأسابيع (كل التحديات). التعادل: الخبير + بالضبط، وإذا تساووا نفس المركز
+ const wks=D.weeks.filter(w=>w.w<=q);
+ const st=ws=>{const t={};Object.keys(CL).forEach(c=>t[c]={c,tot:0,tb:0});ws.forEach(w=>(w.clubs.all||[]).forEach(r=>{t[r[0]].tot+=r[2];t[r[0]].tb+=(r[7]||0)+(r[8]||0)}));
+   const L=Object.values(t).sort((a,b)=>b.tot-a.tot||b.tb-a.tb||Object.keys(CL).indexOf(a.c)-Object.keys(CL).indexOf(b.c));L.forEach((x,i)=>x.rk=i&&x.tot===L[i-1].tot&&x.tb===L[i-1].tb?L[i-1].rk:i+1);return L};
+ const now=st(wks),prev=q>1?Object.fromEntries(st(wks.slice(0,-1)).map(x=>[x.c,x.rk])):{};
+ const wk=Object.fromEntries((W.clubs.all||[]).map(r=>[r[0],r[2]]));
+ const R=now.map(x=>[x.c,x.tot,wk[x.c]||0,q>1?(prev[x.c]-x.rk):0,x.rk]);
  document.getElementById('sub').textContent=`جدول الموسم بعد الأسبوع ${q} (${W.from} لين ${W.to})`;
  const story=q===D.done?D.story:'';
- document.getElementById('lead').innerHTML=`${crest(R[0][0],96)}<div><div class="k">🏆 المتصدر</div><b>جمهور ${CL[R[0][0]]}</b></div>${story?`<div class="sty">🚀 ${esc(story)}</div>`:'<div style="flex:1"></div>'}<div class="n"><b>${R[0][1]}</b><small>نقطة</small></div>`;
- const row=(r,k)=>`<div class="r ${k<3&&r[1]?'p'+(k+1):''}"><i>${k+1}</i><span class="m ${r[3]>0?'up':r[3]<0?'dn':'eq'}">${r[3]>0?'▲'+r[3]:r[3]<0?'▼'+(-r[3]):'–'}</span><span class="c">${crest(r[0],40)}</span><span class="nm">${CL[r[0]]}</span><span class="w">+${r[2]}</span><span class="t">${r[1]}</span></div>`;
+ if(story){const e=document.getElementById('story');e.textContent='🚀 '+story;e.hidden=false}
+ document.getElementById('lead').innerHTML=`${crest(R[0][0],96)}<div><div class="k">🏆 المتصدر</div><b>جمهور ${CL[R[0][0]]}</b></div><div style="flex:1"></div><div class="n"><b>${nf(R[0][1])}</b><small>نقطة</small></div>`;
+ const row=(r,k)=>`<div class="r ${r[4]<=3&&r[1]?'p'+r[4]:''}"><i>${r[4]}</i><span class="m ${r[3]>0?'up':r[3]<0?'dn':'eq'}">${r[3]>0?'▲'+r[3]:r[3]<0?'▼'+(-r[3]):'–'}</span><span class="c">${crest(r[0],40)}</span><span class="nm">${CL[r[0]]}</span><span class="w">+${nf(r[2])}</span><span class="t">${nf(r[1])}</span></div>`;
  const hd='<div class="hd"><span>#</span><span></span><span></span><span>النادي</span><span>الأسبوع</span><span>المجموع</span></div>';
  document.getElementById('cols').innerHTML=`<div class="col">${hd}${R.slice(0,7).map(row).join('')}</div><div class="col">${hd}${R.slice(7).map((r,k)=>row(r,k+7)).join('')}</div>`;
- const S=W.stars||[];
- if(S.length){document.getElementById('stars').innerHTML=S.slice(0,3).map((x,k)=>{const r=x[3]||k+1;return `<div class="st ${r==1?'g1':''}"><span class="md">${['🥇','🥈','🥉'][r-1]}</span>${crest(x[1],44)}<div><b>${esc(x[0])}</b><small><span class="p">${x[2]}</span> نقطة</small></div></div>`}).join('');
-  const r3=(S[2]||S[S.length-1])[3]||3,ex=S.slice(3).filter(x=>x[3]===r3).length+(S.length>3&&S[S.length-1][3]===r3?(W.more||0):0);if(ex>0)document.getElementById('stl').innerHTML+=` <span style="opacity:.7;font-size:20px">· ${ex===1?'ومشجع ثاني متعادل':'و'+ex+' مشجعين متعادلين'} في المركز ${r3}</span>`}
+ const S=(W.fans&&W.fans.all)||[];const MORE=(W.more&&W.more.all)||0;
+ if(S.length){document.getElementById('stars').innerHTML=S.slice(0,3).map((x,k)=>{const r=x[3]||k+1;return `<div class="st ${r==1?'g1':''}"><span class="md">${['🥇','🥈','🥉'][r-1]}</span>${crest(x[1],44)}<div><b>${esc(x[0])}</b><small><span class="p">${nf(x[2])}</span> نقطة</small></div></div>`}).join('');
+  const r3=(S[2]||S[S.length-1])[3]||3,ex=S.slice(3).filter(x=>x[3]===r3).length+(S.length>3&&S[S.length-1][3]===r3?MORE:0);if(ex>0)document.getElementById('stl').innerHTML+=` <span style="opacity:.7;font-size:20px">· ${ex===1?'ومشجع ثاني متعادل':'و'+ex+' مشجعين متعادلين'} في المركز ${r3}</span>`}
  else document.querySelector('.stars').style.display='none';
  document.body.dataset.ok=1;
 });
