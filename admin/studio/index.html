@@ -65,7 +65,7 @@ header a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1
   </section>
 
   <section class="card" id="cC">
-    <h2>🏆 تحدي الأندية <small>ترتيب جماهير الأندية</small></h2>
+    <h2>🏆 ترتيب الأندية <small>دوري الجماهير · الأسبوع الحالي</small></h2>
     <p class="when">انشرها نص الأسبوع عشان تشعل المنافسة، وفي آخر يوم من الأسبوع عشان تعلن البطل.</p>
     <div class="step"><button data-d="-1">›</button><b id="dC">—</b><button data-d="1">‹</button></div>
     <div id="bC"><img class="prev" id="iC" alt=""><div class="tw" id="tC"></div>
@@ -113,7 +113,7 @@ const proOf=d=>d===1?BY['alassane-diallo']:null;
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 
 /* الإطار المشترك */
-function frame(tag){
+function frame(tag,kick='تحدي العازي اليومي',title='منو اللاعب؟'){
   const W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
   x.direction='rtl';x.textBaseline='middle';
   let g=x.createLinearGradient(0,0,0,H);g.addColorStop(0,'#0C2638');g.addColorStop(.55,'#071D2B');g.addColorStop(1,'#051521');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -123,8 +123,8 @@ function frame(tag){
   // header
   if(LOGO)x.drawImage(LOGO,W-80-170,62,170,170);
   const R=W-80-170-28;x.textAlign='right';
-  x.fillStyle='#D7B465';x.font=`600 34px ${F}`;x.fillText('تحدي العازي اليومي',R,100);
-  x.fillStyle='#FFF5E5';x.font=`700 86px ${F}`;x.fillText('منو اللاعب؟',R,168);
+  x.fillStyle='#D7B465';x.font=`600 34px ${F}`;x.fillText(kick,R,100);
+  x.fillStyle='#FFF5E5';x.font=`700 86px ${F}`;x.fillText(title,R,168);
   x.font=`600 30px ${F}`;const tw=x.measureText(tag).width+44;
   x.fillStyle='rgba(215,180,101,.14)';rr(x,R-tw,232,tw,52,26);x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke();
   x.fillStyle='#D7B465';x.fillText(tag,R-22,259);
@@ -132,10 +132,10 @@ function frame(tag){
   if(SADUI){x.globalAlpha=.7;for(let i=0;i<20;i++)x.drawImage(SADUI,W/2-180+i*18,306,18,12);x.globalAlpha=1}
   return {cv,x,W,H};
 }
-function footer(x,W,cta){
+function footer(x,W,cta,url='el3azy.com/mano'){
   x.strokeStyle='rgba(215,180,101,.3)';x.lineWidth=2;x.beginPath();x.moveTo(90,1240);x.lineTo(W-90,1240);x.stroke();
   x.fillStyle='#FFF5E5';x.font=`600 32px ${F}`;x.textAlign='right';x.direction='rtl';x.fillText(cta,W-90,1284);
-  x.direction='ltr';x.textAlign='left';x.fillStyle='#D7B465';x.font=`600 32px ${F}`;x.fillText('el3azy.com/mano',90,1284);x.direction='rtl';
+  x.direction='ltr';x.textAlign='left';x.fillStyle='#D7B465';x.font=`600 32px ${F}`;x.fillText(url,90,1284);x.direction='rtl';
 }
 const blobOf=cv=>new Promise((ok,no)=>cv.toBlob(b=>b?ok(b):no(),'image/png'));
 
@@ -200,38 +200,37 @@ async function cardB(d){
   return {cv,text,empty:!tot&&!DEMO};
 }
 
-/* C: تحدي الأندية */
-function tally(raw,from,to){
-  const T={};ORDER.forEach(k=>T[k]={k,n:0,t:0});
-  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,o])=>{if(T[k]&&o){if(m==='easy')T[k].n+=o.n||0;T[k].t+=o.t||0}}))});
-  return Object.values(T).map(o=>(o.avg=o.n>=MINP?o.t/o.n:-1,o)).sort((a,b)=>b.avg-a.avg||b.n-a.n||ORDER.indexOf(a.k)-ORDER.indexOf(b.k));
-}
+/* C: ترتيب الأندية في دوري الجماهير (v3: نقاط التشكيلة = أفضل 11 مشجع، من كل التحديات) */
+const URL_F='https://el3azy.com/fans/';
+let FANS=null;
 async function cardC(wk){
-  const f=(wk-1)*WEEK+1,l=f+WEEK-1;
-  let raw;
-  if(DEMO){raw={};ORDER.forEach((k,i)=>{const n=[96,71,64,58,49,40,37,22,18,15,11,7,4,2][i];raw[f]=raw[f]||{easy:{}};raw[f].easy[k]={n,t:Math.round(n*(4.6-i*.17))}})}
-  else raw=await fetch(`${FB}/c.json?orderBy=${encodeURIComponent('"$key"')}&startAt=${encodeURIComponent('"'+f+'"')}&endAt=${encodeURIComponent('"'+l+'"')}`).then(r=>r.json()).catch(()=>null);
-  const T=tally(raw,f,l);const done=TODAY>l;const top=T[0];
-  const {cv,x,W}=frame('تحدي الأندية · الأسبوع '+wk);
+  if(!FANS||!DEMO)FANS=await fetch('../../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
+  const W1=(FANS&&FANS.weeks||[]).find(w=>w.w===wk);
+  let rows=W1?W1.boards.all.clubs.filter(r=>r[2]>0).map(r=>({k:r[0],rk:r[1],pts:r[2],xi:r[3]})):[];
+  if(DEMO&&!rows.length)rows=ORDER.map((k,i)=>({k,rk:i+1,pts:[140,132,120,111,98,90,77,60,52,40,31,22,12,6][i],xi:Math.max(2,11-Math.floor(i/2))}));
+  const done=W1&&W1.final;const tops=rows.filter(r=>r.rk===1);
+  const {cv,x,W}=frame('ترتيب الأندية · الأسبوع '+wk,'منصة العازي','دوري الجماهير');
   x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 54px ${F}`;
-  x.fillText(done?'بطل الأسبوع':'الترتيب لين الحين',W/2,360);
-  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 25px ${F}`;x.fillText('معدل نقاط كل جمهور (من أول محاولة 6 نقاط … سادس محاولة نقطة)',W/2,412);
-  const mx=Math.max(.1,...T.map(o=>o.avg));const y0=470,rh=52;
-  x.font=`500 22px ${F}`;x.fillStyle='rgba(255,245,229,.45)';x.textAlign='center';x.fillText('المعدل',190,y0-24);x.fillText('لعبوا',110,y0-24);
-  T.forEach((o,i)=>{const y=y0+i*rh;const lead=i===0&&o.avg>=0;
-    if(lead){rr(x,80,y-4,W-160,rh-6,14);x.fillStyle='rgba(215,180,101,.16)';x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke()}
-    const cy=y+rh/2-5;x.textAlign='center';x.fillStyle=lead?'#D7B465':'rgba(255,245,229,.55)';x.font=`600 26px ${F}`;x.fillText(o.avg>=0?String(i+1):'–',W-112,cy);
+  x.fillText(done?(tops.length>1?'أبطال الأسبوع':'بطل الأسبوع'):'الترتيب لين الحين',W/2,360);
+  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 25px ${F}`;x.fillText('نقاط أفضل 11 مشجع في كل نادي (التشكيلة) من كل التحديات',W/2,412);
+  const mx=Math.max(1,...rows.map(o=>o.pts));const y0=470,rh=52;
+  x.font=`500 22px ${F}`;x.fillStyle='rgba(255,245,229,.45)';x.textAlign='center';x.fillText('النقاط',190,y0-24);x.fillText('التشكيلة',106,y0-24);
+  rows.slice(0,14).forEach((o,i)=>{const y=y0+i*rh;const lead=o.rk===1;
+    if(lead){rr(x,48,y-4,W-96,rh-6,14);x.fillStyle='rgba(215,180,101,.16)';x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke()}
+    const cy=y+rh/2-5;x.textAlign='center';x.fillStyle=lead?'#D7B465':'rgba(255,245,229,.55)';x.font=`600 26px ${F}`;x.fillText(String(o.rk),W-112,cy);
     crestAt(x,CR[o.k],o.k,W-170,cy,34);
-    x.textAlign='right';x.fillStyle=o.avg>=0?'#FFF5E5':'rgba(255,245,229,.45)';x.font=`${lead?700:500} 28px ${F}`;x.fillText(D.clubs[o.k],W-205,cy);
+    x.textAlign='right';x.fillStyle='#FFF5E5';x.font=`${lead?700:500} 28px ${F}`;x.fillText(D.clubs[o.k],W-205,cy);
     const bx=250,bw=W-205-200-bx;rr(x,bx,cy-7,bw,14,7);x.fillStyle='rgba(255,245,229,.07)';x.fill();
-    if(o.avg>0){const w=Math.max(14,bw*o.avg/mx);rr(x,bx+bw-w,cy-7,w,14,7);const gg=x.createLinearGradient(bx+bw-w,0,bx+bw,0);gg.addColorStop(0,'#B08A3E');gg.addColorStop(1,'#F6E3AE');x.fillStyle=gg;x.fill()}
-    x.textAlign='center';x.direction='ltr';x.fillStyle=lead?'#D7B465':'#FFF5E5';x.font=`700 26px ${F}`;x.fillText(o.avg>=0?o.avg.toFixed(1):'—',190,cy);
-    x.fillStyle='rgba(255,245,229,.5)';x.font=`500 22px ${F}`;x.fillText(o.n?o.n.toLocaleString('en-US'):'',110,cy);x.direction='rtl'});
-  footer(x,W,'العب وارفع ترتيب ناديك');
-  const ok=top&&top.avg>=0;
-  const text=ok?(done?`🏆 بطل تحدي الأندية · الأسبوع ${wk}\nجمهور ${D.clubs[top.k]} بمعدل ${top.avg.toFixed(1)} نقطة 👏\n\nالأسبوع اليديد بدا، العب وارفع ترتيب ناديك 👇\n${URL_M}`
-    :`🏆 تحدي الأندية · الأسبوع ${wk}\nجمهور ${D.clubs[top.k]} متصدر بمعدل ${top.avg.toFixed(1)} نقطة.\nكل يوم تلعب «منو اللاعب؟» نتيجتك تنحسب لجمهور ناديك.\n\nمنو بيلحقهم؟ 👇\n${URL_M}`):'';
-  return {cv,text,empty:!ok};
+    const w=Math.max(14,bw*o.pts/mx);rr(x,bx+bw-w,cy-7,w,14,7);const gg=x.createLinearGradient(bx+bw-w,0,bx+bw,0);gg.addColorStop(0,'#B08A3E');gg.addColorStop(1,'#F6E3AE');x.fillStyle=gg;x.fill();
+    x.textAlign='center';x.direction='ltr';x.fillStyle=lead?'#D7B465':'#FFF5E5';x.font=`700 26px ${F}`;x.fillText(o.pts.toLocaleString('en-US'),190,cy);
+    x.fillStyle=o.xi<11?'rgba(224,122,110,.85)':'rgba(255,245,229,.5)';x.font=`500 22px ${F}`;x.fillText(o.xi+'/11',106,cy);x.direction='rtl'});
+  footer(x,W,'العب وارفع ترتيب ناديك','el3azy.com/fans');
+  const names=tops.map(o=>D.clubs[o.k]),nm=names.length>1?names.slice(0,-1).join('، ')+' و'+names[names.length-1]:names[0];
+  const many=tops.length>1;
+  const text=!rows.length?'':done
+    ?`🏆 ${many?'أبطال':'بطل'} دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' بطل الأسبوع'} بـ${tops[0].pts} نقطة 👏\n\nالأسبوع اليديد بدا، العب وارفع ترتيب ناديك 👇\n${URL_F}`
+    :`🏆 دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' متصدر'} بـ${tops[0].pts} نقطة.\nكل تحدي تلعبه يزيد نقاط تشكيلة ناديك.\n\nمنو بيلحقهم؟ 👇\n${URL_F}`;
+  return {cv,text,empty:!rows.length};
 }
 
 /* واجهة */
@@ -249,7 +248,7 @@ async function show(k,fn,arg,label,emptyMsg){
 let dA,dB,wC;
 const rA=()=>show('A',cardA,dA,(dA===1?'التحدي الأول':'تحدي #'+dA)+(dA===Math.max(1,TODAY)?' · اليوم':dA===TODAY+1?' · باجر':''));
 const rB=()=>show('B',cardB,dB,'جواب تحدي #'+dB+(dB===TODAY-1?' · أمس':''),'ما في أرقام لهاليوم بعد.<br>الصورة تطلع عقب أول يوم من التحدي.');
-const rC=()=>show('C',cardC,wC,'الأسبوع '+wC,'ما في أندية وصلت '+MINP+' لاعبين هالأسبوع بعد.<br>ارجع عقب ما الجماهير تلعب.');
+const rC=()=>show('C',cardC,wC,'الأسبوع '+wC,'ما في نقاط للأندية في هالأسبوع بعد.<br>ارجع عقب ما الجماهير تلعب.');
 function bindBtns(){
   document.querySelectorAll('[data-share]').forEach(b=>b.onclick=async()=>{const o=OUT[b.dataset.share];if(!o)return;
     const file=new File([o.blob],o.name,{type:'image/png'});
@@ -273,7 +272,7 @@ async function init(){
   document.querySelectorAll('#cC [data-d]').forEach(b=>b.onclick=()=>{wC=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wC+ +b.dataset.d));rC()});
   await rA();
   if(TODAY<2&&!DEMO){$('#bB').innerHTML='<div class="empty">أول صورة «جواب أمس» تطلع صباح الأربعاء 18 نوفمبر.</div>';$('#dB').textContent='—'}else await rB();
-  if(TODAY<1&&!DEMO){$('#bC').innerHTML='<div class="empty">تحدي الأندية يبدا مع أول تحدي الثلاثاء 17 نوفمبر.</div>';$('#dC').textContent='—'}else await rC();
+  if(TODAY<1&&!DEMO){$('#bC').innerHTML='<div class="empty">دوري الجماهير يبدا مع أول تحدي الثلاثاء 17 نوفمبر.</div>';$('#dC').textContent='—'}else await rC();
 }
 init().catch(e=>{document.querySelector('.wrap').insertAdjacentHTML('beforeend','<div class="empty">ما قدرنا نحمّل البيانات، حدّث الصفحة.</div>')});
 })();
