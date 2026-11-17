@@ -332,13 +332,13 @@ function myH(V,when){const my=MY(),u=MYU(),r=RK&&(T==='season'?RK.season:T==='we
 function xiH(V,r){const u=MYU(),xi=D.xi||11;
   if(T==='season'){const L=D.weeks.map(w=>{const x=((w.boards[B]||{}).clubs||[]).find(y=>y[0]===r[0]);return [w,x?x[2]:0]}).filter(a=>a[1]>0);
     return `<div class="xip"><div class="xh">نقاط تشكيلة ${CL[r[0]]} في كل أسبوع</div>${L.map(([w,p])=>`<div class="xr"><span>الأسبوع ${w.w}${w.live?' (شغال)':''}</span><b>${nf(p)}</b></div>`).join('')}<div class="xs"><span>مجموع الموسم</span><span>${nf(r[2])}</span></div></div>`}
-  const L=((V[B].xi||{})[r[0]])||[];
-  return `<div class="xip"><div class="xh">تشكيلة ${CL[r[0]]}: أفضل ${xi} مشجع${L.length<xi?` (ناقصة ${xi-L.length})`:''}</div>${L.map((x,k)=>`<div class="xr ${u&&x[2]===u?'me':''}"><span><i>${k+1}</i>${x[0]?esc(x[0]):'مشجع'}${u&&x[2]===u?' · أنت':''}</span><b>${nf(x[1])}</b></div>`).join('')}<div class="xs"><span>المجموع = نقاط ${CL[r[0]]}</span><span>${nf(r[2])}</span></div></div>`}
+  const L=((V[B].xi||{})[r[0]])||[],ex=L.length-xi;
+  return `<div class="xip"><div class="xh">تشكيلة ${CL[r[0]]}: أفضل ${xi} مشجع${L.length<xi?` (ناقصة ${xi-L.length})`:''}</div>${L.map(x=>`<div class="xr ${u&&x[2]===u?'me':''}"><span><i>${x[3]||''}</i>${x[0]?esc(x[0]):'مشجع'}${u&&x[2]===u?' · أنت':''}${x[4]?' <small style="opacity:.6">(متعادل)</small>':''}</span><b>${nf(x[1])}</b></div>`).join('')}${ex>0?`<div class="xh" style="margin-top:6px">${ex+1} مشجعين متعادلين بالكامل على آخر مكان. ينحسب واحد منهم بس، وأي واحد منهم يعطي ${CL[r[0]]} نفس النقاط.</div>`:''}<div class="xs"><span>المجموع = نقاط ${CL[r[0]]}</span><span>${nf(r[2])}</span></div></div>`}
 /* وين أنت من تشكيلة ناديك */
 function meXI(V){if(T==='season')return '';const u=MYU(),r=RK&&RK.week,me=r&&u&&r[u]&&r[u][B];if(!me||!me[3])return '';
   const c=me[3],L=((V[B].xi||{})[c])||[],xi=D.xi||11,row=(V[B].clubs||[]).find(x=>x[0]===c),k=L.findIndex(x=>x[2]===u);
-  if(k>=0)return `<div class="ml you">⚽ <span>أنت رقم ${k+1} في تشكيلة <b>${CL[c]}</b>، وجبت <b>${nf(me[1])}</b> نقطة من <b>${nf(row?row[2]:0)}</b></span></div>`;
-  if(L.length>=xi)return `<div class="ml you">⚽ <span>آخر واحد في تشكيلة <b>${CL[c]}</b> عنده <b>${nf(L[xi-1][1])}</b> نقطة وأنت <b>${nf(me[1])}</b>. العب أكثر عشان تدخل</span></div>`;
+  if(k>=0)return `<div class="ml you">⚽ <span>أنت رقم ${L[k][3]||k+1}${L[k][4]?' (متعادل)':''} في تشكيلة <b>${CL[c]}</b>، وجبت <b>${nf(me[1])}</b> نقطة من <b>${nf(row?row[2]:0)}</b></span></div>`;
+  if(L.length>=xi)return `<div class="ml you">⚽ <span>آخر واحد في تشكيلة <b>${CL[c]}</b> عنده <b>${nf(L[L.length-1][1])}</b> نقطة وأنت <b>${nf(me[1])}</b>. العب أكثر عشان تدخل</span></div>`;
   return ''}
 function bsegH(){return `<div class="bseg">${Object.entries(BN()).map(([k,v])=>`<button data-b="${k}" class="${k===B?'on':''}">${v}</button>`).join('')}</div>`}
 /* الأندية: نقاط أفضل 11 مشجع (التشكيلة). الصف: [النادي، المركز، النقاط، التشكيلة/الأسابيع، المشاركين، الأخطاء، الثواني] */

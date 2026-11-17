@@ -193,7 +193,19 @@ def boards(per, names, hide):
                 return ''
             n = ((names.get(x['u']) or {}).get('n') or '') if names else x['nm']
             return n.strip()[:16]
-        xi_out = {c: [[nm_of(x), x['pts'], x['u']] for x in byc[c][:XI]] for c in CLUBS if byc.get(c)}
+        def xi_list(L):
+            # أفضل 11 + أي مشجع متعادل تماماً مع رقم 11 (يطلع «متعادل»، والنادي ياخذ نفس النقاط أياً منهم انحسب)
+            k = min(XI, len(L))
+            while 0 < k < len(L) and ukey(L[k]) == ukey(L[XI - 1]):
+                k += 1
+            out, pos = [], 0
+            for i, x in enumerate(L[:k]):
+                if i == 0 or ukey(x) != ukey(L[i - 1]):
+                    pos = i + 1
+                tie = (i > 0 and ukey(x) == ukey(L[i - 1])) or (i + 1 < k and ukey(x) == ukey(L[i + 1]))
+                out.append([nm_of(x), x['pts'], x['u'], pos, 1 if tie else 0])
+            return out
+        xi_out = {c: xi_list(byc[c]) for c in CLUBS if byc.get(c)}
         named = []
         for rk, x in full:
             if x['pts'] <= 0:
