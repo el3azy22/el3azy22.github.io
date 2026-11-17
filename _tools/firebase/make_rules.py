@@ -41,6 +41,9 @@ rules={"rules":{
         ".validate":f"newData.isNumber() && {P(c_after)}.child('c').val() == $c && {g(c_after)} > 0 && newData.val() == (data.exists() ? data.val() : 0) + 7 - {g(c_after)}"},
    "$o":{".validate":False}}}}}
 }}
+# ── جواب «لاعب اليوم» ── q/<day> = رقم اللاعب. كل يوم يتقرى بس من بدايته (12 بالليل الإمارات)، والكتابة لحساب الخدمة بس.
+# عشان محد يعرف جواب يوم قبل ما يجي (الجدول مب في ملفات الموقع)
+rules["rules"]["q"]={str(d):{".read":f"now >= {L + (d - 1) * DAYMS}"} for d in range(1,401)}
 # ── «قيّم اللاعبين» ── $k = <match_id>_<kickoff ms>
 # rv/$k/$u  سجل الجهاز (مقفول): {t: وقت البداية, r: {$p: 1..10}, st: نجم المباراة}
 # ra/$k/$p = {n: عدد, s: مجموع}   rs/$k/$p = أصوات نجم المباراة   rn/$k = عدد المقيّمين  (كلها مقروءة)

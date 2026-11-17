@@ -177,13 +177,22 @@ def main():
             c['p'].remove(e); ch.append(f'طلع من قائمة {cid}: {e[1]} #{e[0]}')
     gone = [p for p in md['players'] if p['id'] not in seen and p['id'] not in fa_only]
 
-    # جدول «منو اللاعب؟»: نبدّل اللي طلعوا من الدوري في الأيام الجاية بس
+    # جدول «لاعب اليوم»: في Firebase (q) ومخفي لين يومه. نبدّل اللي طلعوا من الدوري في الأيام الجاية بس
     start = datetime.fromisoformat(md['start']).replace(tzinfo=UAE)
     today = max(0, (now - start).days)  # 0 = اليوم الأول
-    sched = md['schedule']
     gone_ids = {p['id'] for p in gone}
-    pro = md.setdefault('schedule_pro', [])
-    used = set(sched) | set(pro)
+    SC = H = None
+    if 'schedule' in md:                     # قبل النقل لـ Firebase
+        sched = md['schedule']
+    else:
+        sys.path.insert(0, os.path.join(ROOT, '_tools', 'mano'))
+        import sched as SC
+        try:
+            H = SC.hdrs(); sched = SC.get_q(H)
+        except BaseException as e:
+            pr.append(f'ما قدرنا نقرا جدول لاعب اليوم من Firebase: {e}'); sched = []
+    sched_before = list(sched)
+    used = set(sched)
     spare = [p for p in md['players'] if p['id'] not in used and p['id'] in seen and p.get('ap', 0) >= 5 and p.get('nat') and p.get('a') and p.get('no')]
     spare.sort(key=lambda p: -p.get('ap', 0))
     for i in range(today + 1, len(sched)):  # اليوم الحالي ما يتغير
@@ -193,31 +202,22 @@ def main():
                 nw = spare.pop(0); sched[i] = nw['id']; ch.append(f'جدول منو اللاعب يوم {i + 1}: {old} ← {nw["n"]} (طلع من الدوري)')
             else:
                 pr.append(f'جدول منو اللاعب يوم {i + 1}: {old} طلع من الدوري وما في بديل')
-    # «تحدي الخبير»: نفس الشي، والبديل من اللي شاركوا 1–4 مباريات. ونضيف أي لاعب صار مؤهل لآخر الجدول
-    pro_ok = lambda p: p['id'] not in used and p['id'] in seen and 1 <= p.get('ap', 0) <= 4 and p.get('ph') and p.get('nat') and p.get('a') and p.get('no')
-    pspare = sorted([p for p in md['players'] if pro_ok(p)], key=lambda p: -p.get('ap', 0))
-    for i in range(today + 1, len(pro)):
-        if pro[i] in gone_ids:
-            old = mp[pro[i]]['n']
-            if pspare:
-                nw = pspare.pop(0); pro[i] = nw['id']; used.add(nw['id']); ch.append(f'تحدي الخبير يوم {i + 1}: {old} ← {nw["n"]} (طلع من الدوري)')
-            else:
-                pr.append(f'تحدي الخبير يوم {i + 1}: {old} طلع من الدوري وما في بديل')
-    added = [p for p in pspare if p['id'] not in used]
-    for p in added:
-        pro.append(p['id']); used.add(p['id'])
-    if added: ch.append(f'تحدي الخبير: انضاف {len(added)} لاعب لآخر الجدول (صار {len(pro)} يوم)')
-    # تنبيه قبل ما يخلص أي جدول بشهر (بعدها اللعبة ترجع تعيد لاعبين من أول الموسم)
-    for nm, L in (('لاعب اليوم', sched), ('تحدي الخبير', pro)):
-        left = len(L) - today - 1
-        if left < 30:
-            pr.append(f'جدول {nm} باقي له {left} يوم بس، لازم نمدده قبل ما يخلص')
+    # «تحدي الخبير»: لاعب عشوائي لكل مشجع من هالقائمة (شاركوا 1–4 مباريات، وموجودين في قوائم الدوري الحين)
+    md['pool'] = [p['id'] for p in md['players'] if p['id'] in seen and 1 <= p.get('ap', 0) <= 4 and p.get('ph') and p.get('nat') and p.get('a') and p.get('no')]
+    md.pop('schedule_pro', None)
+    if len(md['pool']) < 60:
+        pr.append(f'قائمة لاعبين تحدي الخبير صغيرة ({len(md["pool"])} لاعب)')
+    left = len(sched) - today - 1
+    if sched and left < 30:
+        pr.append(f'جدول لاعب اليوم باقي له {left} يوم بس، لازم نمدده قبل ما يخلص')
 
     if len(ch) > 60:
         pr.append(f'تغييرات كثيرة ({len(ch)}) في يوم واحد، ما طبقناها. لازم مراجعة'); rep['changes'] = ch[:80]; return finish(rep, False)
     for c in clubs.values():
         c['p'].sort(key=lambda e: (['GK', 'DEF', 'MID', 'FWD'].index(e[2]) if e[2] in POS4.values() else 9, e[0]))
     md['updated'] = now.date().isoformat()
+    if SC and H and sched != sched_before:
+        SC.put_q(H, sched)
     json.dump(tk, open(os.path.join(ROOT, 'tashkila', 'squads.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     json.dump(md, open(os.path.join(ROOT, 'mano', 'data.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     subprocess.run([sys.executable, os.path.join(ROOT, '_tools', 'apply_position_fixes.py')], check=False, capture_output=True)

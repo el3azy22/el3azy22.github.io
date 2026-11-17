@@ -9,7 +9,8 @@ import test_rules as T
 
 PROD = 'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app'
 D = json.load(open(os.path.join(T.ROOT, 'mano', 'data.json')))
-E, P = D['schedule'], D['schedule_pro']
+E = D.get('schedule') or []   # بعد النقل: الجدول في q (الاختبار يكتبه في المحاكي)
+P = ['alassane-diallo']
 day = (int(time.time() * 1000) - 1794859200000) // 86400000 + 1
 
 
@@ -51,6 +52,8 @@ async def play(b, uid, club, easy, pro=None, lose=False):
 
 async def main():
     T.load_rules(1794859200000, []); T.reset()
+    if E:
+        requests.put(T.url('q'), data=json.dumps({str(i + 1): x for i, x in enumerate(E[:30])}), headers=T.OWNER)
     print(f'— رحلة منو اللاعب (اليوم {day}) —')
     async with async_playwright() as p:
         b = await p.chromium.launch(executable_path='/usr/bin/google-chrome')
@@ -74,4 +77,5 @@ async def main():
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)
 
-asyncio.run(main())
+if __name__ == '__main__':
+    asyncio.run(main())

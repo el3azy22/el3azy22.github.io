@@ -103,8 +103,13 @@ function crestAt(x,im,c,cx,cy,base,a=1){if(!im)return;const f=CREST[c]||[1,1];co
 
 let D,BY,TODAY,CR={},LOGO,SADUI;
 const dubaiIdx=()=>{const n=new Date(Date.now()+4*3600e3);const t=Date.UTC(n.getUTCFullYear(),n.getUTCMonth(),n.getUTCDate());const [y,m,d]=D.start.split('-').map(Number);return Math.floor((t-Date.UTC(y,m-1,d))/864e5)};
-const ansOf=d=>BY[D.schedule[(d-1)%D.schedule.length]];
-const proOf=d=>{const sc=D.schedule_pro&&D.schedule_pro.length?D.schedule_pro:null;return sc?BY[sc[(d-1)%sc.length]]:null};
+/* لاعب اليوم من السيرفر (q/<يوم>، ما يتقرى قبل يومه). الخبير صار عشوائي لكل مشجع، فما له جواب واحد (إلا اليوم 1) */
+const QA={};
+async function qLoad(d){if(d<1)return null;if(QA[d])return QA[d];
+  let v=await fetch(FB+'/q/'+d+'.json').then(r=>r.ok?r.json():null).catch(()=>null);
+  if(!v&&D.schedule)v=D.schedule[(d-1)%D.schedule.length];return QA[d]=v}
+const ansOf=d=>BY[QA[d]];
+const proOf=d=>d===1?BY['alassane-diallo']:null;
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 
 /* الإطار المشترك */
@@ -157,7 +162,7 @@ async function cardA(d){
 
 /* B: جواب أمس */
 async function cardB(d){
-  const p=ansOf(d),q=proOf(d);
+  await qLoad(d);const p=ansOf(d),q=proOf(d);
   let se,sp;
   if(DEMO){se={n:412,w:288,g1:21,g2:57,g3:83,g4:66,g5:39,g6:22};sp={n:136,w:51}}
   else{[se,sp]=await Promise.all(['easy','pro'].map(m=>fetch(`${FB}/s/${d}/${m}.json`).then(r=>r.json()).catch(()=>null)))}
@@ -263,7 +268,7 @@ async function init(){
   const cs=await Promise.all(ORDER.map(c=>imgOK(A+'assets/'+c+'.png')));ORDER.forEach((c,i)=>CR[c]=cs[i]);
   dA=Math.max(1,TODAY);dB=Math.max(1,TODAY-1);wC=wkOf(Math.max(1,TODAY));
   bindBtns();
-  document.querySelectorAll('#cA [data-d]').forEach(b=>b.onclick=()=>{dA=Math.max(1,Math.min(D.schedule.length,dA+ +b.dataset.d));rA()});
+  document.querySelectorAll('#cA [data-d]').forEach(b=>b.onclick=()=>{dA=Math.max(1,Math.min(Math.max(1,TODAY),dA+ +b.dataset.d));rA()});
   document.querySelectorAll('#cB [data-d]').forEach(b=>b.onclick=()=>{dB=Math.max(1,Math.min(Math.max(1,TODAY-1),dB+ +b.dataset.d));rB()});
   document.querySelectorAll('#cC [data-d]').forEach(b=>b.onclick=()=>{wC=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wC+ +b.dataset.d));rC()});
   await rA();

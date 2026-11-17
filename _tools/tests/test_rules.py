@@ -105,6 +105,13 @@ def mano_tests():
     s = get('s/3/easy').json(); c = get('c/3/easy/sharjah').json()
     n_ok = res.count(200)
     check('تزامن: العدادات = عدد المقبولين', (s['n'] - 2, c['n'], c['t']), (n_ok, n_ok, n_ok * 4))
+    # جواب لاعب اليوم: يتقرى من يومه بس، وما أحد يكتبه
+    requests.put(url('q'), data=json.dumps({str(d): f'pl{d}' for d in range(1, 6)}), headers=OWNER)
+    check('جواب اليوم (3) يتقرى للكل', requests.get(url('q/3')).json(), 'pl3')
+    check('جواب أمس (2) يتقرى', requests.get(url('q/2')).json(), 'pl2')
+    check('جواب باجر (4) ما يتقرى', requests.get(url('q/4')).status_code, 401)
+    check('الجدول كامل ما يتقرى', requests.get(url('q')).status_code, 401)
+    check('مشجع يكتب جواب يرفض', put('u1', 'q/4', 'x'), 401)
     # مهلة 15 دقيقة بعد 12 بالليل
     L2 = now - DAY - 5 * 60000   # اليوم 2 بدأ قبل 5 دقايق
     load_rules(L2, []); reset()

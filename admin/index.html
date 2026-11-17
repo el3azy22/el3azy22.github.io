@@ -205,10 +205,12 @@ function render(){
   h+=`<div class="lbl">«منو اللاعب؟» اليوم ${DAY>0?'· تحدي #'+DAY:''}</div><div class="card">`;
   if(DAY<1)h+=`<div class="empty">اللعبة تنطلق الثلاثاء ١٧ نوفمبر (باقي ${Math.ceil((LAUNCH-T)/DAYMS)} أيام). هني بتشوف لاعب اليوم، وكم لعبوا، ومن أي محاولة عرفوه.</div>`;
   else{
-    if(MD&&MD.schedule){const p=MD.players.find(x=>x.id===MD.schedule[(DAY-1)%MD.schedule.length]);
-      if(p)h+=`<div class="today"><img src="${p.ph?'../mano/assets/p/'+esc(p.id)+'.webp':'../mano/assets/'+p.c+'.png'}" onerror="this.style.visibility='hidden'" alt=""><div><div class="x">لاعب اليوم (لا تكشفه 🤫)</div><div class="nm">${esc(p.n)}</div><div class="x">${esc(MD.clubs[p.c]||'')}</div></div></div>`}
-    if(MD&&MD.schedule_pro&&MD.schedule_pro.length){const p=MD.players.find(x=>x.id===MD.schedule_pro[(DAY-1)%MD.schedule_pro.length]);
-      if(p)h+=`<div class="today"><img src="${p.ph?'../mano/assets/p/'+esc(p.id)+'.webp':'../mano/assets/'+p.c+'.png'}" onerror="this.style.visibility='hidden'" alt=""><div><div class="x">🧠 لاعب تحدي الخبير</div><div class="nm">${esc(p.n)}</div><div class="x">${esc(MD.clubs[p.c]||'')}</div></div></div>`}
+    // لاعب اليوم من السيرفر (q/<يوم>، ما يتقرى قبل يومه). الخبير: لاعب عشوائي لكل مشجع
+    h+=`<div id="qToday"><div class="empty">لحظة...</div></div><div class="mini">🧠 تحدي الخبير: كل مشجع له لاعب عشوائي خاص فيه (من ${MD&&MD.pool?MD.pool.length:'—'} لاعب)</div>`;
+    setTimeout(async()=>{const el=document.getElementById('qToday');if(!el)return;
+      const id=await fetch(FB+'/q/'+DAY+'.json').then(r=>r.ok?r.json():null).catch(()=>null)||(MD&&MD.schedule?MD.schedule[(DAY-1)%MD.schedule.length]:null);
+      const p=MD&&MD.players.find(x=>x.id===id);
+      el.innerHTML=p?`<div class="today"><img src="${p.ph?'../mano/assets/p/'+esc(p.id)+'.webp':'../mano/assets/'+p.c+'.png'}" onerror="this.style.visibility='hidden'" alt=""><div><div class="x">لاعب اليوم (لا تكشفه 🤫)</div><div class="nm">${esc(p.n)}</div><div class="x">${esc(MD.clubs[p.c]||'')}</div></div></div>`:'<div class="empty">ما قدرنا نجيب لاعب اليوم</div>'},0);
     const day=FBS[DAY]||{};
     ['easy','pro'].forEach(m=>{const s=day[m]||{};const n=s.n||0,w=s.w||0;
       h+=`<div class="mini"><b>${m==='easy'?'🕵️ لاعب اليوم':'🧠 تحدي الخبير'}:</b> خلصوا التحدي ${nf(n)} · عرفوه ${pct(w,n)}%</div>`;

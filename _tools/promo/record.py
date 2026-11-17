@@ -23,16 +23,18 @@ async def main():
     ctx=await b.new_context(viewport={'width':1080,'height':1920},device_scale_factor=1)
     # التاريخ ثابت على 17 نوفمبر 2026 (يوم انطلاق منو اللاعب؟) + ما يسأل عن النادي (صوت المتصفح نفسه مكتوم)
     await ctx.add_init_script("""(()=>{const T=location.pathname.includes("/rate/")?%s:%s;const R=Date;class FD extends R{constructor(...a){if(a.length)super(...a);else super(T)}static now(){return T}};window.Date=FD;
-      try{localStorage.setItem('el3azy_mano_club','""');localStorage.setItem('el3azy_rate_seenHow','true');localStorage.setItem('el3azy_mano_sound','true');localStorage.setItem('el3azy_pred_how','1')}catch(e){}})()"""%(TL['demo'].get('nowRate',TL['demo'].get('nowMs','Date.UTC(2026,10,17,17,0,0)')),TL['demo'].get('nowMs','Date.UTC(2026,10,17,17,0,0)')))
+      try{localStorage.setItem('el3azy_mano_club','""');localStorage.setItem('el3azy_rate_seenHow','true');localStorage.setItem('el3azy_mano_sound','true');localStorage.setItem('el3azy_pred_how','1');localStorage.setItem('el3azy_mano_pa_1',JSON.stringify('%s'))}catch(e){}})()"""%(TL['demo'].get('nowRate',TL['demo'].get('nowMs','Date.UTC(2026,10,17,17,0,0)')),TL['demo'].get('nowMs','Date.UTC(2026,10,17,17,0,0)'),TL['demo'].get('manoPro',TL['demo']['manoAnswer'])))
     async def fix(route):  # لاعب العرض بدل لاعب اليوم الحقيقي (عشان ما ينحرق أول تحدي)
       r=await route.fetch();d=await r.json();d['schedule']=[TL['demo']['manoAnswer']]*len(d['schedule'])   # كل الأيام لاعب العرض (ما ينكشف أي لاعب حقيقي)
       if d.get('schedule_pro'): d['schedule_pro']=[TL['demo'].get('manoPro',TL['demo']['manoAnswer'])]*len(d['schedule_pro'])
+      d['pool']=[TL['demo'].get('manoPro',TL['demo']['manoAnswer'])]   # الخبير عشوائي من هالقائمة
       await route.fulfill(response=r,body=json.dumps(d,ensure_ascii=False),headers={**r.headers,'content-type':'application/json'})
     await ctx.route('**/mano/data.json*',fix)
     await ctx.route('**/identitytoolkit.googleapis.com/**',lambda r:r.fulfill(status=200,content_type='application/json',body='{"idToken":"x","refreshToken":"y","localId":"demo","expiresIn":"3600"}'))
     async def fb(route):
       u=route.request.url
       if route.request.method in('PATCH','PUT','POST'): return await route.fulfill(status=200,content_type='application/json',body='{}')
+      if '/q/' in u: return await route.fulfill(status=200,content_type='application/json',body=json.dumps(TL['demo']['manoAnswer']))   # جواب لاعب اليوم من السيرفر
       if RD:
         for k in ('ra','rs','rn'):
           if f'/{k}/' in u: return await route.fulfill(status=200,content_type='application/json',body=json.dumps(RD['fb'][k]))

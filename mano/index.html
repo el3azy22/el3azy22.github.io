@@ -247,7 +247,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
   <h2>كيف تلعب «منو اللاعب؟»</h2>
   <div class="step"><i>1</i><div><b>لاعب اليوم 🕵️</b><span>لاعب سري واحد للكل من دوري أدنوك للمحترفين</span></div></div>
   <div class="step"><i>2</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك 6 محاولات، وكل غلطة تفتح تلميح 🔓</span></div></div>
-  <div class="step"><i>3</i><div><b>بعدها ينفتح تحدي الخبير 🧠</b><span>لاعب سري ثاني أصعب. اكتب أي لاعب، ونقارنه باللاعب السري في النادي والمركز والجنسية والعمر والرقم: 🟩 نفسه، 🟨 قريب، ⬆⬇ السري أكبر أو أصغر</span></div></div>
+  <div class="step"><i>3</i><div><b>بعدها ينفتح تحدي الخبير 🧠</b><span>لاعب سري ثاني أصعب، <b>خاص فيك</b> وغير لاعب ربعك. اكتب أي لاعب، ونقارنه باللاعب السري في النادي والمركز والجنسية والعمر والرقم: 🟩 نفسه، 🟨 قريب، ⬆⬇ السري أكبر أو أصغر</span></div></div>
   <div class="step"><i>4</i><div><b>شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
   <div class="pts" id="clubPts" hidden><h4>🏆 نقاطك ونقاط ناديك</h4>
    <div style="font-size:12px;opacity:.75;margin-bottom:6px">في كل تحدي، حسب المحاولة اللي عرفت فيها اللاعب:</div>
@@ -260,6 +260,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
    <li><b>الوقت:</b> لاعب يديد كل يوم الساعة 12 بالليل بتوقيت الإمارات، ولو الصفحة مفتوحة تتحدث بروحها.</li>
    <li><b>المحاولات:</b> 6 في كل تحدي. ما تنحسب محاولة لنفس اللاعب مرتين، وما في إعادة بعد ما يخلص التحدي.</li>
    <li><b>متى تنحسب نتيجتك لناديك؟</b> بعد ما تخلّص التحدي وتكون مختار ناديك، في نفس اليوم (لين 12:15 بالليل). وتنحسب مرة وحدة بس.</li>
+   <li><b>تحدي الخبير</b>: كل مشجع يطلع له لاعب سري خاص فيه من نفس مستوى الصعوبة (لاعبين شاركوا من 1 لين 4 مباريات)، عشان الجواب ما ينتشر. وما يتكرر لك نفس اللاعب.</li>
    <li><b>تحدي الخبير</b> ينحسب لنفس النادي اللي انحسبت له لعبة لاعب اليوم.</li>
    <li><b>لو انقطع الإنترنت:</b> نتيجتك محفوظة في تلفونك، وتنرسل أول ما ترجع للصفحة في نفس اليوم.</li>
    <li>نتيجتك وإحصائياتك محفوظة في <b>هالتلفون</b>. لو مسحت بيانات المتصفح أو لعبت من تلفون ثاني، تبدا من يديد.</li>
@@ -346,15 +347,35 @@ function prelaunch(raw){
   $('#app').innerHTML=`<div class="card result"><div class="emo">🕵️</div><h2>أول تحدي يبدا<br><span style="white-space:nowrap">الثلاثاء 17 نوفمبر</span></h2><p style="opacity:.8;line-height:1.8;margin-bottom:10px">كل يوم لاعب سري من دوري أدنوك للمحترفين، وعندك 6 محاولات تعرفه.</p><div class="next">باقي على أول لاعب<b id="pl" style="direction:rtl">--</b></div></div>`;
   $('#dayLbl').textContent='قريباً';tick();setInterval(tick,1000);
 }
-// «تحدي الخبير»: لاعب ثاني أصعب (schedule_pro)، ينفتح بعد ما يخلص لاعب اليوم
-const ansFor=(m,i)=>{const sc=m==='pro'&&D.schedule_pro&&D.schedule_pro.length?D.schedule_pro:D.schedule;return BY[sc[i%sc.length]]};
+/* جواب «لاعب اليوم»: من السيرفر (q/<يوم>)، وكل يوم ما يتقرى إلا من 12 بالليل حقه. ينحفظ في التلفون بعد أول قراية */
+async function qGet(d){
+  if(d<1)return null;let v=store.get('qa_'+d,null);if(v&&BY[v])return v;
+  v=await fetch(FB.db+'/q/'+d+'.json').then(r=>r.ok?r.json():null).catch(()=>null);
+  if(!v&&D.schedule)v=D.schedule[(d-1)%D.schedule.length];   // قبل نقل الجدول للسيرفر
+  if(v&&BY[v]){store.set('qa_'+d,v);return v}return null}
+/* «تحدي الخبير»: لاعب عشوائي لكل مشجع من نفس مستوى الصعوبة (شاركوا 1–4 مباريات)، غير لاعب ربعه. ينحفظ لليوم */
+const PRO1='alassane-diallo';   // اليوم 1 كان لاعب واحد للكل
+const proPool=()=>(D.pool&&D.pool.length?D.pool:D.players.filter(p=>p.ap>=1&&p.ap<=4&&p.ph&&p.nat&&p.a!=null&&p.no!=null).map(p=>p.id)).filter(id=>BY[id]);
+function proFor(d,easyId){
+  let id=store.get('pa_'+d,null);if(id&&BY[id])return BY[id];
+  if(d===1&&BY[PRO1]){id=PRO1}
+  else{if(d!==DAY)return null;const seen=new Set(store.get('pa_hist',[]));
+    let P=proPool().filter(x=>x!==easyId&&!seen.has(x));if(!P.length)P=proPool().filter(x=>x!==easyId);if(!P.length)return null;
+    const r=new Uint32Array(1);(window.crypto||{getRandomValues:a=>{a[0]=Math.random()*4294967295;return a}}).getRandomValues(r);
+    id=P[r[0]%P.length];store.set('pa_hist',[...seen,id].slice(-400))}
+  store.set('pa_'+d,id);return BY[id]}
+const ansFor=(m,i)=>m==='pro'?proFor(i+1):BY[store.get('qa_'+(i+1),null)]||null;   // للأيام اللي انقرت قبل
 const easyDone=()=>!!(store.get('g_'+DAY+'_easy',null)||{}).done;
 const MODEN={easy:'لاعب اليوم',pro:'تحدي الخبير'};
 function setMode(m){mode=m;store.set('mode',m);load();scrollTo({top:0,behavior:'smooth'})}
 function paintSeg(){const ok=easyDone();document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);if(b.dataset.m==='pro')b.classList.toggle('lock',!ok)});
   const ps=$('#proSub');if(ps){const pd=(store.get('g_'+DAY+'_pro',null)||{}).done;ps.textContent=!ok?'🔒 ينفتح بعد لاعب اليوم':pd?'✓ خلّصته':'🔓 انفتح لك · لاعب ثاني';const pb=ps.closest('button');if(pb)pb.classList.toggle('glow',ok&&!pd&&mode!=='pro')}}
-function load(){
-  CW=null;ANS=ansFor(mode,DAY-1);YEST=DAY>1?ansFor(mode,DAY-2):null;paintSeg();
+async function load(){
+  CW=null;const e=await qGet(DAY);
+  if(!e){$('#app').innerHTML=`<div class="card loading">ما قدرنا نجيب لاعب اليوم. تأكد من الإنترنت<br><button class="btn" style="margin-top:12px" onclick="location.reload()">حاول مرة ثانية</button></div>`;return}
+  if(mode==='pro'){ANS=proFor(DAY,e);YEST=DAY>1?proFor(DAY-1):null}else{ANS=BY[e];YEST=DAY>1?BY[await qGet(DAY-1)]||null:null}
+  if(!ANS){mode='easy';ANS=BY[e]}
+  paintSeg();
   const k='g_'+DAY+'_'+mode;
   const saved=store.get(k,null);
   S={k,guesses:[],done:false,win:false};
@@ -384,7 +405,7 @@ function render(){
    <div class="hero">
      ${S.done?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">؟</span></span></span>`}
      <div style="flex:1"><b>${S.done?ANS.n:(mode==='easy'?'لاعب اليوم السري':'لاعب الخبير السري')}</b>
-       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'لاعب ثاني غير لاعب اليوم · كل تخمين يقارن لاعبك باللاعب السري')}</div>
+       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'لاعبك السري هني خاص فيك، غير لاعب ربعك · كل تخمين يقارن لاعبك باللاعب السري')}</div>
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
    </div>`;
   if(mode==='easy'){
@@ -585,7 +606,7 @@ async function crowdFlow(again){
     const fail=n-w,lose=S.done&&!S.win;
     const you=g?`أنت عرفته من ${g===1?'أول محاولة':'المحاولة '+AR(g)}${n>=5&&CW.faster>0?`، يعني أحسن من <b>${PC(AR(CW.faster))}</b> من اللي لعبوا`:''}`:(lose?`أنت ما عرفته اليوم، ومثلك <b>${PC(AR(Math.round(Math.max(0,fail-1)/Math.max(1,n-1)*100)))}</b> من اللي لعبوا ما عرفوه`:'');
     cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 نتايج الجماهير اليوم · ${MODEN[mode]}</div>
-      <div class="big"><b>${PC(AR(CW.pct))}</b>عرفوا اللاعب <small>من ${nf(n)} لعبوا</small></div>
+      <div class="big"><b>${PC(AR(CW.pct))}</b>${mode==='pro'?'عرفوا لاعبهم':'عرفوا اللاعب'} <small>من ${nf(n)} لعبوا</small></div>
       ${you?`<div class="fast ${g?'':'lo'}">${g?'⚡':'🙈'} ${you}</div>`:''}
       <div class="dh">كم محاولة احتاجوا؟</div>
       <div class="dist">${rows.map((r,k)=>`<div class="${r[2]?'you':''}"><span class="dl">${k<6?(k?'المحاولة '+r[0]:'أول محاولة'):'ما عرفوه'}</span><span class="tk"><i class="${r[2]?'hl':''}" style="width:${Math.max(12,r[1]/mx*100)}%">${PC(AR(Math.round(r[1]/n*100)))}</i></span><em>${r[2]?'أنت':''}</em></div>`).join('')}</div></div>`;
@@ -726,7 +747,7 @@ $('#clubLater').onclick=()=>{$('#clubM').hidden=true};
 $('#helpBtn').onclick=()=>$('#howto').hidden=false;
 $('#howGo').onclick=()=>{$('#howto').hidden=true;sfx('welcome');store.set('seenHow',true);const i=$('#gIn');i&&i.focus()};
 let sm=mode;
-$('#statsBtn').onclick=()=>{sm=mode;$('#myPts').innerHTML=D?ptsHTML():'';document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm)+histHTML(sm);$('#statsM').hidden=false};
+$('#statsBtn').onclick=async()=>{if(D&&DAY){const miss=[];for(let d=1;d<=DAY;d++){const g=store.get('g_'+d+'_easy',null);if(g&&g.done&&!store.get('qa_'+d,null))miss.push(d)}if(miss.length)await Promise.all(miss.map(qGet))}sm=mode;$('#myPts').innerHTML=D?ptsHTML():'';document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x.dataset.m===sm));$('#statsBody').innerHTML=statsHTML(sm)+histHTML(sm);$('#statsM').hidden=false};
 document.querySelectorAll('#statSeg button').forEach(b=>b.onclick=()=>{sm=b.dataset.m;document.querySelectorAll('#statSeg button').forEach(x=>x.classList.toggle('on',x===b));$('#statsBody').innerHTML=statsHTML(sm)+histHTML(sm)});
 $('#statsClose').onclick=()=>$('#statsM').hidden=true;
 document.querySelectorAll('.modal').forEach(m=>m.onclick=e=>{if(e.target===m){m.hidden=true;if(m.id==='howto')store.set('seenHow',true)}});
