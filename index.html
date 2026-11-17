@@ -141,7 +141,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div class="cta">توقع الحين</div>
 </a>
 
-<h2 class="in" style="animation-delay:.42s" id="chH" hidden>التحديات والترتيب</h2>
+<h2 class="in" style="animation-delay:.42s" id="chH" hidden>الترتيب</h2>
 <a class="tool in" style="animation-delay:.46s" href="predict/" id="predLive" hidden>
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg></div>
   <div><b>دوري التوقعات <span class="badge new">يديد</span></b><span class="d">توقع نتيجة كل مباراة قبل الصافرة، واجمع النقاط لك ولجمهور ناديك</span><div class="timer mini" id="predBox" hidden><span id="predLbl"></span><time id="predLine"></time></div></div>
@@ -154,13 +154,14 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div class="go">‹</div>
 </a>
 
-<a class="tool in" style="animation-delay:.54s" href="rate/" id="rateLive" hidden>
+
+
+<h2 class="in" style="animation-delay:.56s">أدوات الجماهير</h2>
+<a class="tool in" style="animation-delay:.58s" href="rate/" id="rateLive" hidden>
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
   <div><b>قيّم اللاعبين <span class="badge new">يديد</span></b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span><div class="timer mini" id="rateBox" hidden><span id="rateLbl"></span><time id="rateLine"></time></div></div>
   <div class="go">‹</div>
 </a>
-
-<h2 class="in" style="animation-delay:.56s">أدوات الجماهير</h2>
 <a class="tool in" style="animation-delay:.6s" href="songs/" id="songsLive" hidden>
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M12.5 23V8.5l13-3V20"/><path class="s" d="M12.5 13.2l13-3V5.5l-13 3Z"/><ellipse class="s" cx="9" cy="23" rx="3.6" ry="3"/><ellipse class="s" cx="22" cy="20" rx="3.6" ry="3"/></svg></div>
   <div><b>أغاني دورينا وأنديتنا <span class="badge new">يديد</span></b><span class="d">اسمع أغنية الدوري وأغاني الأندية، ونزّلها على تلفونك مجاناً</span></div>
@@ -251,12 +252,12 @@ function liveLines(){
       const open=R?R.matches.filter(m=>m.st===6&&T>=m.t+100*60e3&&T<m.t+50*3600e3):[];
       if(open.length){const m=open[open.length-1];show('rateBox','rateLbl',['🟢 مفتوح الحين',open.length>1?open.length+' مباريات':`${CN[m.h.c]} × ${CN[m.a.c]}`],true)}
       else if(P){const nx=P.matches.filter(m=>m.t>T-4*3600e3&&m.st!==6).sort((a,b)=>a.t-b.t)[0];
-        if(nx){const end=nx.t+105*60e3;show('rateBox','rateLbl',end>T?['يفتح بعد أول مباراة',cd(end-T)]:['يفتح بعد شوي','<bdi>…</bdi>'])}else $('rateBox').hidden=true}};
+        if(nx){const end=nx.t+105*60e3;show('rateBox','rateLbl',end>T?['يفتح بعد',cd(end-T)]:['يفتح بعد شوي','<bdi>…</bdi>'])}else $('rateBox').hidden=true}};
     tick();setInterval(tick,1000)});
 }
 
 </script>
 <script src="assets/fan.js"></script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
-<script>(()=>{const f=()=>{const h=document.getElementById('chH');if(h)h.hidden=!['predLive','fansLive','rateLive'].some(i=>{const e=document.getElementById(i);return e&&!e.hidden})};f();setInterval(f,700)})();</script>
+<script>(()=>{const f=()=>{const h=document.getElementById('chH');if(h)h.hidden=!['predLive','fansLive'].some(i=>{const e=document.getElementById(i);return e&&!e.hidden})};f();setInterval(f,700)})();</script>
 </body></html>
