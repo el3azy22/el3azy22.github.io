@@ -3,14 +3,15 @@
 | الملف | يختبر | يحتاج | آخر نتيجة (17 نوفمبر 2026) |
 |---|---|---|---|
 | `test_scoring.py` | حساب نقاط التوقعات، الجولة الكاملة (مضاعفة، توقع مع الصافرة، مباراة مؤجلة، كسر التعادل)، نقاط الأندية، نجوم الأسبوع | بايثون بس | 26 نجح · 0 فشل |
-| `test_rules.py` | قواعد Firebase على المحاكي: التكرار، الوقت، الغش في النقاط، الخبير، التزامن (8 طلبات مع بعض)، التوقعات، التقييم، بطاقة المشجع | محاكي Firebase | 51 نجح · 0 فشل |
+| `test_rules.py` | قواعد Firebase على المحاكي: التكرار، الوقت، الغش في النقاط، الخبير، التزامن (8 طلبات مع بعض)، التوقعات، التقييم، بطاقة المشجع | محاكي Firebase | 56 نجح · 0 فشل |
 | `test_fans_build.py` | دوري الجماهير كامل على المحاكي: مهلة نهاية الأسبوع، التثبيت، فشل القراءة، جولة مؤجلة ما تنعاد، أسبوع بجولتين | المحاكي | 6 نجح · 0 فشل |
+| `ui_q.py` | جواب لاعب اليوم من السيرفر بقفل الوقت، الخبير العشوائي (مختلف بين المشجعين، ثابت للمشجع، مب لاعب اليوم)، رسالة لو السيرفر ما رد | المحاكي + `http.server` + Chrome | 7 نجح · 0 فشل |
 | `ui_mano.py` | رحلة «منو اللاعب؟» من الواجهة ضد المحاكي: الحفظ، الخبير، ضياع الرد، الخسارة، العدادات | المحاكي + `http.server 8765` + Chrome | 9 نجح · 0 فشل |
 
 ```
 firebase emulators:start --only database --project demo-el3   # منفذ 9000
 python3 -m http.server 8765                                   # من جذر المستودع
-python3 _tools/tests/test_scoring.py && python3 _tools/tests/test_rules.py && python3 _tools/tests/test_fans_build.py && python3 _tools/tests/ui_mano.py
+python3 _tools/tests/test_scoring.py && python3 _tools/tests/test_rules.py && python3 _tools/tests/test_fans_build.py && python3 _tools/tests/ui_mano.py && python3 _tools/tests/ui_q.py
 ```
 
 أي تعديل على القوانين أو الحسابات لازم يمر على هالثلاثة، ويضيف حالة لأي خلل ينصلح.
