@@ -577,7 +577,9 @@ async function submitMode(m){
 }
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
 // ترتيب الأندية من «دوري الجماهير» (لوحة منو اللاعب): نقاط أفضل 11 مشجع لكل نادي (التشكيلة)
-let FD=null;async function fansData(){if(FD&&Date.now()-FD.at<120000)return FD.d;const d=await fetch('../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null);FD={at:Date.now(),d};return d}
+let FD=null,FRK=null;async function fansData(){if(FD&&Date.now()-FD.at<120000)return FD.d;const v=Date.now(),[d,k]=await Promise.all(['data','ranks'].map(f=>fetch('../fans/'+f+'.json?v='+v).then(r=>r.ok?r.json():null).catch(()=>null)));FD={at:Date.now(),d};FRK=k;return d}
+// كم يوم لعب المشجع وكم يحتاج عشان يعتمد (من ranks.json)
+const myAct=()=>{try{const u=((JSON.parse(localStorage.getItem('el3azy_fb')||'null')||{}).u||'').slice(0,12),x=FRK&&FRK.week&&FRK.week[u];return x&&x.act||null}catch(e){return null}};
 function crowdLine(){
   if(!CW||CW.n<5)return '';
   if(S.win&&CW.faster!=null)return `⚡ أسرع من ${PC(AR(CW.faster))} من الجماهير`;
@@ -632,12 +634,12 @@ async function crowdFlow(again){
   const rowH=r=>`<div class="ct ${r[0]===me?'me':''}"><span class="r">${r[2]?AR(r[1]):''}</span><span class="cr">${crest(r[0],22)}</span><span class="nm">${D.clubs[r[0]]}</span><span class="bar"><i style="width:${r[2]/mx*100}%"></i></span><span class="v">${r[2]?nf(r[2]):'—'}</span><span class="n">${r[3]?AR(r[3]):'0'}</span></div>`;
   box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 ترتيب الأندية في «منو اللاعب؟» · الأسبوع ${AR(wk)}</div>
     ${champ?`<div class="champ">${CH.map(r=>crest(r[0],30)).join('')}<div><b>${CH.length>1?'أبطال':'بطل'} الأسبوع ${AR(wk-1)}: ${CH.length>1?CH.map(r=>D.clubs[r[0]]).join(' و'):'جمهور '+D.clubs[champ[0]]}</b><div style="font-size:11.5px;opacity:.7">${nf(champ[2])} نقطة في «منو اللاعب؟»</div></div></div>`:''}
-    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وتنحسب لك مع جمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}${window.EL3FAN&&!(EL3FAN.name()||'').trim()?`<br><small>✍️ اسمك ما يطلع في تشكيلة ناديك. <button class="linkb" id="nmM">اكتب اسمك</button></small>`:''}</div>`:me&&!se?`<div class="mine warn">⏳ نتيجتك ما وصلت السيرفر لين الحين، فما انحسبت. تأكد من الإنترنت وارجع للصفحة قبل 12 بالليل، وبتنرسل بروحها.</div>`:''}
+    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}${(()=>{const a=myAct();return a&&a[0]<a[1]?`، وتدخل تشكيلة <b>${D.clubs[me]}</b> لما تلعب في ${AR(a[1])} أيام مختلفة (لعبت ${a[0]===1?'يوم واحد':a[0]===2?'يومين':AR(a[0])+' أيام'})`:`، وتنحسب لك مع جمهور <b>${D.clubs[me]}</b>`})()}`:`نتيجتك اليوم ما جابت نقاط`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}${window.EL3FAN&&!(EL3FAN.name()||'').trim()?`<br><small>✍️ اسمك ما يطلع في تشكيلة ناديك. <button class="linkb" id="nmM">اكتب اسمك</button></small>`:''}</div>`:me&&!se?`<div class="mine warn">⏳ نتيجتك ما وصلت السيرفر لين الحين، فما انحسبت. تأكد من الإنترنت وارجع للصفحة قبل 12 بالليل، وبتنرسل بروحها.</div>`:''}
     <div class="exp">نقاط لاعب اليوم والخبير هالأسبوع. كل نادي تنحسب له <b>نقاط أفضل ${AR(xi)} مشجع</b> عنده، مثل التشكيلة. إذا تساووا: الأقل أخطاء ← الأسرع.</div>
     ${rows.length?`<div class="ct hd2"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v">النقاط</span><span class="n">التشكيلة</span></div>
     ${ok.map(rowH).join('')}
     ${out.length?`<div class="ct sep2">ما جابوا نقاط لين الحين</div>${out.map(rowH).join('')}`:''}`:`<div class="loading" style="padding:10px 0;opacity:.7">الترتيب يتحدث كل 15 دقيقة تقريباً، ارجع بعد شوي 👀</div>`}
-    <div class="cfoot"><b>التشكيلة</b> = أفضل ${AR(xi)} مشجع للنادي هالأسبوع. والرقم في عمودها = كم مشجع فيها (أقل من ${AR(xi)} = تشكيلة ناقصة).<br><b>التحديث:</b> نقاطك تنضاف للترتيب خلال 15 دقيقة تقريباً من ما تخلص.<br>الأسبوع يخلص بعد ${left>=2?AR(left)+(left>10?' يوم':' أيام'):left===1?'يوم':'ساعات'}. الترتيب الكامل لكل التحديات، وتشكيلة كل نادي، في <a href="../fans/">«دوري الجماهير»</a>.<br>${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+    <div class="cfoot"><b>التشكيلة</b> = أفضل ${AR(xi)} مشجع للنادي هالأسبوع. والرقم في عمودها = كم مشجع فيها (أقل من ${AR(xi)} = تشكيلة ناقصة).<br>المشجع يدخل تشكيلة ناديه لما يلعب في ${AR((FDd&&FDd.approve)||3)} أيام مختلفة، وبعدها تنحسب كل نقاطه في الأسبوع.<br><b>التحديث:</b> نقاطك تنضاف للترتيب خلال 15 دقيقة تقريباً من ما تخلص.<br>الأسبوع يخلص بعد ${left>=2?AR(left)+(left>10?' يوم':' أيام'):left===1?'يوم':'ساعات'}. الترتيب الكامل لكل التحديات، وتشكيلة كل نادي، في <a href="../fans/">«دوري الجماهير»</a>.<br>${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
   $('#nmM')&&($('#nmM').onclick=()=>EL3FAN.open());
 }

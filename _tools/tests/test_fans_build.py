@@ -22,8 +22,9 @@ def tree(pred_matches, pred_table, data=None):
     return d
 
 
-def run(d, now, db=None):
-    env = {**os.environ, 'NOW': str(now), 'FBDB': db or T.B, 'FBNS': T.NS, 'TOKEN': 'owner'}
+def run(d, now, db=None, approve='1'):
+    # approve='1': الاختبارات القديمة تفحص الحسبة بدون شرط الأيام · None: الشرط الحقيقي (3 أيام)
+    env = {**os.environ, 'NOW': str(now), 'FBDB': db or T.B, 'FBNS': T.NS, 'TOKEN': 'owner', 'APPROVE': approve or ''}
     r = subprocess.run([sys.executable, os.path.join(d, '_tools/fans/build.py')], env=env, capture_output=True, text=True)
     data = json.load(open(os.path.join(d, 'fans/data.json'))) if os.path.exists(os.path.join(d, 'fans/data.json')) else None
     return r.returncode, data
@@ -106,5 +107,28 @@ if __name__ == '__main__':
     rc, data = run(tree([], {'rounds': {}, 'clubs': {}}), S + 5 * DAY)
     B = wk(data, 1)['boards']['mano']; row = next(r for r in B['clubs'] if r[0] == 'wasl'); L = B['xi']['wasl']
     T.check('تعادل كامل: النادي 11×5، القائمة 11 متعادلين بمركز 1، و2 متعادلين برا القائمة', (row[2], row[3], len(L), {x[3] for x in L}, all(x[4] for x in L), len(B['xt']['wasl'])), (55, 11, 11, {1}, True, 2))
+    # المشجع المعتمد (v3.1): يدخل التشكيلة بعد 3 أيام لعب مختلفة، وأول يومين من الموسم يكفي يوم/يومين
+    T.reset()
+    seed_p(1, 'ap0000000001x', 1, 'ain')
+    rc, data = run(tree([], {'rounds': {}, 'clubs': {}}), S + 2 * 3600000, approve=None)          # اليوم 1: يكفي يوم
+    T.check('اليوم 1: اللي لعب يدخل التشكيلة على طول', next(r for r in wk(data, 1)['boards']['mano']['clubs'] if r[0] == 'ain')[2], 6)
+    for d in (1, 2, 3):
+        seed_p(d, 'ap0000000001x', 1, 'ain')
+    seed_p(5, 'ap0000000002x', 1, 'ain'); seed_p(5, 'ap0000000003x', 1, 'ain')       # حسابين يدد يوم 5
+    d7 = tree([], {'rounds': {}, 'clubs': {}})
+    rc, data = run(d7, S + 4 * DAY + 3600000, approve=None)                                        # اليوم 5
+    B = wk(data, 1)['boards']['mano']; row = next(r for r in B['clubs'] if r[0] == 'ain')
+    T.check('اليوم 5: المعتمد بس في التشكيلة (3 أيام × 6 = 18)، والحسابين اليدد ينتظرون', (row[2], row[3], B['pend'].get('ain')), (18, 1, 2))
+    rk = json.load(open(os.path.join(d7, 'fans/ranks.json')))['week']
+    T.check('المشجع يشوف أيامه: المعتمد 3 من 3، واليديد 1 من 3', (rk['ap0000000001']['act'], rk['ap0000000002']['act']), ([3, 3], [1, 3]))
+    T.check('نقاطه الشخصية تنحسب حتى لو مب معتمد', rk['ap0000000002']['mano'][1], 6)
+    for d in (6, 7):
+        seed_p(d, 'ap0000000002x', 1, 'ain')
+    rc, data = run(d7, S + 6 * DAY + 3600000, approve=None)                                        # اليوم 7: اليديد كمّل 3 أيام
+    row = next(r for r in wk(data, 1)['boards']['mano']['clubs'] if r[0] == 'ain')
+    T.check('أول ما يكمل 3 أيام: كل نقاطه في الأسبوع تدخل (18 + 18)', (row[2], row[3]), (36, 2))
+    rc, data = run(d7, S + 7 * DAY + 41 * MIN, approve=None)                                       # الأسبوع 1 نهائي
+    acc = json.load(open(os.path.join(d7, 'fans/acc.json')))
+    T.check('الأسبوع النهائي يحفظ أيام اللعب للاعتماد', sorted(acc['act'].get('ap0000000001', [])), [1, 2, 3])
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)

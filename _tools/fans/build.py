@@ -89,6 +89,18 @@ CHALLENGES = [{'id': 'mano', 'name': 'منو اللاعب؟', 'icon': '🕵️'}
               {'id': 'pred', 'name': 'دوري التوقعات', 'icon': '🔮'}]
 BOARDS = ['all'] + [c['id'] for c in CHALLENGES]
 FAIL_MIS = 6  # منو اللاعب: ما عرفه = 6 أخطاء
+APPROVE = int(os.environ.get('APPROVE') or 3)   # «المشجع المعتمد»: يدخل تشكيلة ناديه بعد ما يلعب في 3 أيام مختلفة (v3.1، قرار إبراهيم 17 نوفمبر)
+
+
+def need(as_of):
+    """كم يوم لعب يحتاج المشجع عشان يعتمد لين اليوم as_of. أول يومين من الموسم أقل (ما في أحد يقدر يكمل 3)."""
+    return max(1, min(APPROVE, as_of))
+
+
+def approved(act, as_of):
+    """act = {uid12: set(أيام اللعب)} ⇒ المعتمدين لين as_of."""
+    k = need(as_of)
+    return {u for u, ds in act.items() if sum(1 for d in ds if d <= as_of) >= k}
 
 
 def stat():
@@ -125,7 +137,7 @@ def rank(rows, key):
 
 
 # ── جامعين النقاط لكل تحدي: {uid12: stat} ──
-def collect_mano(p_all, d0, d1):
+def collect_mano(p_all, d0, d1, act=None):
     users = defaultdict(stat)
     for d, v in (p_all or {}).items():
         if not v or not (d0 <= int(d) <= d1):
@@ -135,6 +147,8 @@ def collect_mano(p_all, d0, d1):
                 x = x or {}
                 g = x.get('g') or 0
                 s = users[u[:12]]
+                if act is not None:
+                    act.setdefault(u[:12], set()).add(int(d))
                 s['plays'] += 1
                 s['pts'] += 7 - g if g else 0
                 s['mis'] += g - 1 if g else FAIL_MIS
@@ -145,12 +159,14 @@ def collect_mano(p_all, d0, d1):
     return users
 
 
-def collect_pred(rds, pred_t, last_t):
+def collect_pred(rds, pred_t, last_t, act=None):
     users = defaultdict(stat)
     for r in rds:
         for row in pred_t.get('rounds', {}).get(r, []):
             u, nm, c, pt = row[:4]
             s = users[u]
+            if act is not None and last_t.get(int(r)):
+                act.setdefault(u, set()).add(day_of(last_t[int(r)]))     # جولة توقعات انحسبت = يوم لعب (يوم آخر مباراة فيها)
             s['pts'] += pt
             s['plays'] += row[5] if len(row) > 5 else 0
             s['mis'] += row[7] if len(row) > 7 else 0
@@ -161,7 +177,7 @@ def collect_pred(rds, pred_t, last_t):
     return users
 
 
-def boards(per, names, hide):
+def boards(per, names, hide, ok=None):
     """per = {challenge: {uid12: stat}} ⇒ اللوحات (أندية + أول 10 مشجعين) + مراكز الكل + تشكيلة كل نادي."""
     allu = defaultdict(stat)
     for ch in per.values():
@@ -176,11 +192,14 @@ def boards(per, names, hide):
         for rk, x in full:
             if x['pts'] > 0:
                 ranks.setdefault(x['u'], {})[b] = [rk, x['pts'], len(full), x['c'] if x['c'] in NAME else '']
-        # الأندية: تشكيلة كل نادي = أفضل 11 مشجع لعبوا له
-        byc = defaultdict(list)
+        # الأندية: تشكيلة كل نادي = أفضل 11 مشجع «معتمد» لعبوا له (ok=None يعني الكل)
+        byc, pend = defaultdict(list), defaultdict(int)
         for rk, x in full:
             if x['c'] in NAME:
-                byc[x['c']].append(x)
+                if ok is None or x['u'] in ok:
+                    byc[x['c']].append(x)
+                elif x['pts'] > 0:
+                    pend[x['c']] += 1
         crow = []
         for c in CLUBS:
             xi = byc.get(c, [])[:XI]
@@ -220,7 +239,7 @@ def boards(per, names, hide):
             if len(nm.strip()) >= 2 and x['c'] in NAME and x['u'] not in hide:
                 named.append([nm.strip()[:16], x['c'], x['pts'], rk, x['u']])
         top = [r for r in named if r[3] <= named[min(TOP, len(named)) - 1][3]] if named else []
-        out[b] = {'clubs': clubs, 'fans': top[:TOP], 'more': max(0, len(top) - TOP), 'xi': xi_out, 'xt': xi_tie}
+        out[b] = {'clubs': clubs, 'fans': top[:TOP], 'more': max(0, len(top) - TOP), 'xi': xi_out, 'xt': xi_tie, 'pend': dict(pend)}
     return out, ranks
 
 
@@ -246,7 +265,7 @@ def main():
     round_week = {str(r): max(ws.items(), key=lambda kv: (kv[1], kv[0]))[0] for r, ws in per_week.items()}
 
     path, acc_path = os.path.join(ROOT, 'fans/data.json'), os.path.join(ROOT, 'fans/acc.json')
-    empty_acc = lambda: {'v': 3, 'weeks': [], 'rds': [], 'users': {}, 'clubs': {}}
+    empty_acc = lambda: {'v': 3, 'weeks': [], 'rds': [], 'users': {}, 'clubs': {}, 'act': {}}
     prev_out, acc = {}, empty_acc()
     try:
         prev_out = json.load(open(path, encoding='utf8'))
@@ -268,6 +287,8 @@ def main():
     names = (fb('f', None, H) or {}) if H else {}
     names = {u[:12]: v for u, v in names.items() if isinstance(v, dict)}
 
+    # أيام اللعب لكل مشجع (للاعتماد): المحفوظة من الأسابيع النهائية + اللي نقراها الحين
+    act = {u: set(ds) for u, ds in acc.get('act', {}).items()}
     weeks = list(kept)
     live = {ch['id']: defaultdict(stat) for ch in CHALLENGES}           # الأسابيع اللي ما صارت نهائية (للموسم)
     live_clubs = {b: {} for b in BOARDS}
@@ -275,9 +296,13 @@ def main():
     for w in range(first, cur + 1):
         d0, d1 = (w - 1) * WEEK + 1, w * WEEK
         rds = sorted(r for r, wk in round_week.items() if wk == w and r not in counted)
-        per = {'mano': collect_mano(p_all, d0, d1), 'pred': collect_pred(rds, pred_t, last_t)}
-        bd, ranks = boards(per, names, hide)
+        per = {'mano': collect_mano(p_all, d0, d1, act), 'pred': collect_pred(rds, pred_t, last_t, act)}
         final = now >= final_at(w) and w < cur
+        as_of = d1 if final else min(today, d1)
+        bd, ranks = boards(per, names, hide, approved(act, as_of))
+        for u, ds in act.items():          # المشجع يشوف كم يوم لعب (للاعتماد)
+            if u in ranks:
+                ranks[u]['act'] = [sum(1 for d in ds if d <= as_of), need(as_of)]
         weeks.append({'w': w, 'from': dlabel(START + (d0 - 1) * DAYMS), 'to': dlabel(START + (d1 - 1) * DAYMS),
                       'live': w == cur, 'final': final, 'pred': bool(rds), 'rds': rds, 'boards': bd})
         target_u = acc['users'] if (final and H) else None
@@ -294,6 +319,7 @@ def main():
                 x['pts'] += pts; x['mis'] += mis; x['sec'] += sec; x['wk'] += 1 if pts else 0
         if final and H:
             acc['weeks'].append(w); acc['rds'] = sorted(set(acc['rds']) | set(rds))
+            acc['act'] = {u: sorted(d for d in ds if d <= d1)[:APPROVE] for u, ds in act.items()}   # يكفي نحفظ أول 3 أيام
         if w == cur:
             week_ranks = ranks
     # الموسم: المشجعين = مجموع نقاطهم · الأندية = مجموع نقاط تشكيلتهم كل أسبوع
@@ -332,7 +358,7 @@ def main():
             if wtops and set(wtops) != set(tops):
                 story += f"، و{names_(wtops)} {'أقوى تشكيلة' if len(wtops) == 1 else 'أقوى تشكيلات'} في الأسبوع {L['w']}"
     out = {'v': 3, 'challenges': CHALLENGES, 'xi': XI, 'updated': datetime.fromtimestamp(now / 1000, UAE).strftime('%Y-%m-%d %H:%M'),
-           'cur': cur, 'done': len(done), 'ends': START + cur * WEEK * DAYMS if cur else START,
+           'approve': APPROVE, 'cur': cur, 'done': len(done), 'ends': START + cur * WEEK * DAYMS if cur else START,
            'weeks': weeks, 'season': season, 'story': story, 'names': bool(H)}
     os.makedirs(os.path.join(ROOT, 'fans'), exist_ok=True)
     new = json.dumps(out, ensure_ascii=False, separators=(',', ':'))
