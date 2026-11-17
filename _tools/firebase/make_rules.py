@@ -120,10 +120,25 @@ _pd=os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','predict',
 _ms=json.load(open(_pd,encoding='utf8'))['matches'] if os.path.exists(_pd) else []
 FCU="root.child('f').child($u)"
 NUM="newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 20"
-def _pr(T):
+# متى يفتح التوقع (قرار إبراهيم 17 نوفمبر: الجولة الجاية بس، مب كل الجولات):
+# الجولات بترتيب أول مباراة فيها؛ الجولة تفتح بعد آخر مباراة في الجولة اللي قبلها (اللي قبل أول مباراة فيها) بساعتين.
+# أول جولة في الملف مفتوحة من البداية.
+def _opens(ms):
+  rd={}
+  for m in ms: rd.setdefault(m['wk'],[]).append(m['t'])
+  order=sorted(rd,key=lambda w:(min(rd[w]),w)); op={}; prev=None
+  for w in order:
+    t0=min(rd[w])
+    if prev is None: op[w]=0
+    else:
+      before=[t for t in rd[prev] if t<t0]
+      op[w]=(max(before) if before else min(rd[prev]))+2*3600000
+    prev=w
+  return op
+def _pr(T,O=0):
   return {".read":f"now >= {T}","$u":{
     ".read":"auth != null && auth.uid == $u",
-    ".write":f"auth != null && auth.uid == $u && now < {T}",
+    ".write":f"auth != null && auth.uid == $u && now < {T}"+(f" && now >= {O}" if O else ""),
     ".validate":"newData.hasChildren(['h','a','c','n','w'])",
     "h":{".validate":NUM},"a":{".validate":NUM},
     "x":{".validate":"newData.isBoolean()"},
@@ -131,9 +146,11 @@ def _pr(T):
     "n":{".validate":f"newData.isString() && newData.val() == ({FCU}.child('n').exists() ? {FCU}.child('n').val() : '')"},
     "w":{".validate":"newData.val() == now"},
     "$other":{".validate":False}}}
-rules["rules"]["pr"]={m['id']:_pr(m['t']) for m in _ms}
+_op=_opens(_ms)
+rules["rules"]["pr"]={m['id']:_pr(m['t'],_op[m['wk']]) for m in _ms}
 # نسخة من مواعيد القفل اللي في القواعد: الصفحة تقفل على الأبكر، ولوحة التحكم تنبّه لو المواعيد تغيرت
 if _ms:json.dump({m['id']:m['t'] for m in _ms},open(os.path.join(os.path.dirname(_pd),'lock.json'),'w'),separators=(',',':'))
+if _ms:json.dump({str(w):t for w,t in _op.items()},open(os.path.join(os.path.dirname(_pd),'open.json'),'w'),separators=(',',':'))   # متى تفتح كل جولة (للصفحة)
 
 # ── عداد الإحصائيات الخاص (موافقة إبراهيم 16 نوفمبر) ── v/<يوم>/{t,u,r,p/<قسم>,s/<أغنية>/<حدث>}
 # زيادة +1 بس لكل طلب. القراءة مفتوحة مثل s و c (أرقام مجمعة بدون أي بيانات شخصية، واللوحة ما فيها تسجيل دخول Firebase).

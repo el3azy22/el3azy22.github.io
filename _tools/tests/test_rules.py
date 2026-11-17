@@ -129,7 +129,8 @@ def mano_tests():
 def predict_tests():
     now = int(time.time() * 1000)
     ms = [{'id': '9001', 'wk': 1, 't': now + 3600000, 'h': 'ain', 'a': 'wahda', 'st': 1},
-          {'id': '9002', 'wk': 1, 't': now - 60000, 'h': 'wasl', 'a': 'nasr', 'st': 2}]
+          {'id': '9002', 'wk': 1, 't': now - 60000, 'h': 'wasl', 'a': 'nasr', 'st': 2},
+          {'id': '9003', 'wk': 2, 't': now + 2 * DAY, 'h': 'ain', 'a': 'nasr', 'st': 1}]     # الجولة الجاية: تفتح بعد نهاية الجولة 1
     load_rules(now - DAY, ms); reset({'f': {'p1': {'c': 'ain', 'n': 'سالم', 't': 1}}})
     print('\n— دوري التوقعات —')
     rec = {'h': 2, 'a': 1, 'c': 'ain', 'n': 'سالم', 'w': TS}
@@ -144,6 +145,7 @@ def predict_tests():
     check('مشجع بدون بطاقة: نادي none واسم فاضي ينقبل', put('p2', 'pr/9001/p2', {'h': 0, 'a': 0, 'c': 'none', 'n': '', 'w': TS}), 200)
     check('توقعات مباراة ما بدت ما تنقرا للكل', get('pr/9001', 'p2').status_code, 401)
     check('توقعات مباراة بدت تنقرا', requests.get(url('pr/9002')).status_code, 200)
+    check('الجولة الجاية مقفولة لين تخلص الجولة الحالية', put('p1', 'pr/9003/p1', rec), 401)
 
 
 def rate_tests():

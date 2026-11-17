@@ -28,7 +28,7 @@ jobs:
           git config user.name "el3azy-bot"
           git config user.email "el3azy-bot@users.noreply.github.com"
           python3 _tools/firebase/deploy.py
-          git add _tools/firebase/rules.json predict/lock.json setup/rules.html
+          git add _tools/firebase/rules.json predict/lock.json predict/open.json setup/rules.html
           if ! git diff --cached --quiet; then
             git commit -m "قواعد Firebase: نشر تلقائي" -q
             git pull --rebase -q && git push -q
