@@ -95,6 +95,15 @@ except Exception:
 GRID_START = int(os.environ.get('GRID_START') or GRID_START)
 if GRID_START:
     CHALLENGES.append({'id': 'grid', 'name': 'شبكة الدوري', 'icon': '🔢'})
+# «باص الفريق»: من يوم انطلاقه (bus/config.json → start). النقاط من النجوم في أفضل سباق من أول 3 في مرحلة اليوم
+try:
+    BUS_START = int(json.load(open(os.path.join(ROOT, 'bus', 'config.json'), encoding='utf8')).get('start') or 0)
+except Exception:
+    BUS_START = 0
+BUS_START = int(os.environ.get('BUS_START') or BUS_START)
+if BUS_START:
+    CHALLENGES.append({'id': 'bus', 'name': 'باص الفريق', 'icon': '🚌'})
+BUS_PTS = {0: 0, 1: 3, 2: 6, 3: 9}   # ★ 3 · ★★ 6 · ★★★ 9 (v3.2، قاعدة الوزن)
 GRID_THR, GRID_RARE = 30, 10   # النسب بعد 30 حل للخانة · النادر أقل من 10% (v3.2)
 BOARDS = ['all'] + [c['id'] for c in CHALLENGES]
 FAIL_MIS = 6  # منو اللاعب: ما عرفه = 6 أخطاء
@@ -226,6 +235,30 @@ def collect_grid(g_all, d0, d1, act=None):
     return users
 
 
+def collect_bus(bv_all, d0, d1, act=None):
+    """bv_all = {يوم: {uid: {1..3: نتيجة المُعيد}}} ⇒ أفضل سباق صالح في اليوم (النجوم ← نتيجة اللعبة).
+    الأخطاء = اصطدامات أفضل سباق · اللعب = 1 في اليوم · الوقت = مدة أفضل سباق."""
+    users = defaultdict(stat)
+    for d, v in (bv_all or {}).items():
+        d = int(d)
+        if not v or not (d0 <= d <= d1) or d < BUS_START:
+            continue
+        for u, rs in v.items():
+            rs = [x for x in (rs if isinstance(rs, list) else (rs or {}).values()) if x and x.get('ok')]
+            if not rs:
+                continue
+            best = max(rs, key=lambda x: (x.get('rt') or 0, x.get('sc') or 0, -(x.get('sec') or 0)))
+            s = users[u[:12]]
+            if act is not None:
+                act.setdefault(u[:12], set()).add(d)
+            s['plays'] += 1; s['pts'] += BUS_PTS.get(best.get('rt') or 0, 0); s['mis'] += best.get('cr') or 0
+            s['sec'] += min(int(best.get('sec') or 0), 3600)
+            t = best.get('t') or START + (d - 1) * DAYMS
+            if t >= s['ct'] and best.get('c'):
+                s['c'], s['ct'] = best['c'], t
+    return users
+
+
 def boards(per, names, hide, ok=None):
     """per = {challenge: {uid12: stat}} ⇒ اللوحات (أندية + أول 10 مشجعين) + مراكز الكل + تشكيلة كل نادي."""
     allu = defaultdict(stat)
@@ -339,6 +372,12 @@ def main():
             q = fb(f'gq/{d}', None, H)
             if q:
                 g_all[str(d)] = {'q': q, 'p': fb(f'gp/{d}', None, H) or {}, 'c': fb(f'gc/{d}', None, H) or {}, 'n': fb(f'gn/{d}', None, H) or {}}
+    bv_all = {}
+    if BUS_START and H and cur:
+        for d in range(max(BUS_START, (first - 1) * WEEK + 1), min(today, max(first, cur) * WEEK) + 1):
+            v = fb(f'bv/{d}', None, H)
+            if v:
+                bv_all[str(d)] = v
     names = (fb('f', None, H) or {}) if H else {}
     names = {u[:12]: v for u, v in names.items() if isinstance(v, dict)}
 
@@ -354,6 +393,8 @@ def main():
         per = {'mano': collect_mano(p_all, d0, d1, act), 'pred': collect_pred(rds, pred_t, last_t, act)}
         if GRID_START:
             per['grid'] = collect_grid(g_all, d0, d1, act)
+        if BUS_START:
+            per['bus'] = collect_bus(bv_all, d0, d1, act)
         final = now >= final_at(w) and w < cur
         as_of = d1 if final else min(today, d1)
         bd, ranks = boards(per, names, hide, approved(act, as_of))

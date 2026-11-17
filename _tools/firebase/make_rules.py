@@ -199,4 +199,23 @@ rules["rules"]["gn"]={".read":True,"$d":{"$k":{
   ".write":_gfresh(3),
   ".validate":f"newData.isNumber() && {inc} && {_gentry(3)}.child('k').val() == $k"}}}
 
+# ── «باص الفريق» في دوري الجماهير (قرار إبراهيم 17 نوفمبر) ──
+# b/<يوم>/<uid>/<1..3> = {s: الملعب، r: الطريق، k: حركات اللاعب (مضغوطة)، c: النادي، d: اليوم، t: وقت السيرفر}
+#   أول 3 محاولات في «مرحلة اليوم» بس، كل وحدة تنكتب مرة وحدة وبالترتيب وفي يومها.
+#   النتيجة ما تنقبل من التلفون: المُعيد (_tools/bus/verify.py) يعيد السباق من الحركات ويكتب bv (حساب الخدمة بس).
+rules["rules"]["b"]={"$d":{"$u":{
+  ".read":"auth != null && auth.uid == $u",
+  ".validate":"$d.matches(/^[1-9][0-9]{0,2}$/)",
+  "$i":{".write":"auth != null && auth.uid == $u && !data.exists()",
+    ".validate":("$i.matches(/^[1-3]$/) && ($i == '1' || newData.parent().child($i == '2' ? '1' : '2').exists())"
+      " && newData.hasChildren(['s','r','k','c','d','t'])"
+      f" && $d == '' + newData.child('d').val() && now >= {L} + (newData.child('d').val() - 1) * {DAYMS} && now < {L} + newData.child('d').val() * {DAYMS} + {GRACE}"),
+    "s":{".validate":"newData.isString() && newData.val().matches(/^[a-z]{2,12}$/)"},
+    "r":{".validate":"newData.isString() && newData.val().matches(/^[a-z]{2,12}_[AB]$/)"},
+    "k":{".validate":"newData.isString() && newData.val().length <= 30000 && newData.val().matches(/^[0-9a-f:,]*$/)"},
+    "c":{".validate":f"newData.isString() && newData.val().matches(/^({CL})?$/)"},
+    "d":{".validate":"newData.isNumber()"},"t":{".validate":"newData.val() == now"},
+    "$other":{".validate":False}}}}}
+rules["rules"]["bv"]={".read":True}   # نتايج المُعيد (مقروءة للكل، الكتابة لحساب الخدمة بس)
+
 json.dump(rules,open('rules.json','w'),ensure_ascii=False,separators=(',',':'))

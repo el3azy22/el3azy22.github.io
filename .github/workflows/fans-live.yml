@@ -22,6 +22,12 @@ jobs:
         with:
           python-version: '3.12'
       - run: pip install google-auth requests
+      # «باص الفريق»: المُعيد يحتاج متصفح، وينثبت بس لو الباص انطلق في الدوري (bus/config.json start)
+      - name: bus verifier deps
+        run: |
+          if python3 -c "import json,sys;sys.exit(0 if json.load(open('bus/config.json')).get('start') else 1)"; then
+            pip install playwright && python -m playwright install --with-deps chromium && echo "BUS=1" >> $GITHUB_ENV
+          fi
       - name: loop
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
@@ -36,6 +42,7 @@ jobs:
           [ "$win_end" -lt "$deadline" ] && deadline=$win_end
           while :; do
             git pull --rebase -q || true
+            [ -n "$BUS" ] && { python3 _tools/bus/verify.py || echo "::warning::مُعيد الباص فشل"; }
             python3 _tools/fans/build.py || echo "::warning::دوري الجماهير فشل في هالدورة"
             git add fans/data.json fans/acc.json fans/ranks.json
             if ! git diff --cached --quiet; then
