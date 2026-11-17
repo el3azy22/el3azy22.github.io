@@ -1,11 +1,13 @@
 """«باص الفريق» — المُعيد: يعيد كل سباق في «مرحلة اليوم» من حركات اللاعب، ويكتب النتيجة الحقيقية في bv.
 
-ليش؟ النتيجة تنحسب في تلفون اللاعب، فأي أحد يقدر يرسل «3 نجوم» بدون ما يلعب. اللعبة حتمية (نفس الحركات =
+التحدي: «تحدي الجولة» — باص نادي المشجع باتجاه ملعب مباراته، في يوم المباراة، محاولة وحدة (قرار إبراهيم 17 نوفمبر).
+
+ليش المُعيد؟ النتيجة تنحسب في تلفون اللاعب، فأي أحد يقدر يرسل «3 نجوم» بدون ما يلعب. اللعبة حتمية (نفس الحركات =
 نفس النتيجة بالضبط)، فالمُعيد يشغّل محرك اللعبة نفسه (bus/index.html#qa) ويعيد السباق، والنتيجة اللي تنحسب
 في دوري الجماهير هي اللي طلعت من الإعادة بس.
 
-  b/<يوم>/<uid>/<1..3> = {s, r, k, c, d, t}   (يكتبها التلفون، القواعد في make_rules.py)
-  bv/<يوم>/<uid>/<1..3> = {ok, w, rt, np, st, cr, fn, tl, sc, sec, c, t}   (يكتبها هالملف بحساب الخدمة)
+  b/<يوم>/<uid> = {m, s, r, k, c, d, t}   (يكتبها التلفون، القواعد في make_rules.py)
+  bv/<يوم>/<uid> = {ok, w, rt, np, st, cr, fn, tl, sc, sec, c, t}   (يكتبها هالملف بحساب الخدمة)
 
   python3 _tools/bus/verify.py            # اليوم وأمس
   FBDB=http://127.0.0.1:9000 FBNS=demo-el3 TOKEN=owner python3 _tools/bus/verify.py   # المحاكي
@@ -76,18 +78,10 @@ def ymd(d):
     return t.year * 10000 + t.month * 100 + t.day
 
 
-def as_runs(v):
-    if isinstance(v, list):
-        return {str(i): x for i, x in enumerate(v) if x}
-    return {k: x for k, x in (v or {}).items() if x}
-
-
-REPLAY = """([day, dnum, r, steps]) => {
+REPLAY = """([day, stage, r, steps]) => {
   const B = window.__bus;
-  // يحتاج من اللعبة (bus/index.html → window.__bus): daily(يوم المنصة) = ملعب مرحلة اليوم، و sim() يرجّع np (اللاعبين اللي ركبوا)
-  const stage = B.daily(Math.floor((START_MS + 4 * 3600e3) / 864e5) + dnum - 1);
-  const st = r.split('_')[0];
-  if (st !== stage) return {ok: 0, why: 'مب مرحلة اليوم (' + stage + ')'};
+  // يحتاج من اللعبة (bus/index.html → window.__bus): sim() يرجّع np (اللاعبين اللي ركبوا)، و STAR3
+  if (r.split('_')[0] !== stage) return {ok: 0, why: 'مب ملعب المباراة'};
   if (!B.routes().includes(r)) return {ok: 0, why: 'طريق غير معروف'};
   B.day = day; B.setRoute(r);
   const s = B.sim(steps);
@@ -96,7 +90,16 @@ REPLAY = """([day, dnum, r, steps]) => {
   const rt = w ? (tl >= B.STAR3 && s.fines === 0 && nP === 3 ? 3 : nP >= 2 ? 2 : 1) : 0;
   const sc = w ? Math.max(0, Math.round(tl * 10) * 10 + s.stars * 50 + nP * 300 - s.crashes * 30) : 0;
   return {ok: 1, w, rt, np: nP, st: s.stars, cr: s.crashes, fn: s.fines, tl: Math.round(tl * 100) / 100, sc, sec: Math.round(s.steps / 60)};
-}""".replace('START_MS', str(START))
+}"""
+BUS_ID = {'shababahli': 'shabab'}   # رموز الأندية في اللعبة
+
+
+def match_stage(fix, d, c, mid):
+    """ملعب مباراة نادي المشجع في يوم d (الملعب = ملعب صاحب الأرض). None = ما عنده مباراة هاليوم."""
+    for m in fix:
+        if str(m.get('id')) == str(mid) and (m.get('t', 0) - START) // DAYMS + 1 == d and c in (m.get('h'), m.get('a')):
+            return BUS_ID.get(m['h'], m['h'])
+    return None
 
 
 def main():
@@ -104,14 +107,14 @@ def main():
     now = int(os.environ.get('NOW') or time.time() * 1000)
     today = max(1, (now - START) // DAYMS + 1)
     days = [d for d in (today - 1, today) if d >= 1]
+    fix = json.load(open(os.environ.get('BUS_FIX') or os.path.join(ROOT, 'predict', 'data.json'), encoding='utf8')).get('matches', [])
     todo = []
     for d in days:
         runs = req('GET', f'b/{d}', h) or {}
         done = req('GET', f'bv/{d}', h) or {}
-        for u, rs in (runs or {}).items():
-            for i, x in as_runs(rs).items():
-                if not (as_runs((done or {}).get(u)) or {}).get(i):
-                    todo.append((d, u, i, x))
+        for u, x in (runs or {}).items():
+            if x and not (done or {}).get(u):
+                todo.append((d, u, x))
     if not todo:
         print('bus verify: ما في سباقات يديدة')
         return
@@ -128,13 +131,17 @@ def main():
             pg.goto(f'http://127.0.0.1:{PORT}/bus/#qa')
             pg.wait_for_function('window.__bus && window.__bus.routes().length > 0', timeout=60000)
             out = {}
-            for d, u, i, x in todo:
-                try:
-                    res = pg.evaluate(REPLAY, [ymd(d), d, x.get('r', ''), decode(x.get('k', ''))])
-                except Exception as e:
-                    res = {'ok': 0, 'why': 'خطأ في الإعادة: ' + str(e)[:80]}
-                res.update({'c': x.get('c', ''), 't': x.get('t', 0)})
-                out[f'{d}/{u}/{i}'] = res
+            for d, u, x in todo:
+                stage = match_stage(fix, d, x.get('c', ''), x.get('m', ''))
+                if not stage:
+                    res = {'ok': 0, 'why': 'ما في مباراة لنادي المشجع في هاليوم'}
+                else:
+                    try:
+                        res = pg.evaluate(REPLAY, [ymd(d), stage, x.get('r', ''), decode(x.get('k', ''))])
+                    except Exception as e:
+                        res = {'ok': 0, 'why': 'خطأ في الإعادة: ' + str(e)[:80]}
+                res.update({'c': x.get('c', ''), 't': x.get('t', 0), 'm': x.get('m', '')})
+                out[f'{d}/{u}'] = res
             b.close()
         req('PATCH', 'bv', h, out)
         good = sum(1 for v in out.values() if v.get('ok'))

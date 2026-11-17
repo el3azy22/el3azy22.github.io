@@ -95,7 +95,7 @@ except Exception:
 GRID_START = int(os.environ.get('GRID_START') or GRID_START)
 if GRID_START:
     CHALLENGES.append({'id': 'grid', 'name': 'شبكة الدوري', 'icon': '🔢'})
-# «باص الفريق»: من يوم انطلاقه (bus/config.json → start). النقاط من النجوم في أفضل سباق من أول 3 في مرحلة اليوم
+# «باص الفريق»: من يوم انطلاقه (bus/config.json → start). «تحدي الجولة»: سباق واحد في يوم مباراة نادي المشجع، والنقاط من النجوم
 try:
     BUS_START = int(json.load(open(os.path.join(ROOT, 'bus', 'config.json'), encoding='utf8')).get('start') or 0)
 except Exception:
@@ -236,15 +236,16 @@ def collect_grid(g_all, d0, d1, act=None):
 
 
 def collect_bus(bv_all, d0, d1, act=None):
-    """bv_all = {يوم: {uid: {1..3: نتيجة المُعيد}}} ⇒ أفضل سباق صالح في اليوم (النجوم ← نتيجة اللعبة).
-    الأخطاء = اصطدامات أفضل سباق · اللعب = 1 في اليوم · الوقت = مدة أفضل سباق."""
+    """bv_all = {يوم: {uid: نتيجة المُعيد}} ⇒ «تحدي الجولة»: سباق واحد في يوم مباراة نادي المشجع.
+    الأخطاء = الاصطدامات · اللعب = 1 · الوقت = مدة السباق."""
     users = defaultdict(stat)
     for d, v in (bv_all or {}).items():
         d = int(d)
         if not v or not (d0 <= d <= d1) or d < BUS_START:
             continue
         for u, rs in v.items():
-            rs = [x for x in (rs if isinstance(rs, list) else (rs or {}).values()) if x and x.get('ok')]
+            rs = [rs] if isinstance(rs, dict) and 'ok' in rs else [x for x in (rs if isinstance(rs, list) else (rs or {}).values()) if isinstance(x, dict)]
+            rs = [x for x in rs if x and x.get('ok')]
             if not rs:
                 continue
             best = max(rs, key=lambda x: (x.get('rt') or 0, x.get('sc') or 0, -(x.get('sec') or 0)))
