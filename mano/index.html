@@ -306,6 +306,7 @@ const LINE={GK:0,DF:1,MD:2,FW:3};
 const AR=n=>String(n);
 const PC=n=>'\u2066'+n+'%\u2069';
 const flag=cc=>cc&&cc.length===2?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt())):'🏳️';
+let ALIAS={};
 const norm=s=>(s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/ؤ/g,'و').replace(/ئ/g,'ي').normalize('NFD').replace(/[̀-ͯ]/g,'').replace(/[^a-z0-9؀-ۿ ]/g,' ').replace(/\s+/g,' ').trim();
 const store={get(k,d){try{const v=localStorage.getItem('el3azy_mano_'+k);return v?JSON.parse(v):d}catch(e){return d}},set(k,v){try{localStorage.setItem('el3azy_mano_'+k,JSON.stringify(v))}catch(e){}}};
 let toastT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),1900)}
@@ -331,10 +332,10 @@ function msToDubaiMidnight(){const now=Date.now()+4*3600e3;return 864e5-(now%864
 
 let D,BY,ANS,YEST,DAY,cardBlob=null,cardUrl=null,mode=store.get('mode','easy'),S,timer;
 const MAX=6;
-fetch('data.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json()).then(init).catch(()=>{$('#app').innerHTML='<div class="card loading">ما قدرنا نحمّل اللعبة. حدّث الصفحة 🔄</div>'});
+Promise.all([fetch('data.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json()),fetch('aliases.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.ok?r.json():{}).catch(()=>({}))]).then(([d,al])=>{ALIAS=al||{};return init(d)}).catch(()=>{$('#app').innerHTML='<div class="card loading">ما قدرنا نحمّل اللعبة. حدّث الصفحة 🔄</div>'});
 
 function init(data){
-  D=data;BY={};D.players.forEach(p=>{p._k=norm(p.n+' '+p.e);BY[p.id]=p});
+  D=data;BY={};D.players.forEach(p=>{p._k=norm(p.n+' '+p.e+' '+(ALIAS[p.id]||[]).join(' '));BY[p.id]=p});   // الاسم + الإنجليزي + الأسماء المعروفة (aliases.json)
   const raw=dubaiDayIndex(D.start);
   if(raw<0&&!/[?&]preview\b/.test(location.search)){prelaunch(raw);return}
   const idx=Math.max(0,raw);
@@ -451,7 +452,7 @@ function bindInput(){
     const words=q.split(' ');
     const m=D.players.filter(p=>!S.guesses.includes(p.id)&&words.every(w=>p._k.includes(w)))
       .sort((a,b)=>(b._k.startsWith(q)-a._k.startsWith(q))||(b.ap-a.ap)).slice(0,8);
-    sg.innerHTML=m.length?m.map(p=>`<button data-id="${p.id}">${ph(p,40)}<span class="nm">${p.n}<small>${D.clubs[p.c]} · <span dir="ltr">${p.e}</span></small></span></button>`).join(''):'<div class="empty">ما في لاعب بهالاسم في قوائم الدوري</div>';
+    sg.innerHTML=m.length?m.map(p=>`<button data-id="${p.id}">${ph(p,40)}<span class="nm">${p.n}${ALIAS[p.id]?` <em style="font-style:normal;opacity:.7">(${ALIAS[p.id][0]})</em>`:''}<small>${D.clubs[p.c]} · <span dir="ltr">${p.e}</span></small></span></button>`).join(''):'<div class="empty">ما في لاعب بهالاسم في قوائم الدوري</div>';
     sg.hidden=false;
     sg.querySelectorAll('button').forEach(b=>b.onclick=()=>guess(b.dataset.id));
   };
