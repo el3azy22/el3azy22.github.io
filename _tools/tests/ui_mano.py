@@ -9,7 +9,7 @@ import test_rules as T
 
 PROD = 'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app'
 D = json.load(open(os.path.join(T.ROOT, 'mano', 'data.json')))
-E = D.get('schedule') or []   # بعد النقل: الجدول في q (الاختبار يكتبه في المحاكي)
+E = D.get('schedule') or ['soufiane-rahimi'] + [p['id'] for p in D['players'] if p.get('ap', 0) >= 5 and p['id'] != 'soufiane-rahimi'][:40]   # بعد النقل: الجدول في q (الاختبار يكتبه في المحاكي)
 P = ['alassane-diallo']
 day = (int(time.time() * 1000) - 1794859200000) // 86400000 + 1
 
