@@ -85,7 +85,8 @@ const css=`
 .fz-grid button{position:relative;width:calc(25% - 6px);height:76px;background:rgba(7,29,43,.75);border:1.5px solid rgba(215,180,101,.18);border-radius:14px;display:grid;justify-items:center;align-content:center;gap:5px;color:#FFF5E5;font:500 11px 'Readex Pro';cursor:pointer;transition:.15s}
 .fz-grid button.on{border-color:#D7B465;background:rgba(215,180,101,.14);transform:translateY(-2px);box-shadow:0 6px 18px rgba(215,180,101,.2)}
 .fz-grid button.on:after{content:'✓';position:absolute;top:-7px;left:-7px;width:20px;height:20px;border-radius:50%;background:#D7B465;color:#071D2B;font-size:12px;font-weight:700;display:grid;place-items:center}
-.fz-name{display:block;width:100%;box-sizing:border-box;background:#071D2B;border:1px solid rgba(215,180,101,.4);border-radius:12px;padding:11px 12px;color:#FFF5E5;font:500 15px 'Readex Pro';text-align:center;margin-bottom:4px;outline:none}
+@font-face{font-family:'Readex In';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap;ascent-override:100%;descent-override:50%}
+.fz-name{display:block;width:100%;box-sizing:border-box;background:#071D2B;border:1px solid rgba(215,180,101,.4);border-radius:12px;padding:11px 12px;color:#FFF5E5;font:500 15px 'Readex In','Readex Pro';text-align:center;margin-bottom:4px;outline:none}
 .fz-name:focus{border-color:#D7B465}
 .fz-hint{font-size:11px;opacity:.55;margin:0 2px 12px}
 .fz-ok{display:block;width:100%;border:0;border-radius:14px;padding:13px;font:700 15px 'Readex Pro';background:linear-gradient(180deg,#F6E3AE,#B08A3E);color:#071D2B;cursor:pointer}

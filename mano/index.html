@@ -14,7 +14,9 @@
 <meta name="twitter:site" content="@el3azy22">
 <link rel="icon" href="assets/logo.png">
 <link rel="apple-touch-icon" href="assets/logo.png">
-<style>@font-face{font-family:'Readex Pro';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap}</style>
+<style>@font-face{font-family:'Readex Pro';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap}
+/* نفس الخط لخانات الكتابة بمسافة تحت أكبر: نقاط الياء الأخيرة (ـي) تنزل تحت حد الخط وكانت تنقص داخل الخانة */
+@font-face{font-family:'Readex In';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap;ascent-override:100%;descent-override:50%}</style>
 <style>
 :root{--navy:#071D2B;--navy2:#0C2638;--navy3:#14384F;--gold:#D7B465;--gold2:#F0D99A;--ivory:#FFF5E5;--green:#2E9E66;--yellow:#C4952B;--gray:#243F52;--red:#B4473F}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
@@ -59,7 +61,7 @@ header .day{font-size:12px;color:var(--gold);font-weight:600}
 @keyframes pop{0%{transform:scale(.92);opacity:0}60%{transform:scale(1.03)}100%{transform:none;opacity:1}}
 /* input */
 .inp{position:relative;margin-top:14px}
-.inp input{width:100%;font-family:inherit;font-size:16px;padding:14px 46px 14px 14px;border-radius:14px;border:1.5px solid rgba(215,180,101,.45);background:var(--navy);color:var(--ivory);outline:none;transition:.2s}
+.inp input{width:100%;font-family:'Readex In','Readex Pro',system-ui,sans-serif;font-size:16px;line-height:1.7;padding:10px 46px 10px 14px;border-radius:14px;border:1.5px solid rgba(215,180,101,.45);background:var(--navy);color:var(--ivory);outline:none;transition:.2s}
 .inp input:focus{border-color:var(--gold);box-shadow:0 0 0 4px rgba(215,180,101,.12)}
 .inp::before{content:'🔎';position:absolute;right:15px;top:50%;transform:translateY(-50%);font-size:16px;opacity:.7;pointer-events:none}
 .sugg{position:absolute;top:calc(100% + 6px);left:0;right:0;background:var(--navy2);border:1px solid rgba(215,180,101,.35);border-radius:14px;overflow:hidden;z-index:6;max-height:300px;overflow-y:auto;box-shadow:0 14px 40px rgba(0,0,0,.5)}
@@ -130,6 +132,7 @@ footer a{color:inherit}
 .step i{font-style:normal;width:32px;height:32px;border-radius:50%;background:var(--gold);color:var(--navy);display:grid;place-items:center;font-weight:700;flex-shrink:0}
 .step b{display:block;font-size:15px}.step span{font-size:12px;opacity:.65}
 .seg button.lock{opacity:.6}.seg button.lock small{color:var(--gold)}
+.clubhint{display:flex;align-items:center;gap:10px;margin:12px 0 0;padding:10px 12px;border-radius:14px;border:1px solid rgba(215,180,101,.55);background:linear-gradient(160deg,rgba(215,180,101,.16),rgba(7,29,43,.7));animation:pop .45s;text-align:right}.clubhint small{display:block;font-size:11px;color:var(--gold);opacity:.85}.clubhint b{font-size:15px}
 .prohow{margin:12px 0 0;padding:10px 12px;border-radius:14px;background:rgba(215,180,101,.08);border:1px dashed rgba(215,180,101,.45);font-size:12.5px;line-height:1.8;text-align:right}.prohow b{color:var(--gold)}
 .nextpro{margin:10px 0 14px;padding:14px 14px 12px;border-radius:18px;text-align:center;border:1.5px solid transparent;background:radial-gradient(ellipse at 50% 0%,rgba(215,180,101,.25),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,#F6E3AE,#B08A3E 40%,rgba(215,180,101,.3) 70%,#D7B465) border-box;animation:npin .6s ease .4s both}
 .nextpro .t{font-size:17px;font-weight:700;color:var(--gold2,#F6E3AE)}.nextpro .d{font-size:13px;opacity:.88;line-height:1.7;margin:4px 0 10px}.nextpro .d b{color:var(--gold)}
@@ -247,7 +250,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
   <h2>كيف تلعب «منو اللاعب؟»</h2>
   <div class="step"><i>1</i><div><b>لاعب اليوم 🕵️</b><span>لاعب سري واحد للكل من دوري أدنوك للمحترفين</span></div></div>
   <div class="step"><i>2</i><div><b>اكتب اسم اللاعب اللي تتوقعه</b><span>بالعربي أو الإنجليزي · عندك 6 محاولات، وكل غلطة تفتح تلميح 🔓</span></div></div>
-  <div class="step"><i>3</i><div><b>بعدها ينفتح تحدي الخبير 🧠</b><span>لاعب سري ثاني أصعب، <b>خاص فيك</b> وغير لاعب ربعك. اكتب أي لاعب، ونقارنه باللاعب السري في النادي والمركز والجنسية والعمر والرقم: 🟩 نفسه، 🟨 قريب، ⬆⬇ السري أكبر أو أصغر</span></div></div>
+  <div class="step"><i>3</i><div><b>بعدها ينفتح تحدي الخبير 🧠</b><span>لاعب سري ثاني أصعب، <b>خاص فيك</b> وغير لاعب ربعك. اكتب أي لاعب، ونقارنه باللاعب السري في النادي والمركز والجنسية والعمر والرقم: 🟩 نفسه، 🟨 قريب، ⬆⬇ السري أكبر أو أصغر. وبعد 3 محاولات غلط ينكشف لك ناديه 🔓</span></div></div>
   <div class="step"><i>4</i><div><b>شارك نتيجتك في X</b><span>من غير ما ينكشف اسم اللاعب</span></div></div>
   <div class="pts" id="clubPts" hidden><h4>🏆 نقاطك ونقاط ناديك</h4>
    <div style="font-size:12px;opacity:.75;margin-bottom:6px">في كل تحدي، حسب المحاولة اللي عرفت فيها اللاعب:</div>
@@ -260,7 +263,8 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
    <li><b>الوقت:</b> لاعب يديد كل يوم الساعة 12 بالليل بتوقيت الإمارات، ولو الصفحة مفتوحة تتحدث بروحها.</li>
    <li><b>المحاولات:</b> 6 في كل تحدي. ما تنحسب محاولة لنفس اللاعب مرتين، وما في إعادة بعد ما يخلص التحدي.</li>
    <li><b>متى تنحسب نتيجتك لناديك؟</b> بعد ما تخلّص التحدي وتكون مختار ناديك، في نفس اليوم (لين 12:15 بالليل). وتنحسب مرة وحدة بس.</li>
-   <li><b>تحدي الخبير</b>: كل مشجع يطلع له لاعب سري خاص فيه من نفس مستوى الصعوبة (لاعبين شاركوا من 1 لين 4 مباريات)، عشان الجواب ما ينتشر. وما يتكرر لك نفس اللاعب.</li>
+   <li><b>التلميحات في لاعب اليوم:</b> المركز من البداية، وكل غلطة تفتح تلميح: الجنسية، العمر، النادي، رقم القميص، أول حرف.</li>
+   <li><b>تحدي الخبير</b>: بعد 3 محاولات غلط ينكشف لك نادي اللاعب السري. وكل مشجع يطلع له لاعب سري خاص فيه من نفس مستوى الصعوبة (لاعبين شاركوا من 1 لين 4 مباريات)، عشان الجواب ما ينتشر. وما يتكرر لك نفس اللاعب.</li>
    <li><b>تحدي الخبير</b> ينحسب لنفس النادي اللي انحسبت له لعبة لاعب اليوم.</li>
    <li><b>لو انقطع الإنترنت:</b> نتيجتك محفوظة في تلفونك، وتنرسل أول ما ترجع للصفحة في نفس اليوم.</li>
    <li>نتيجتك وإحصائياتك محفوظة في <b>هالتلفون</b>. لو مسحت بيانات المتصفح أو لعبت من تلفون ثاني، تبدا من يديد.</li>
@@ -409,10 +413,14 @@ function render(){
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
    </div>`;
   if(mode==='easy'){
-    const CL=[['الجنسية',()=>`<span style="font-size:22px">${flag(ANS.f)}</span>${ANS.nat}`],['المركز',()=>POS[ANS.p]],['العمر',()=>AR(ANS.a)+' سنة'],['النادي',()=>crest(ANS.c,24)+D.clubs[ANS.c]],['رقم القميص',()=>AR(ANS.no)],['أول حرف من اسمه',()=>`«${ANS.n.trim()[0]}»`]];
+    // من اليوم 2: أول تلميح المركز (أضعف) بدل الجنسية، عشان المحاولة الأولى تكون معرفة مب هدية
+    const NAT=['الجنسية',()=>`<span style="font-size:22px">${flag(ANS.f)}</span>${ANS.nat}`],POSC=['المركز',()=>POS[ANS.p]];
+    const CL=[...(DAY>=2?[POSC,NAT]:[NAT,POSC]),['العمر',()=>AR(ANS.a)+' سنة'],['النادي',()=>crest(ANS.c,24)+D.clubs[ANS.c]],['رقم القميص',()=>AR(ANS.no)],['أول حرف من اسمه',()=>`«${ANS.n.trim()[0]}»`]];
     const shown=S.done?6:Math.min(used+1,6);
     h+=`<div class="clues">${CL.map((c,i)=>i<shown?`<div class="clue open"><span>تلميح ${AR(i+1)} · ${c[0]}</span><b>${c[1]()}</b></div>`:`<div class="clue"><span>تلميح ${AR(i+1)}</span><b>🔒 ينفتح لو غلطت</b></div>`).join('')}</div>`;
   }else{
+    // من اليوم 2: بعد 3 محاولات غلط ينكشف نادي لاعبك السري
+    if(DAY>=2&&!S.done&&S.guesses.length>=3)h+=`<div class="clubhint">${crest(ANS.c,30)}<div><small>🔓 تلميح بعد 3 محاولات</small><b>لاعبك السري من ${D.clubs[ANS.c]}</b></div></div>`;
     if(S.guesses.length<2)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارن لك لاعبك باللاعب السري في 5 خانات: <b>النادي، المركز، الجنسية، العمر، الرقم</b>. لون كل خانة يقولك قد شو قربت، ومنها تعرف اللاعب السري.</div>`;
     h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري بالضبط</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب: <b>المركز</b> في الخط اللي جنبه في الملعب (مثلاً وسط بدال مهاجم)، أو <b>العمر</b> بفرق سنتين أو أقل، أو <b>الرقم</b> بفرق 3 أو أقل</span></div><div><i></i><span><b>رمادي</b> = بعيد. والنادي والجنسية يا أخضر يا رمادي</span></div><div><i class="ar">⬆⬇</i><span>تحت العمر والرقم: <b>اللاعب السري أكبر ⬆ أو أصغر ⬇</b> من لاعبك</span></div></div>`;
   }
@@ -458,7 +466,7 @@ function guess(id){
   if(S.guesses.length===1)gc('start-'+mode);
   if(win){gc('win-'+mode);vib([30,40,60]);confetti();const n=S.guesses.length;sfx(n===1?'mainoon':n<=4?'kafu':'sawaha')}
   else if(S.done){gc('lose-'+mode);vib([60,40,60]);sfx('lose')}
-  else if(!S.done){vib(40);sfx('mubho',.85);if(mode==='easy')toast('🔓 انفتح تلميح يديد');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
+  else if(!S.done){vib(40);sfx('mubho',.85);if(mode==='easy')toast('🔓 انفتح تلميح يديد');else if(DAY>=2&&S.guesses.length===3)toast('🔓 انكشف نادي لاعبك السري');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
   if(S.done)setTimeout(()=>{const r=document.querySelector('.result');r&&r.scrollIntoView({behavior:'smooth',block:'start'})},350);
 }
 
