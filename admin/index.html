@@ -123,11 +123,11 @@ async function gc(path,params){
 }
 const fb=p=>fetch(FB+p).then(r=>r.ok?r.json():null).catch(()=>null);
 // one fetch for everything; each range is computed locally => switching is instant
-let DATA=null,REFS={},FBS={},FBC={},FBF={},MD=null;
+let DATA=null,REFS={},FBS={},FBC={},FBF={},FBV={},FD=null,MD=null;
 async function fetchAll(){
   const a=SITE_START,b=dubaiToday()+DAYMS;
-  const [hits,tot,s,c,fcn]=await Promise.all([gc('/stats/hits',{start:iso(a),end:iso(b),limit:100,daily:true}),sleep(300).then(()=>gc('/stats/total',{start:iso(a),end:iso(b)})),fb('/s.json'),fb('/c.json'),fb('/fc.json')]);
-  DATA={hits:hits.hits||[],tot:tot.stats||[]};FBS=s||{};FBC=c||{};FBF=fcn||{};REFS={};
+  const [hits,tot,s,c,fcn,vv,fd]=await Promise.all([gc('/stats/hits',{start:iso(a),end:iso(b),limit:100,daily:true}),sleep(300).then(()=>gc('/stats/total',{start:iso(a),end:iso(b)})),fb('/s.json'),fb('/c.json'),fb('/fc.json'),fb('/v.json'),fetch('../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]);
+  DATA={hits:hits.hits||[],tot:tot.stats||[]};FBS=s||{};FBC=c||{};FBF=fcn||{};FBV=vv||{};FD=fd;REFS={};
   const D=Math.floor((dubaiToday()-LAUNCH)/DAYMS)+1;
   if(D>=1&&!MD)MD=await fetch('../mano/data.json').then(r=>r.json()).catch(()=>null);
 }
@@ -150,6 +150,9 @@ function refName(r){const n=(r.name||'').toLowerCase();
   if(n.includes('google'))return 'قوقل';if(n.includes('facebook'))return 'فيسبوك';if(n.includes('tiktok'))return 'تيك توك';return r.name}
 // sum of a path's daily numbers inside [a,b)
 function sumRange(h,a,b){return (h.stats||[]).reduce((s,d)=>{const t=dayMs(d.day);return t>=a&&t<b?s+(d.daily||0):s},0)}
+// عداد Firebase الخاص (v/<يوم>): بدا 17 نوفمبر الصبح. يستخدم لما الفترة كلها من 17 نوفمبر وبعد
+const VSTART=Date.UTC(2026,10,17);
+function vsum(a,b){const o={t:0,u:0,r:0,p:{},s:{}};for(let t=Math.max(a,VSTART);t<b;t+=DAYMS){const d=FBV[Math.floor((t-LAUNCH)/DAYMS)+1];if(!d)continue;o.t+=d.t||0;o.u+=d.u||0;o.r+=d.r||0;Object.entries(d.p||{}).forEach(([x,v])=>o.p[x]=(o.p[x]||0)+v);Object.entries(d.s||{}).forEach(([x,e])=>{o.s[x]=o.s[x]||{};Object.entries(e).forEach(([y,v])=>o.s[x][y]=(o.s[x][y]||0)+v)})}return o}
 function k(icon,title,num,expl,extra,cls){return `<div class="k ${cls||''}"><span>${icon} ${title}</span><b>${num}</b><p>${expl}</p>${extra?`<em>${extra}</em>`:''}</div>`}
 
 let SONGS=[];fetch('../songs/songs.json?v='+Date.now()).then(r=>r.json()).then(d=>{SONGS=d.songs||[];render()}).catch(()=>{});
@@ -161,7 +164,7 @@ async function boot(){
     if(e.message==='auth'){try{localStorage.removeItem('el3azy_gc_key')}catch(_){}history.replaceState(null,'',location.pathname);login('المفتاح ما اشتغل، تأكد منه.');return}
     $('#app').innerHTML=segHTML()+`<div class="err">ما قدرنا نجيب الأرقام الحين. جرّب التحديث بعد شوي.</div>`;bindSeg();return}
   btn.classList.remove('spin');render();
-  $('#foot').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar-AE',{hour:'2-digit',minute:'2-digit'})+' · الأرقام من GoatCounter وFirebase';
+  $('#foot').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar-AE',{hour:'2-digit',minute:'2-digit'})+' · الزيارات والزوار من عدادنا (من ١٧ نوفمبر)، ومصادر الزوار من GoatCounter';
 }
 function bindSeg(){document.querySelectorAll('.seg button').forEach(x=>x.onclick=()=>{range=x.dataset.r;try{localStorage.setItem('el3azy_adm_range',range)}catch(e){}render()})}
 
@@ -175,17 +178,23 @@ function render(){
   const starts=sumEv(/^start-/),wins=sumEv(/^win-/),loses=sumEv(/^lose-/),shM=sumEv(/^share-(easy|pro)$/);
   const shT=ev['share-tashkila']||0,shR=ev['share-rate']||0,shS=SONGS.reduce((x,o)=>x+(ev['share-'+o.id]||0),0),subs=sumEv(/^submit-/),opens=sumEv(/^open-/),shares=shM+shT+shR+shS;
   const pre=Date.now()<LAUNCH-OFF;
+  const useV=a>=VSTART,V=vsum(a,b);
   let h=segHTML();
   // plain-language summary
   const per=RNAME[range];
-  h+=`<div class="card sum"><b>${per}:</b> انفتحت صفحات المنصة <b>${nf(visits)}</b> مرة، ونشر الناس نتايجهم وتشكيلاتهم <b>${nf(shares)}</b> مرة${starts?`، ولعب «منو اللاعب؟» <b>${nf(starts)}</b> شخص`:''}${subs?`، وانرسل <b>${nf(subs)}</b> تقييم`:''}.</div>`;
+  h+=`<div class="card sum"><b>${per}:</b> انفتحت صفحات المنصة <b>${nf(useV?V.t:visits)}</b> مرة${useV?` وزارها <b>${nf(V.u)}</b> تلفون`:''}، ونشر الناس نتايجهم وتشكيلاتهم <b>${nf(shares)}</b> مرة${starts?`، ولعب «منو اللاعب؟» <b>${nf(starts)}</b> شخص`:''}${subs?`، وانرسل <b>${nf(subs)}</b> تقييم`:''}.</div>`;
   h+=`<div class="kpis">`;
-  h+=k('👥','زيارات المنصة',nf(visits),'كم مرة انفتحت صفحات المنصة. الشخص اللي يفتح أكثر من قسم، أو يرجع يوم ثاني، ينحسب أكثر من مرة. الرقم الحقيقي أعلى تقريباً ١٠–٢٥٪، لأن اللي عنده مانع إعلانات ما تنحسب زيارته.');
+  if(useV){
+    h+=k('👁️','الزيارات',nf(V.t),'كل فتحة صفحة من صفحات المنصة. اللي يفتح أكثر من قسم ينحسب أكثر من مرة.',range==='today'&&dubaiToday()===VSTART?'العداد بدا اليوم الصبح، فرقم اليوم ناقص':'');
+    h+=k('🙋','الزوار',nf(V.u),range==='today'||range==='yday'?'كم تلفون زار المنصة في اليوم (كل تلفون مرة وحدة).':'مجموع زوار كل يوم: التلفون اللي زار ٣ أيام ينحسب ٣ مرات.');
+    h+=k('🔁','الزوار العائدون',nf(V.r),'تلفونات زارت المنصة في يوم قبل ورجعت.',V.u?`${pct(V.r,V.u)}% من الزوار`:'');
+  }
+  h+=k('👥',useV?'زيارات (GoatCounter)':'زيارات المنصة',nf(visits),useV?'نفس الزيارات من GoatCounter للمقارنة. أقل من عدادنا لأن مانع الإعلانات يمنعه.':'كم مرة انفتحت صفحات المنصة. الشخص اللي يفتح أكثر من قسم، أو يرجع يوم ثاني، ينحسب أكثر من مرة. الرقم الحقيقي أعلى تقريباً ١٠–٢٥٪، لأن اللي عنده مانع إعلانات ما تنحسب زيارته.');
   h+=k('📤','مشاركات',nf(shares),'كم مرة ضغط أحد «شارك» ونشر صورته أو نتيجته. كل مشاركة توصل المنصة لناس يدد.',`التشكيلة ${nf(shT)} · منو اللاعب ${nf(shM)} · التقييم ${nf(shR)} · الأغاني ${nf(shS)}`);
   if(pre&&!starts&&!subs){h+=k('🕵️','«منو اللاعب؟» و«قيّم اللاعبين»','قريباً','أرقام اللعب والتقييمات تبدا تنحسب مع الإطلاق: «منو اللاعب؟» الثلاثاء ١٧ نوفمبر، و«قيّم اللاعبين» الخميس ١٩ نوفمبر بعد أول مباراة.')}else{
   h+=k('🕵️','لعبوا «منو اللاعب؟»',pre&&!starts?'—':nf(starts),pre&&!starts?'تنطلق اللعبة الثلاثاء ١٧ نوفمبر.':'كم شخص بدا التحدي اليومي (أول تخمين).',starts?`عادي ${nf(ev['start-easy'])} · خبير ${nf(ev['start-pro'])}`:'');
   h+=k('✅','عرفوا اللاعب',(wins+loses)?pct(wins,wins+loses)+'%':'—',(wins+loses)?`من ${nf(wins+loses)} خلصوا التحدي، ${nf(wins)} عرفوه و${nf(loses)} ما عرفوه.`:'تطلع النسبة لما يخلص الناس التحدي.');
-  h+=k('⭐','تقييمات اللاعبين',subs?nf(subs):'—',subs?'كم جمهور أرسل تقييمه لمباراة.':'«قيّم اللاعبين» ينطلق ١٨ نوفمبر.',opens?`فتحوا صفحات مباريات ${nf(opens)} مرة`:'');
+  h+=k('⭐','تقييمات اللاعبين',subs?nf(subs):'—',subs?'كم جمهور أرسل تقييمه لمباراة.':'أول تقييم بعد الوصل × حتا، الخميس ١٩ نوفمبر.',opens?`فتحوا صفحات مباريات ${nf(opens)} مرة`:'');
   }
   h+=`</div>`;
   // chart
@@ -196,8 +205,8 @@ function render(){
     for(let t=first;t<b;t+=DAYMS)pts.push([String(new Date(t).getUTCDate()),dd[t]||0])}
   h+=`<div class="lbl">${single?'الزوار في كل ساعة':'الزوار في كل يوم'}</div><div class="card"><p class="cap">${single?'كل عمود = ساعة من اليوم (بتوقيت الإمارات)، والرقم = كم شخص زار المنصة فيها.':'كل عمود = يوم، والرقم تحته = تاريخ اليوم في الشهر، وفوقه أعلى يوم.'}</p>${cols(pts)}</div>`;
   // sections
-  const SEC=[['/','الصفحة الرئيسية'],['/tashkila','اختار تشكيلتك'],['/mano','منو اللاعب؟'],['/rate','قيّم اللاعبين'],['/predict','دوري التوقعات'],['/songs','أغاني دورينا وأنديتنا']];
-  h+=`<div class="lbl">أي قسم يدخلونه أكثر</div><div class="card"><p class="cap">كم زيارة لكل قسم في الفترة.</p>${bars(SEC.map(([x,t])=>[t,pg[x]||0]))}</div>`;
+  const SEC=[['/','home','الصفحة الرئيسية'],['/tashkila','tashkila','اختار تشكيلتك'],['/mano','mano','منو اللاعب؟'],['/rate','rate','قيّم اللاعبين'],['/predict','predict','دوري التوقعات'],['/fans','fans','دوري الجماهير'],['/songs','songs','أغاني دورينا وأنديتنا']];
+  h+=`<div class="lbl">أي قسم يدخلونه أكثر</div><div class="card"><p class="cap">كم زيارة لكل قسم في الفترة${useV?' (عدادنا)':''}.</p>${bars(SEC.map(([x,y,t])=>[t,useV?(V.p[y]||0):(pg[x]||0)]))}</div>`;
   // referrers (async, cached)
   h+=`<div class="lbl">من وين يجون الزوار</div><div class="card"><p class="cap">من أي مكان ضغطوا على رابط المنصة.</p><div id="refs"><div class="empty">لحظة...</div></div></div>`;
   // mano today
@@ -214,19 +223,18 @@ function render(){
     const day=FBS[DAY]||{};
     ['easy','pro'].forEach(m=>{const s=day[m]||{};const n=s.n||0,w=s.w||0;
       h+=`<div class="mini"><b>${m==='easy'?'🕵️ لاعب اليوم':'🧠 تحدي الخبير'}:</b> خلصوا التحدي ${nf(n)} · عرفوه ${pct(w,n)}%</div>`;
-      h+=n?bars([1,2,3,4,5,6].map(i=>['عرفوه من المحاولة '+i,s['g'+i]||0]).concat([['ما عرفوه',n-w,{cls:'lose'}]])):'<div class="empty">ما حد خلص هالوضع لين الحين</div>'});
+      h+=n?bars([1,2,3,4,5,6].map(i=>[(i===1?'أول محاولة':'المحاولة '+i),s['g'+i]||0]).concat([['ما عرفوه',n-w,{cls:'lose'}]])):'<div class="empty">ما حد خلص هالوضع لين الحين</div>'});
   }
   h+=`</div>`;
-  if(DAY>=1){const wk=Math.floor((DAY-1)/7)+1,f=(wk-1)*7+1,tt={};
-    Object.entries(FBC).forEach(([d,v])=>{d=+d;if(d<f||d>f+6||!v)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([x,y])=>{tt[x]=tt[x]||{n:0,t:0};if(m==='easy')tt[x].n+=y.n||0;tt[x].t+=y.t||0}))});
-    const rk=Object.entries(tt).filter(([,x])=>x.n>=3).map(([x,y])=>[CLUBS[x]||x,y.t/y.n,{img:'../mano/assets/'+x+'.png',txt:(y.t/y.n).toFixed(1)}]).sort((x,y)=>y[1]-x[1]);
-    h+=`<div class="lbl">🏆 تحدي الأندية · الأسبوع ${wk}</div><div class="card"><p class="cap">معدل نقاط جمهور كل نادي في «منو اللاعب؟»: نقاط لاعب اليوم وتحدي الخبير ÷ عدد المشجعين (٦ نقاط لو عرفه من أول محاولة، وتقل مع كل محاولة).</p>${rk.length?bars(rk):'<div class="empty">يطلع الترتيب لما يلعب ٣ مشجعين أو أكثر لكل نادي</div>'}</div>`}
+  if(FD&&FD.v===3){const W=FD.weeks.find(w=>w.live)||FD.weeks[FD.weeks.length-1],xi=FD.xi||11;
+    const rows=((W.boards.all||{}).clubs||[]).filter(r=>r[2]>0).map(r=>[r[1]+'. '+(CLUBS[r[0]]||r[0]),r[2],{img:'../mano/assets/'+r[0]+'.png',txt:nf(r[2])+(r[3]<xi?` <small style="opacity:.6">(${r[3]}/${xi})</small>`:'')}]);
+    h+=`<div class="lbl">🏆 دوري الجماهير · الأسبوع ${W.w}</div><div class="card"><p class="cap">نقاط أفضل ${xi} مشجع لكل نادي (التشكيلة) من كل التحديات. (٤/١١) = تشكيلة ناقصة. التفاصيل في <a href="../fans/" style="color:inherit">صفحة دوري الجماهير</a>.</p>${rows.length?bars(rows):'<div class="empty">ما في نقاط لين الحين</div>'}</div>`}
   { // جماهير الأندية: من قاعدة البيانات (كل مشجع مرة وحدة، ولو غيّر ناديه ينحسب لليديد بس)
     const F=Object.entries(FBF).filter(([,v])=>v>0),tot=F.reduce((x,[,v])=>x+v,0),neu=FBF.none||0;
     const picks=F.filter(([c])=>c!=='none').map(([c,v])=>[CLUBS[c]||c,v,{img:'../mano/assets/'+c+'.png',txt:nf(v)}]).sort((x,y)=>y[1]-x[1]);
     h+=`<div class="lbl">👥 جماهير الأندية</div><div class="card"><p class="cap"><b>${nf(tot)}</b> مشجع اختاروا لين الحين (من بداية المنصة، مب حسب الفترة)${neu?` · منهم ${nf(neu)} محايد`:''}. كل مشجع ينحسب مرة وحدة، ولو غيّر ناديه ينحسب لليديد.</p>${picks.length?bars(picks):'<div class="empty">للحين ما اختار أحد ناديه</div>'}</div>`}
   { // أغاني دورينا وأنديتنا: تشغيل وتنزيل ومشاركة لكل أغنية (حسب الفترة)
-    const rows=SONGS.filter(o=>o.file).map(o=>({o,vi:SV[o.id]||0,pl:ev['play-'+o.id]||0,dl:ev['dl-'+o.id]||0,sh:ev['share-'+o.id]||0})).sort((x,y)=>(y.vi+y.pl)-(x.vi+x.pl));
+    const SS=id=>useV?(V.s[id]||{}):{play:ev['play-'+id],dl:ev['dl-'+id],share:ev['share-'+id]};const rows=SONGS.filter(o=>o.file).map(o=>({o,vi:SV[o.id]||0,pl:SS(o.id).play||0,dl:SS(o.id).dl||0,sh:SS(o.id).share||0})).sort((x,y)=>(y.vi+y.pl)-(x.vi+x.pl));
     const td='padding:9px 4px;text-align:center;font-weight:700;font-size:15px',th='padding:4px;text-align:center;font-size:12px;opacity:.7;font-weight:600';
     h+=`<div class="lbl">🎵 أغاني دورينا وأنديتنا</div><div class="card"><p class="cap">زيارات صفحة الأغاني <b>${nf(pg['/songs']||0)}</b> في الفترة. 🔗 = كم واحد دخل من رابط الأغنية نفسها (مثل اللي تنشره في X). ▶️ = كم مرة انشغلت: من ١٦ نوفمبر ١١ بالليل مرة وحدة لكل زيارة، وقبلها كانت كل ضغطة تشغيل تنحسب، فالأرقام القديمة أعلى من الحقيقي.</p>${rows.length?`<table style="width:100%;border-collapse:collapse"><tr><th style="${th};text-align:start">الأغنية</th><th style="${th}">🔗 من رابطها</th><th style="${th}">▶️ تشغيل</th><th style="${th}">⬇️ تنزيل</th><th style="${th}">📤 مشاركة</th></tr>${rows.map(r=>`<tr style="border-top:1px solid rgba(255,245,229,.08)"><td style="padding:9px 4px"><span style="display:flex;align-items:center;gap:8px;font-weight:600"><img src="${r.o.club?'../mano/assets/'+r.o.club+'.png':'../mano/assets/logo.png'}" style="width:24px;height:24px;object-fit:contain" alt="">${esc(r.o.title)}</span></td><td style="${td}">${nf(r.vi)}</td><td style="${td}">${nf(r.pl)}</td><td style="${td}">${nf(r.dl)}</td><td style="${td}">${nf(r.sh)}</td></tr>`).join('')}</table>`:'<div class="empty">لحظة...</div>'}</div>`}
   h+=`<div class="lbl">🔮 دوري التوقعات</div><div class="card" id="predC"><div class="empty">لحظة...</div></div>`;

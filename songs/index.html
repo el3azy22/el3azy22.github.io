@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script src="/assets/stat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>أغاني دورينا وأنديتنا | العازي</title>
 <meta name="description" content="«دورينا» أغنية دوري أدنوك للمحترفين، وأغاني الأندية. اسمعها ونزّلها مجاناً.">
@@ -186,13 +187,13 @@ function openDl(s){dlS=s;$('#dlT').textContent='⬇️ نزّل «'+s.title+'»'
 function closeDl(){$('#dlOv').classList.remove('on')}
 async function saveAs(k,btn){
   const s=dlS;if(!s)return;const f=k==='v'?vidOf(s):s.file,name=dlName(s).replace(/\.mp3$/,k==='v'?'.mp4':'.mp3'),key=s.id+k;
-  if(!IOS||!navigator.canShare){const a=document.createElement('a');a.href='./'+f;a.download=name;document.body.appendChild(a);a.click();a.remove();gc('dl-'+s.id);closeDl();toast('⬇️ '+(k==='v'?'الفيديو':'الأغنية')+' تنزل الحين');return}
+  if(!IOS||!navigator.canShare){const a=document.createElement('a');a.href='./'+f;a.download=name;document.body.appendChild(a);a.click();a.remove();gc('dl-'+s.id);window.el3stat&&el3stat(s.id,'dl');closeDl();toast('⬇️ '+(k==='v'?'الفيديو':'الأغنية')+' تنزل الحين');return}
   if(!BLOB[key]){btn.classList.add('busy');btn.querySelector('small').textContent='لحظة، نجهزها…';
     try{const b=await (await fetch('./'+f)).blob();BLOB[key]=new File([b],name,{type:k==='v'?'video/mp4':'audio/mpeg'})}catch(e){btn.classList.remove('busy');toast('ما قدرنا نجهزها، جرّب مرة ثانية');return}
     btn.classList.remove('busy')}
   const file=BLOB[key];
-  if(!navigator.canShare({files:[file]})){const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;a.click();gc('dl-'+s.id);closeDl();return}
-  try{await navigator.share({files:[file]});gc('dl-'+s.id);closeDl()}
+  if(!navigator.canShare({files:[file]})){const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;a.click();gc('dl-'+s.id);window.el3stat&&el3stat(s.id,'dl');closeDl();return}
+  try{await navigator.share({files:[file]});gc('dl-'+s.id);window.el3stat&&el3stat(s.id,'dl');closeDl()}
   catch(e){if(e&&e.name==='AbortError')return; // آيفون يطلب ضغطة يديدة لو التجهيز طوّل
     btn.classList.add('ready');btn.querySelector('small').textContent='✓ جاهزة، اضغط مرة ثانية واختر '+(k==='v'?'«حفظ الفيديو»':'«حفظ في الملفات»')}
 }
@@ -203,7 +204,7 @@ function bind(){
   document.querySelectorAll('[data-id]').forEach(b=>b.onclick=()=>{const x=S.find(y=>y.id===b.dataset.id);if(!x||x===cur)return;pick(x,true)});
   const tl=$('#toLeague');if(tl)tl.onclick=()=>pick(S.find(x=>!x.club),true);
   document.querySelectorAll('.clubs .soon').forEach(b=>b.onclick=()=>toast('أغنية '+b.textContent.trim()+' قريباً 🎶'));
-  $('#pp').onclick=()=>{if(!s.file)return;if(au.paused){if(au.dataset.id!==s.id){au.src=file(s);au.dataset.id=s.id}au.play().catch(()=>toast('ما قدرنا نشغلها، جرّب مرة ثانية'));if(!PLAYED[s.id]){PLAYED[s.id]=1;gc('play-'+s.id)}}else au.pause()};
+  $('#pp').onclick=()=>{if(!s.file)return;if(au.paused){if(au.dataset.id!==s.id){au.src=file(s);au.dataset.id=s.id}au.play().catch(()=>toast('ما قدرنا نشغلها، جرّب مرة ثانية'));if(!PLAYED[s.id]){PLAYED[s.id]=1;gc('play-'+s.id);window.el3stat&&el3stat(s.id,'play')}}else au.pause()};
   $('#bk').onclick=()=>{if(au.dataset.id===s.id)au.currentTime=Math.max(0,au.currentTime-10)};
   $('#fw').onclick=()=>{if(au.dataset.id===s.id&&au.duration)au.currentTime=Math.min(au.duration-.5,au.currentTime+10)};
   $('#seek').oninput=e=>{if(au.dataset.id!==s.id){au.src=file(s);au.dataset.id=s.id}const go=()=>{au.currentTime=e.target.value/1000*au.duration};au.duration?go():au.addEventListener('loadedmetadata',go,{once:true})};
@@ -215,7 +216,7 @@ function pick(x,play){au.pause();cur=x;history.replaceState(null,'',x===S[0]?loc
 async function share(){
   const s=cur,url=SITE+(s.file?s.id+'/':'?s='+s.id); // صفحة الأغنية الخاصة: معاينة X بغلافها وشعار ناديها
   const text=`🎵 ${s.title}${s.club?' — '+CL[s.club]:' — أغنية دوري أدنوك للمحترفين'}\nاسمعها ونزّلها مجاناً 👇\n${url}`;
-  gc('share-'+s.id);
+  gc('share-'+s.id);window.el3stat&&el3stat(s.id,'share');
   if(navigator.share){try{await navigator.share({text});return}catch(e){if(e&&e.name==='AbortError')return}}
   window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank');
 }
