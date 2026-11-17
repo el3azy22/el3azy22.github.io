@@ -30,6 +30,7 @@ CLUB = {'4': 'nasr', '12': 'kalba', '8': 'wahda', '21': 'ajman', '31': 'dhafra',
         '464': 'united', '11': 'khorfakkan', '6': 'shababahli', '20': 'hatta', '9': 'jazira', '5': 'baniyas', '1': 'ain'}
 CLUBS = set(CLUB.values())
 MIN_ROUNDS, MIN_FANS = 1, 0   # v2: الترتيب بالمجموع، بدون حد أدنى
+XI = 11                       # الأندية: تنحسب نقاط أفضل 11 مشجع (التشكيلة)
 FINISHED = 6
 START = int(os.environ.get('START', '1794772800000'))  # 16 نوفمبر 2026 00:00 الإمارات: المباريات قبلها مب داخلة في اللعبة
 CACHE = os.environ.get('CACHE') or os.path.join(ROOT, '_tools', 'predict', 'cache')   # توقعات المباريات المقفولة (ما تتغير بعد الصافرة)
@@ -121,7 +122,7 @@ def crowd(picks):
 
 def compute(ms, picks_by_match, now_ms):
     """picks_by_match: {mid: {uid: pick}} للمباريات اللي بدت. يرجع (crowd, table)."""
-    crowd_out, rounds = {}, defaultdict(lambda: defaultdict(lambda: {'p': 0, 'e': 0, 'n': 0, 'w': 0, 'c': 'none', 'nm': '', 'ct': 0, 'ls': 0, 'pc': defaultdict(lambda: [0, 0, 0])}))
+    crowd_out, rounds = {}, defaultdict(lambda: defaultdict(lambda: {'p': 0, 'e': 0, 'n': 0, 'w': 0, 'c': 'none', 'nm': '', 'ct': 0, 'ls': 0, 'z': 0, 'pc': defaultdict(lambda: [0, 0, 0, 0])}))
     by_id = {m['id']: m for m in ms}
     # ⭐ المضاعفة: أول مباراة بالموعد عليها x في كل جولة لكل مشجع
     dbl = {}
@@ -146,37 +147,45 @@ def compute(ms, picks_by_match, now_ms):
                 if dbl.get((m['wk'], u)) == m['id']:
                     pt *= 2
                 r['p'] += pt; r['n'] += 1
+                if not pt:
+                    r['z'] += 1; r['pc'][c][3] += 1   # توقع جاب صفر = خطأ (لكسر التعادل)
                 # نقاط كل توقع تنحسب لنادي المشجع وقت ما كتب هالتوقع
                 r['pc'][c][0] += pt; r['pc'][c][1] += 1
                 if pt:
                     r['ls'] = max(r['ls'], m['t'])   # موعد آخر مباراة جابت له نقاط (لفك تعادل نجوم الأسبوع)
                 if pt and p['h'] == m['sh'] and p['a'] == m['sa']:
                     r['e'] += 1; r['pc'][c][2] += 1
-    key = lambda kv: (-kv[1]['p'], -kv[1]['e'], kv[1]['w'])
+    # الترتيب (نفس آلية المنصة): النقاط ← الأقل أخطاء (توقعات جابت صفر) ← الأكثر توقعات ← الأبكر في آخر توقع
+    key = lambda kv: (-kv[1]['p'], kv[1]['z'], -kv[1]['n'], kv[1]['w'])
     U = lambda u: u[:12]
     table = {'rounds': {}, 'season': [], 'clubs': {}, 'clubs_season': []}
-    season = defaultdict(lambda: {'p': 0, 'e': 0, 'r': 0, 'c': 'none', 'nm': '', 'ct': 0, 'w': 0})
-    club_season = defaultdict(lambda: {'s': 0, 'r': 0, 'e': 0})
+    season = defaultdict(lambda: {'p': 0, 'e': 0, 'r': 0, 'c': 'none', 'nm': '', 'ct': 0, 'w': 0, 'z': 0, 'n': 0})
+    club_season = defaultdict(lambda: {'s': 0, 'r': 0, 'z': 0})
     for wk in sorted(rounds):
         rows = sorted(rounds[wk].items(), key=key)
-        table['rounds'][str(wk)] = [[U(u), r['nm'], r['c'], r['p'], r['e'], r['n'], r['ls']] for u, r in rows]
-        cl = defaultdict(lambda: [0, 0, 0])   # النادي: [مجموع النقاط، عدد المشاركين، نتايج بالضبط]
+        table['rounds'][str(wk)] = [[U(u), r['nm'], r['c'], r['p'], r['e'], r['n'], r['ls'], r['z']] for u, r in rows]
+        cl = defaultdict(list)   # النادي: [(نقاط، أخطاء، توقعات)] لكل مشجع توقع له
         for u, r in rows:
-            for c, (pts, n, e) in r['pc'].items():
+            for c, (pts, n, e, z) in r['pc'].items():
                 if n and c != 'none':
-                    cl[c][0] += pts; cl[c][1] += 1; cl[c][2] += e
+                    cl[c].append((pts, z, n))
             s = season[u]
-            s['p'] += r['p']; s['e'] += r['e']; s['r'] += 1 if r['n'] else 0; s['w'] = max(s['w'], r['w'])
+            s['p'] += r['p']; s['e'] += r['e']; s['r'] += 1 if r['n'] else 0; s['w'] = max(s['w'], r['w']); s['z'] += r['z']; s['n'] += r['n']
             if r['ct'] >= s['ct']:
                 s['c'], s['nm'], s['ct'] = r['c'], r['nm'], r['ct']
-        # الأندية بمجموع نقاط جمهورها (v2): المجموع ← نتايج بالضبط. الصف: [النادي، المعدل (للمعلومة)، المشاركين، المجموع، بالضبط]
-        crow = sorted(([c, avg2(t, n), n, t, e] for c, (t, n, e) in cl.items()), key=lambda x: (-x[3], -x[4]))
+        # الأندية: نقاط أفضل 11 مشجع (التشكيلة) ← الأقل أخطاء في التشكيلة ← نفس المركز
+        # الصف: [النادي، 0، المشاركين، نقاط التشكيلة، أخطاء التشكيلة، عدد التشكيلة]
+        crow = []
+        for c, L in cl.items():
+            xi = sorted(L, key=lambda x: (-x[0], x[1], -x[2]))[:XI]
+            crow.append([c, 0, len(L), sum(x[0] for x in xi), sum(x[1] for x in xi), len(xi)])
+        crow.sort(key=lambda x: (-x[3], x[4]))
         table['clubs'][str(wk)] = crow
-        for c, avg, n, t, e in crow:
-            club_season[c]['s'] += t; club_season[c]['r'] += 1; club_season[c]['e'] += e
+        for c, _, n, t, z, k in crow:
+            club_season[c]['s'] += t; club_season[c]['r'] += 1; club_season[c]['z'] += z
     srows = sorted(((u, s) for u, s in season.items() if s['r'] >= MIN_ROUNDS), key=key)
     table['season'] = [[U(u), s['nm'], s['c'], s['p'], s['e'], s['r']] for u, s in srows]
-    table['clubs_season'] = sorted(([c, v['s'], v['r'], v['e']] for c, v in club_season.items()), key=lambda x: (-x[1], -x[3]))
+    table['clubs_season'] = sorted(([c, v['s'], v['r'], v['z']] for c, v in club_season.items()), key=lambda x: (-x[1], x[3]))
     table['min'] = {'rounds': MIN_ROUNDS, 'fans': MIN_FANS}
     return crowd_out, table
 

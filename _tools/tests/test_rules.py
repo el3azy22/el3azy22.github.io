@@ -94,6 +94,14 @@ def mano_tests():
     check('فوز بدون نقاط النادي يرفض', patch('u4', bad), 401)
     bad = mano_body('u4', 3, 'easy', 1, 'ain'); bad['p/3/easy/u4']['g'] = 0.001; bad['c/3/easy/ain/t'] = inc(6.999)
     check('غش: محاولات بكسور (0.001) ترفض', patch('u4', bad), 401)
+    bad = mano_body('u4', 3, 'easy', 1, 'ain'); bad['p/3/easy/u4']['sec'] = -5
+    check('وقت الحل بالسالب يرفض', patch('u4', bad), 401)
+    bad = mano_body('u4', 3, 'easy', 1, 'ain'); bad['p/3/easy/u4']['sec'] = 12.5
+    check('وقت الحل بكسور يرفض', patch('u4', bad), 401)
+    bad = mano_body('u4', 3, 'easy', 1, 'ain'); bad['p/3/easy/u4']['sec'] = 'x'
+    check('وقت الحل نص يرفض', patch('u4', bad), 401)
+    ok = mano_body('u9', 3, 'easy', 2, 'ain'); ok['p/3/easy/u9']['sec'] = 95
+    check('نتيجة مع وقت الحل (95 ثانية) تنقبل', patch('u9', ok), 200)
     check('مشجع يكتب نتيجة باسم مشجع ثاني ترفض', patch('u5', mano_body('u6', 3, 'easy', 2, 'ain')), 401)
     check('نتيجة بدون نادي تنقبل (ما تنحسب لنادي)', patch('u7', mano_body('u7', 3, 'easy', 0, '')), 200)
     check('المشجع يقرا نتيجته', get('p/3/easy/u1', 'u1').status_code, 200)
@@ -104,7 +112,7 @@ def mano_tests():
     [t.start() for t in th]; [t.join() for t in th]
     s = get('s/3/easy').json(); c = get('c/3/easy/sharjah').json()
     n_ok = res.count(200)
-    check('تزامن: العدادات = عدد المقبولين', (s['n'] - 2, c['n'], c['t']), (n_ok, n_ok, n_ok * 4))
+    check('تزامن: العدادات = عدد المقبولين', (s['n'] - 3, c['n'], c['t']), (n_ok, n_ok, n_ok * 4))
     # جواب لاعب اليوم: يتقرى من يومه بس، وما أحد يكتبه
     requests.put(url('q'), data=json.dumps({str(d): f'pl{d}' for d in range(1, 6)}), headers=OWNER)
     check('جواب اليوم (3) يتقرى للكل', requests.get(url('q/3')).json(), 'pl3')

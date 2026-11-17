@@ -403,6 +403,8 @@ const arrow=(g,a)=>g==null||g===a?'':`<small>${a>g?'⬆ السري أكبر':'�
 /* ---------- render ---------- */
 function shirtSVG(){return `<svg viewBox="0 0 100 100"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.done?'#F0D99A':'#14384F'}"/><stop offset="1" stop-color="${S.done?'#D7B465':'#0C2638'}"/></linearGradient></defs><path d="M33 8 L18 14 L4 32 L16 42 L24 34 L24 94 L76 94 L76 34 L84 42 L96 32 L82 14 L67 8 Q50 22 33 8Z" fill="url(#sg)" stroke="#D7B465" stroke-width="2.5" stroke-linejoin="round"/></svg>`}
 function render(){
+  // السرعة: وقت فتح التحدي أول مرة (ينحفظ في التلفون)، ووقت النهاية في record()
+  if(D&&DAY&&S&&!S.done&&!store.get('st_'+DAY+'_'+mode,null))store.set('st_'+DAY+'_'+mode,Date.now());
   const used=S.guesses.length;
   const tries=Array.from({length:MAX},(_,i)=>`<span class="${i<used?(S.win&&i===used-1?'win':'used'):''}"></span>`).join('');
   let h=`<div class="card">
@@ -474,6 +476,7 @@ function guess(id){
 function record(){
   const st=store.get('stats_'+mode,{played:0,wins:0,streak:0,best:0,last:0,dist:[0,0,0,0,0,0]});
   if(st.lastDay===DAY)return;
+  if(!store.get('fin_'+DAY+'_'+mode,null))store.set('fin_'+DAY+'_'+mode,Date.now());
   st.played++;
   if(S.win){st.wins++;st.dist[S.guesses.length-1]++;st.streak=(st.lastWinDay===DAY-1?st.streak:0)+1;st.best=Math.max(st.best,st.streak);st.lastWinDay=DAY}else st.streak=0;
   st.lastDay=DAY;store.set('stats_'+mode,st);
@@ -561,7 +564,8 @@ async function submitMode(m){
   // الخبير ينحسب لنفس النادي اللي انحسبت له لعبة لاعب اليوم (القواعد على السيرفر تفرض هذا)
   const se=m==='pro'?store.get('sub_'+DAY+'_easy',null):null,c=se?se.c:myClub();if(c===null)return;
   const g=st.win?st.guesses.length:0,d=DAY,a=await fbTok(),inc=n=>({'.sv':{increment:n}});
-  const b={[`p/${d}/${m}/${a.u}`]:{d,g,c,t:{".sv":"timestamp"}},[`s/${d}/${m}/n`]:inc(1)};
+  const t0=store.get('st_'+d+'_'+m,null),t1=store.get('fin_'+d+'_'+m,null),sec=t0&&t1&&t1>=t0?Math.min(86400,Math.round((t1-t0)/1000)):null;
+  const b={[`p/${d}/${m}/${a.u}`]:{d,g,c,t:{".sv":"timestamp"},...(sec!=null?{sec}:{})},[`s/${d}/${m}/n`]:inc(1)};
   if(g){b[`s/${d}/${m}/w`]=inc(1);b[`s/${d}/${m}/g${g}`]=inc(1)}
   if(c){b[`c/${d}/${m}/${c}/n`]=inc(1);if(g)b[`c/${d}/${m}/${c}/t`]=inc(7-g)}
   const r=await fetch(FB.db+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});
@@ -570,13 +574,8 @@ async function submitMode(m){
   try{const x=await fetch(FB.db+`/p/${d}/${m}/${a.u}.json?auth=`+a.t).then(r=>r.ok?r.json():null);if(x&&x.d===d)store.set(k,{g:x.g,c:x.c})}catch(e){}
 }
 const wkOf=d=>Math.floor((d-1)/WEEK)+1;
-function tally(raw,from,to){
-  // v2: الأندية بمجموع نقاط جمهورها (لاعب اليوم + الخبير). التعادل: نقاط الخبير، وإذا تساووا نفس المركز. عدد المسجلين ما يدخل
-  const T={};CLUBS_ORDER.forEach(k=>T[k]={k,n:0,t:0,pro:0});
-  Object.entries(raw||{}).forEach(([d,v])=>{d=+d;if(!v||d<from||d>to)return;['easy','pro'].forEach(m=>Object.entries(v[m]||{}).forEach(([k,x])=>{if(T[k]&&x){T[k].t+=x.t||0;if(m==='easy')T[k].n+=x.n||0;else T[k].pro+=x.t||0}}))});
-  const L=Object.values(T).sort((a,b)=>b.t-a.t||b.pro-a.pro||CLUBS_ORDER.indexOf(a.k)-CLUBS_ORDER.indexOf(b.k));
-  L.forEach((o,i)=>o.rk=!o.t?0:i&&o.t===L[i-1].t&&o.pro===L[i-1].pro?L[i-1].rk:i+1);return L;
-}
+// ترتيب الأندية من «دوري الجماهير» (لوحة منو اللاعب): نقاط أفضل 11 مشجع لكل نادي (التشكيلة)
+let FD=null;async function fansData(){if(FD&&Date.now()-FD.at<120000)return FD.d;const d=await fetch('../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null);FD={at:Date.now(),d};return d}
 function crowdLine(){
   if(!CW||CW.n<5)return '';
   if(S.win&&CW.faster!=null)return `⚡ أسرع من ${PC(AR(CW.faster))} من الجماهير`;
@@ -602,8 +601,8 @@ async function crowdFlow(again){
   if(cb)cb.innerHTML=`<div class="card crowd"><div class="lbl">👥 الجماهير اليوم</div><div class="loading" style="padding:8px 0">لحظة...</div></div>`;
   try{await crowdSubmit()}catch(e){}
   const wk=wkOf(DAY),f=(wk-1)*WEEK+1,pf=wk>1?f-WEEK:f;
-  let s=null,c=null;
-  try{[s,c]=await Promise.all([fetch(`${FB.db}/s/${DAY}/${mode}.json`).then(r=>r.json()),fetch(`${FB.db}/c.json?orderBy=${encodeURIComponent('"$key"')}&startAt=${encodeURIComponent('"'+pf+'"')}&endAt=${encodeURIComponent('"'+(f+WEEK-1)+'"')}`).then(r=>r.json())])}catch(e){}
+  let s=null,FDd=null;
+  try{[s,FDd]=await Promise.all([fetch(`${FB.db}/s/${DAY}/${mode}.json`).then(r=>r.json()),fansData().catch(()=>null)])}catch(e){}
   if(!$('#clubs'))return; // تغيّرت الشاشة
   // crowd card
   if(s&&s.n){
@@ -621,21 +620,22 @@ async function crowdFlow(again){
     if(crowdLine())buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{});
   }else if(cb)cb.innerHTML='';
   // club card
-  const T=tally(c,f,f+WEEK-1),me=myClub(),se=store.get('sub_'+DAY+'_easy',null),sp=store.get('sub_'+DAY+'_pro',null);
-  const pe=se&&se.g?7-se.g:0,pp=sp&&sp.g?7-sp.g:0;
-  const champ=wk>1?tally(c,pf,f-1)[0]:null;
+  const me=myClub(),se=store.get('sub_'+DAY+'_easy',null),sp=store.get('sub_'+DAY+'_pro',null);
+  const pe=se&&se.g?7-se.g:0,pp=sp&&sp.g?7-sp.g:0,xi=(FDd&&FDd.xi)||11;
+  const ok3=FDd&&FDd.v===3,WK=ok3?FDd.weeks.find(w=>w.w===wk):null,rows=WK?((WK.boards.mano||{}).clubs||[]):[];
+  const PW=ok3&&wk>1?FDd.weeks.find(w=>w.w===wk-1&&w.final):null,champ=PW?((PW.boards.mano||{}).clubs||[])[0]:null;
   const left=Math.floor((f+WEEK-1-DAY)+msToDubaiMidnight()/864e5);
-  const mx=Math.max(1,...T.map(o=>o.t));
-  const ok=T.filter(o=>o.t>0),out=T.filter(o=>!o.t);
-  const rowH=(o,i)=>`<div class="ct ${o.k===me?'me':''}"><span class="r">${o.rk?AR(o.rk):''}</span><span class="cr">${crest(o.k,22)}</span><span class="nm">${D.clubs[o.k]}</span><span class="bar"><i style="width:${o.t/mx*100}%"></i></span><span class="v">${o.t?nf(o.t):'—'}</span><span class="n">${o.n?nf(o.n):'0'}</span></div>`;
+  const mx=Math.max(1,...rows.map(r=>r[2]));
+  const ok=rows.filter(r=>r[2]>0),out=rows.filter(r=>!r[2]);
+  const rowH=r=>`<div class="ct ${r[0]===me?'me':''}"><span class="r">${r[2]?AR(r[1]):''}</span><span class="cr">${crest(r[0],22)}</span><span class="nm">${D.clubs[r[0]]}</span><span class="bar"><i style="width:${r[2]/mx*100}%"></i></span><span class="v">${r[2]?nf(r[2]):'—'}</span><span class="n">${r[3]?AR(r[3]):'0'}</span></div>`;
   box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 ترتيب جماهير الأندية · الأسبوع ${AR(wk)}</div>
-    ${champ&&champ.t>0?`<div class="champ">${crest(champ.k,30)}<div><b>متصدر الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ.k]}</b><div style="font-size:11.5px;opacity:.7">${nf(champ.t)} نقطة في «منو اللاعب؟»</div></div></div>`:''}
-    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وكلها تنحسب لجمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط لجمهور ${D.clubs[me]}`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:me&&!se?`<div class="mine warn">⏳ نتيجتك ما وصلت السيرفر لين الحين، فما انحسبت لجمهور ${D.clubs[me]}. تأكد من الإنترنت وارجع للصفحة قبل 12 بالليل، وبتنرسل بروحها.</div>`:''}
-    <div class="exp">الأندية تترتب بـ<b>مجموع نقاط جمهورها</b> في «منو اللاعب؟» هالأسبوع. كل نقطة من أي مشجع تفرق.</div>
-    <div class="ct hd2"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v">النقاط</span><span class="n">لعبات</span></div>
+    ${champ&&champ[2]>0?`<div class="champ">${crest(champ[0],30)}<div><b>بطل الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ[0]]}</b><div style="font-size:11.5px;opacity:.7">${nf(champ[2])} نقطة في «منو اللاعب؟»</div></div></div>`:''}
+    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وتنحسب لك مع جمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:me&&!se?`<div class="mine warn">⏳ نتيجتك ما وصلت السيرفر لين الحين، فما انحسبت. تأكد من الإنترنت وارجع للصفحة قبل 12 بالليل، وبتنرسل بروحها.</div>`:''}
+    <div class="exp">كل نادي تنحسب له <b>نقاط أفضل ${AR(xi)} مشجع</b> عنده، مثل التشكيلة. إذا تساووا: الأقل أخطاء ← الأسرع.</div>
+    ${rows.length?`<div class="ct hd2"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v">النقاط</span><span class="n">التشكيلة</span></div>
     ${ok.map(rowH).join('')}
-    ${out.length?`<div class="ct sep2">ما جابوا نقاط لين الحين</div>${out.map(o=>rowH(o,0)).join('')}`:''}
-    <div class="cfoot"><b>النقاط</b> = مجموع نقاط جمهور النادي من لاعب اليوم وتحدي الخبير.<br><b>لعبات</b> = كم مرة لعب جمهور النادي «لاعب اليوم» هالأسبوع.<br>إذا تساووا: الأكثر نقاط في تحدي الخبير.<br>الأسبوع يخلص بعد ${left>=2?AR(left)+(left>10?' يوم':' أيام'):left===1?'يوم':'ساعات'}، ونقاط جمهورك هني تنضاف لترتيب <a href="../fans/">«دوري الجماهير»</a>.<br>${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+    ${out.length?`<div class="ct sep2">ما جابوا نقاط لين الحين</div>${out.map(rowH).join('')}`:''}`:`<div class="loading" style="padding:10px 0;opacity:.7">الترتيب يتحدث كل شوي، ارجع بعد شوي 👀</div>`}
+    <div class="cfoot"><b>التشكيلة</b> = كم مشجع من أفضل ${AR(xi)} لعبوا للنادي هالأسبوع (اللي عنده أقل يلعب ناقص).<br>الترتيب يتحدث كل شوي، مب لحظة بلحظة.<br>الأسبوع يخلص بعد ${left>=2?AR(left)+(left>10?' يوم':' أيام'):left===1?'يوم':'ساعات'}. الترتيب الكامل مع دوري التوقعات في <a href="../fans/">«دوري الجماهير»</a>.<br>${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
 }
 

@@ -62,12 +62,14 @@ const nf=n=>Number(n||0).toLocaleString('en-US');
 fetch('/fans/data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
  const q=+new URLSearchParams(location.search).get('w')||D.done;const W=D.weeks[q-1];
  if(!W||W.live){document.body.dataset.ok='none';return}
- // v2: جدول الموسم لين هالأسبوع = مجموع نقاط كل الأسابيع (كل التحديات). التعادل: الخبير + بالضبط، وإذا تساووا نفس المركز
- const wks=D.weeks.filter(w=>w.w<=q);
- const st=ws=>{const t={};Object.keys(CL).forEach(c=>t[c]={c,tot:0,tb:0});ws.forEach(w=>(w.clubs.all||[]).forEach(r=>{t[r[0]].tot+=r[2];t[r[0]].tb+=(r[7]||0)+(r[8]||0)}));
-   const L=Object.values(t).sort((a,b)=>b.tot-a.tot||b.tb-a.tb||Object.keys(CL).indexOf(a.c)-Object.keys(CL).indexOf(b.c));L.forEach((x,i)=>x.rk=i&&x.tot===L[i-1].tot&&x.tb===L[i-1].tb?L[i-1].rk:i+1);return L};
+ if(D.v!==3){document.body.dataset.ok='none';return}
+ // v3: الموسم لين هالأسبوع = مجموع نقاط تشكيلة كل نادي في كل أسبوع (كل التحديات). التعادل: الأقل أخطاء ثم الأسرع، وإذا تساووا نفس المركز
+ const wks=D.weeks.filter(w=>w.w<=q),BC=w=>(w.boards&&w.boards.all&&w.boards.all.clubs)||[];
+ const st=ws=>{const t={};Object.keys(CL).forEach(c=>t[c]={c,tot:0,mis:0,sec:0});ws.forEach(w=>BC(w).forEach(r=>{const x=t[r[0]];if(x){x.tot+=r[2];x.mis+=r[5]||0;x.sec+=r[6]||0}}));
+   const L=Object.values(t).sort((a,b)=>b.tot-a.tot||a.mis-b.mis||a.sec-b.sec||Object.keys(CL).indexOf(a.c)-Object.keys(CL).indexOf(b.c));
+   L.forEach((x,i)=>{const p=L[i-1];x.rk=i&&x.tot===p.tot&&x.mis===p.mis&&x.sec===p.sec?p.rk:i+1});return L};
  const now=st(wks),prev=q>1?Object.fromEntries(st(wks.slice(0,-1)).map(x=>[x.c,x.rk])):{};
- const wk=Object.fromEntries((W.clubs.all||[]).map(r=>[r[0],r[2]]));
+ const wk=Object.fromEntries(BC(W).map(r=>[r[0],r[2]]));
  const R=now.map(x=>[x.c,x.tot,wk[x.c]||0,q>1?(prev[x.c]-x.rk):0,x.rk]);
  document.getElementById('sub').textContent=`جدول الموسم بعد الأسبوع ${q} (${W.from} لين ${W.to})`;
  const story=q===D.done?D.story:'';
@@ -76,8 +78,8 @@ fetch('/fans/data.json?v='+Date.now()).then(r=>r.json()).then(D=>{
  const row=(r,k)=>`<div class="r ${r[4]<=3&&r[1]?'p'+r[4]:''}"><i>${r[4]}</i><span class="m ${r[3]>0?'up':r[3]<0?'dn':'eq'}">${r[3]>0?'▲'+r[3]:r[3]<0?'▼'+(-r[3]):'–'}</span><span class="c">${crest(r[0],40)}</span><span class="nm">${CL[r[0]]}</span><span class="w">+${nf(r[2])}</span><span class="t">${nf(r[1])}</span></div>`;
  const hd='<div class="hd"><span>#</span><span></span><span></span><span>النادي</span><span>الأسبوع</span><span>المجموع</span></div>';
  document.getElementById('cols').innerHTML=`<div class="col">${hd}${R.slice(0,7).map(row).join('')}</div><div class="col">${hd}${R.slice(7).map((r,k)=>row(r,k+7)).join('')}</div>`;
- const S=(W.fans&&W.fans.all)||[];const MORE=(W.more&&W.more.all)||0;
- if(S.length){document.getElementById('stars').innerHTML=S.slice(0,3).map((x,k)=>{const r=x[3]||k+1;return `<div class="st ${r==1?'g1':''}"><span class="md">${['🥇','🥈','🥉'][r-1]}</span>${crest(x[1],44)}<div><b>${esc(x[0])}</b><small><span class="p">${nf(x[2])}</span> نقطة</small></div></div>`}).join('');
+ const S=(W.boards.all.fans)||[];const MORE=W.boards.all.more||0;
+ if(S.length){document.getElementById('stars').innerHTML=S.slice(0,3).map((x,k)=>{const r=x[3]||k+1;return `<div class="st ${r==1?'g1':''}"><span class="md">${r<=3?['🥇','🥈','🥉'][r-1]:'<b style="font-size:26px;color:#D7B465">'+r+'</b>'}</span>${crest(x[1],44)}<div><b>${esc(x[0])}</b><small><span class="p">${nf(x[2])}</span> نقطة</small></div></div>`}).join('');
   const r3=(S[2]||S[S.length-1])[3]||3,ex=S.slice(3).filter(x=>x[3]===r3).length+(S.length>3&&S[S.length-1][3]===r3?MORE:0);if(ex>0)document.getElementById('stl').innerHTML+=` <span style="opacity:.7;font-size:20px">· ${ex===1?'ومشجع ثاني متعادل':'و'+ex+' مشجعين متعادلين'} في المركز ${r3}</span>`}
  else document.querySelector('.stars').style.display='none';
  document.body.dataset.ok=1;

@@ -48,30 +48,39 @@ check('رأي الجماهير في A يحسب التوقعات المقبولة
 ms2 = [{'id': 'X', 'wk': 9, 't': T0, 'h': 'ain', 'a': 'wahda', 'st': 6, 'sh': 1, 'sa': 0},
        {'id': 'Y', 'wk': 9, 't': T0 + 3600e3, 'h': 'wasl', 'a': 'nasr', 'st': 6, 'sh': 2, 'sa': 2}]
 _, tb2 = P.compute(ms2, {'X': {'k1': pk(1, 0, T0 - 9, c='ain')}, 'Y': {'k1': pk(0, 1, T0 - 5, c='wasl')}}, T0 + 86400e3)
-check('نقاط X (10) للعين ونقاط Y (0) للوصل', sorted(tuple(x) for x in tb2['clubs']['9']), [('ain', 10.0, 1, 10, 1), ('wasl', 0.0, 1, 0, 0)])
+check('نقاط X (10) للعين ونقاط Y (0) للوصل (التشكيلة: [نادي، 0، مشاركين، نقاط، أخطاء، عدد])', sorted(tuple(x) for x in tb2['clubs']['9']), [('ain', 0, 1, 10, 0, 1), ('wasl', 0, 1, 0, 1, 1)])
 check('المعدل لخانتين بتقريب نص لفوق (33÷8 = 4.125 ⇒ 4.13)', (P.avg2(33, 8), F.avg2(33, 8), F.avg2(103, 25)), (4.13, 4.13, 4.12))
 
-print('\n— دوري الجماهير v2: الترتيب بالمجموع —')
-U = lambda **k: dict(F.new_user(), **k)
-users = {'a': U(m=30, pro=12, one=3, atm=500, at=500, c='ain', nm='أ'), 'b': U(m=30, pro=14, one=1, atm=900, at=900, c='ain', nm='ب'),
-         'c': U(m=30, pro=14, one=2, atm=900, at=900, c='wasl', nm='ج'), 'd': U(m=30, pro=14, one=2, atm=800, at=800, c='wasl', nm='د'),
-         'e': U(m=30, pro=14, one=2, atm=800, at=800, c='nasr', nm='هـ'), 'f': U(m=0, c='ain', nm='و'), 'g': U(m=50, pro=20, c='ain', nm=''),
-         'h': U(m=12, p=20, e=1, atp=700, at=700, c='hatta', nm='ح'), 'i': U(m=10, c='ain', nm='ط')}
-clubs = {c: F.new_club() for c in F.CLUBS}
-clubs['ain'].update(m=600, mn=100, mpro=40); clubs['wasl'].update(m=600, mn=40, mpro=60); clubs['nasr'].update(m=20, mn=3, mpro=0, p=50, pn=10, pe=2)
-bd, rk = F.boards(clubs, users, None, {'i'})
-got = [(x[0], x[3]) for x in bd['fans']['mano']]
-# منو اللاعب: كلهم 30 ما عدا ز(50 بدون اسم) و ح(12): الخبير 14 قبل 12 · بين 14: من أول محاولة 2 قبل 1 · (ج، د، هـ): الأسبق 800 (د، هـ) قبل ج · د وهـ متساوين ⇒ نفس المركز. ز بدون اسم ما يطلع بس ياخذ المركز 1
-check('منو اللاعب: المجموع ← الخبير ← من أول محاولة ← الأسبق، والتعادل الكامل نفس المركز', got, [('د', 2), ('هـ', 2), ('ج', 4), ('ب', 5), ('أ', 6), ('ح', 7)])
-check('اللي بدون اسم ياخذ مركزه وما يطلع اسمه · المخفي ما يطلع', (rk['g']['mano'][0], 'ط' in [x[0] for x in bd['fans']['mano']]), (1, False))
+print('\n— آلية الترتيب الموحدة (المشجعين والأندية) —')
+def st(pts, mis, plays, sec, c, nm='', ct=1):
+    return dict(F.stat(), pts=pts, mis=mis, plays=plays, sec=sec, c=c, nm=nm, ct=ct)
+mano = {'a': st(30, 4, 6, 900, 'ain', 'أ'), 'b': st(30, 2, 6, 900, 'ain', 'ب'), 'c': st(30, 2, 7, 900, 'wasl', 'ج'),
+        'd': st(30, 2, 7, 600, 'wasl', 'د'), 'e': st(30, 2, 7, 600, 'nasr', 'هـ'), 'g': st(50, 0, 7, 100, 'ain', ''),
+        'h': st(12, 3, 2, 50, 'hatta', 'ح'), 'i': st(10, 0, 2, 10, 'ain', 'ط')}
+pred = {'h': st(20, 1, 3, 0, 'hatta', 'ح')}
+bd, rk = F.boards({'mano': mano, 'pred': pred}, None, {'i'})
+# كلهم 30 ما عدا ز (50 بدون اسم): أ أخطاء 4 (آخر) · ب أخطاء 2 لعب 6 · (ج، د، هـ) أخطاء 2 لعب 7: الأسرع د وهـ (600) قبل ج (900) · د وهـ متساوين ⇒ نفس المركز
+check('المشجعين: النقاط ← الأقل أخطاء ← الأكثر لعب ← الأسرع، والتعادل الكامل نفس المركز',
+      [(x[0], x[3]) for x in bd['mano']['fans']], [('د', 2), ('هـ', 2), ('ج', 4), ('ب', 5), ('أ', 6), ('ح', 7)])
+check('اللي بدون اسم ياخذ مركزه وما يطلع اسمه · المخفي ما يطلع', (rk['g']['mano'][0], 'ط' in [x[0] for x in bd['mano']['fans']]), (1, False))
 check('كل التحديات = منو اللاعب + التوقعات (ح: 12 + 20 = 32)', rk['h']['all'][1], 32)
-check('ترتيب التوقعات بس فيه اللي جاب نقاط توقعات', [x[0] for x in bd['fans']['pred']], ['ح'])
-ca = {r[0]: r[1:4] for r in bd['clubs']['all']}
-# العين 600 والوصل 600: التعادل بنقاط الخبير + بالضبط ⇒ الوصل (60) قبل العين (40). النصر 20+50 = 70
-check('الأندية بالمجموع، والتعادل بالخبير (الوصل قبل العين)', (ca['wasl'][:2], ca['ain'][:2], ca['nasr'][:2]), ([1, 600], [2, 600], [3, 70]))
-check('عدد المسجلين/اللعبات ما يغير الترتيب (العين 100 لعبة = الوصل 40 لعبة بنفس المجموع)', ca['ain'][1] == ca['wasl'][1], True)
-st = F.boards({c: F.new_club() for c in F.CLUBS}, {f'u{i}': U(m=12, pro=6, one=2, at=1, atm=1, c='ain', nm=f'م{i:02d}') for i in range(13)}, None, set())[0]
-check('13 متعادلين بالكامل: 10 يطلعون والباقي في more', (len(st['fans']['all']), st['more']['all'], {x[3] for x in st['fans']['all']}), (10, 3, {1}))
+check('لوحة التوقعات فيها اللي توقع بس', [x[0] for x in bd['pred']['fans']], ['ح'])
+# الأندية: التشكيلة = أفضل 11
+many = {f'w{i:02d}': st(10 + i, 0, 7, 0, 'wahda') for i in range(15)}          # 15 مشجع: أفضل 11 = 14..24
+few = {f'k{i}': st(30, 0, 7, 0, 'kalba') for i in range(4)}                    # 4 مشجعين قويين = 120
+bd2, _ = F.boards({'mano': {**many, **few}}, None, set())
+cl = {r[0]: r for r in bd2['mano']['clubs']}
+check('الوحدة: 15 مشجع بس تنحسب أفضل 11 (14+…+24 = 209)', (cl['wahda'][2], cl['wahda'][3], cl['wahda'][4]), (209, 11, 15))
+check('كلباء: 4 مشجعين يلعبون «ناقص» (120)', (cl['kalba'][2], cl['kalba'][3]), (120, 4))
+check('العدد ما يفوز بروحه: الوحدة (209) قبل كلباء (120)', (cl['wahda'][1], cl['kalba'][1]), (1, 2))
+two = {'x1': st(50, 3, 7, 100, 'ain'), 'y1': st(50, 1, 7, 900, 'wasl'), 'z1': st(50, 1, 7, 200, 'nasr')}
+cl3 = {r[0]: r[1] for r in F.boards({'mano': two}, None, set())[0]['mano']['clubs']}
+check('تعادل الأندية: الأقل أخطاء ثم الأسرع (النصر، الوصل، العين)', (cl3['nasr'], cl3['wasl'], cl3['ain']), (1, 2, 3))
+ten = {f'u{i}': st(12, 0, 2, 5, 'ain', f'م{i:02d}') for i in range(13)}
+b4 = F.boards({'mano': ten}, None, set())[0]['all']
+check('13 متعادلين بالكامل: 10 يطلعون والباقي في more', (len(b4['fans']), b4['more'], {x[3] for x in b4['fans']}), (10, 3, {1}))
+m1 = F.collect_mano({'3': {'easy': {'U1xxxxxxxxxxx': {'g': 2, 'c': 'ain', 't': 5, 'sec': 40}}, 'pro': {'U1xxxxxxxxxxx': {'g': 0, 'c': 'ain', 't': 6, 'sec': 5000}}}}, 1, 7)
+check('منو اللاعب: نقاط 5، أخطاء 1+6، لعبتين، ثواني 40 + حد ساعة', [m1['U1xxxxxxxxxx'][k] for k in ('pts', 'mis', 'plays', 'sec')], [5, 7, 2, 3640])
 
 print(f'\nالنتيجة: {ok} نجح · {fail} فشل')
 sys.exit(1 if fail else 0)

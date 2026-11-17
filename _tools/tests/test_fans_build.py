@@ -29,67 +29,75 @@ def run(d, now, db=None):
     return r.returncode, data
 
 
-def club_c(day, club, n, t):
-    requests.put(T.url(f'c/{day}/easy/{club}'), data=json.dumps({'n': n, 't': t}), headers=T.OWNER)
-
-
 def wk(data, w):
     return next(x for x in data['weeks'] if x['w'] == w)
 
 
-def pts(data, w, board='mano'):
-    return {r[0]: r[2] for r in wk(data, w)['clubs'][board] if r[2]}
+def pts(B, board='mano'):
+    return {r[0]: r[2] for r in B[board]['clubs'] if r[2]}
 
 
-def seed_p(day, u, g, c, mode='easy', t=None):
-    requests.put(T.url(f'p/{day}/{mode}/{u}'), data=json.dumps({'d': day, 'g': g, 'c': c, **({'t': t} if t else {})}), headers=T.OWNER)
+def seed_p(day, u, g, c, mode='easy', t=None, sec=None):
+    requests.put(T.url(f'p/{day}/{mode}/{u}'), data=json.dumps({'d': day, 'g': g, 'c': c, **({'t': t} if t else {}), **({'sec': sec} if sec else {})}), headers=T.OWNER)
 
 
 if __name__ == '__main__':
     T.load_rules(S, []); T.reset()
-    print('— دوري الجماهير v2 (build.py) —')
-    club_c(7, 'ain', 3, 12); club_c(7, 'wasl', 3, 11)
-    seed_p(7, 'fanA00000000x', 1, 'ain'); requests.put(T.url('f/fanA00000000x'), data=json.dumps({'c': 'ain', 'n': 'سالم', 't': 1}), headers=T.OWNER)
+    print('— دوري الجماهير: الآلية الموحدة (build.py) —')
+    seed_p(7, 'fanA00000000x', 1, 'ain'); seed_p(7, 'fanB00000000x', 2, 'ain'); seed_p(7, 'fanC00000000x', 1, 'wasl')
+    requests.put(T.url('f/fanA00000000x'), data=json.dumps({'c': 'ain', 'n': 'سالم', 't': 1}), headers=T.OWNER)
     d = tree([], {'rounds': {}, 'clubs': {}})
     rc, data = run(d, W1_END + 5 * MIN)          # 00:05 الثلاثاء
-    T.check('00:05: الأسبوع 1 مب نهائي بعد (العين 12، الوصل 11)', (rc, pts(data, 1), wk(data, 1)['final']), (0, {'ain': 12, 'wasl': 11}, False))
-    club_c(7, 'wasl', 4, 17)                     # نتيجة وصلت في المهلة
+    T.check('00:05: الأسبوع 1 مب نهائي بعد (العين 6+5، الوصل 6)', (rc, pts(wk(data, 1)['boards']), wk(data, 1)['final']), (0, {'ain': 11, 'wasl': 6}, False))
+    seed_p(7, 'fanD00000000x', 1, 'wasl'); seed_p(7, 'fanE00000000x', 1, 'wasl')     # وصلت في المهلة
     rc, data = run(d, W1_END + 13 * MIN)
-    T.check('00:13: نتيجة المهلة تنحسب (الوصل 17 يتقدم)', pts(data, 1), {'wasl': 17, 'ain': 12})
+    T.check('00:13: نتايج المهلة تنحسب (الوصل 18 يتقدم)', pts(wk(data, 1)['boards']), {'wasl': 18, 'ain': 11})
     rc, data = run(d, W1_END + 41 * MIN)
-    T.check('00:41: الأسبوع 1 نهائي وانضاف للموسم', (wk(data, 1)['final'], {r[0]: r[2] for r in data['season']['clubs']['all'] if r[2]}), (True, {'wasl': 17, 'ain': 12}))
+    T.check('00:41: الأسبوع 1 نهائي وانضاف للموسم', (wk(data, 1)['final'], pts(data['season'], 'all')), (True, {'wasl': 18, 'ain': 11}))
     acc = json.load(open(os.path.join(d, 'fans/acc.json')))
-    T.check('التراكم: الأسبوع 1 مرة وحدة + نقاط المشجع', (acc['weeks'], acc['users'].get('fanA00000000')['m']), ([1], 6))
-    club_c(7, 'ain', 30, 300)                    # تغيير بعد ما صار نهائي (ما يفترض يصير)
-    club_c(9, 'ain', 1, 6)                       # الأسبوع 2
+    T.check('التراكم: الأسبوع 1 مرة وحدة + نقاط المشجع', (acc['weeks'], acc['users']['mano']['fanA00000000']['pts']), ([1], 6))
+    seed_p(7, 'fanF00000000x', 1, 'ain')         # بعد التثبيت (ما يفترض يتغير)
+    seed_p(9, 'fanA00000000x', 3, 'ain')         # الأسبوع 2
     rc, data = run(d, W1_END + 2 * DAY)
-    T.check('بعد التثبيت: الأسبوع 1 ما يتغير، والموسم = الأسبوع 1 + الأسبوع 2', (pts(data, 1), {r[0]: r[2] for r in data['season']['clubs']['all'] if r[2]}), ({'wasl': 17, 'ain': 12}, {'ain': 18, 'wasl': 17}))
+    T.check('بعد التثبيت: الأسبوع 1 ما يتغير، والموسم = تشكيلة الأسبوع 1 + 2', (pts(wk(data, 1)['boards']), pts(data['season'], 'all')), ({'wasl': 18, 'ain': 11}, {'wasl': 18, 'ain': 15}))
     acc = json.load(open(os.path.join(d, 'fans/acc.json')))
     T.check('التراكم ما ينحسب مرتين', acc['weeks'], [1])
     rk = json.load(open(os.path.join(d, 'fans/ranks.json')))
-    T.check('مركز المشجع في الموسم', rk['season']['fanA00000000']['all'][:2], [1, 6])
-    # فشل القراءة: ما يكتب شي
+    T.check('مركز سالم في الموسم (6 + 4 = 10)', rk['season']['fanA00000000']['all'][1], 10)
+    T.check('اسم سالم يطلع في أعلى المشجعين', [x[0] for x in data['season']['all']['fans']], ['سالم'])
     d2 = tree([], {'rounds': {}, 'clubs': {}})
     rc, data = run(d2, W1_END + 5 * MIN, db='http://localhost:9')
     T.check('فشل قراءة Firebase: التشغيل يفشل وما ينكتب ملف', (rc != 0, data), (True, None))
     # جولة تغير موعدها بعد ما انحسبت: ما تنحسب مرة ثانية
     T.reset()
     m = lambda i, r, t: {'id': i, 'wk': r, 't': t, 'h': 'ain', 'a': 'wasl', 'st': 6}
-    tb = {'rounds': {'9': [['fanB00000000', 'علي', 'ain', 20, 1, 1, S + 4 * DAY]]}, 'clubs': {'9': [['ain', 20.0, 1, 20, 1], ['wasl', 6.0, 1, 6, 0]]}}
+    tb = {'rounds': {'9': [['fanB00000000', 'علي', 'ain', 20, 1, 2, S + 4 * DAY, 0], ['fanG00000000', 'حمد', 'wasl', 6, 0, 2, S + 4 * DAY, 1]]}, 'clubs': {}}
     d3 = tree([m('a', 9, S + 4 * DAY)], tb)
     run(d3, W1_END + 41 * MIN)
-    json.dump({'matches': [m('a', 9, S + 15 * DAY)]}, open(os.path.join(d3, 'predict/data.json'), 'w'))   # تأجلت للأسبوع 3
+    json.dump({'matches': [m('a', 9, S + 15 * DAY)]}, open(os.path.join(d3, 'predict/data.json'), 'w'))
     rc, data = run(d3, S + 16 * DAY)
-    T.check('جولة 9 انحسبت في الأسبوع 1 وما تنعاد في الأسبوع 3', (wk(data, 1)['rds'], wk(data, 3)['rds'], pts(data, 1, 'pred')), (['9'], [], {'ain': 20, 'wasl': 6}))
-    T.check('الموسم: التوقعات مرة وحدة', {r[0]: r[2] for r in data['season']['clubs']['pred'] if r[2]}, {'ain': 20, 'wasl': 6})
-    # أسبوع فيه جولتين: المجموع من الجولتين
-    tb = {'rounds': {}, 'clubs': {'7': [['ain', 5.0, 10, 50, 2], ['wasl', 3.0, 10, 30, 1]], '13': [['ain', 1.0, 10, 10, 0], ['wasl', 8.0, 10, 80, 4]]}}
+    T.check('جولة 9 انحسبت في الأسبوع 1 وما تنعاد في الأسبوع 3', (wk(data, 1)['rds'], wk(data, 3)['rds'], pts(wk(data, 1)['boards'], 'pred')), (['9'], [], {'ain': 20, 'wasl': 6}))
+    T.check('الموسم: التوقعات مرة وحدة', pts(data['season'], 'pred'), {'ain': 20, 'wasl': 6})
+    # أسبوع فيه جولتين: نقاط المشجع من الجولتين
+    tb = {'rounds': {'7': [['fanH00000000', 'راشد', 'ain', 10, 1, 1, S + 2 * DAY, 0]], '13': [['fanH00000000', 'راشد', 'ain', 4, 0, 1, S + 5 * DAY, 0]]}, 'clubs': {}}
     d4 = tree([m('a', 7, S + 2 * DAY), m('b', 13, S + 5 * DAY)], tb)
     rc, data = run(d4, S + 6 * DAY)
-    T.check('أسبوع فيه جولتين: مجموع الجولتين لكل نادي', pts(data, 1, 'pred'), {'wasl': 110, 'ain': 60})
-    # مباراة وحدة مؤجلة ما تأخر الجولة
+    T.check('أسبوع فيه جولتين: نقاط الجولتين مع بعض', pts(wk(data, 1)['boards'], 'pred'), {'ain': 14})
     d5 = tree([m('a', 11, S + 2 * DAY), m('b', 11, S + 3 * DAY), m('c', 11, S + 4 * DAY), m('d', 11, S + 24 * DAY)], {'rounds': {}, 'clubs': {}})
     rc, data = run(d5, S + 6 * DAY)
     T.check('جولة فيها مباراة مؤجلة تنحسب في أسبوع أغلب مبارياتها', wk(data, 1)['rds'], ['11'])
+    # التشكيلة المعروضة: 13 مشجع للعين ⇒ أفضل 11 بالضبط ومجموعهم = نقاط النادي، والاسم المخفي ما يطلع
+    T.reset()
+    for i in range(13):
+        seed_p(3, f'xi{i:02d}000000x', 1 + i % 6, 'ain', sec=10 + i)
+    requests.put(T.url('f/xi00000000x'), data=json.dumps({'c': 'ain', 'n': 'خليفة', 't': 1}), headers=T.OWNER)
+    d6 = tree([], {'rounds': {}, 'clubs': {}})
+    rc, data = run(d6, S + 5 * DAY)
+    B = wk(data, 1)['boards']['mano']; row = next(r for r in B['clubs'] if r[0] == 'ain'); L = B['xi']['ain']
+    T.check('التشكيلة 11 ومجموعها = نقاط النادي', (len(L), sum(x[1] for x in L), row[2], row[3], row[4]), (11, row[2], sum(sorted([7 - (1 + i % 6) for i in range(13)], reverse=True)[:11]), 11, 13))
+    T.check('اسم المشجع يطلع في التشكيلة واللي بدون اسم فاضي', (L[0][0], L[1][0]), ('خليفة', ''))
+    T.check('الموسم ما فيه تشكيلة (مجموع الأسابيع)', 'xi' in data['season']['mano'], False)
+    rk = json.load(open(os.path.join(d6, 'fans/ranks.json')))
+    T.check('مركز المشجع فيه ناديه', rk['week']['xi00000000x'[:12]]['mano'][3], 'ain')
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)

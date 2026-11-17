@@ -32,8 +32,8 @@ def to_emu(lose_patch=False):
     return h
 
 
-async def play(b, uid, club, easy, pro=None, lose=False):
-    seed = {f'g_{day}_easy': easy, 'seenHow': True, 'mode': 'pro' if pro else 'easy'}
+async def play(b, uid, club, easy, pro=None, lose=False, extra=None):
+    seed = {f'g_{day}_easy': easy, 'seenHow': True, 'mode': 'pro' if pro else 'easy', **(extra or {})}
     if pro:
         seed[f'g_{day}_pro'] = pro
     js = ';'.join(f"localStorage.setItem('el3azy_mano_{k}',{json.dumps(json.dumps(v))})" for k, v in seed.items())
@@ -73,6 +73,9 @@ async def main():
         st = await play(b, 'ua4', 'nasr', lose6)
         T.check('ما عرفه: ينحسب لعبة بدون نقاط', (st[0], T.get(f'c/{day}/easy/nasr').json()), ({'g': 0, 'c': 'nasr'}, {'n': 1}))
         T.check('عداد اللاعبين اليوم = 4 والعارفين = 3', (T.get(f's/{day}/easy').json().get('n'), T.get(f's/{day}/easy').json().get('w')), (4, 3))
+        t0 = 1794859200000 + (day - 1) * 86400000 + 3600000
+        st = await play(b, 'ua5', 'kalba', win2, extra={f'st_{day}_easy': t0, f'fin_{day}_easy': t0 + 83000})
+        T.check('وقت الحل ينرسل (83 ثانية) والسيرفر يقبله', (st[0], T.get(f'p/{day}/easy/ua5').json().get('sec')), ({'g': 2, 'c': 'kalba'}, 83))
         await b.close()
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)
