@@ -206,6 +206,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .hero .k{font-size:12px;color:var(--gold);font-weight:600}
 .hero .lead{display:flex;align-items:center;gap:12px;margin-top:8px}
 .hero .lead .cw{width:58px;height:58px;display:grid;place-items:center;flex-shrink:0}
+.hero .lead .cw2{display:flex;gap:4px;flex-shrink:0}
 .hero .lead b{display:block;font-size:20px;line-height:1.35}
 .hero .lead span{font-size:12.5px;opacity:.8}
 .hero .story{margin-top:10px;font-size:13px;background:rgba(7,29,43,.55);border:1px solid rgba(215,180,101,.3);border-radius:14px;padding:7px 10px;line-height:1.6}.hero .story b{color:var(--gold2)}
@@ -250,6 +251,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .fr .fp{font-weight:700;color:var(--gold2);font-size:17px;text-align:left;line-height:1.1}.fr .fp small{display:block;font-size:10.5px;font-weight:400;opacity:.6;color:var(--ivory)}
 .fr.me{outline:1.5px solid rgba(215,180,101,.6);outline-offset:-1px;border-radius:12px}
 .fm{font-size:12px;opacity:.75;text-align:center;padding:8px 0 4px}
+.mine-line .lk{background:none;border:0;padding:0;font:inherit;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer;font-weight:700}
 .stn .lk{background:none;border:0;padding:0;font:inherit;color:var(--gold);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .stn{font-size:12px;opacity:.75;text-align:center;margin:0 4px 14px;line-height:1.8}.stn b{color:var(--gold2)}
 .hw{margin-bottom:12px}.hw>summary{list-style:none;cursor:pointer;display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:600;color:var(--gold);padding:12px 14px;border:1px solid rgba(215,180,101,.35);border-radius:16px;background:rgba(215,180,101,.06)}.hw>summary::-webkit-details-marker{display:none}.hw>summary:after{content:'＋';font-size:16px}.hw[open]>summary:after{content:'－'}.hw[open]>summary{border-radius:16px 16px 0 0}.hw .how{border-radius:0 0 18px 18px;margin:0;border-top:0}
@@ -282,7 +284,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .tbl.v2 .tr[data-c]{cursor:pointer}.tbl.v2 .tr .tot:after{content:'⌄';display:block;font-size:11px;opacity:.45;line-height:.6;text-align:center}.tbl.v2 .tr.open .tot:after{content:'⌃'}
 .xip{margin:0 10px 10px;padding:8px 12px 10px;border-radius:12px;background:rgba(255,245,229,.04);border:1px solid rgba(215,180,101,.2);font-size:13px}
 .xip .xh{font-size:12px;opacity:.7;margin-bottom:4px}.xip .xr{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed rgba(215,180,101,.12)}.xip .xr:last-of-type{border-bottom:0}
-.xip .xr.me{color:var(--gold2);font-weight:700}.xip .xr i{font-style:normal;opacity:.5;margin-left:8px;display:inline-block;min-width:16px}.xip .xs{display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid rgba(215,180,101,.3);font-weight:700;color:var(--gold2)}
+.xip .xg{font-size:12px;color:var(--gold);margin:8px 0 2px;font-weight:600}.xip .xr.me{color:var(--gold2);font-weight:700}.xip .xr i{font-style:normal;opacity:.5;margin-left:8px;display:inline-block;min-width:16px}.xip .xs{display:flex;justify-content:space-between;margin-top:6px;padding-top:6px;border-top:1px solid rgba(215,180,101,.3);font-weight:700;color:var(--gold2)}
 .tbl.v2 .th span:last-child{text-align:center}
 .det{margin-top:10px;font-size:12.5px}.det summary{cursor:pointer;color:var(--gold);font-weight:600;padding:8px 0 4px;list-style:none;border-top:1px solid rgba(215,180,101,.18)}.det summary::-webkit-details-marker{display:none}.det summary:before{content:'＋ '}.det[open] summary:before{content:'－ '}.det ul{margin:4px 0 0;padding:0 16px 0 0;line-height:1.85;opacity:.9}
 .tbl.v2 .sep{font-size:11.5px;line-height:1.7}
@@ -332,12 +334,21 @@ function myH(V,when){const my=MY(),u=MYU(),r=RK&&(T==='season'?RK.season:T==='we
 function xiH(V,r){const u=MYU(),xi=D.xi||11;
   if(T==='season'){const L=D.weeks.map(w=>{const x=((w.boards[B]||{}).clubs||[]).find(y=>y[0]===r[0]);return [w,x?x[2]:0]}).filter(a=>a[1]>0);
     return `<div class="xip"><div class="xh">نقاط تشكيلة ${CL[r[0]]} في كل أسبوع</div>${L.map(([w,p])=>`<div class="xr"><span>الأسبوع ${w.w}${w.live?' (شغال)':''}</span><b>${nf(p)}</b></div>`).join('')}<div class="xs"><span>مجموع الموسم</span><span>${nf(r[2])}</span></div></div>`}
-  const L=((V[B].xi||{})[r[0]])||[],ex=(((V[B].xt||{})[r[0]])||[]).length;
-  return `<div class="xip"><div class="xh">تشكيلة ${CL[r[0]]}: أفضل ${xi} مشجع${L.length<xi?` (ناقصة ${xi-L.length})`:''}</div>${L.map(x=>`<div class="xr ${u&&x[2]===u?'me':''}"><span><i>${x[3]||''}</i>${x[0]?esc(x[0]):'مشجع'}${u&&x[2]===u?' · أنت':''}${x[4]?' <small style="opacity:.6">(متعادل)</small>':''}</span><b>${nf(x[1])}</b></div>`).join('')}${ex>0?`<div class="xh" style="margin-top:6px">و${nf(ex)} ${ex>10||ex<3?'مشجع':'مشجعين'} ${ex===1?'ثاني متعادل':'ثانيين متعادلين'} بالكامل معهم. ${CL[r[0]]} ياخذ نفس النقاط أياً منهم انحسب.</div>`:''}<div class="xs"><span>المجموع = نقاط ${CL[r[0]]}</span><span>${nf(r[2])}</span></div></div>`}
+  const L=((V[B].xi||{})[r[0]])||[],ex=(((V[B].xt||{})[r[0]])||[]).length,last=L.length?L[L.length-1][3]:0;
+  // التعادل: مجموعة من 3 وأكثر ⇒ عنوان واحد فوقها بدل «متعادل» في كل سطر · مجموعة من 2 ⇒ «متعادل» جنب الاسم
+  const G={};L.forEach(x=>G[x[3]]=(G[x[3]]||0)+1);if(ex)G[last]=(G[last]||0)+ex;
+  let h='',prev=0;
+  L.forEach(x=>{const g=G[x[3]];
+    if(g>=3&&x[3]!==prev)h+=`<div class="xg">🤝 ${nf(g)} ${MSH(g)} متعادلين بالكامل في المركز ${x[3]}</div>`;prev=x[3];
+    h+=`<div class="xr ${u&&x[2]===u?'me':''}"><span><i>${x[3]||''}</i>${x[0]?esc(x[0]):'مشجع'}${u&&x[2]===u?' · أنت':''}${g===2?' <small style="opacity:.6">(متعادل)</small>':''}</span><b>${nf(x[1])}</b></div>`});
+  return `<div class="xip"><div class="xh">تشكيلة ${CL[r[0]]}: أفضل ${xi} مشجع${L.length<xi?` (ناقصة ${xi-L.length})`:''}</div>${h}${ex>0?`<div class="xh" style="margin-top:6px">${ex===1?'ومشجع ثاني متعادل بالكامل مع آخر مكان وما يطلع هني':`و${nf(ex)} ${MSH(ex)} ثانيين متعادلين بالكامل مع آخر مكان وما يطلعون هني`}، لأن التشكيلة ${xi} بس. ${CL[r[0]]} ياخذ نفس النقاط أياً منهم انحسب.</div>`:''}<div class="xs"><span>المجموع = نقاط ${CL[r[0]]}</span><span>${nf(r[2])}</span></div>
+   ${L.some(x=>!x[0])?`<div class="xh" style="margin-top:6px">«مشجع» = ما كتب اسمه في بطاقة المشجع.</div>`:''}</div>`}
+const MSH=n=>n===2||(n>=3&&n<=10)?'مشجعين':'مشجع';
 /* وين أنت من تشكيلة ناديك */
 function meXI(V){if(T==='season')return '';const u=MYU(),r=RK&&RK.week,me=r&&u&&r[u]&&r[u][B];if(!me||!me[3])return '';
   const c=me[3],L=((V[B].xi||{})[c])||[],xi=D.xi||11,row=(V[B].clubs||[]).find(x=>x[0]===c),k=L.findIndex(x=>x[2]===u);
-  if(k>=0)return `<div class="ml you">⚽ <span>أنت رقم ${L[k][3]||k+1}${L[k][4]?' (متعادل)':''} في تشكيلة <b>${CL[c]}</b>، وجبت <b>${nf(me[1])}</b> نقطة من <b>${nf(row?row[2]:0)}</b></span></div>`;
+  const nn=window.EL3FAN&&!(EL3FAN.name()||'').trim()?`<div class="ml you">✍️ <span>اسمك ما يطلع في التشكيلة، يطلع «مشجع». <button class="lk" id="nmBtn2">اكتب اسمك</button></span></div>`:'';
+  if(k>=0)return `<div class="ml you">⚽ <span>أنت رقم ${L[k][3]||k+1}${L[k][4]?' (متعادل)':''} في تشكيلة <b>${CL[c]}</b>، وجبت <b>${nf(me[1])}</b> نقطة من <b>${nf(row?row[2]:0)}</b></span></div>`+nn;
   if((((V[B].xt||{})[c])||[]).includes(u))return `<div class="ml you">⚽ <span>أنت متعادل بالكامل مع آخر مكان في تشكيلة <b>${CL[c]}</b> (${nf(me[1])} نقطة). العب أكثر وتقدّم</span></div>`;
   if(L.length>=xi)return `<div class="ml you">⚽ <span>آخر واحد في تشكيلة <b>${CL[c]}</b> عنده <b>${nf(L[xi-1][1])}</b> نقطة وأنت <b>${nf(me[1])}</b>. العب أكثر عشان تدخل</span></div>`;
   return ''}
@@ -346,7 +357,7 @@ function bsegH(){return `<div class="bseg">${Object.entries(BN()).map(([k,v])=>`
 function clubsH(V,W){const rows=V[B].clubs||[],my=MY(),any=rows.some(r=>r[2]>0),xi=D.xi||11;
   if(!any)return `<div class="card how" style="text-align:center">ما في نقاط ${B==='pred'?'من دوري التوقعات ':''}لين الحين${B==='pred'&&W&&W.live&&!W.pred?' · هالأسبوع ما فيه جولة دوري':''}</div>`;
   return `<div class="tbl v2"><div class="th"><span>#</span><span></span><span>النادي</span><span>النقاط</span></div>${rows.filter(r=>r[2]>0).map(r=>{
-    const sub=T==='season'?`جاب نقاط في ${r[3]===1?'أسبوع واحد':r[3]===2?'أسبوعين':nf(r[3])+(r[3]>10?' أسبوع':' أسابيع')}`:`${r[3]>=xi?'تشكيلة كاملة':`تشكيلة ناقصة: ${nf(r[3])} من ${xi}`} · لعب ${nf(r[4])} ${r[4]>10||r[4]<3?'مشجع':'مشجعين'}`;
+    const sub=T==='season'?`جاب نقاط في ${r[3]===1?'أسبوع واحد':r[3]===2?'أسبوعين':nf(r[3])+(r[3]>10?' أسبوع':' أسابيع')}`:(r[3]>=xi?`تشكيلة كاملة · لعب ${nf(r[4])} ${MSH(r[4])}`:`تشكيلة ناقصة: ${nf(r[3])} من ${xi}`);
     return `<div class="tr ${r[0]===my?'mine':''} ${r[1]<=3?'p'+r[1]:''} ${OPEN===r[0]?'open':''}" data-c="${r[0]}"><i>${r[1]}</i><span class="cw">${crest(r[0],26)}</span><span class="nm">${CL[r[0]]}<small>${sub}</small></span><span class="tot">${nf(r[2])}</span></div>${OPEN===r[0]?xiH(V,r):''}`}).join('')}
    ${rows.filter(r=>!r[2]).length?`<div class="sep">ما جابوا نقاط لين الحين: ${rows.filter(r=>!r[2]).map(r=>CL[r[0]]).join('، ')}</div>`:''}</div>`}
 /* المشجعين: أول 10 مراكز (اللي كاتبين اسم ومختارين نادي) */
@@ -385,10 +396,10 @@ function draw(){
   const tabs=[['week','هالأسبوع'],['season','الموسم']];if(last)tabs.push(['last','الأسبوع '+last.w]);
   if(!tabs.some(t=>t[0]===T))T='week';if(!BN()[B])B='all';
   $('#tabs').innerHTML=tabs.map(t=>`<button class="${t[0]===T?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join('');$('#tabs').style.display='';
-  const [V,when,W]=view();const top=(V.all.clubs||[])[0];
+  const [V,when,W]=view();const TOPS=(V.all.clubs||[]).filter(r=>r[1]===1&&r[2]>0),top=TOPS[0];
   let h=stepsH()+askH()+myH(V,when);
-  h+=`<div class="hero"><div class="k">🏆 ${T==='season'?'متصدر الموسم':T==='last'?'بطل الأسبوع '+W.w:'متصدر الأسبوع '+W.w+' لين الحين'}${W?` · ${W.from} – ${W.to}`:''}</div>
-    ${top&&top[2]?`<div class="lead"><div class="cw">${crest(top[0],52)}</div><div><b>جمهور ${CL[top[0]]}</b><span>${nf(top[2])} نقطة من كل التحديات</span></div></div>`:`<div class="lead"><div class="cw" style="font-size:40px">🏆</div><div><b>ما في نقاط لين الحين</b><span>العب «منو اللاعب؟» وخلّ ناديك أول نادي في الجدول</span></div></div>`}
+  h+=`<div class="hero"><div class="k">🏆 ${T==='season'?(TOPS.length>1?'متصدرين الموسم':'متصدر الموسم'):T==='last'?(TOPS.length>1?'أبطال الأسبوع ':'بطل الأسبوع ')+W.w:(TOPS.length>1?'متصدرين الأسبوع ':'متصدر الأسبوع ')+W.w+' لين الحين'}${W?` · ${W.from} – ${W.to}`:''}</div>
+    ${top?(TOPS.length===1?`<div class="lead"><div class="cw">${crest(top[0],52)}</div><div><b>جمهور ${CL[top[0]]}</b><span>${nf(top[2])} نقطة من كل التحديات</span></div></div>`:`<div class="lead"><div class="cw2">${TOPS.slice(0,4).map(r=>crest(r[0],40)).join('')}</div><div><b>${TOPS.map(r=>CL[r[0]]).join(' و')}</b><span>متعادلين · ${nf(top[2])} نقطة لكل نادي</span></div></div>`):`<div class="lead"><div class="cw" style="font-size:40px">🏆</div><div><b>ما في نقاط لين الحين</b><span>العب «منو اللاعب؟» وخلّ ناديك أول نادي في الجدول</span></div></div>`}
     ${D.story&&T==='last'?`<div class="story">🚀 ${esc(D.story)}</div>`:''}
     <div class="meta"><span>${T==='week'&&live?`الأسبوع يخلص بعد <b>${left()}</b> · يتحدث كل شوي`:T==='season'?'الموسم = مجموع كل الأسابيع':'الأسبوع نهائي'}</span></div></div>`;
   h+=bsegH()+`<div class="lbl">📣 الأندية · ${BN()[B]}</div>`+clubsH(V,W)+fansH(V)+howH();
@@ -396,7 +407,7 @@ function draw(){
   document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{T=b.dataset.t;OPEN='';gc('fans-tab-'+T);draw()});
   document.querySelectorAll('.bseg button').forEach(b=>b.onclick=()=>{B=b.dataset.b;OPEN='';gc('fans-board-'+B);draw()});
   document.querySelectorAll('.tbl.v2 .tr[data-c]').forEach(e=>e.onclick=()=>{OPEN=OPEN===e.dataset.c?'':e.dataset.c;if(OPEN)gc('fans-xi');draw()});
-  $('#ask')&&($('#ask').onclick=()=>EL3FAN.open());$('#nmBtn')&&($('#nmBtn').onclick=()=>EL3FAN.open());
+  $('#ask')&&($('#ask').onclick=()=>EL3FAN.open());$('#nmBtn')&&($('#nmBtn').onclick=()=>EL3FAN.open());$('#nmBtn2')&&($('#nmBtn2').onclick=()=>EL3FAN.open());
 }
 async function load(){
   try{D=await fetch('data.json?v='+Date.now()).then(r=>r.json())}catch(e){$('#app').innerHTML='<div class="empty">ما قدرنا نحمّل الترتيب، جرّب مرة ثانية</div>';return}

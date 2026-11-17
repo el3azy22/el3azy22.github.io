@@ -488,7 +488,7 @@ function renderCl(){
   if(!rows.length)h+=`<div class="empty">ترتيب الأندية يطلع بعد أول مباراة منتهية في الجولة</div><div class="note">كل نادي تنحسب له نقاط أفضل 11 مشجع عنده، مثل التشكيلة</div>`;
   else{
     const ER=[];rows.forEach((c,k)=>ER[k]=k&&tot(c)===tot(rows[k-1])&&mis(c)===mis(rows[k-1])?ER[k-1]:k+1);
-    h+=`<div class="lb">${rows.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][ER[k]-1]||ER[k]}</i>${crest(c[0],26)}<span>${CL[c[0]]}<small style="display:block;font-size:11px;opacity:.6">${(c[5]||0)>=11?'تشكيلة كاملة':`تشكيلة ناقصة: ${nf(c[5]||0)} من 11`} · توقع ${nf(c[2])} ${c[2]>10||c[2]<3?'مشجع':'مشجعين'}</small></span><span class="v"><b>${nf(tot(c))}</b><small>نقطة</small></span></div>`).join('')}</div>`;
+    h+=`<div class="lb">${rows.map((c,k)=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][ER[k]-1]||ER[k]}</i>${crest(c[0],26)}<span>${CL[c[0]]}<small style="display:block;font-size:11px;opacity:.6">${(c[5]||0)>=11?`تشكيلة كاملة · توقع ${nf(c[2])} ${c[2]===2||(c[2]>=3&&c[2]<=10)?'مشجعين':'مشجع'}`:`تشكيلة ناقصة: ${nf(c[5]||0)} من 11`}</small></span><span class="v"><b>${nf(tot(c))}</b><small>نقطة</small></span></div>`).join('')}</div>`;
     h+=`<div class="note">كل نادي تنحسب له نقاط أفضل 11 مشجع عنده (التشكيلة). وإذا تساووا، الأقل أخطاء</div>`;
   }
   const S=(TB&&TB.clubs_season)||[];

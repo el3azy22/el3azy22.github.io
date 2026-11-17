@@ -624,20 +624,21 @@ async function crowdFlow(again){
   const me=myClub(),se=store.get('sub_'+DAY+'_easy',null),sp=store.get('sub_'+DAY+'_pro',null);
   const pe=se&&se.g?7-se.g:0,pp=sp&&sp.g?7-sp.g:0,xi=(FDd&&FDd.xi)||11;
   const ok3=FDd&&FDd.v===3,WK=ok3?FDd.weeks.find(w=>w.w===wk):null,rows=WK?((WK.boards.mano||{}).clubs||[]):[];
-  const PW=ok3&&wk>1?FDd.weeks.find(w=>w.w===wk-1&&w.final):null,champ=PW?((PW.boards.mano||{}).clubs||[])[0]:null;
+  const PW=ok3&&wk>1?FDd.weeks.find(w=>w.w===wk-1&&w.final):null,CH=PW?((PW.boards.mano||{}).clubs||[]).filter(r=>r[1]===1&&r[2]>0):[],champ=CH[0];
   const left=Math.floor((f+WEEK-1-DAY)+msToDubaiMidnight()/864e5);
   const mx=Math.max(1,...rows.map(r=>r[2]));
   const ok=rows.filter(r=>r[2]>0),out=rows.filter(r=>!r[2]);
   const rowH=r=>`<div class="ct ${r[0]===me?'me':''}"><span class="r">${r[2]?AR(r[1]):''}</span><span class="cr">${crest(r[0],22)}</span><span class="nm">${D.clubs[r[0]]}</span><span class="bar"><i style="width:${r[2]/mx*100}%"></i></span><span class="v">${r[2]?nf(r[2]):'—'}</span><span class="n">${r[3]?AR(r[3]):'0'}</span></div>`;
-  box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 ترتيب جماهير الأندية · الأسبوع ${AR(wk)}</div>
-    ${champ&&champ[2]>0?`<div class="champ">${crest(champ[0],30)}<div><b>بطل الأسبوع ${AR(wk-1)}: جمهور ${D.clubs[champ[0]]}</b><div style="font-size:11.5px;opacity:.7">${nf(champ[2])} نقطة في «منو اللاعب؟»</div></div></div>`:''}
-    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وتنحسب لك مع جمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}</div>`:me&&!se?`<div class="mine warn">⏳ نتيجتك ما وصلت السيرفر لين الحين، فما انحسبت. تأكد من الإنترنت وارجع للصفحة قبل 12 بالليل، وبتنرسل بروحها.</div>`:''}
-    <div class="exp">كل نادي تنحسب له <b>نقاط أفضل ${AR(xi)} مشجع</b> عنده، مثل التشكيلة. إذا تساووا: الأقل أخطاء ← الأسرع.</div>
+  box.innerHTML=`<div class="card clubc"><div class="lbl">🏆 ترتيب الأندية في «منو اللاعب؟» · الأسبوع ${AR(wk)}</div>
+    ${champ?`<div class="champ">${CH.map(r=>crest(r[0],30)).join('')}<div><b>${CH.length>1?'أبطال':'بطل'} الأسبوع ${AR(wk-1)}: ${CH.length>1?CH.map(r=>D.clubs[r[0]]).join(' و'):'جمهور '+D.clubs[champ[0]]}</b><div style="font-size:11.5px;opacity:.7">${nf(champ[2])} نقطة في «منو اللاعب؟»</div></div></div>`:''}
+    ${me&&se&&se.c===me?`<div class="mine">${pe+pp?`✅ نقاطك اليوم <b>${AR(pe+pp)}</b>${sp?` <small>(لاعب اليوم ${AR(pe)} + الخبير ${AR(pp)})</small>`:''}، وتنحسب لك مع جمهور <b>${D.clubs[me]}</b>`:`نتيجتك اليوم ما جابت نقاط`}${!sp?`<br><small>🧠 تبا تزيدها؟ العب تحدي الخبير</small>`:''}${window.EL3FAN&&!(EL3FAN.name()||'').trim()?`<br><small>✍️ اسمك ما يطلع في تشكيلة ناديك. <button class="linkb" id="nmM">اكتب اسمك</button></small>`:''}</div>`:me&&!se?`<div class="mine warn">⏳ نتيجتك ما وصلت السيرفر لين الحين، فما انحسبت. تأكد من الإنترنت وارجع للصفحة قبل 12 بالليل، وبتنرسل بروحها.</div>`:''}
+    <div class="exp">نقاط لاعب اليوم والخبير هالأسبوع. كل نادي تنحسب له <b>نقاط أفضل ${AR(xi)} مشجع</b> عنده، مثل التشكيلة. إذا تساووا: الأقل أخطاء ← الأسرع.</div>
     ${rows.length?`<div class="ct hd2"><span class="r"></span><span class="cr"></span><span class="nm">النادي</span><span class="bar" style="background:none"></span><span class="v">النقاط</span><span class="n">التشكيلة</span></div>
     ${ok.map(rowH).join('')}
     ${out.length?`<div class="ct sep2">ما جابوا نقاط لين الحين</div>${out.map(rowH).join('')}`:''}`:`<div class="loading" style="padding:10px 0;opacity:.7">الترتيب يتحدث كل شوي، ارجع بعد شوي 👀</div>`}
-    <div class="cfoot"><b>التشكيلة</b> = كم مشجع من أفضل ${AR(xi)} لعبوا للنادي هالأسبوع (اللي عنده أقل يلعب ناقص).<br>الترتيب يتحدث كل شوي، مب لحظة بلحظة.<br>الأسبوع يخلص بعد ${left>=2?AR(left)+(left>10?' يوم':' أيام'):left===1?'يوم':'ساعات'}. الترتيب الكامل مع دوري التوقعات في <a href="../fans/">«دوري الجماهير»</a>.<br>${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
+    <div class="cfoot"><b>التشكيلة</b> = كم مشجع من أفضل ${AR(xi)} لعبوا للنادي هالأسبوع (اللي عنده أقل يلعب ناقص).<br>الترتيب يتحدث كل شوي، مب لحظة بلحظة.<br>الأسبوع يخلص بعد ${left>=2?AR(left)+(left>10?' يوم':' أيام'):left===1?'يوم':'ساعات'}. الترتيب الكامل لكل التحديات، وتشكيلة كل نادي، في <a href="../fans/">«دوري الجماهير»</a>.<br>${me?`أنت مع ${D.clubs[me]}`:'ما اخترت نادي'} · <button class="linkb" id="chgClub">غيّر</button></div></div>`;
   $('#chgClub').onclick=()=>window.EL3FAN?EL3FAN.open():crowdFlow(true);
+  $('#nmM')&&($('#nmM').onclick=()=>EL3FAN.open());
 }
 
 /* ---------- result image ---------- */
