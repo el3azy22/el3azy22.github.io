@@ -148,7 +148,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .rounds button{flex-shrink:0;border:1px solid rgba(215,180,101,.35);background:rgba(12,38,56,.8);border-radius:20px;padding:7px 13px;font-size:13px;font-weight:600;opacity:.75;white-space:nowrap}
 .rounds button.on{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);opacity:1;border-color:transparent}
 .lockb{display:flex;align-items:center;justify-content:space-between;gap:10px;background:rgba(215,180,101,.09);border:1px solid rgba(215,180,101,.4);border-radius:14px;padding:9px 12px;margin-bottom:10px;font-size:12.5px}
-.lockb b{color:var(--gold2);font-size:15px;direction:ltr;unicode-bidi:isolate;white-space:nowrap}
+.lockb b{color:var(--gold2);font-size:15px;unicode-bidi:isolate;white-space:nowrap}
 .clubask{display:flex;align-items:center;gap:10px;border:1px dashed rgba(215,180,101,.55);border-radius:14px;padding:10px 12px;margin-bottom:10px;font-size:12.5px;line-height:1.7;background:none;width:100%;text-align:right}
 .clubask b{display:block;font-size:14px;color:var(--gold2)}
 .pm{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;padding:11px 10px 9px;margin-bottom:9px;box-shadow:0 8px 24px rgba(0,0,0,.22);transition:border-color .2s}
@@ -301,7 +301,8 @@ async function who(a){
 const LS=FB.auth?'pred_emu':'pred';
 let MY=PID.get(LS)||{};
 const saveLocal=()=>PID.set(LS,MY);
-let LK={};const LT=m=>LK[m.id]!=null?Math.min(m.t,LK[m.id]):0; // موعد القفل (القواعد تقفل على الموعد اللي فيها)
+let LK={},OP={};const OPN=w=>OP[w]||0; // متى تفتح الجولة (open.json، نفس القواعد)
+const LT=m=>LK[m.id]!=null?Math.min(m.t,LK[m.id]):0; // موعد القفل (القواعد تقفل على الموعد اللي فيها)
 let D=null,TB=null,RD=[],CUR=null,TAB='me',draft={},status={},timers={};
 
 function roundsOf(ms){
@@ -319,7 +320,9 @@ function pickRound(){
 const rlabel=r=>{const late=RD.some(x=>x.wk>r.wk&&x.t0<r.t0);return 'الجولة '+r.wk+(late?' (المؤجلة)':'')};
 function renderRounds(){
   const T=now();
-  const show=RD.filter(r=>r.t0<T+21*864e5||r.wk===CUR);
+  // الجولات اللي فتحت (أو خلصت) + أول جولة جاية تبين إنها تفتح بعد الحالية
+  const shut=RD.filter(r=>T<OPN(r.wk)).sort((a,b)=>OPN(a.wk)-OPN(b.wk)),nx=shut[0];
+  const show=RD.filter(r=>(T>=OPN(r.wk)&&r.t0<T+21*864e5)||r.wk===CUR||r===nx);
   $('#rounds').innerHTML=show.map(r=>`<button data-w="${r.wk}" class="${r.wk===CUR?'on':''}">${rlabel(r)}</button>`).join('');
   $('#rounds').querySelectorAll('button').forEach(b=>b.onclick=()=>{CUR=+b.dataset.w;draft={};render();renderRounds()});
   const on=$('#rounds .on');on&&on.scrollIntoView({inline:'center',block:'nearest'});
@@ -333,7 +336,9 @@ function card(m){
   const dblId=r.ms.find(x=>MY[x.id]&&MY[x.id].x)?.id,isD=dblId===m.id;
   const dblLocked=dblId&&LT(r.ms.find(x=>x.id===dblId))<=T;
   let mid,foot='';
-  if(soon){mid=`<div class="res"><div class="kt">قريب</div><div class="mine">التوقع يفتح قريب</div></div>`;foot=`<span class="when">${fmtDT(m.t)}</span>`}
+  const shut=T<OPN(m.wk);
+  if(shut){const pv=RD.filter(x=>x.t0<r.t0).sort((a,b)=>b.t0-a.t0)[0];mid=`<div class="res"><div class="kt">ما فتح</div><div class="mine">يفتح ${pv?'بعد نهاية '+rlabel(pv):'قريب'}</div></div>`;foot=`<span class="when">${fmtDT(m.t)}</span>`}
+  else if(soon){mid=`<div class="res"><div class="kt">قريب</div><div class="mine">التوقع يفتح قريب</div></div>`;foot=`<span class="when">${fmtDT(m.t)}</span>`}
   else if(open){
     const h=val(m,'h'),a=val(m,'a');
     const nb=(s,v)=>`<div class="nb"><button data-m="${m.id}" data-s="${s}" data-d="1" aria-label="زيادة">+</button><b class="${v==null?'e':''}">${v==null?'–':v}</b><button data-m="${m.id}" data-s="${s}" data-d="-1" aria-label="نقص">−</button></div>`;
@@ -365,7 +370,9 @@ function renderMe(){
   const done=r.ms.filter(m=>MY[m.id]).length,openN=r.ms.filter(m=>LT(m)>T).length;
   let h='';
   if(window.EL3FAN&&EL3FAN.club()===null)h+=`<button class="clubask" id="askClub"><span style="font-size:26px">📣</span><span><b>اختار ناديك</b>عشان نقاطك تنحسب لجمهوره في ترتيب الأندية</span></button>`;
-  if(next)h+=`<div class="lockb"><span>${openN===r.ms.length?'أول صافرة':'الصافرة الياية'}: ${CL[next.h]} × ${CL[next.a]}<br><small style="opacity:.65">كل توقع يقفل مع صافرة مباراته</small></span><b id="cd" data-t="${LT(next)}">${dur(LT(next)-T)}</b></div>`;
+  const shutR=T<OPN(r.wk),pvR=shutR?RD.filter(x=>x.t0<r.t0).sort((a,b)=>b.t0-a.t0)[0]:null;
+  if(shutR)h+=`<div class="lockb"><span>التوقع يفتح بعد نهاية ${pvR?rlabel(pvR):'الجولة الحالية'}<br><small style="opacity:.65">نفتح الجولة الجاية بس، عشان التوقع يكون على آخر الأخبار</small></span><b id="cd" dir="auto" data-t="${OPN(r.wk)}">${dur(OPN(r.wk)-T)}</b></div>`;
+  else if(next)h+=`<div class="lockb"><span>${openN===r.ms.length?'أول صافرة':'الصافرة الياية'}: ${CL[next.h]} × ${CL[next.a]}<br><small style="opacity:.65">كل توقع يقفل مع صافرة مباراته</small></span><b id="cd" dir="auto" data-t="${LT(next)}">${dur(LT(next)-T)}</b></div>`;
   h+=r.ms.map(card).join('');
   const myPts=r.ms.reduce((s,m)=>{const p=MY[m.id];return s+(p&&m.st===FIN&&m.sh!=null&&m.t>0&&T>=m.t?points(p.h,p.a,m.sh,m.sa)*(p.x?2:1):0)},0);
   if(r.ms.some(m=>m.st===FIN))h+=`<div class="note">نقاطك في ${rlabel(r)}: <b style="color:var(--gold2)">${myPts}</b></div>`;
@@ -511,7 +518,7 @@ window.addEventListener('el3fan',()=>{resyncOpen();render()});
 async function load(){
   const v=Math.floor(Date.now()/12e4);
   try{
-    [D,TB,LK]=await Promise.all([fetch('data.json?v='+v).then(r=>r.json()),fetch('table.json?v='+v).then(r=>r.json()).catch(()=>null),fetch('lock.json?v='+v).then(r=>r.json()).catch(()=>({}))]);
+    [D,TB,LK,OP]=await Promise.all([fetch('data.json?v='+v).then(r=>r.json()),fetch('table.json?v='+v).then(r=>r.json()).catch(()=>null),fetch('lock.json?v='+v).then(r=>r.json()).catch(()=>({})),fetch('open.json?v='+v).then(r=>r.ok?r.json():{}).catch(()=>({}))]);
   }catch(e){$('#app').innerHTML='<div class="empty">ما قدرنا نجيب المباريات، حدّث الصفحة</div>';return}
   RD=roundsOf(D.matches);if(CUR==null||!RD.some(r=>r.wk===CUR))CUR=+(Q.get('r')||pickRound());
   renderRounds();render();
