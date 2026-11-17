@@ -135,4 +135,14 @@ rules["rules"]["pr"]={m['id']:_pr(m['t']) for m in _ms}
 # نسخة من مواعيد القفل اللي في القواعد: الصفحة تقفل على الأبكر، ولوحة التحكم تنبّه لو المواعيد تغيرت
 if _ms:json.dump({m['id']:m['t'] for m in _ms},open(os.path.join(os.path.dirname(_pd),'lock.json'),'w'),separators=(',',':'))
 
+# ── عداد الإحصائيات الخاص (موافقة إبراهيم 16 نوفمبر) ── v/<يوم>/{t,u,r,p/<قسم>,s/<أغنية>/<حدث>}
+# زيادة +1 بس لكل طلب. القراءة مفتوحة مثل s و c (أرقام مجمعة بدون أي بيانات شخصية، واللوحة ما فيها تسجيل دخول Firebase).
+VINC=f"newData.isNumber() && {inc}"
+SECS="home|mano|predict|fans|rate|songs|tashkila"
+rules["rules"]["v"]={".read":True,"$d":{
+  ".validate":"$d.matches(/^[1-9][0-9]{0,2}$/)",
+  "t":{".write":True,".validate":VINC},"u":{".write":True,".validate":VINC},"r":{".write":True,".validate":VINC},
+  "p":{"$s":{".write":True,".validate":f"$s.matches(/^({SECS})$/) && {VINC}"}},
+  "s":{"$id":{"$e":{".write":True,".validate":f"$id.matches(/^[a-z0-9-]{{1,20}}$/) && $e.matches(/^(play|dl|share)$/) && {VINC}"}}},
+  "$other":{".validate":False}}}
 json.dump(rules,open('rules.json','w'),ensure_ascii=False,separators=(',',':'))
