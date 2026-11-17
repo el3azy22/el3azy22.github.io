@@ -43,6 +43,8 @@ jobs:
           # برا وقت المباريات (تشغيل الصبح أو يدوي): مرة وحدة بس
           if [ "$h" -lt 11 ] || [ "$h" -ge 22 ]; then deadline=$start; fi
           while :; do
+            # نحدّث الكود كل دورة: التشغيل يطول 3 ساعات، وبدون هذا ينشر قواعد Firebase قديمة فوق الجديدة ويتعارض مع أي رفع
+            git pull --rebase -q || { git rebase --abort 2>/dev/null; git reset -q --hard origin/main; git pull -q || true; }
             python3 _tools/rate/build.py || echo "::warning::build.py فشل في هالدورة"
             python3 _tools/predict/build.py || echo "::warning::predict فشل في هالدورة"
             python3 _tools/firebase/deploy.py || echo "::warning::نشر القواعد فشل في هالدورة"
