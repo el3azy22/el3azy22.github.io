@@ -192,7 +192,8 @@ def boards(per, names, hide):
             if x['u'] in hide:
                 return ''
             n = ((names.get(x['u']) or {}).get('n') or '') if names else x['nm']
-            return n.strip()[:16]
+            n = n.strip()[:16]
+            return n if len(n) >= 2 else ''      # حرف واحد مب اسم: يطلع «مشجع»
         def xi_list(L):
             # أفضل 11 + أي مشجع متعادل تماماً مع رقم 11 (يطلع «متعادل»، والنادي ياخذ نفس النقاط أياً منهم انحسب)
             k = min(XI, len(L))
@@ -216,7 +217,7 @@ def boards(per, names, hide):
             if x['pts'] <= 0:
                 continue
             nm = ((names.get(x['u']) or {}).get('n') or '') if names else x['nm']
-            if nm.strip() and x['c'] in NAME and x['u'] not in hide:
+            if len(nm.strip()) >= 2 and x['c'] in NAME and x['u'] not in hide:
                 named.append([nm.strip()[:16], x['c'], x['pts'], rk, x['u']])
         top = [r for r in named if r[3] <= named[min(TOP, len(named)) - 1][3]] if named else []
         out[b] = {'clubs': clubs, 'fans': top[:TOP], 'more': max(0, len(top) - TOP), 'xi': xi_out, 'xt': xi_tie}
