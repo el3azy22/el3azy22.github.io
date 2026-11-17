@@ -38,10 +38,11 @@ html,body{height:100%;background:#05121c;overflow:hidden;font-family:'Readex Pro
 #bNitro .lbl{position:relative}
 #bNitro.off{color:#7d7766}
 #bNitro.active{box-shadow:0 0 22px rgba(80,170,255,.8)}
-.speed{position:absolute;left:calc(var(--sl) + 92px);transform:translateX(-50%);bottom:calc(var(--sb) + 106px);display:flex;align-items:center;gap:8px;direction:ltr;pointer-events:none}
+.speed{position:absolute;left:calc(var(--sl) + 10px);bottom:calc(var(--sb) + 106px);display:flex;align-items:center;gap:8px;direction:ltr;pointer-events:none}
 .speed .sv{text-align:center;min-width:76px}
 @media (max-width:370px){.stage .nm{font-size:12px}.box{min-width:58px}}
-@media (orientation:landscape){.speed{left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 24px)}body.mir .speed{left:50%;right:auto;transform:translateX(-50%)}}
+@media (max-width:340px){.speed .sv{min-width:60px}.speed .sv b{font-size:30px}.speed .limit{transform:scale(.85)}.sq{gap:3px}.sq i{font-size:9px;padding:1px 4px}.box small.k{font-size:9px;white-space:nowrap}.box{padding:5px 6px}}
+@media (orientation:landscape){.speed{left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 24px)}html body.mir .speed{left:50%;right:auto;transform:translateX(-50%)}}
 #bStart{position:sticky;bottom:calc(var(--sb) + 8px);z-index:2}
 .speed b{display:block;font-size:46px;font-weight:700;line-height:1;text-shadow:0 3px 0 rgba(0,0,0,.6);font-variant-numeric:tabular-nums}
 .speed b.over{color:#ff6a5f}
@@ -169,7 +170,7 @@ h1 em{font-style:normal;color:var(--gold)}
 /* لليد اليسار: التوجيه يمين والفرامل والنيترو يسار */
 body.mir #bL{left:auto;right:calc(var(--sr) + 96px)}body.mir #bR{left:auto;right:calc(var(--sr) + 10px)}
 body.mir #bBrake{right:auto;left:calc(var(--sl) + 10px)}body.mir #bNitro{right:auto;left:calc(var(--sl) + 22px)}
-body.mir .speed{left:auto;right:calc(var(--sr) + 92px);transform:translateX(50%)}body.mir #stopHint{right:auto;left:calc(var(--sl) + 10px)}
+body.mir .speed{left:auto;right:calc(var(--sr) + 10px);flex-direction:row-reverse}body.mir #stopHint{right:auto;left:calc(var(--sl) + 10px)}
 .box small.k{font-size:10px;color:#cdbf9f;margin-top:1px}
 .rstars{display:flex;justify-content:center;gap:10px;direction:ltr}
 .rstars i{font-style:normal;font-size:46px;line-height:1;color:#3a3f46;text-shadow:0 3px 0 rgba(0,0,0,.4)}
@@ -259,8 +260,8 @@ body.mir .speed{left:auto;right:calc(var(--sr) + 92px);transform:translateX(50%)
   <div class="card gpane" data-g="how" id="gHow"></div>
   <div class="card gpane" data-g="ch" id="gCh" hidden></div>
   <div class="gpane" data-g="ctl" hidden><div class="cgrid">
-    <div><b>◀ ▶</b>تغيير المسار</div><div><b>فرامل</b>قبل الرادار والإشارة والمحطة</div>
-    <div><b>نيترو</b>140 لمدة ثانيتين · معك شحنتين</div><div><b>⏸</b>إيقاف مؤقت وإعدادات الصوت</div>
+    <div><b>◀ ▶</b>تغيير المسار (تحت يسار)</div><div><b>فرامل</b>قبل الرادار والإشارة والمحطة</div>
+    <div><b>نيترو</b>140 لمدة ثانيتين · معك شحنتين</div><div><b>II</b>إيقاف مؤقت، والصوت، وتبديل جهة الأزرار</div>
   </div><div class="card" style="margin-top:10px;font-size:13px;line-height:1.8;opacity:.9">في الكمبيوتر: الأسهم للتوجيه، زر المسطرة (Space) للفرامل، والسهم فوق للنيترو.</div></div>
 </div></div>
 
@@ -1353,7 +1354,10 @@ function showResult(){
   $('rBest').textContent=bt+(nb.length?' · وسام جديد: '+nb.map(b=>b.name).join('، '):'');paintBest();
   hud.classList.remove('on');$('result').classList.add('on');
 }
-function pause(){if(state!=='play'&&state!=='count')return;state='pause';hud.classList.remove('on');$('pauseS').classList.add('on');musicSync();}
+// لو الإصبع على زر وتطلع من اللعبة (اتصال، تبديل تطبيق)، ما يعلق الزر بعد ما ترجع
+function releaseAll(){keys.left=keys.right=keys.brake=false;document.querySelectorAll('.ctl.down').forEach(e=>e.classList.remove('down'));}
+addEventListener('blur',()=>{if(state==='play'||state==='count')releaseAll();});
+function pause(){if(state!=='play'&&state!=='count')return;releaseAll();state='pause';hud.classList.remove('on');$('pauseS').classList.add('on');musicSync();}
 function resume(){$('pauseS').classList.remove('on');hud.classList.add('on');state='count';countT=1.2;lastCount=2;musicSync();}
 function toMenu(){stationHudOff();state='menu';hud.classList.remove('on');['result','pauseS'].forEach(i=>$(i).classList.remove('on'));countEl.style.display='none';$('menu').classList.add('on');musicSync();}
 
@@ -1555,7 +1559,7 @@ function frame(ts){const dt=Math.min(.25,(ts-lt)/1000||0);lt=ts;inFrame=true;voi
   else if(state!=='pause'){accT+=dt;let n=0;const _u=performance.now();while(accT>=STEP&&n<10){update(STEP);accT-=STEP;n++;}if(n>=10)accT=0;perfStat.upd=(perfStat.upd||0)+performance.now()-_u;perfStat.steps=(perfStat.steps||0)+n;}
   render();const _h=performance.now();updateHud(Math.min(dt,.05));perfStat.hud=(perfStat.hud||0)+performance.now()-_h;engineTick();audioTick(Math.min(dt,.05));inFrame=false;requestAnimationFrame(frame);}
 let QA_NOTRAFFIC=false;
-if(location.hash==='#qa')window.__bus={set noTraffic(v){QA_NOTRAFFIC=v},get state(){return state},set pos(z){position=z},get pos(){return position},get finishZ(){return finishZ},get stars(){return stars},get crashes(){return crashes},get fines(){return fines},get timeLimit(){return timeLimit},get timeLeft(){return timeLeft},set timeLeft(v){timeLeft=v},get speed(){return toKmh(speed)},get x(){return playerX},set x(v){playerX=v},keys,cars:()=>traffic.filter(c=>c.on),get rec(){return rec},set day(v){DAY=v},
+if(location.hash==='#qa')window.__bus={get charges(){return charges},get boost(){return boost},get picked(){return picked.slice()},set speedRaw(v){speed=v},set noTraffic(v){QA_NOTRAFFIC=v},get state(){return state},set pos(z){position=z},get pos(){return position},get finishZ(){return finishZ},get stars(){return stars},get crashes(){return crashes},get fines(){return fines},get timeLimit(){return timeLimit},get timeLeft(){return timeLeft},set timeLeft(v){timeLeft=v},get speed(){return toKmh(speed)},get x(){return playerX},set x(v){playerX=v},keys,cars:()=>traffic.filter(c=>c.on),get rec(){return rec},set day(v){DAY=v},
 botsim(day,skill){DAY=day;const R=rng(day*7+skill),react=[18,8,3][skill],look=[22,34,46][skill],err=[.25,.1,.02][skill];
   resetRace();state='play';const was=tut;tut=false;SIM=true;let n=0,target=0,walls=0,cuts=0,wallOn=false;const prevOff=new Map();
   while(state==='play'&&n<20000){const pz=position+PLAYERZ;
