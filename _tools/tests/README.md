@@ -9,9 +9,10 @@
 | `ui_mano.py` | رحلة «منو اللاعب؟» من الواجهة ضد المحاكي: الحفظ، الخبير، ضياع الرد، الخسارة، العدادات، وقت الحل | المحاكي + `http.server 8765` + Chrome | 10 نجح · 0 فشل |
 
 ```
-firebase emulators:start --only database --project demo-el3   # منفذ 9000
-python3 -m http.server 8765                                   # من جذر المستودع
-python3 _tools/tests/test_scoring.py && python3 _tools/tests/test_rules.py && python3 _tools/tests/test_fans_build.py && python3 _tools/tests/ui_mano.py && python3 _tools/tests/ui_q.py
+bash _tools/tests/run_all.sh                      # كل الاختبارات (يشغّل المحاكي و http.server لو مطفيين)
+python3 _tools/tests/shots.py                     # لقطات 360 و390 بالأرقام الحقيقية في /tmp/el3azy-shots
+python3 _tools/tests/shots.py --club wahda fans-xi # كأنك مشجع داخل تشكيلة الوحدة
 ```
+اللقطات تمنع أي كتابة في Firebase الحقيقي وما تنشئ حسابات. وصفحة `week` ما تطلع إلا بعد ما يتثبت أول أسبوع.
 
 أي تعديل على القوانين أو الحسابات لازم يمر على هالثلاثة، ويضيف حالة لأي خلل ينصلح.
