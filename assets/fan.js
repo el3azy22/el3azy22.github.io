@@ -88,7 +88,7 @@ const css=`
 @font-face{font-family:'Readex In';src:url(/tashkila/assets/ReadexPro.ttf);font-weight:160 700;font-display:swap;ascent-override:100%;descent-override:50%}
 .fz-name{display:block;width:100%;box-sizing:border-box;background:#071D2B;border:1px solid rgba(215,180,101,.4);border-radius:12px;padding:11px 12px;color:#FFF5E5;font:500 15px 'Readex In','Readex Pro';text-align:center;margin-bottom:4px;outline:none}
 .fz-name:focus{border-color:#D7B465}
-.fz-hint{font-size:11px;opacity:.55;margin:0 2px 12px}
+.fz-hint{font-size:12px;opacity:.8;line-height:1.6;margin:0 2px 12px}.fz-hint b{color:#D7B465;font-weight:600}
 .fz-ok{display:block;width:100%;border:0;border-radius:14px;padding:13px;font:700 15px 'Readex Pro';background:linear-gradient(180deg,#F6E3AE,#B08A3E);color:#071D2B;cursor:pointer}
 .fz-ok:disabled{opacity:.4}
 .fz-row{display:flex;justify-content:space-between;margin-top:8px}
@@ -109,12 +109,12 @@ function open(){
   const bg=document.createElement('div');bg.className='fz-bg';
   bg.innerHTML=`<div class="fz-sh" role="dialog" aria-modal="true">
     <div class="fz-tile"><svg viewBox="2.6 2.6 26.8 26.8" fill="none" stroke="#D7B465" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5.6q5.3-1.9 10.5 0t10.5 0v4.6q-5.3 1.9-10.5 0t-10.5 0z" fill="rgba(215,180,101,.25)"/><path d="M10.8 4.7v4.5M16 5.6v4.6M21.2 6.6v4.5" stroke-width="1.3"/><path d="M5.5 6.6H3.4M5.5 9.2H3.4M26.5 6.6h2.1M26.5 9.2h2.1" stroke-width="1.2"/><circle cx="16" cy="16.3" r="2.7"/><path d="M11.6 21.2 7.6 10.6M20.4 21.2l4-10.6"/><path d="M10.6 28v-3.2a5.4 5.4 0 0 1 10.8 0V28"/></svg></div>
-    <h2>${edit?'بطاقة المشجع':'تشجع أي نادي انت؟'}</h2>
+    <h2>${edit?'بطاقة المشجع':'تشجع أي نادي أنت؟'}</h2>
     <p class="fz-why">نتيجتك في كل أقسام المنصة تنحسب لـ<b>جمهور ناديك</b>،<br>وكل ما لعبت تساعده يتصدر منافسة الجماهير.</p>
     <div class="fz-grid">${ORDER.map(k=>`<button type="button" data-c="${k}" class="${k===pick?'on':''}"${locked&&k!==cur?' disabled':''}>${crest(k,34)}<span>${CL[k]}</span></button>`).join('')}</div>
     <p class="fz-lock">${note}</p>
     <input class="fz-name" maxlength="16" placeholder="اسمك (اختياري)" value="${esc(name())}">
-    <p class="fz-hint">يطلع جنب شعار ناديك، وفي الترتيبات. مب تسجيل.</p>
+    <p class="fz-hint">اكتب اسمك عشان يطلع في <b>تشكيلة ناديك</b> وفي <b>أعلى المشجعين</b>. مب تسجيل، وإذا خليته فاضي يطلع «مشجع».</p>
     <button class="fz-ok" type="button"></button>
     <div class="fz-row"><button class="fz-link fz-none" type="button"${locked||cur===''?' style="visibility:hidden"':''}>ما أشجع نادي معيّن</button><button class="fz-link fz-close" type="button" style="opacity:.7">${edit?'إغلاق':'بعدين'}</button></div></div>`;
   document.body.appendChild(bg);
