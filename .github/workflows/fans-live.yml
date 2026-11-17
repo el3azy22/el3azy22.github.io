@@ -1,34 +1,48 @@
 # «دوري الجماهير»: تحديث كل 15 دقيقة برا وقت المباريات (2 الفجر لين 3 العصر بتوقيت الإمارات)،
-# عشان الترتيب يتحدث والناس تلعب «منو اللاعب؟» الصبح. داخل وقت المباريات يحدثها rate.yml كل 8 دقايق
+# عشان الترتيب يتحدث والناس تلعب «منو اللاعب؟» الصبح. داخل وقت المباريات يحدثها rate.yml كل 8 دقايق.
+# GitHub يأخّر الجداول المتقاربة (*/15 كانت تشتغل تقريباً مرة بالساعة)، فكل تشغيل يظل شغّال لين ~3 ساعات
+# ويحدث كل 15 دقيقة. التشغيلات الجاية تنتظر في الطابور وتكمّل وراه، فما في فراغ.
 name: fans-live
 on:
   schedule:
-    - cron: '*/15 22,23,0-10 * * *'   # كل 15 دقيقة من 2 الفجر لين 3 العصر (الإمارات)؛ باقي اليوم rate.yml كل 8 دقايق
+    - cron: '41 22,23,0-10 * * *'
   workflow_dispatch:
 permissions:
   contents: write
 concurrency:
   group: fans-live
-  cancel-in-progress: true
+  cancel-in-progress: false
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 190
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
       - run: pip install google-auth requests
-      - name: build
+      - name: loop
         env:
           FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
         run: |
           git config user.name "el3azy-bot"
           git config user.email "el3azy-bot@users.noreply.github.com"
-          python3 _tools/fans/build.py
-          git add fans/data.json fans/acc.json fans/ranks.json
-          if ! git diff --cached --quiet; then
-            git commit -m "دوري الجماهير: تحديث" -q
-            for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done
-          fi
+          start=$(date -u +%s)
+          h=$(date -u +%H)
+          # نهاية النافذة 10:55 UTC (2:55 العصر بالإمارات)، بعدها rate.yml يكمّل. أقصى مدة 175 دقيقة
+          if [ "$h" -ge 22 ]; then win_end=$(date -u -d "tomorrow 10:55" +%s); else win_end=$(date -u -d "today 10:55" +%s); fi
+          deadline=$(( start + 175*60 ))
+          [ "$win_end" -lt "$deadline" ] && deadline=$win_end
+          while :; do
+            git pull --rebase -q || true
+            python3 _tools/fans/build.py || echo "::warning::دوري الجماهير فشل في هالدورة"
+            git add fans/data.json fans/acc.json fans/ranks.json
+            if ! git diff --cached --quiet; then
+              git commit -m "دوري الجماهير: تحديث" -q
+              for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done
+            fi
+            now=$(date -u +%s)
+            [ $(( now + 15*60 )) -ge "$deadline" ] && break
+            sleep 900
+          done
