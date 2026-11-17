@@ -26,19 +26,20 @@ html,body{height:100%;background:#05121c;overflow:hidden;font-family:'Readex Pro
 .bar i{position:absolute;top:0;bottom:0;right:0;width:0;background:linear-gradient(270deg,#f3cf72,#D7B465)}
 .pausebtn{pointer-events:auto;width:50px;border-radius:16px;background:rgba(7,18,26,.84);border:2px solid rgba(215,180,101,.55);display:grid;place-items:center;cursor:pointer}
 .pausebtn span{display:flex;gap:5px}.pausebtn span i{width:6px;height:20px;background:#f3e6c8;border-radius:2px}
-.ctl{position:absolute;pointer-events:auto;border-radius:50%;background:rgba(18,22,28,.8);border:3px solid rgba(215,180,101,.6);display:grid;place-items:center;font-weight:700;touch-action:none;cursor:pointer;transition:transform .06s}
-.ctl.down{background:rgba(215,180,101,.28);transform:scale(.94)}
+.ctl{position:absolute;pointer-events:none;z-index:1;border-radius:50%;background:rgba(18,22,28,.8);border:3px solid rgba(215,180,101,.6);display:grid;place-items:center;font-weight:700;touch-action:none;cursor:pointer;transition:transform .06s}
+.ctl.down{background:rgba(215,180,101,.32);border-color:var(--gold)}
+#pad{position:absolute;left:0;right:0;bottom:0;height:calc(var(--sb) + 230px);pointer-events:auto;touch-action:none;-webkit-tap-highlight-color:transparent}
 .ctl svg{display:block}
 /* إبهام يسار للتوجيه (◀ ▶)، وإبهام يمين للفرامل والنيترو: تقدر توجّه وتفرمل في نفس اللحظة لأي جهة */
-#bL{left:calc(var(--sl) + 10px);bottom:calc(var(--sb) + 20px);width:78px;height:78px}
-#bR{left:calc(var(--sl) + 96px);bottom:calc(var(--sb) + 20px);width:78px;height:78px}
+#bL{left:calc(var(--sl) + 10px);bottom:calc(var(--sb) + 20px);width:80px;height:80px}
+#bR{left:calc(var(--sl) + 106px);bottom:calc(var(--sb) + 20px);width:80px;height:80px}
 #bBrake{right:calc(var(--sr) + 10px);bottom:calc(var(--sb) + 20px);width:92px;height:92px;font-size:17px;color:#f3e6c8;background:rgba(18,22,28,.62)}
 #bNitro{right:calc(var(--sr) + 22px);bottom:calc(var(--sb) + 124px);width:70px;height:70px;font-size:14px;color:var(--gold);border:none;background:rgba(10,12,16,.7)}
 #bNitro svg{position:absolute;inset:-4px;width:78px;height:78px;transform:rotate(-90deg)}
 #bNitro .lbl{position:relative}
 #bNitro.off{color:#7d7766}
 #bNitro.active{box-shadow:0 0 22px rgba(80,170,255,.8)}
-.speed{position:absolute;left:calc(var(--sl) + 10px);bottom:calc(var(--sb) + 106px);display:flex;align-items:center;gap:8px;direction:ltr;pointer-events:none}
+.speed{position:absolute;left:calc(var(--sl) + 10px);bottom:calc(var(--sb) + 110px);display:flex;align-items:center;gap:8px;direction:ltr;pointer-events:none}
 .speed .sv{text-align:center;min-width:76px}
 @media (max-width:370px){.stage .nm{font-size:12px}.box{min-width:58px}}
 @media (max-width:340px){.speed .sv{min-width:60px}.speed .sv b{font-size:30px}.speed .limit{transform:scale(.85)}.sq{gap:3px}.sq i{font-size:9px;padding:1px 4px}.box small.k{font-size:9px;white-space:nowrap}.box{padding:5px 6px}}
@@ -168,7 +169,7 @@ h1 em{font-style:normal;color:var(--gold)}
 @keyframes bob{50%{transform:translateY(4px)}}
 .ctl.dim{opacity:.35}
 /* لليد اليسار: التوجيه يمين والفرامل والنيترو يسار */
-body.mir #bL{left:auto;right:calc(var(--sr) + 96px)}body.mir #bR{left:auto;right:calc(var(--sr) + 10px)}
+body.mir #bL{left:auto;right:calc(var(--sr) + 106px)}body.mir #bR{left:auto;right:calc(var(--sr) + 10px)}
 body.mir #bBrake{right:auto;left:calc(var(--sl) + 10px)}body.mir #bNitro{right:auto;left:calc(var(--sl) + 22px)}
 body.mir .speed{left:auto;right:calc(var(--sr) + 10px);flex-direction:row-reverse}body.mir #stopHint{right:auto;left:calc(var(--sl) + 10px)}
 .box small.k{font-size:10px;color:#cdbf9f;margin-top:1px}
@@ -1469,11 +1470,29 @@ function sfx(k){const small=k==='star'||k==='pick';
 }catch(e){}}
 
 /* ===== التحكم ===== */
-function bindHold(el,k){const on=e=>{e.preventDefault();keys[k]=true;el.classList.add('down');try{el.setPointerCapture(e.pointerId)}catch(_){}};const off=()=>{keys[k]=false;el.classList.remove('down');};
-  el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('lostpointercapture',off);}
-bindHold($('bL'),'left');bindHold($('bR'),'right');bindHold($('bBrake'),'brake');
-bNitro.addEventListener('pointerdown',e=>{e.preventDefault();bNitro.classList.add('down');nitroQ=true;});
-['pointerup','pointercancel','pointerleave'].forEach(ev=>bNitro.addEventListener(ev,()=>bNitro.classList.remove('down')));
+/* ===== التحكم باللمس: مناطق بدل أزرار =====
+   طبقة وحدة شفافة تحت تقرا كل الأصابع الموجودة على الشاشة في كل لمسة (touches)، وتحسب منها شو مضغوط.
+   - ما في زر يعلق: الحالة تنحسب من الأصابع اللي فعلاً على الشاشة، مب من «ضغط/فك» كل زر بروحه.
+   - تسحب إبهامك من ◀ لـ ▶ بدون ما تشيله، والاتجاه يتبدل.
+   - منطقة اللمس أوسع من الدائرة المرسومة، فلو إبهامك طاح شوي برا الزر يحسب. */
+const pad=document.createElement('div');pad.id='pad';hud.appendChild(pad);
+['bL','bR','bBrake','bNitro'].forEach(i=>$(i).style.pointerEvents='none');
+function zoneAt(x,y){const r=id=>$(id).getBoundingClientRect(),grow=(b,g)=>({l:b.left-g,r:b.right+g,t:b.top-g,b:b.bottom+g}),inR=(b)=>x>=b.l&&x<=b.r&&y>=b.t&&y<=b.b;
+  const N=grow(r('bNitro'),10),B=grow(r('bBrake'),18),L=r('bL'),R=r('bR');
+  if(inR(N))return 'nitro';if(inR(B))return 'brake';
+  const sl=Math.min(L.left,R.left)-14,sr=Math.max(L.right,R.right)+14,st=Math.min(L.top,R.top)-34,sb=innerHeight;
+  if(x>=sl&&x<=sr&&y>=st&&y<=sb){const mid=((L.left+L.right)/2+(R.left+R.right)/2)/2;return (x<mid)===(L.left<R.left)?'left':'right';}
+  return null;}
+let padIds=new Map();
+function padSync(list,fresh){const z=new Set();for(const t of list){const k=zoneAt(t.clientX,t.clientY);if(k)z.add(k);}
+  const play=state==='play'||state==='count';
+  keys.left=play&&z.has('left')&&!z.has('right')?true:false;keys.right=play&&z.has('right')&&!z.has('left')?true:false;keys.brake=play&&z.has('brake');
+  if(play&&fresh)for(const t of fresh)if(zoneAt(t.clientX,t.clientY)==='nitro')nitroQ=true;
+  $('bL').classList.toggle('down',keys.left);$('bR').classList.toggle('down',keys.right);$('bBrake').classList.toggle('down',keys.brake);bNitro.classList.toggle('down',z.has('nitro'));}
+const tl=e=>{e.preventDefault();padSync(e.touches,e.type==='touchstart'?e.changedTouches:null);};
+['touchstart','touchmove','touchend','touchcancel'].forEach(ev=>pad.addEventListener(ev,tl,{passive:false}));
+// للماوس (الكمبيوتر) نفس المنطق بإصبع واحد
+let mouseDown=false;pad.addEventListener('mousedown',e=>{mouseDown=true;padSync([e],[e]);});addEventListener('mousemove',e=>{if(mouseDown)padSync([e]);});addEventListener('mouseup',()=>{if(mouseDown){mouseDown=false;padSync([]);}});
 $('bPause').addEventListener('click',pause);$('bResume').addEventListener('click',resume);$('bRestart').addEventListener('click',startRace);
 $('bMenu').addEventListener('click',toMenu);$('bMenu2').addEventListener('click',toMenu);$('bAgain').addEventListener('click',startRace);$('bStart').addEventListener('click',startRace);$('bShare').addEventListener('click',()=>{if(LAST)doShare(LAST);});document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>{if(state!=='menu')return;const m=b.dataset.m;
   if(m==='free'){setFree();paintRoute();}else if(m==='daily'){setFree();MODE='daily';setTab('daily');useFanBus();pickStage(dailyStage());}else{setTab('round');useFanBus();const fc=fanClub()||club,fx=fixtures(),mine=fx.find(x=>x.h===fc.id||x.a===fc.id)||fx[0];if(mine)pickRound(mine);}}));
