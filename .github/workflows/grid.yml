@@ -1,0 +1,22 @@
+# «شبكة الدوري»: يكمّل جدول الشبكات المخفي في Firebase (gq) لين 21 يوم قدام.
+# اليوم الحالي واللي بعده ما يتغيرون. ما يسوي شي لين تنطلق الشبكة (grid/config.json start).
+name: grid
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '17 19 * * *'   # 11:17 بالليل الإمارات
+permissions:
+  contents: read
+jobs:
+  push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install google-auth requests
+      - env:
+          FIREBASE_SA: ${{ secrets.FIREBASE_SA }}
+        run: python3 _tools/grid/build.py push 21

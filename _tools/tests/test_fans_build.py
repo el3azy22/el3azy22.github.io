@@ -22,9 +22,9 @@ def tree(pred_matches, pred_table, data=None):
     return d
 
 
-def run(d, now, db=None, approve='1'):
+def run(d, now, db=None, approve='1', grid=''):
     # approve='1': الاختبارات القديمة تفحص الحسبة بدون شرط الأيام · None: الشرط الحقيقي (3 أيام)
-    env = {**os.environ, 'NOW': str(now), 'FBDB': db or T.B, 'FBNS': T.NS, 'TOKEN': 'owner', 'APPROVE': approve or ''}
+    env = {**os.environ, 'NOW': str(now), 'FBDB': db or T.B, 'FBNS': T.NS, 'TOKEN': 'owner', 'APPROVE': approve or '', 'GRID_START': grid}
     r = subprocess.run([sys.executable, os.path.join(d, '_tools/fans/build.py')], env=env, capture_output=True, text=True)
     data = json.load(open(os.path.join(d, 'fans/data.json'))) if os.path.exists(os.path.join(d, 'fans/data.json')) else None
     return r.returncode, data
@@ -130,5 +130,24 @@ if __name__ == '__main__':
     rc, data = run(d7, S + 7 * DAY + 41 * MIN, approve=None)                                       # الأسبوع 1 نهائي
     acc = json.load(open(os.path.join(d7, 'fans/acc.json')))
     T.check('الأسبوع النهائي يحفظ أيام اللعب للاعتماد', sorted(acc['act'].get('ap0000000001', [])), [1, 2, 3])
+
+    # ── شبكة الدوري (v3.2): صح نقطة، نادر نقطتين (حلها 30+ واختاره أقل من 10%)، الغلط والخانة المكررة أخطاء ──
+    T.reset()
+    requests.put(T.url(''), headers=T.OWNER, data=json.dumps({
+        'gq': {'2': {'r': ['ain', 'wasl', 'nasr'], 'n': 1, 'a': {'00': ['p1', 'p2'], '01': ['p3', 'p4']}}},
+        'gp': {'2': {'gridA0000000x': {'c': 'ain', 'n': 3, 's': 50, 'a': {'1': {'k': '00', 'p': 'p1', 'd': 2, 't': S + DAY + 1000},
+                                                                         '2': {'k': '01', 'p': 'bad', 'd': 2, 't': S + DAY + 2000},
+                                                                         '3': {'k': '01', 'p': 'p3', 'd': 2, 't': S + DAY + 3000}}},
+                     'gridB0000000x': {'c': 'wasl', 'n': 2, 'a': {'1': {'k': '00', 'p': 'p2', 'd': 2, 't': S + DAY + 1000},
+                                                                  '2': {'k': '00', 'p': 'p1', 'd': 2, 't': S + DAY + 2000}}}}},
+        'gc': {'2': {'00': {'p1': 2, 'p2': 38}, '01': {'p3': 10}}}, 'gn': {'2': {'00': 40, '01': 10}}}))
+    dg = tree([], {'rounds': {}, 'clubs': {}})
+    os.makedirs(os.path.join(dg, 'grid'))
+    rc, data = run(dg, S + DAY + 12 * 3600000, grid='1')
+    T.check('الشبكة: لوحة جديدة في الدوري', [c['id'] for c in data['challenges']], ['mano', 'pred', 'grid'])
+    T.check('الشبكة: نادر 2 + صح 1 (العين) · صح 1 والمكرر خطأ (الوصل)', pts(wk(data, 1)['boards'], 'grid'), {'ain': 3, 'wasl': 1})
+    T.check('الشبكة تدخل «الكل»', pts(wk(data, 1)['boards'], 'all'), {'ain': 3, 'wasl': 1})
+    rc, data = run(dg, S + DAY + 12 * 3600000)
+    T.check('قبل الانطلاق: الشبكة ما تدخل الدوري', [c['id'] for c in data['challenges']], ['mano', 'pred'])
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)

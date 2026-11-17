@@ -87,6 +87,15 @@ TOP = 10      # أول 10 مراكز تطلع أسماءهم
 XI = 11       # تشكيلة النادي
 CHALLENGES = [{'id': 'mano', 'name': 'منو اللاعب؟', 'icon': '🕵️'},
               {'id': 'pred', 'name': 'دوري التوقعات', 'icon': '🔮'}]
+# «شبكة الدوري» تدخل الدوري من يوم انطلاقها (grid/config.json → start = رقم يوم المنصة، 0 = ما انطلقت)
+try:
+    GRID_START = int(json.load(open(os.path.join(ROOT, 'grid', 'config.json'), encoding='utf8')).get('start') or 0)
+except Exception:
+    GRID_START = 0
+GRID_START = int(os.environ.get('GRID_START') or GRID_START)
+if GRID_START:
+    CHALLENGES.append({'id': 'grid', 'name': 'شبكة الدوري', 'icon': '🔢'})
+GRID_THR, GRID_RARE = 30, 10   # النسب بعد 30 حل للخانة · النادر أقل من 10% (v3.2)
 BOARDS = ['all'] + [c['id'] for c in CHALLENGES]
 FAIL_MIS = 6  # منو اللاعب: ما عرفه = 6 أخطاء
 APPROVE = int(os.environ.get('APPROVE') or 3)   # «المشجع المعتمد»: يدخل تشكيلة ناديه بعد ما يلعب في 3 أيام مختلفة (v3.1، قرار إبراهيم 17 نوفمبر)
@@ -174,6 +183,46 @@ def collect_pred(rds, pred_t, last_t, act=None):
             t = last_t.get(int(r), 0)
             if t >= s['ct'] and c in NAME:
                 s['c'], s['ct'] = c, t
+    return users
+
+
+def grid_points(attempts, q, gc, gn):
+    """محاولات مشجع واحد في يوم (مرتبة 1..9) ⇒ (نقاط، أخطاء، [خانات صح]).
+    الصح: اللاعب في أجوبة الخانة، والخانة فاضية، واللاعب ما انستخدم. النادر: الخانة حلها 30+ واختاره أقل من 10%."""
+    pts = mis = 0; filled, used, good = set(), set(), []
+    for x in attempts[:9]:
+        k, p = (x or {}).get('k'), (x or {}).get('p')
+        if k in (q.get('a') or {}) and p in q['a'][k] and k not in filled and p not in used:
+            filled.add(k); used.add(p); good.append(k)
+            n = (gn or {}).get(k) or 0
+            c = ((gc or {}).get(k) or {}).get(p) or 0
+            pts += 2 if n >= GRID_THR and 100 * c / n < GRID_RARE else 1
+        else:
+            mis += 1
+    return pts, mis, good
+
+
+def collect_grid(g_all, d0, d1, act=None):
+    """g_all = {يوم: {'q': الشبكة، 'p': {uid: سجل}, 'c': gc، 'n': gn}}."""
+    users = defaultdict(stat)
+    for d, v in (g_all or {}).items():
+        d = int(d)
+        if not v or not (d0 <= d <= d1) or d < GRID_START or not v.get('q'):
+            continue
+        for u, x in (v.get('p') or {}).items():
+            a = (x or {}).get('a') or {}
+            L = [y for y in a if y] if isinstance(a, list) else [a[k] for k in sorted(a, key=int) if a[k]]
+            if not L:
+                continue
+            pts, mis, _ = grid_points(L, v['q'], v.get('c'), v.get('n'))
+            s = users[u[:12]]
+            if act is not None:
+                act.setdefault(u[:12], set()).add(d)
+            s['plays'] += 1; s['pts'] += pts; s['mis'] += mis
+            s['sec'] += min(int(x.get('s') or 0), 3600)
+            t = min(int((y or {}).get('t') or 0) for y in L) or START + (d - 1) * DAYMS
+            if t >= s['ct'] and x.get('c'):
+                s['c'], s['ct'] = x['c'], t
     return users
 
 
@@ -284,6 +333,12 @@ def main():
     p_all = (fb('p', q, H) or {}) if H and cur else {}
     if isinstance(p_all, list):
         p_all = {str(i): v for i, v in enumerate(p_all) if v}
+    g_all = {}
+    if GRID_START and H and cur:
+        for d in range(max(GRID_START, (first - 1) * WEEK + 1), min(today, max(first, cur) * WEEK) + 1):
+            q = fb(f'gq/{d}', None, H)
+            if q:
+                g_all[str(d)] = {'q': q, 'p': fb(f'gp/{d}', None, H) or {}, 'c': fb(f'gc/{d}', None, H) or {}, 'n': fb(f'gn/{d}', None, H) or {}}
     names = (fb('f', None, H) or {}) if H else {}
     names = {u[:12]: v for u, v in names.items() if isinstance(v, dict)}
 
@@ -297,6 +352,8 @@ def main():
         d0, d1 = (w - 1) * WEEK + 1, w * WEEK
         rds = sorted(r for r, wk in round_week.items() if wk == w and r not in counted)
         per = {'mano': collect_mano(p_all, d0, d1, act), 'pred': collect_pred(rds, pred_t, last_t, act)}
+        if GRID_START:
+            per['grid'] = collect_grid(g_all, d0, d1, act)
         final = now >= final_at(w) and w < cur
         as_of = d1 if final else min(today, d1)
         bd, ranks = boards(per, names, hide, approved(act, as_of))

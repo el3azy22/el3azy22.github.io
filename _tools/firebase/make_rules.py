@@ -155,11 +155,48 @@ if _ms:json.dump({str(w):t for w,t in _op.items()},open(os.path.join(os.path.dir
 # ── عداد الإحصائيات الخاص (موافقة إبراهيم 16 نوفمبر) ── v/<يوم>/{t,u,r,p/<قسم>,s/<أغنية>/<حدث>}
 # زيادة +1 بس لكل طلب. القراءة مفتوحة مثل s و c (أرقام مجمعة بدون أي بيانات شخصية، واللوحة ما فيها تسجيل دخول Firebase).
 VINC=f"newData.isNumber() && {inc}"
-SECS="home|mano|predict|fans|rate|songs|tashkila"
+SECS="home|mano|predict|fans|rate|songs|tashkila|grid"
 rules["rules"]["v"]={".read":True,"$d":{
   ".validate":"$d.matches(/^[1-9][0-9]{0,2}$/)",
   "t":{".write":True,".validate":VINC},"u":{".write":True,".validate":VINC},"r":{".write":True,".validate":VINC},
   "p":{"$s":{".write":True,".validate":f"$s.matches(/^({SECS})$/) && {VINC}"}},
   "s":{"$id":{"$e":{".write":True,".validate":f"$id.matches(/^[a-z0-9-]{{1,20}}$/) && $e.matches(/^(play|dl|share)$/) && {VINC}"}}},
   "$other":{".validate":False}}}
+
+# ── «شبكة الدوري» (قرار إبراهيم 17 نوفمبر) ──
+# gq/<يوم> = {r: الأندية، c: الشروط، a: {خانة: [أجوبة]}، n: رقم الشبكة} — يتقرى بس من 12 بالليل حقه، والكتابة لحساب الخدمة
+# gp/<يوم>/<uid> = {c: النادي، n: عدد المحاولات (1..9)، a/<1..9> = {k: الخانة، p: اللاعب، d: اليوم، t: وقت السيرفر}، s: الثواني}
+#   كل محاولة تنكتب مرة وحدة وبالترتيب (ما ينمسح الغلط)، و9 بالكثير، وفي يومها بس. الصح والغلط يحسبه build من gq.
+# gc/<يوم>/<خانة>/<لاعب> و gn/<يوم>/<خانة> = عدادات الاختيارات (للنسب)، +1 بس ومع محاولة يديدة لنفس الخانة واللاعب
+rules["rules"]["gq"]={str(d):{".read":f"now >= {L + (d - 1) * DAYMS}"} for d in range(1,401)}
+GPU="root.child('gp').child($d).child(auth.uid)"
+def _gaft(levels):
+  return "newData"+".parent()"*levels+f".child('gp').child($d).child(auth.uid)"
+def _gentry(levels):
+  a=_gaft(levels); return f"{a}.child('a').child('' + {a}.child('n').val())"
+def _gfresh(levels):
+  a=_gaft(levels); return f"auth != null && ({GPU}.child('n').exists() ? {GPU}.child('n').val() : 0) + 1 == {a}.child('n').val()"
+rules["rules"]["gp"]={"$d":{"$u":{
+  ".read":"auth != null && auth.uid == $u",
+  ".validate":"$d.matches(/^[1-9][0-9]{0,2}$/)",
+  "c":{".write":"auth != null && auth.uid == $u && !data.exists()",".validate":f"newData.isString() && newData.val().matches(/^({CL})?$/)"},
+  "n":{".write":"auth != null && auth.uid == $u",
+       ".validate":"newData.isNumber() && newData.val() >= 1 && newData.val() <= 9 && newData.val() == (data.exists() ? data.val() : 0) + 1"
+                   " && newData.parent().child('a').child('' + newData.val()).exists()"},
+  "a":{"$i":{".write":"auth != null && auth.uid == $u && !data.exists()",
+       ".validate":("$i.matches(/^[1-9]$/) && newData.hasChildren(['k','p','d','t']) && newData.parent().parent().child('n').val() + '' == $i"
+         f" && $d == '' + newData.child('d').val() && now >= {L} + (newData.child('d').val() - 1) * {DAYMS} && now < {L} + newData.child('d').val() * {DAYMS} + {GRACE}"),
+       "k":{".validate":"newData.isString() && newData.val().matches(/^[0-2][0-2]$/)"},
+       "p":{".validate":"newData.isString() && newData.val().matches(/^[a-z0-9-]{1,80}$/)"},
+       "d":{".validate":"newData.isNumber()"},"t":{".validate":"newData.val() == now"},
+       "$other":{".validate":False}}},
+  "s":{".write":"auth != null && auth.uid == $u",".validate":"newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 86400"},
+  "$other":{".validate":False}}}}
+rules["rules"]["gc"]={".read":True,"$d":{"$k":{"$p":{
+  ".write":_gfresh(4),
+  ".validate":f"newData.isNumber() && {inc} && {_gentry(4)}.child('k').val() == $k && {_gentry(4)}.child('p').val() == $p"}}}}
+rules["rules"]["gn"]={".read":True,"$d":{"$k":{
+  ".write":_gfresh(3),
+  ".validate":f"newData.isNumber() && {inc} && {_gentry(3)}.child('k').val() == $k"}}}
+
 json.dump(rules,open('rules.json','w'),ensure_ascii=False,separators=(',',':'))

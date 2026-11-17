@@ -1,0 +1,326 @@
+<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>شبكة الدوري · العازي</title>
+<meta name="description" content="شبكة الدوري: كل خانة نادي وشرط، اكتب لاعب يلعب في النادي هالموسم ويحقق الشرط. شبكة جديدة كل يوم.">
+<meta property="og:title" content="شبكة الدوري · العازي"><meta property="og:description" content="9 خانات و9 محاولات. شبكة جديدة كل يوم.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../mano/assets/logo.png"><link rel="apple-touch-icon" href="../mano/assets/logo.png">
+<script src="/assets/stat.js"></script>
+<style>@font-face{font-family:R;src:url(../tashkila/assets/ReadexPro.ttf) format('truetype');font-weight:160 700}
+:root{--navy:#071D2B;--navy2:#0B2434;--gold:#D7B465;--gold2:#F6E3AE;--gold3:#B08A3E;--ivory:#FFF5E5;--ok:#5BB98B;--bad:#E07A6E;
+ --sadu:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M0 11 9 2.5 18 11' fill='none' stroke='%23D7B465' stroke-width='1.3'/%3E%3Cpath d='M9 6.6 11.2 8.8 9 11 6.8 8.8Z' fill='%23D7B465'/%3E%3C/svg%3E")}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:R;color:var(--ivory);min-height:100vh;background:radial-gradient(ellipse at 85% -5%,rgba(215,180,101,.2),transparent 50%),radial-gradient(ellipse at 10% 105%,rgba(20,56,79,.95),transparent 55%),var(--navy)}
+.w{max-width:480px;margin:0 auto;padding:16px 14px 40px}
+header{display:flex;align-items:center;gap:12px}
+header img{width:56px;height:56px;object-fit:contain}
+h1{font-size:28px;font-weight:700;line-height:1.25;padding-bottom:.18em;background:linear-gradient(180deg,#FFFBF2 25%,#F1DDAE 70%,#D7B465);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub{font-size:13px;color:var(--gold);margin-top:2px}
+.band{height:12px;margin:10px -14px 12px;background:var(--sadu) center/22px 14px repeat-x;opacity:.4;-webkit-mask:linear-gradient(90deg,transparent,#000 20%,#000 80%,transparent)}
+.demo{font-size:11px;text-align:center;color:var(--gold);opacity:.8;margin-bottom:8px}
+.st{display:flex;justify-content:space-between;align-items:center;font-size:13.5px;margin-bottom:12px;padding:0 2px}
+.st>span:first-child{display:flex;align-items:center;gap:8px}.st .dots{display:flex;gap:4px}.st .dots i{width:9px;height:9px;border-radius:50%;background:var(--gold)}.st .dots i.u{background:rgba(215,180,101,.2)}
+.st b{color:var(--gold2);font-size:17px}
+.grid{display:grid;grid-template-columns:58px repeat(3,minmax(0,1fr));gap:7px}
+.hd{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;min-height:74px;gap:2px}
+.hd .ic sup{font-size:16px;margin-inline-start:-6px;align-self:start}.hd .ic{font-size:34px;line-height:1;height:38px;display:grid;place-items:center}
+.hd .big{font-size:27px;font-weight:700;color:var(--gold2);direction:ltr}
+.hd small{font-size:13px;text-wrap:balance;opacity:.85;line-height:1.35}.hd small .and{font-weight:600;color:var(--gold2)}
+.hd.cl{min-height:0}
+.hd svg{width:36px;height:36px}
+.cell{position:relative;aspect-ratio:1;border-radius:16px;overflow:hidden;cursor:pointer;
+ border:1.5px solid rgba(215,180,101,.28);background:linear-gradient(165deg,#163C53,#0A2231 75%);box-shadow:0 8px 18px rgba(0,0,0,.28)}
+.cell .e{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px}
+.cell .e b{font-size:30px;color:var(--gold);opacity:.55;font-weight:400;line-height:1}
+.cell .e span{font-size:10.5px;opacity:.55}
+.cell.ok{border-color:rgba(91,185,139,.7);animation:pop .45s ease}
+.cell.ok img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 12%;background:radial-gradient(circle at 50% 30%,#1d4a62,#0A2231)}
+.cell.ok .nm{position:absolute;left:0;right:0;bottom:0;padding:16px 4px 5px;font-size:11.5px;font-weight:700;text-align:center;line-height:1.2;
+ background:linear-gradient(180deg,transparent,rgba(4,16,24,.92) 55%)}
+.cell .pc{position:absolute;top:5px;left:5px;font-size:10px;font-weight:600;padding:1px 6px;border-radius:9px;background:rgba(4,16,24,.75);direction:ltr}
+.cell.rare{border:2px solid var(--gold2);box-shadow:0 0 0 1px var(--gold3),0 0 22px rgba(246,227,174,.55)}
+.cell.rare .st2{position:absolute;top:4px;right:5px;font-size:15px;filter:drop-shadow(0 1px 3px rgba(0,0,0,.6))}
+.cell.bad{animation:sh .45s;border-color:var(--bad);background:linear-gradient(165deg,#4a2226,#0A2231 75%)}
+.cell.lost{opacity:.45}
+@keyframes sh{20%{transform:translateX(6px)}40%{transform:translateX(-6px)}60%{transform:translateX(4px)}80%{transform:translateX(-2px)}}
+@keyframes pop{0%{transform:scale(.85);opacity:.3}60%{transform:scale(1.04)}100%{transform:scale(1);opacity:1}}
+.ov{position:fixed;inset:0;background:rgba(2,9,15,.78);backdrop-filter:blur(3px);display:none;align-items:flex-start;justify-content:center;padding-top:64px;z-index:9}
+.ov.on{display:flex}
+.box{width:min(440px,92vw);background:var(--navy2);border:1.5px solid var(--gold);border-radius:20px;padding:14px;box-shadow:0 20px 50px rgba(0,0,0,.6)}
+.box .q{display:flex;align-items:center;gap:10px;font-size:15px;margin-bottom:10px;font-weight:700;color:var(--gold2)}
+.box .q img{width:30px;height:30px;object-fit:contain}
+.box .q em{font-style:normal;font-size:12px;font-weight:400;opacity:.65;margin-inline-start:auto}
+.box input{width:100%;font:inherit;font-size:16px;padding:11px 13px;border-radius:12px;border:1.5px solid var(--gold);background:#06151f;color:var(--ivory)}
+.sg button{display:flex;align-items:center;gap:10px;width:100%;margin-top:6px;padding:7px 9px;border-radius:12px;border:1px solid rgba(215,180,101,.22);background:rgba(255,245,229,.04);color:var(--ivory);font:inherit;font-size:14.5px;text-align:start}
+.sg img{width:36px;height:36px;border-radius:50%;object-fit:cover;object-position:50% 15%;background:#0A2231}
+.sg small{display:block;font-size:11px;opacity:.6}
+.toast{width:max-content;max-width:min(340px,92vw);text-align:center;line-height:1.5;position:fixed;bottom:26px;left:50%;transform:translateX(-50%);background:var(--ivory);color:var(--navy);padding:9px 18px;border-radius:22px;font-weight:700;font-size:14px;display:none;z-index:10;box-shadow:0 8px 20px rgba(0,0,0,.4)}
+.end{margin-top:16px;padding:16px;border-radius:20px;text-align:center;border:1.5px solid var(--gold);background:linear-gradient(180deg,rgba(215,180,101,.16),rgba(215,180,101,.04))}
+.end .t{font-size:13px;color:var(--gold)}
+.end .p{font-size:40px;font-weight:700;color:var(--gold2);line-height:1.2}
+.end .p small{font-size:16px;font-weight:600;color:var(--ivory);opacity:.8}
+.end .em{font-size:26px;line-height:1.15;letter-spacing:2px;margin:10px 0 6px;direction:rtl}
+.end .x{font-size:12.5px;opacity:.8}
+.end .shr{margin-top:12px;width:100%;padding:12px;border-radius:14px;border:0;font:inherit;font-size:16px;font-weight:700;color:var(--navy);background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3))}
+.insight{margin-top:12px;padding:12px 14px;border-radius:16px;background:rgba(255,245,229,.04);border:1px solid rgba(215,180,101,.22);font-size:13px;line-height:1.8}
+.insight h3{font-size:14px;color:var(--gold);margin-bottom:6px}
+.insight .r{display:flex;align-items:center;gap:8px;padding:4px 0;border-top:1px dashed rgba(215,180,101,.15)}
+.insight .r:first-of-type{border:0}
+.insight img{width:30px;height:30px;border-radius:50%;object-fit:cover;object-position:50% 15%;background:#0A2231}
+.insight .r em{font-style:normal;margin-right:auto;color:var(--gold2);font-weight:700;direction:ltr}
+.how{margin-top:12px;font-size:12.5px;line-height:1.8;opacity:.85;text-align:center}
+header{display:flex;align-items:center;gap:10px}
+header img{width:46px;height:46px;object-fit:contain}
+.ht{flex:1}h1{font-size:26px!important}
+.sub b{color:var(--gold2)}
+.tag{font-size:10.5px;color:var(--gold);border:1px solid rgba(215,180,101,.45);border-radius:10px;padding:1px 8px;align-self:flex-start;margin-top:6px}
+.band{margin:8px -14px 12px!important}
+.bar{display:grid;grid-template-columns:1.35fr 1fr 1.15fr;gap:1px;margin-bottom:12px;border-radius:16px;overflow:hidden;border:1px solid rgba(215,180,101,.28);background:rgba(215,180,101,.22)}
+.bx{background:#0B2636;padding:8px 6px 7px;text-align:center}
+.bx small{display:block;font-size:10.5px;opacity:.65;margin-bottom:2px}
+.bx .v{display:flex;align-items:center;justify-content:center;gap:6px;height:24px}
+.bx b{font-size:20px;color:var(--gold2);font-weight:700;line-height:1}
+.bx b.tm{font-size:17px;direction:ltr;font-variant-numeric:tabular-nums}
+.bx .dots{display:flex;gap:3px}.bx .dots i{width:7px;height:7px;border-radius:50%;background:var(--gold)}.bx .dots i.u{background:rgba(215,180,101,.18)}
+.corner{display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:14px;border:1px dashed rgba(215,180,101,.35);color:var(--gold);font-size:9.5px;line-height:1.3;text-align:center;opacity:.9}
+.corner b{font-size:18px;color:var(--gold2)}
+.how{margin-top:16px!important;text-align:start!important;padding:12px 14px;border-radius:16px;background:rgba(255,245,229,.04);border:1px solid rgba(215,180,101,.18);opacity:1!important}
+.how .hr{display:flex;gap:8px;padding:3px 0}.how .hr span{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--navy);background:var(--gold);margin-top:3px}.how .hr:has(span:not(:empty)) span{}.how b{color:var(--gold2)}
+.hd.cl{justify-content:center!important;padding:0}.hd .pt{width:30px;height:42px}.hd .ic{position:relative;height:44px!important}
+.hd .bd{position:absolute;bottom:-2px;left:50%;margin-left:6px;font-size:11px;font-weight:700;color:var(--navy);background:var(--gold2);border-radius:8px;padding:0 5px;direction:ltr;line-height:16px}
+.how h3{font-size:14px;color:var(--gold);margin-bottom:6px}
+.ex{display:flex;align-items:center;gap:8px;margin:8px 0 4px;padding:8px;border-radius:12px;background:rgba(4,16,24,.5);font-size:12.5px;line-height:1.6}
+.ex img{width:26px;height:26px;object-fit:contain}
+.box .q{font-weight:600!important;line-height:1.6}
+.ovt{position:fixed;inset:0;z-index:50}
+.spot{position:relative;z-index:60;border-radius:16px;box-shadow:0 0 0 2.5px var(--gold2),0 0 0 100vmax rgba(2,9,15,.84)!important}
+.coach{position:fixed;left:12px;right:12px;bottom:16px;z-index:70;max-width:456px;margin:0 auto;background:var(--navy2);border:1.5px solid var(--gold);border-radius:20px;padding:14px 16px;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+.coach .n{font-size:11px;color:var(--gold);margin-bottom:4px}
+.coach .tx{font-size:16px;line-height:1.7}
+.coach .tx b{color:var(--gold2)}
+.coach .ft{display:flex;align-items:center;justify-content:space-between;margin-top:10px}
+.coach .pg{display:flex;gap:5px}.coach .pg i{width:7px;height:7px;border-radius:50%;background:rgba(215,180,101,.25)}.coach .pg i.on{background:var(--gold);width:18px;border-radius:4px}
+.coach button{font:inherit;font-weight:700;font-size:15px;border:0;border-radius:12px;padding:9px 20px;color:var(--navy);background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3))}
+.coach .sk{background:none;color:var(--ivory);opacity:.6;font-weight:400;padding:9px 4px}
+.ghost{position:absolute;inset:0;z-index:2}
+.cell .e .tp{font-size:10px;opacity:.5}
+.ghost.qm{display:grid;place-items:center;font-size:44px;font-weight:700;color:var(--gold2);background:linear-gradient(165deg,#1d4a62,#0A2231);animation:pulse 1.2s ease-in-out infinite}@keyframes pulse{50%{transform:scale(1.06);color:#fff}}.board{padding:10px;border-radius:24px;background:linear-gradient(180deg,rgba(215,180,101,.07),rgba(215,180,101,.02));border:1px solid rgba(215,180,101,.2);box-shadow:inset 0 1px 0 rgba(255,245,229,.06)}
+.grid{grid-template-columns:66px repeat(3,minmax(0,1fr))!important;gap:6px!important}
+.hd{min-height:96px!important;justify-content:center!important;padding:8px 2px!important;border-radius:14px;background:rgba(4,16,24,.45);border:1px solid rgba(215,180,101,.16);gap:5px!important}
+.hd small{font-size:12.5px!important;opacity:.95!important;line-height:1.3}
+.hd:not(.cl){justify-content:flex-start!important;padding-top:12px!important}.hd.cl{min-height:0!important;gap:4px!important}
+.hd.cl small{font-size:11px!important;color:var(--gold)}
+.corner{min-height:96px}
+.cell{border-radius:14px!important}
+.xtb{display:block;margin-top:10px;width:100%;padding:11px;border-radius:14px;border:1.5px solid var(--gold);background:transparent;color:var(--gold2);font:inherit;font-size:15px;font-weight:700}.xtb small{display:block;font-size:11px;font-weight:400;opacity:.7;margin-top:2px}.cell.xt{border-color:rgba(255,245,229,.3)}.cell.xt img{filter:grayscale(.6) brightness(.8)}
+.tbtn{display:flex;gap:6px;align-self:flex-start;margin-top:4px}.tbtn button,.tbtn a{width:34px;height:34px;border-radius:50%;border:1px solid rgba(215,180,101,.5);background:rgba(215,180,101,.08);color:var(--gold2);font:inherit;font-size:16px;font-weight:700;display:grid;place-items:center;text-decoration:none}
+.tbtn svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.me{display:flex;align-items:center;justify-content:center;gap:8px;font-size:12.5px;margin:-4px 0 12px;opacity:.9}
+.me button{font:inherit;font-size:12px;color:var(--gold2);background:none;border:0;text-decoration:underline;padding:0}
+.me img{width:20px;height:20px;object-fit:contain}
+.ic.txt{font-size:24px;font-weight:700;color:var(--gold2);direction:ltr}
+.msg{margin:30px 0;padding:22px 16px;text-align:center;border-radius:20px;border:1px solid rgba(215,180,101,.3);background:rgba(255,245,229,.04);line-height:1.9}
+.msg b{color:var(--gold2)}
+.pc.pv{opacity:.85}
+.prov{font-size:11px;opacity:.7;margin-top:6px}
+.pend{font-size:12px;color:var(--bad);text-align:center;margin-top:6px}
+</style></head><body><div class="w">
+<header><img src="../mano/assets/logo.png" alt=""><div class="ht"><h1>شبكة الدوري</h1><div class="sub">شبكة جديدة كل يوم</div></div>
+<span class="tbtn"><button id="helpB" aria-label="طريقة اللعب">؟</button><a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg></a></span></header>
+<div class="band"></div>
+<div id="main">
+<div class="bar"><div class="bx"><small>المحاولات</small><div class="v"><b id="sA">9</b><span class="dots" id="dots"></span></div></div>
+<div class="bx"><small>نقاطك</small><div class="v"><b id="sP">0</b></div></div>
+<div class="bx"><small>شبكة بكرة بعد</small><div class="v"><b class="tm" id="sT">--:--:--</b></div></div></div>
+<div class="me" id="me"></div>
+<div class="board"><div class="grid" id="g"></div></div>
+<div class="pend" id="pend" hidden></div>
+<div id="end"></div>
+</div>
+<div class="how" id="how"><h3>طريقة اللعب</h3>
+<div class="hr"><span>1</span><p>كل خانة يلتقي فيها <b>نادي</b> (على اليمين) مع <b>شرط</b> (فوق).</p></div>
+<div class="hr"><span>2</span><p>اضغط الخانة واكتب لاعب <b>يلعب في النادي هالموسم</b> ويحقق الشرط. أي لاعب يحقق الاثنين ينقبل.</p></div>
+<div class="ex"><img src="../mano/assets/wahda.png" alt=""><span>مثال من شبكة ثانية: الوحدة × حارس = أي حارس يلعب في الوحدة هالموسم.</span></div>
+<div class="hr"><span>3</span><p>عندك <b>9 محاولات</b> للـ9 خانات. كل اختيار ياخذ محاولة، صح ولا غلط. واللاعب ما يتكرر في خانتين.</p></div>
+<div class="hr"><span>4</span><p>لو خلصت المحاولات وباقي خانات، تقدر تكمّلها في <b>الوقت الإضافي</b>، بس ما تنحسب.</p></div>
+<h3 style="margin-top:10px">معنى الشروط</h3>
+<div class="hr"><span>•</span><p><b>يلعب في النادي هالموسم:</b> اسمه في قائمة النادي هالموسم، حتى لو ما شارك في مباراة.</p></div>
+<div class="hr"><span>•</span><p><b>الجنسية:</b> جنسية اللاعب المسجلة في الدوري.</p></div>
+<div class="hr"><span>•</span><p><b>المركز:</b> مركزه المسجل: حارس، دفاع، وسط، هجوم.</p></div>
+<div class="hr"><span>•</span><p><b>العمر:</b> عمره المسجل هالموسم.</p></div>
+<div class="hr"><span>•</span><p><b>الرقم:</b> رقم قميصه المسجل هالموسم.</p></div>
+<div class="hr"><span>•</span><p>الشرط المركّب لازم يتحقق كامل: «وسط والعمر 30+» يعني لاعب وسط وعمره 30 أو أكثر.</p></div>
+<h3 style="margin-top:10px">النقاط</h3>
+<div class="hr"><span>✅</span><p>جواب صح = <b>نقطة</b>.</p></div>
+<div class="hr"><span>⭐</span><p>جواب نادر = <b>نقطتين</b>. النادر: لاعب اختاره أقل من <bdi dir="ltr">10%</bdi> من اللي حلوا نفس الخانة. النسب تطلع بعد ما يحل الخانة 30 مشجع، والنادر يتثبت 12 بالليل.</p></div>
+<div class="hr"><span>🏆</span><p>نقاطك تنحسب لك ولجمهور ناديك في <b>دوري الجماهير</b>.</p></div></div>
+</div>
+<div class="ov" id="ov"><div class="box"><div class="q" id="oq"></div><input id="oi" placeholder="اكتب اسم اللاعب..." autocomplete="off" enterkeyhint="search"><div class="sg" id="os"></div></div></div>
+<div class="toast" id="t"></div><div id="tut"></div>
+<script>
+(()=>{
+const $=s=>document.querySelector(s);
+const DB='https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app';
+const START=1794859200000,DAY=864e5,THR=30,RARE=10;
+const now=()=>Date.now();
+const DNUM=Math.floor((now()-START)/DAY)+1;
+const POS={GK:'حارس',DF:'دفاع',MD:'وسط',FW:'هجوم'};
+const PITCH=z=>{const Z={FW:'<rect x="3" y="3" width="30" height="11" rx="2"/>',MD:'<rect x="3" y="17" width="30" height="12" rx="2"/>',DF:'<rect x="3" y="32" width="30" height="10" rx="2"/>',GK:'<rect x="11" y="40" width="14" height="6" rx="1.5"/>'};
+ return `<svg viewBox="0 0 36 52" class="pt"><g fill="#D7B465" opacity=".75">${Z[z]}</g><g fill="none" stroke="#F6E3AE" stroke-width="1.6"><rect x="1.5" y="1.5" width="33" height="49" rx="3"/><path d="M1.5 26h33"/><circle cx="18" cy="26" r="5"/><path d="M10 1.5v7h16v-7M10 50.5v-7h16v7"/></g></svg>`};
+const norm=s=>(s||'').toLowerCase().replace(/[ً-ْـ]/g,'').replace(/[أإآٱ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').normalize('NFD').replace(/[̀-ͯ]/g,'').trim();
+const store={get(k){try{return JSON.parse(localStorage.getItem(k))}catch(e){return null}},set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){}}};
+const K='el3azy_grid_'+DNUM;
+let G=null,P=[],PM={},CLN={},CR={},ALIAS={},GC={},GN={},cur=null,S=store.get(K)||{att:[],ex:{},t0:0,sent:0,sec:0};
+const crest=(c,s)=>{const f=CR[c]||[1,1];return `<img src="../mano/assets/${c}.png" alt="" style="width:${Math.round(s*f[0])}px;height:${Math.round(s*f[1])}px;object-fit:contain">`};
+const ph=p=>p&&p.ph?`../mano/assets/p/${p.id}.webp`:`../mano/assets/${p?p.c:'logo'}.png`;
+const save=()=>store.set(K,S);
+const lb=s=>String(s).replace(/(\d+)\+/g,'<bdi dir="ltr">$1+</bdi>');   // «30+» يطلع صح داخل نص عربي
+// ── الشروط (من رمز الشرط في الجدول) ──
+function atoms(id){return id.split('+').map(a=>{const [t,v]=a.split(':');
+  if(t==='n')return{f:p=>p.nat===v,no:p=>`جنسيته ${p.nat}، والمطلوب ${v}`};
+  if(t==='p')return{f:p=>p.p===v,no:p=>`مركزه ${POS[p.p]||'—'}، والمطلوب ${POS[v]}`};
+  if(t==='a'&&v==='30')return{f:p=>(p.a||0)>=30,no:p=>`عمره ${p.a}، والمطلوب 30 أو أكثر`};
+  if(t==='a'&&v==='21')return{f:p=>p.a>0&&p.a<=21,no:p=>`عمره ${p.a}، والمطلوب 21 أو أقل`};
+  if(t==='no'){const [x,y]=v.split('-').map(Number);return{f:p=>+p.no>=x&&+p.no<=y,no:p=>`رقمه ${p.no||'—'}، والمطلوب من ${x} إلى ${y}`}}
+  return{f:()=>false,no:()=>''}})}
+function icon(c){const ic=c.ic||'';
+  if(ic.startsWith('pos:'))return `<div class="ic">${PITCH(ic.slice(4))}</div>`;
+  if(ic.startsWith('txt:'))return `<div class="ic txt">${ic.slice(4)}</div>`;
+  return `<div class="ic">${ic}</div>`}
+// ── الحالة ──
+const cells=()=>{const o={};S.att.forEach(x=>{if(x.ok)o[x.k]=x.p});return o};
+const used=()=>new Set([...S.att.filter(x=>x.ok).map(x=>x.p),...Object.values(S.ex)]);
+const left=()=>9-S.att.length;
+const pct=(k,p)=>{const n=GN[k]||0;return n>=THR?Math.round(100*((GC[k]||{})[p]||0)/n):null};
+const isRare=(k,p)=>{const v=pct(k,p);return v!==null&&v<RARE};
+const points=()=>S.att.filter(x=>x.ok).reduce((s,x)=>s+(isRare(x.k,x.p)?2:1),0);
+const isOver=()=>DNUM*DAY+START<=now();
+function draw(){
+  const C=cells(),L=left(),done=Object.keys(C).length===9||L<=0,extra=S.xon&&L<=0;
+  $('#dots').innerHTML=Array.from({length:9},(_,k)=>`<i class="${k<L?'':'u'}"></i>`).join('');
+  $('#sA').textContent=L;$('#sP').textContent=points();
+  let h=`<div class="corner"><b dir="ltr">#${G.n}</b>شبكة<br>اليوم</div>`+G.c.map((c,j)=>`<div class="hd" id="c${j}">${icon(c)}<small>${lb(c.l)}</small></div>`).join('');
+  G.r.forEach((r,i)=>{h+=`<div class="hd cl" id="r${i}">${crest(r,38)}<small>${CLN[r]||r}</small></div>`;
+    G.c.forEach((c,j)=>{const k=''+i+j,pid=C[k],xp=S.ex[k];
+      if(pid){const p=PM[pid]||{id:pid,n:pid},v=pct(k,pid),rare=v!==null&&v<RARE;
+        h+=`<div class="cell ok ${rare?'rare':''}" data-v="${k}"><img src="${ph(p)}" alt=""><span class="pc ${isOver()?'':'pv'}">${v===null?'✓':v+'%'}</span>${rare?'<span class="st2">⭐</span>':''}<div class="nm">${p.n}</div></div>`}
+      else if(xp){const p=PM[xp]||{n:xp};h+=`<div class="cell ok xt" data-v="${k}"><img src="${ph(p)}" alt=""><span class="pc">إضافي</span><div class="nm">${p.n}</div></div>`}
+      else h+=`<div class="cell ${L<=0&&!extra?'lost':''}" id="x${k}" data-k="${k}"><div class="e"><b>+</b><span>${(G.a[k]||[]).length} إجابات</span></div></div>`})});
+  $('#g').innerHTML=h;
+  document.querySelectorAll('.cell[data-k]').forEach(e=>e.onclick=()=>{if(L>0||extra)open(e.dataset.k)});
+  document.querySelectorAll('.cell[data-v]').forEach(e=>e.onclick=()=>crowd(e.dataset.v));
+  const pend=S.att.length-S.sent;$('#pend').hidden=!pend;$('#pend').textContent=pend?'⏳ آخر محاولة ما وصلت السيرفر. تأكد من الإنترنت، وبتنرسل بروحها.':'';
+  meLine();
+  if(done)endCard();else $('#end').innerHTML='';
+}
+function meLine(){const F=window.EL3FAN,c=F&&F.club();
+  $('#me').innerHTML=c?`${crest(c,20)} نقاطك تنحسب لجمهور <b>${CLN[c]}</b> في دوري الجماهير`:c===''?`نقاطك تنحسب لك في دوري الجماهير <button id="clB">اختار ناديك</button>`:`<button id="clB">اختار ناديك</button> عشان نقاطك تنحسب لجمهوره`;
+  const b=$('#clB');b&&(b.onclick=()=>F&&F.open())}
+function share(){const C=cells();
+  return G.r.map((r,i)=>G.c.map((c,j)=>{const p=C[''+i+j];return p?(isRare(''+i+j,p)?'⭐':'🟩'):'⬛'}).join('')).join('\n')}
+function endCard(){const C=cells(),n=Object.keys(C).length,mis=S.att.filter(x=>!x.ok).length;
+  const best=Object.entries(C).map(([k,p])=>({k,p,v:pct(k,p)})).filter(x=>x.v!==null).sort((a,b)=>a.v-b.v)[0];
+  const L=left(),canX=L<=0&&n<9&&!S.xon;
+  $('#end').innerHTML=`<div class="end"><div class="t">شبكة اليوم <bdi dir="ltr">#${G.n}</bdi></div><div class="p">${points()} <small>${points()===1?'نقطة':points()===2?'نقطتين':'نقطة'}</small></div>
+   <div class="em">${share().replace(/\n/g,'<br>')}</div>
+   <div class="x">${n} من 9 خانات · ${mis} ${mis===1?'خطأ':'أخطاء'}${best?` · أندر جواب لك: ${(PM[best.p]||{}).n} (${best.v}%)`:''}</div>
+   ${isOver()?'':'<div class="prov">النسب والنادر مبدئية لين 12 بالليل.</div>'}
+   <button class="shr" id="shB">𝕏 شارك نتيجتك</button>
+   ${canX?'<button class="xtb" id="xB">⏱️ الوقت الإضافي: كمّل الشبكة<small>نتيجتك ثابتة، والأجوبة الزايدة ما تنحسب</small></button>':''}</div>
+   <div class="insight" id="ins"><h3>🔎 اختيارات الجماهير</h3><div style="font-size:12px;opacity:.75">اضغط على أي خانة فيها لاعب، وتشوف أكثر اللاعبين اختياراً فيها وأندرهم.</div></div>`;
+  $('#shB').onclick=()=>{const t=`شبكة الدوري #${G.n} · ${points()} ${points()===2?'نقطتين':'نقطة'}\n${share()}\nel3azy.com/grid`;
+    if(navigator.share)navigator.share({text:t}).catch(()=>{});else{try{navigator.clipboard.writeText(t).then(()=>toast('✅ انقسخت'))}catch(e){}}
+    try{window.el3stat&&el3stat('grid','share')}catch(e){}};
+  const xb=$('#xB');xb&&(xb.onclick=()=>{S.xon=1;save();draw();scrollTo({top:250,behavior:'smooth'})});
+}
+function crowd(k){const box=$('#ins');if(!box)return;const n=GN[k]||0,i=+k[0],j=+k[1];
+  const L=Object.entries(GC[k]||{}).sort((a,b)=>b[1]-a[1]);
+  const head=`<h3>🔎 «${CLN[G.r[i]]} × ${lb(G.c[j].l)}»</h3>`;
+  if(n<THR){box.innerHTML=head+`<div style="font-size:12.5px;opacity:.8">حلها ${n} مشجع لين الحين. الاختيارات تطلع بعد ${THR}.</div>`;return}
+  const row=([p,c])=>`<div class="r"><img src="${ph(PM[p])}" alt="">${(PM[p]||{}).n||p}<em>${Math.round(100*c/n)}%</em></div>`;
+  box.innerHTML=head+`<div style="font-size:12px;opacity:.7">الأكثر اختياراً</div>${L.slice(0,3).map(row).join('')}`+(L.length>3?`<div style="font-size:12px;opacity:.7;margin-top:6px">الأندر</div>${L.slice(-2).reverse().map(row).join('')}`:'');
+  box.scrollIntoView({behavior:'smooth',block:'nearest'})}
+// ── البحث والاختيار ──
+function open(k){cur=k;const i=+k[0],j=+k[1];if(!S.t0){S.t0=now();save()}
+  $('#oq').innerHTML=`${crest(G.r[i],34)}<div>اكتب ${G.c[j].q}<br>يلعب في ${CLN[G.r[i]]} هالموسم</div>`;
+  $('#oi').value='';$('#os').innerHTML='';$('#ov').classList.add('on');setTimeout(()=>$('#oi').focus(),60)}
+$('#ov').onclick=e=>{if(e.target.id==='ov')$('#ov').classList.remove('on')};
+$('#oi').oninput=()=>{const q=norm($('#oi').value);if(q.length<2){$('#os').innerHTML='';return}
+  const U=used(),m=P.filter(p=>p._k.includes(q)&&!U.has(p.id)).sort((a,b)=>(b.ap||0)-(a.ap||0)).slice(0,6);
+  $('#os').innerHTML=m.map(p=>`<button data-id="${p.id}"><img src="${ph(p)}" alt=""><span>${p.n}<small>${p.e||''}</small></span></button>`).join('')||'<div style="font-size:13px;opacity:.7;padding:8px">ما لقيت لاعب بهالاسم</div>';
+  document.querySelectorAll('#os button').forEach(b=>b.onclick=()=>pick(b.dataset.id))};
+function toast(s,ms){const t=$('#t');t.textContent=s;t.style.display='block';clearTimeout(t._t);t._t=setTimeout(()=>t.style.display='none',ms||1700)}
+function pick(id){const k=cur,i=+k[0],j=+k[1],p=PM[id];$('#ov').classList.remove('on');
+  const ok=(G.a[k]||[]).includes(id);
+  if(left()<=0){ // الوقت الإضافي: محلي بس
+    if(ok){S.ex[k]=id;toast('✅ صح · وقت إضافي بدون نقاط')}else toast('❌ '+why(p,i,j),3200);
+    save();draw();return}
+  if(isOver()){toast('خلص يوم هالشبكة. افتح الصفحة من يديد للشبكة الجديدة',3000);return}
+  S.att.push({k,p:id,ok});if(S.att.length===9||Object.keys(cells()).length===9)S.sec=Math.min(86400,Math.round((now()-S.t0)/1000));
+  save();
+  if(ok){toast('✅ صح! '+(GN[k]>=THR?'':'النسبة تطلع بعد 30 حل'))}else{toast('❌ '+why(p,i,j),3200)}
+  draw();if(!ok){const e=document.querySelector(`.cell[data-k="${k}"]`);e&&e.classList.add('bad')}
+  flush()}
+function why(p,i,j){if(!p)return'ما يجمع الشرطين';const w=[];if(p.c!==G.r[i])w.push(`يلعب في ${CLN[p.c]||p.c}، مب ${CLN[G.r[i]]}`);
+  atoms(G.c[j].id).forEach(a=>{if(!a.f(p))w.push(a.no(p))});return `${p.n}: ${w.join(' · ')||'ما يجمع الشرطين'}`}
+// ── الإرسال للسيرفر (بالترتيب، وكل محاولة مرة وحدة) ──
+let busy=false;
+async function flush(){if(busy||!window.EL3FAN)return;busy=true;
+  try{const a=await EL3FAN.tok();
+    while(S.sent<S.att.length){const n=S.sent+1,x=S.att[n-1],b={};
+      b[`gp/${DNUM}/${a.u}/n`]=n;b[`gp/${DNUM}/${a.u}/a/${n}`]={k:x.k,p:x.p,d:DNUM,t:{'.sv':'timestamp'}};
+      if(n===1)b[`gp/${DNUM}/${a.u}/c`]=EL3FAN.club()||'';
+      if(x.ok){b[`gc/${DNUM}/${x.k}/${x.p}`]={'.sv':{increment:1}};b[`gn/${DNUM}/${x.k}`]={'.sv':{increment:1}}}
+      const r=await fetch(DB+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});
+      if(!r.ok){ // ممكن انكتبت قبل (انقطع الاتصال بعد الكتابة): نقرا السجل ونكمل منه
+        const s=await fetch(DB+`/gp/${DNUM}/${a.u}/n.json?auth=`+a.t).then(r=>r.ok?r.json():null).catch(()=>null);
+        if(typeof s==='number'&&s>=n){S.sent=s;save();continue}break}
+      S.sent=n;save()}
+    if(S.sec&&S.sent===S.att.length&&!S.secSent){const r=await fetch(DB+`/gp/${DNUM}/${a.u}/s.json?auth=`+a.t,{method:'PUT',body:String(S.sec)});if(r.ok){S.secSent=1;save()}}
+  }catch(e){}finally{busy=false;draw();loadCounts()}}
+async function restore(){ // جهاز امسح بياناته أو صفحة ثانية: نرجّع المحاولات من السيرفر
+  if(S.att.length||!window.EL3FAN)return;
+  try{const a=await EL3FAN.tok();const r=await fetch(DB+`/gp/${DNUM}/${a.u}.json?auth=`+a.t).then(r=>r.ok?r.json():null);
+    if(r&&r.a){const L=Object.keys(r.a).map(Number).sort((x,y)=>x-y).map(n=>r.a[n]).filter(x=>x&&x.k);   // الأرقام 1..9 ممكن ترجع مصفوفة
+      S.att=L.map(x=>({k:x.k,p:x.p,ok:(G.a[x.k]||[]).includes(x.p)}));S.sent=S.att.length;S.secSent=r.s?1:0;S.sec=r.s||0;save();draw()}}catch(e){}}
+async function loadCounts(){try{
+  const [c,n]=await Promise.all([fetch(DB+`/gc/${DNUM}.json`).then(r=>r.json()),fetch(DB+`/gn/${DNUM}.json`).then(r=>r.json())]);
+  GC=c||{};GN=n||{};draw()}catch(e){}}
+// ── العداد ──
+function clk(){const t=Math.max(0,Math.floor((START+DNUM*DAY-now())/1000)),f=x=>String(x).padStart(2,'0');$('#sT').textContent=`${f(Math.floor(t/3600))}:${f(Math.floor(t%3600/60))}:${f(t%60)}`}
+// ── الشرح أول مرة ──
+let ts=0;const TUT=()=>[
+ {el:['#r0','#r1','#r2'],tx:'على اليمين <b>3 أندية</b>، كل صف نادي.'},
+ {el:['#c0','#c1','#c2'],tx:'وفوق <b>3 شروط</b>، كل عمود شرط.'},
+ {el:['#r0','#c0','#x00'],demo:1,tx:`كل خانة سؤال. هذي معناها: <b>${G.c[0].q}، ويلعب في ${CLN[G.r[0]]} هالموسم</b>. أي لاعب يحقق الاثنين ينقبل.`},
+ {el:['.board','.bar'],tx:'عندك <b>9 محاولات</b> بس للـ<b>9 خانات</b>. كل اختيار ياخذ محاولة، صح ولا غلط، فأي غلط يكلفك خانة.<br>جاهز؟'}];
+function tut(){document.querySelectorAll('.ghost').forEach(e=>e.remove());const T=TUT();
+  if(ts>=T.length){$('#tut').innerHTML='';store.set('el3azy_grid_tut',1);return}
+  const t=T[ts];const c0=$('#x00');if(t.demo&&c0)c0.insertAdjacentHTML('beforeend','<div class="ghost qm">؟</div>');
+  const R=t.el.map(q=>$(q)).filter(Boolean).map(e=>e.getBoundingClientRect()),pad=4;
+  const rr=R.map(r=>`x="${r.left-pad}" y="${r.top-pad}" width="${r.width+pad*2}" height="${r.height+pad*2}" rx="16"`);
+  $('#tut').innerHTML=`<svg class="ovt" width="100%" height="100%"><defs><mask id="mk"><rect width="100%" height="100%" fill="#fff"/>${rr.map(a=>`<rect ${a} fill="#000"/>`).join('')}</mask></defs><rect width="100%" height="100%" fill="rgba(2,9,15,.84)" mask="url(#mk)"/>${rr.map(a=>`<rect ${a} fill="none" stroke="#F6E3AE" stroke-width="2.5"/>`).join('')}</svg>
+   <div class="coach"><div class="n">أول مرة؟ ${ts+1} من ${T.length}</div><div class="tx">${t.tx}</div><div class="ft"><div class="pg">${T.map((_,k)=>`<i class="${k===ts?'on':''}"></i>`).join('')}</div>
+   <span>${ts<T.length-1?'<button class="sk" id="tSk">تخطي</button> ':''}<button id="tNx">${ts<T.length-1?'التالي':'ابدأ اللعب'}</button></span></div></div>`;
+  $('#tNx').onclick=()=>{ts++;tut()};const sk=$('#tSk');sk&&(sk.onclick=()=>{ts=99;tut()})}
+$('#helpB').onclick=()=>{if(!G){$('#how').scrollIntoView({behavior:'smooth'});return}ts=0;scrollTo(0,0);setTimeout(tut,250)};
+// ── التحميل ──
+Promise.all([
+  fetch(DB+`/gq/${DNUM}.json`).then(r=>r.ok?r.json():null).catch(()=>null),
+  fetch('../mano/data.json').then(r=>r.json()),
+  fetch('../mano/assets/crest-sizes.json').then(r=>r.json()).catch(()=>({})),
+  fetch('../mano/aliases.json').then(r=>r.json()).catch(()=>({}))
+]).then(([g,d,cr,al])=>{
+  CR=cr;CLN=d.clubs||{};ALIAS=al||{};P=d.players;
+  P.forEach(p=>{PM[p.id]=p;p._k=norm(p.n+' '+(p.e||'')+' '+((ALIAS[p.id]||[]).join(' ')))});
+  if(!g||!g.r){$('#main').innerHTML='<div class="msg">⏳ <b>شبكة الدوري</b> تنزل قريب.<br>كل يوم شبكة جديدة 12 بالليل.</div>';return}
+  G=g;draw();clk();setInterval(clk,1000);
+  setInterval(()=>{if(now()>=START+DNUM*DAY)location.reload()},30000);
+  restore().then(flush);loadCounts();setInterval(loadCounts,60000);
+  if(!store.get('el3azy_grid_tut')&&!S.att.length)setTimeout(tut,300);
+});
+window.addEventListener('el3fan',()=>G&&draw());
+})();
+</script>
+<script src="../assets/fan.js"></script>
+<script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
+</body></html>

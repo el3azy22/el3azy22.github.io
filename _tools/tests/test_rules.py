@@ -195,11 +195,52 @@ def fan_tests():
     check('مشجع يقرا بطاقة غيره يرفض', get('f/f1', 'f9').status_code, 401)
 
 
+def grid_body(u, d, n, k, p, ok=True, club='wahda'):
+    b = {f'gp/{d}/{u}/n': n, f'gp/{d}/{u}/a/{n}': {'k': k, 'p': p, 'd': d, 't': TS}}
+    if n == 1:
+        b[f'gp/{d}/{u}/c'] = club
+    if ok:
+        b[f'gc/{d}/{k}/{p}'] = inc(); b[f'gn/{d}/{k}'] = inc()
+    return b
+
+
+def grid_tests():
+    now = int(time.time() * 1000)
+    L = now - 2 * DAY - 2 * 3600000          # اليوم 3 شغال
+    load_rules(L, []); reset({'gq': {'3': {'r': ['ain'], 'n': 1}, '4': {'r': ['wasl'], 'n': 2}}})
+    print('\n— شبكة الدوري —')
+    check('شبكة اليوم تنقرى', requests.get(url('gq/3', 'u1')).status_code, 200)
+    check('شبكة باجر ما تنقرى', requests.get(url('gq/4', 'u1')).status_code, 401)
+    check('المشجع ما يكتب في الجدول', put('u1', 'gq/3/n', 5), 401)
+    check('أول محاولة صح مع العدادات تنقبل', patch('u1', grid_body('u1', 3, 1, '00', 'ali-x')), 200)
+    check('نفس المحاولة مرة ثانية (ضغطتين) ترفض', patch('u1', grid_body('u1', 3, 1, '00', 'ali-x')), 401)
+    check('تنقيص العداد أو مسح محاولة غلط يرفض', put('u1', 'gp/3/u1/n', 0), 401)
+    check('المحاولة 2 غلط بدون عدادات تنقبل', patch('u1', grid_body('u1', 3, 2, '11', 'bad-y', ok=False)), 200)
+    check('مسح محاولة سابقة يرفض', put('u1', 'gp/3/u1/a/2', None), 401)
+    check('القفز من 2 لـ 4 يرفض', patch('u1', grid_body('u1', 3, 4, '22', 'z', ok=False)), 401)
+    b = grid_body('u1', 3, 3, '01', 'p3'); b['gc/3/01/other'] = inc()
+    check('عداد لاعب غير اللي اختاره يرفض', patch('u1', b), 401)
+    b = grid_body('u1', 3, 3, '01', 'p3'); b['gc/3/01/p3'] = inc(2)
+    check('العداد +2 يرفض', patch('u1', b), 401)
+    check('عداد بدون محاولة يرفض', patch('u1', {'gc/3/02/p9': inc()}), 401)
+    for n in range(3, 10):
+        patch('u1', grid_body('u1', 3, n, '0' + str(n % 3), f'p{n}', ok=False))
+    check('بعد 9 محاولات: المحاولة 10 ترفض', patch('u1', grid_body('u1', 3, 10, '00', 'p10', ok=False)), 401)
+    check('محاولة في يوم أمس ترفض', patch('u2', grid_body('u2', 2, 1, '00', 'p1')), 401)
+    check('محاولة في يوم باجر ترفض', patch('u2', grid_body('u2', 4, 1, '00', 'p1')), 401)
+    check('مشجع يكتب في سجل غيره يرفض', requests.patch(url('', 'u3'), data=json.dumps(grid_body('u2', 3, 1, '00', 'p1'))).status_code, 401)
+    check('المشجع يقرا سجله', requests.get(url('gp/3/u1', 'u1')).status_code, 200)
+    check('المشجع ما يقرا سجل غيره', requests.get(url('gp/3/u1', 'u2')).status_code, 401)
+    check('العدادات مقروءة للكل', requests.get(url('gc/3')).status_code, 200)
+    check('الثواني تنقبل', put('u1', 'gp/3/u1/s', 95), 200)
+    check('نادي ثاني بعد الأول يرفض', put('u1', 'gp/3/u1/c', 'ain'), 401)
+
+
 if __name__ == '__main__':
     try:
         requests.get(f'{B}/.json?ns={NS}', timeout=3)
     except Exception:
         sys.exit('المحاكي مب شغال على ' + B)
-    mano_tests(); predict_tests(); rate_tests(); fan_tests()
+    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests()
     print(f'\nالنتيجة: {ok} نجح · {fail} فشل')
     sys.exit(1 if fail else 0)
