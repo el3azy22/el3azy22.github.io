@@ -199,13 +199,18 @@ def boards(per, names, hide):
             while 0 < k < len(L) and ukey(L[k]) == ukey(L[XI - 1]):
                 k += 1
             out, pos = [], 0
-            for i, x in enumerate(L[:k]):
+            for i, x in enumerate(L[:min(k, XI)]):
                 if i == 0 or ukey(x) != ukey(L[i - 1]):
                     pos = i + 1
                 tie = (i > 0 and ukey(x) == ukey(L[i - 1])) or (i + 1 < k and ukey(x) == ukey(L[i + 1]))
                 out.append([nm_of(x), x['pts'], x['u'], pos, 1 if tie else 0])
-            return out
-        xi_out = {c: xi_list(byc[c]) for c in CLUBS if byc.get(c)}
+            return out, [x['u'] for x in L[XI:k]]
+        xi_out, xi_tie = {}, {}
+        for c in CLUBS:
+            if byc.get(c):
+                xi_out[c], extra = xi_list(byc[c])
+                if extra:
+                    xi_tie[c] = extra      # متعادلين بالكامل مع رقم 11 وبرا القائمة: يطلع عددهم، والمشجع منهم يشوف إنه متعادل
         named = []
         for rk, x in full:
             if x['pts'] <= 0:
@@ -214,7 +219,7 @@ def boards(per, names, hide):
             if nm.strip() and x['c'] in NAME and x['u'] not in hide:
                 named.append([nm.strip()[:16], x['c'], x['pts'], rk, x['u']])
         top = [r for r in named if r[3] <= named[min(TOP, len(named)) - 1][3]] if named else []
-        out[b] = {'clubs': clubs, 'fans': top[:TOP], 'more': max(0, len(top) - TOP), 'xi': xi_out}
+        out[b] = {'clubs': clubs, 'fans': top[:TOP], 'more': max(0, len(top) - TOP), 'xi': xi_out, 'xt': xi_tie}
     return out, ranks
 
 
@@ -307,7 +312,7 @@ def main():
                     for k in ('pts', 'mis', 'sec', 'wk'):
                         tot[c][k] += x[k]
         season[b]['clubs'] = [[x['c'], rk, x['pts'], x['wk'], 0, x['mis'], x['sec']] for rk, x in rank(list(tot.values()), ckey)]
-        season[b].pop('xi', None)
+        season[b].pop('xi', None); season[b].pop('xt', None)
     # القصة (لصورة الأسبوع): من آخر أسبوع نهائي
     story = ''
     done = [x for x in weeks if x.get('final')]

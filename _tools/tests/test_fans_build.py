@@ -105,6 +105,6 @@ if __name__ == '__main__':
         seed_p(3, f'tt{i:02d}000000x', 2, 'wasl', sec=50)
     rc, data = run(tree([], {'rounds': {}, 'clubs': {}}), S + 5 * DAY)
     B = wk(data, 1)['boards']['mano']; row = next(r for r in B['clubs'] if r[0] == 'wasl'); L = B['xi']['wasl']
-    T.check('تعادل كامل: النادي 11×5 والكل يطلع متعادل بمركز 1', (row[2], row[3], len(L), {x[3] for x in L}, all(x[4] for x in L)), (55, 11, 13, {1}, True))
+    T.check('تعادل كامل: النادي 11×5، القائمة 11 متعادلين بمركز 1، و2 متعادلين برا القائمة', (row[2], row[3], len(L), {x[3] for x in L}, all(x[4] for x in L), len(B['xt']['wasl'])), (55, 11, 11, {1}, True, 2))
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)
