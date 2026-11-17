@@ -8,7 +8,8 @@
   - كل خانة فيها من 2 إلى 12 جواب من اللاعبين اللي شاركوا في مباريات هالموسم (عشان ما تكون الخانة كلها لاعبين
     ما حد يعرفهم)، والبدلاء اللي ما شاركوا ينقبلون بعد، بس كل الأجوبة 20 بالكثير
   - ما تتكرر نفس الشبكة، والأندية تتوزع بالتساوي تقريباً
-  - اليوم الحالي واليوم اللي بعده ما يتغيرون أبداً (لو انتقل لاعب، الأجوبة المحفوظة مع الشبكة هي المرجع)
+  - اليوم الحالي ما يتغير أبداً (لو انتقل لاعب، الأجوبة المحفوظة مع الشبكة هي المرجع)، والأيام الجاية تنبني من يديد
+    كل ليلة 11:17 من آخر بيانات (الأهداف والانتقالات)
 
   python3 _tools/grid/build.py preview [أيام]   # يطبع شبكات تجريبية بدون ما يكتب شي
   python3 _tools/grid/build.py push [أيام]      # يكمّل الجدول لين اليوم+أيام (يحتاج FIREBASE_SA أو TOKEN للمحاكي)
@@ -27,7 +28,7 @@ except Exception:
     GRID_START = 0
 GRID_START = int(os.environ.get('GRID_START') or GRID_START)
 MIN_ANS, MAX_ANS, MAX_ALL = 2, 12, 20   # المشاركين هالموسم 2–12، وكل الأجوبة (مع البدلاء) 20 بالكثير
-WT = {'nat': 4, 'mix': 3, 'num': 0.6, 'age': 0.7, 'pos': 1}
+WT = {'nat': 4, 'mix': 3, 'gl': 2, 'st': 2, 'num': 0.6, 'age': 0.7, 'pos': 1}
 POS = {'GK': 'حارس', 'DF': 'دفاع', 'MD': 'وسط', 'FW': 'هجوم'}
 
 
@@ -52,8 +53,13 @@ def catalog(players):
                        'f': (lambda k: lambda p: p.get('p') == k)(k)}
     C['a:30'] = {'t': 'age', 'l': 'العمر 30+', 'q': 'لاعب عمره 30 سنة أو أكثر', 'ic': 'txt:30+', 'f': lambda p: (p.get('a') or 0) >= 30}
     C['a:21'] = {'t': 'age', 'l': 'العمر 21 أو أقل', 'q': 'لاعب عمره 21 سنة أو أقل', 'ic': 'txt:21-', 'f': lambda p: 0 < (p.get('a') or 0) <= 21}
-    C['no:1-11'] = {'t': 'num', 'l': 'الرقم من 1 إلى 11', 'q': 'لاعب يلبس رقم من 1 إلى 11', 'ic': 'txt:1–11',
+    C['no:1-11'] = {'t': 'num', 'l': 'رقم القميص من 1 إلى 11', 'q': 'لاعب رقم قميصه من 1 إلى 11', 'ic': 'shirt',
                     'f': lambda p: str(p.get('no') or '').isdigit() and 1 <= int(p['no']) <= 11}
+    # وضع اللاعب في قائمة الدوري (من بيانات الرابطة): مواطن · مقيم
+    C['st:cit'] = {'t': 'st', 'l': 'مواطن', 'q': 'لاعب مواطن', 'ic': 'flag:AE', 'f': lambda p: p.get('st') == 'cit'}
+    C['st:res'] = {'t': 'st', 'l': 'مقيم', 'q': 'لاعب مقيم', 'ic': 'txt:مقيم', 'f': lambda p: p.get('st') == 'res'}
+    # الأهداف: سجّل في الدوري هالموسم (حسب آخر تحديث للبيانات قبل الشبكة)
+    C['gl:1'] = {'t': 'gl', 'l': 'سجّل هدف هالموسم', 'q': 'لاعب سجّل هدف أو أكثر في الدوري هالموسم', 'ic': 'ball', 'f': lambda p: (p.get('gl') or 0) >= 1}
     # المركّبة: مركز + عمر، أو مركز + البرازيل (أكثر جنسية أجنبية)
     for k, nm in POS.items():
         if k != 'GK':
@@ -61,6 +67,10 @@ def catalog(players):
                                 'f': (lambda k: lambda p: p.get('p') == k and (p.get('a') or 0) >= 30)(k)}
             C[f'p:{k}+a:21'] = {'t': 'mix', 'l': f'{nm} والعمر 21 أو أقل', 'q': f'لاعب مركزه {nm}، وعمره 21 سنة أو أقل', 'ic': 'pos:' + k,
                                 'f': (lambda k: lambda p: p.get('p') == k and 0 < (p.get('a') or 0) <= 21)(k)}
+            C[f'p:{k}+st:res'] = {'t': 'mix', 'l': f'{nm} مقيم', 'q': f'لاعب مركزه {nm}، ومقيم', 'ic': 'pos:' + k,
+                                  'f': (lambda k: lambda p: p.get('p') == k and p.get('st') == 'res')(k)}
+            C[f'p:{k}+st:cit'] = {'t': 'mix', 'l': f'{nm} مواطن', 'q': f'لاعب مركزه {nm}، ومواطن', 'ic': 'pos:' + k,
+                                  'f': (lambda k: lambda p: p.get('p') == k and p.get('st') == 'cit')(k)}
             C[f'p:{k}+n:البرازيل'] = {'t': 'mix', 'l': f'{nm} من البرازيل', 'q': f'لاعب مركزه {nm}، وجنسيته البرازيل', 'ic': 'pos:' + k,
                                       'f': (lambda k: lambda p: p.get('p') == k and p.get('nat') == 'البرازيل')(k)}
     return C
@@ -77,10 +87,13 @@ def ok_cols(cols, C):
     if ts.count('age') > 1:
         return False
     # «العمر 30+» مع «وسط والعمر 30+» تكرار: العمر بروحه والمركّب لازم بحدود مختلفة
+    sts = [c.split('st:')[1] for c in cols if 'st:' in c]
+    if len(sts) != len(set(sts)):
+        return False
     ages = [c.split('a:')[1] for c in cols if 'a:' in c]
     if len(ages) != len(set(ages)):
         return False
-    if ts.count('nat') > 2 or ts.count('num') > 1:
+    if ts.count('nat') > 2 or ts.count('num') > 1 or ts.count('st') > 1 or ts.count('gl') > 1:
         return False
     # ما يطلع مركز بروحه مع مركّب فيه نفس المركز (هجوم + هجوم من البرازيل)
     poss = [c.split('+')[0] for c in cols if c.startswith('p:')]
@@ -172,7 +185,7 @@ def fill(existing, first, last, P, rng):
     C = catalog(P)
     V = valid_cells(P, C)
     out, club_use, recent, cond_use = {}, Counter(), set(), Counter()
-    lock_until = today() + 1
+    lock_until = today()
     for d in range(first, last + 1):
         g = existing.get(str(d))
         if g and d <= lock_until:

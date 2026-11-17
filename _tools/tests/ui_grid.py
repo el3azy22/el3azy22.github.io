@@ -15,7 +15,7 @@ now = int(time.time() * 1000)
 mid = (now + 4 * 3600000) // DAYMS * DAYMS - 4 * 3600000
 PAGE_T = datetime.datetime.fromtimestamp((1794859200000 + 2 * DAYMS + (now - mid)) / 1000, datetime.timezone.utc)  # الصفحة: اليوم 3
 PL = GB.players()
-g = GB.fill({}, 3, 4, PL, random.Random(5))
+g = GB.fill({}, 3, 4, PL, random.Random(int(os.environ.get("GSEED") or 5)))
 G3 = g['3']
 
 

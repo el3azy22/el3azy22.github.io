@@ -38,6 +38,11 @@ def clean_en(s):
 def ap(p):
   try:return int(p['apps'][1])
   except:return 0
+def gl(p):   # الأهداف في الدوري هالموسم (العمود الرابع في بطاقة اللاعب؛ الثالث = البطاقات الصفرا)
+  try:return int(p['apps'][3])
+  except:return 0
+# وضع اللاعب في قائمة الدوري: cit مواطن · res مقيم · born مواليد · kid أبناء مواطنات · for أجنبي
+ST={'UAE Citizen':'cit','Residence':'res','UAE Born':'born','Citizen Child':'kid','Foreign':'for','Passport Holders':'pass'}
 
 
 
@@ -86,7 +91,7 @@ def scrape_pl():
 
 
 def main():
-    import types; B = types.SimpleNamespace(clean_ar=clean_ar, clean_en=clean_en, NATFIX=NATFIX, ap=ap)
+    import types; B = types.SimpleNamespace(clean_ar=clean_ar, clean_en=clean_en, NATFIX=NATFIX, ap=ap, gl=gl, ST=ST)
     now = datetime.now(UAE)
     rep = {'date': now.strftime('%Y-%m-%d %H:%M'), 'changes': [], 'problems': []}
     ch, pr = rep['changes'], rep['problems']
@@ -117,13 +122,14 @@ def main():
             # «منو اللاعب؟»
             m = mp.get(s)
             if m is None:
-                m = dict(id=s, n=na, e=B.clean_en(q['name']), c=c, p=q['pos'], nat=nat, f=q['flag'], a=age, no=no, ap=B.ap(q))
+                m = dict(id=s, n=na, e=B.clean_en(q['name']), c=c, p=q['pos'], nat=nat, f=q['flag'], a=age, no=no, ap=B.ap(q), gl=B.gl(q), st=B.ST.get(q.get('status'), ''))
                 md['players'].append(m); mp[s] = m; ch.append(f'لاعب يديد: {na} ({tid} #{no})')
             else:
                 if m['c'] != c: ch.append(f"انتقال: {m['n']} من {m['c']} إلى {c}"); m['c'] = c
                 if no and m.get('no') != no: ch.append(f"رقم {m['n']}: {m.get('no')} ← {no}"); m['no'] = no
                 if age and m.get('a') != age: m['a'] = age
-                m['ap'] = B.ap(q)
+                m['ap'] = B.ap(q); m['gl'] = B.gl(q)
+                if B.ST.get(q.get('status')): m['st'] = B.ST[q['status']]
             # «اختار تشكيلتك»
             if s in where:
                 cid, e = where[s]
