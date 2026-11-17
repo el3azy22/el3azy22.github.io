@@ -36,6 +36,7 @@ async def play(b, uid, club, easy, pro=None, lose=False, extra=None):
     seed = {f'g_{day}_easy': easy, 'seenHow': True, 'mode': 'pro' if pro else 'easy', **(extra or {})}
     if pro:
         seed[f'g_{day}_pro'] = pro
+        seed[f'pa_{day}'] = P[0]          # لاعب الخبير عشوائي لكل جهاز: نثبته للاختبار
     js = ';'.join(f"localStorage.setItem('el3azy_mano_{k}',{json.dumps(json.dumps(v))})" for k, v in seed.items())
     js += f";localStorage.setItem('el3azy_club',JSON.stringify('{club}'))"
     ctx = await b.new_context(viewport={'width': 390, 'height': 800})
@@ -62,7 +63,7 @@ async def main():
         T.check('لاعب اليوم من محاولتين: الجهاز يسجل إنه انحفظ', st[0], {'g': 2, 'c': 'wahda'})
         T.check('السيرفر: سجل المشجع', {k: v for k, v in T.get(f'p/{day}/easy/ua1').json().items() if k != 't'}, {'c': 'wahda', 'd': day, 'g': 2})
         T.check('السيرفر: نقاط الوحدة = 5', T.get(f'c/{day}/easy/wahda').json(), {'n': 1, 't': 5})
-        prof = {'guesses': [E[3]] * 5 + [P[day - 1]], 'done': True, 'win': True}
+        prof = {'guesses': [E[3]] * 5 + [P[0]], 'done': True, 'win': True}
         st = await play(b, 'ua2', 'ain', win2, prof)
         T.check('لاعب اليوم + الخبير من 6 محاولات', st, [{'g': 2, 'c': 'ain'}, {'g': 6, 'c': 'ain'}])
         T.check('السيرفر: نقاط العين في الخبير = 1', T.get(f'c/{day}/pro/ain').json(), {'n': 1, 't': 1})

@@ -130,6 +130,8 @@ def main():
                 if age and m.get('a') != age: m['a'] = age
                 m['ap'] = B.ap(q); m['gl'] = B.gl(q)
                 if B.ST.get(q.get('status')): m['st'] = B.ST[q['status']]
+                # «منو اللاعب؟» والشبكة: المركز المسجل في الرابطة دايماً (تصحيحات المراكز لـ«اختار تشكيلتك» بس)
+                if q.get('pos') in POS4 and m.get('p') != q['pos']: ch.append(f"مركز {m['n']}: {m.get('p')} ← {q['pos']}"); m['p'] = q['pos']
             # «اختار تشكيلتك»
             if s in where:
                 cid, e = where[s]

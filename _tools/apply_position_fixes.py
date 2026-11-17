@@ -1,4 +1,4 @@
-# يطبّق _tools/position_fixes.json على قوائم «اختار تشكيلتك» و«منو اللاعب؟»
+# يطبّق _tools/position_fixes.json على قوائم «اختار تشكيلتك» (المراكز)، والجنسية الرياضية على «منو اللاعب؟»
 import json,os
 R=os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 F=json.load(open(f'{R}/_tools/position_fixes.json'))
@@ -15,7 +15,7 @@ for c in [t['national']]+t['clubs']:
     mc=CLUBMAP.get(c['id'],c['id'])
     mp=byid.get(p[5]) if p[5] else None
     if not mp: mp=next((x for x in m['players'] if x['c']==mc and str(x.get('no'))==str(p[0])),None)
-    if mp and mp['p']!=M2[new]: log.append(f"   mano {mp['id']}: {mp['p']} -> {M2[new]}");mp['p']=M2[new]
+    # «منو اللاعب؟» والشبكة يستخدمون المركز المسجل في الرابطة (اللي يشوفه المشجع في موقعها)، فالتصحيح هني لـ«اختار تشكيلتك» بس
 for pid,(nat,cc) in {k:v for k,v in F.get('_nat',{}).items() if not k.startswith('_')}.items():
   mp=byid.get(pid)
   if mp and (mp['nat'],mp['f'])!=(nat,cc): log.append(f"   mano {pid}: {mp['nat']} -> {nat}");mp['nat'],mp['f']=nat,cc
