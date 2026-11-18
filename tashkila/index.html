@@ -602,6 +602,158 @@ document.addEventListener('dblclick',e=>e.preventDefault());
 fetch('squads.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(r.status);return r.json()}).then(d=>{NATL=d.national||null;CLUBS=d.clubs||[];buildClubs()}).catch(()=>toast('ما قدرنا نحمل القوائم، حدّث الصفحة'));
 </script>
 <script src="../assets/fan.js"></script>
+
+<!-- «توقّع تشكيلة ناديك» (قرار إبراهيم 18 نوفمبر): وضع ثاني في نفس الصفحة. يطلع بعد الإطلاق (tashkila/config.json start) أو بـ ?tpqa للتجربة -->
+<style>
+.tp-tabs{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:5px;border-radius:18px;background:rgba(4,16,24,.55);border:1px solid rgba(215,180,101,.25);margin:14px 0 4px}
+.tp-tabs button{font:inherit;font-size:14px;font-weight:600;border:0;border-radius:14px;padding:9px 6px;color:var(--ivory,#FFF5E5);background:transparent;opacity:.7}
+.tp-tabs button small{display:block;font-size:10.5px;font-weight:400;opacity:.75;margin-top:2px}
+.tp-tabs button.on{opacity:1;background:linear-gradient(180deg,#1d4a62,#12364b);box-shadow:inset 0 0 0 1.5px rgba(215,180,101,.6);color:#F6E3AE}
+.tp-card{border-radius:22px;padding:14px 14px 12px;margin:12px 0;background:linear-gradient(180deg,rgba(215,180,101,.14),rgba(215,180,101,.04));border:1.5px solid rgba(215,180,101,.5);text-align:center}
+.tp-card .k{font-size:12px;color:#D7B465;font-weight:600}
+.tp-vs{display:flex;align-items:center;justify-content:center;gap:16px;margin:8px 0 6px}
+.tp-vs div{display:flex;flex-direction:column;align-items:center;gap:4px;font-size:14px;font-weight:700;width:100px}
+.tp-vs img{width:46px;height:46px;object-fit:contain}.tp-vs b{font-size:13px;color:rgba(255,245,229,.6)}
+.tp-card .t{font-size:13px;opacity:.85}
+.tp-lock{display:inline-flex;gap:6px;align-items:center;margin-top:8px;padding:5px 12px;border-radius:12px;background:rgba(4,16,24,.5);font-size:12.5px}
+.tp-lock b{color:#F6E3AE;direction:ltr;font-variant-numeric:tabular-nums}
+.tp-rule{font-size:12.5px;line-height:1.7;opacity:.85;margin:8px 2px 0}
+.tp-go{width:100%;margin-top:10px;font:inherit;font-weight:700;font-size:17px;border:0;border-radius:16px;padding:14px;color:#0B2434;background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E)}
+.tp-go:disabled{opacity:.45}
+.tp-sub{font-size:12px;text-align:center;opacity:.75;margin-top:6px;line-height:1.6}
+.tp-msg{border-radius:20px;padding:18px 14px;margin:12px 0;text-align:center;line-height:1.9;border:1px solid rgba(215,180,101,.3);background:rgba(255,245,229,.04)}
+.tp-msg b{color:#F6E3AE}.tp-msg button{font:inherit;font-weight:700;margin-top:8px;border:0;border-radius:14px;padding:10px 18px;color:#0B2434;background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E)}
+.slot.tp-ok .pic{box-shadow:0 0 0 3px #3FB27F,0 6px 14px rgba(0,0,0,.45)!important}
+.slot.tp-no .pic{box-shadow:0 0 0 3px #E07A6E,0 6px 14px rgba(0,0,0,.45)!important;filter:grayscale(.5) brightness(.8)}
+.slot.tp-ok::after,.slot.tp-no::after{position:absolute;top:-4px;left:50%;margin-left:12px;font-size:13px;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-weight:700;color:#fff}
+.slot.tp-ok::after{content:'✓';background:#3FB27F}.slot.tp-no::after{content:'✕';background:#E07A6E}
+.tp-res{border-radius:22px;padding:14px;margin:12px 0;text-align:center;background:linear-gradient(180deg,rgba(63,178,127,.16),rgba(63,178,127,.04));border:1.5px solid rgba(63,178,127,.55)}
+.tp-res .big{font-size:30px;font-weight:700;color:#F6E3AE}.tp-res .big small{font-size:15px;opacity:.8}
+.tp-res .l{font-size:13px;margin-top:4px;line-height:1.7}
+.tp-miss{margin-top:10px;text-align:start;font-size:12.5px;line-height:1.9;padding:10px 12px;border-radius:14px;background:rgba(4,16,24,.45)}
+.tp-miss b{color:#F6E3AE}
+body.tpm #natl,body.tpm #clubs,body.tpm .tp-hide,body.tpm .actions,body.tpm #xShare,body.tpm #addPlayer,body.tpm #sheetAdd,body.tpm #hero,body.tpm #note,body.tpm #plab{display:none!important}
+body.tpm.tplock #fms,body.tpm.tplock .fmlbl,body.tpm.tplock #count{display:none!important}
+</style>
+<script>
+(()=>{
+const DB='https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app',P0=1794859200000,DAYMS=864e5,LOCK=2*3600e3;
+const QA=/[?&]tpqa\b/.test(location.search);
+const TCLUB={shababahli:'shabab'};   // رمز النادي في squads.json لو يختلف عن المنصة
+const AR=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],MO=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+const when=t=>{const d=new Date(t+4*3600e3),h=d.getUTCHours(),m=d.getUTCMinutes();return `${AR[d.getUTCDay()]} ${d.getUTCDate()} ${MO[d.getUTCMonth()]} · ${(h%12)||12}:${String(m).padStart(2,'0')} ${h<12?'الصبح':h<16?'الظهر':'المسا'}`};
+const tk=p=>p[5]||((p[0]??'')+'|'+p[1]);
+let PD=null,OPEN={},LU={},M=null,ST='',MINE=null,mode='free',saved=null,tick=0;
+const el=(h)=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild};
+function q(id){return document.getElementById(id)}
+async function boot(){
+  let cfg={};try{cfg=await fetch('config.json',{cache:'no-cache'}).then(r=>r.json())}catch(e){}
+  const day=Math.floor((Date.now()-P0)/DAYMS)+1;
+  if(!QA&&!(cfg.start&&day>=cfg.start))return;
+  // العنوان: الصفحة صارت تسوي شيين
+  document.querySelector('header h1').textContent='تشكيلتي';
+  document.querySelector('header .sub').textContent='صمّم تشكيلتك وشاركها، أو توقّع تشكيلة ناديك قبل كل مباراة';
+  document.title='تشكيلتي | العازي';
+  const tabs=el(`<div class="tp-tabs"><button data-m="free" class="on">صمّم تشكيلتك<small>للمتعة والمشاركة</small></button><button data-m="tp">🏆 توقّع تشكيلة ناديك<small>نقاط لك ولجمهورك</small></button></div>`);
+  document.querySelector('.sadu').after(tabs);
+  tabs.querySelectorAll('button').forEach(b=>b.onclick=()=>setMode(b.dataset.m));
+  document.querySelectorAll('.lbl').forEach(l=>{if(/المنتخب|اختار ناديك/.test(l.textContent))l.classList.add('tp-hide')});
+  const fl=[...document.querySelectorAll('#builder .lbl')][0];fl&&fl.classList.add('fmlbl');
+  const _rp=window.renderPitch;window.renderPitch=function(){_rp();decorate()};
+  if(/[?&]tp\b/.test(location.search)||QA&&/[?&]tpqa=tp\b/.test(location.search))setMode('tp');
+}
+let freeState=null;
+function setMode(m){
+  if(m===mode)return;mode=m;document.querySelectorAll('.tp-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
+  document.body.classList.toggle('tpm',m==='tp');
+  if(m==='tp'){freeState={club,xi:xi.slice(),fm,extra};extra={};renderTP()}
+  else{document.body.classList.remove('tplock');document.querySelectorAll('.tp-card,.tp-msg,.tp-res,.tp-miss,.tp-go,.tp-sub').forEach(e=>e.remove());clearInterval(tick);
+    extra=freeState?freeState.extra:extra;
+    if(freeState&&freeState.club){const btn=[...document.querySelectorAll('.club')].find(b=>b.getAttribute('aria-pressed')==='true');fm=freeState.fm;pickClub(freeState.club,btn);xi=freeState.xi;renderPitch()}
+    else{club=null;q('builder').hidden=true}}
+}
+async function loadData(){
+  if(PD)return;const nc={cache:'no-cache'};
+  [PD,OPEN,LU]=await Promise.all([fetch('../predict/data.json',nc).then(r=>r.json()).catch(()=>({matches:[]})),fetch('../predict/open.json',nc).then(r=>r.json()).catch(()=>({})),fetch('lineups.json',nc).then(r=>r.json()).catch(()=>({}))]);
+}
+function clear(){document.querySelectorAll('.tp-card,.tp-msg,.tp-res,.tp-miss,.tp-go,.tp-sub').forEach(e=>e.remove());clearInterval(tick)}
+async function renderTP(){
+  clear();const F=window.EL3FAN;let c=F&&F.club();if(c==='none')c='';
+  for(let i=0;i<50&&!CLUBS.length;i++)await new Promise(r=>setTimeout(r,100));const anchor=document.querySelector('.tp-tabs');
+  if(!c){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">🏆 <b>توقّع تشكيلة ناديك</b> للجمهور اللي اختار ناديه.<br>اختار ناديك من بطاقة المشجع، وبعدها توقّع تشكيلته قبل كل مباراة.<br><button id="tpPick">اختار ناديك</button></div>`));q('tpPick').onclick=()=>F&&F.open();return}
+  await loadData();
+  const now=Date.now(),mine=PD.matches.filter(m=>m.h===c||m.a===c).sort((a,b)=>a.t-b.t);
+  M=mine.slice().reverse().find(m=>m.t<=now&&now-m.t<2*DAYMS&&LU[m.id])||mine.find(m=>m.t+3*3600e3>now)||null;
+  const sq=CLUBS.find(x=>x.id===(TCLUB[c]||c));
+  if(!M||!sq){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">ما في مباراة جاية لناديك في الجدول لين الحين.<br>ارجع لما تنزل مواعيد الجولة الجاية.</div>`));return}
+  const op=OPEN[M.wk]||0,lock=M.t-LOCK;
+  ST=LU[M.id]&&now>=M.t?'reveal':now>=lock?'locked':now<op?'soon':'pick';
+  const other=M.h===c?M.a:M.h,oc=CLUBS.find(x=>x.id===(TCLUB[other]||other));
+  const nm=x=>(CLUBS.find(y=>y.id===(TCLUB[x]||x))||{}).name||x;
+  const crest=x=>`../mano/assets/${x}.png`;
+  const card=el(`<div class="tp-card"><div class="k">الجولة ${M.wk} · ${ST==='reveal'?'التشكيلة الأساسية نزلت':ST==='locked'?'انقفل التوقع':'توقّع تشكيلة ناديك'}</div>
+   <div class="tp-vs"><div><img src="${crest(M.h)}" alt="">${nm(M.h)}</div><b>×</b><div><img src="${crest(M.a)}" alt="">${nm(M.a)}</div></div>
+   <div class="t">${when(M.t)}</div>
+   ${ST==='pick'?`<div class="tp-lock">🔒 يقفل بعد <b id="tpCd"></b></div><div class="tp-rule">اختار الـ11 اللي تتوقع المدرب ينزلهم أساسيين. كل لاعب تصيبه يجيب <b>نقطة</b> لك ولجمهور ${nm(c)}. التوقع يقفل قبل المباراة بساعتين.</div>`:''}
+   ${ST==='soon'?`<div class="tp-lock">⏳ التوقع ينفتح بعد <b id="tpCd"></b></div>`:''}
+   ${ST==='locked'?`<div class="tp-lock">🔒 انقفل التوقع · التشكيلة الأساسية تنكشف مع بداية المباراة</div>`:''}</div>`);
+  anchor.after(card);
+  const target=ST==='pick'?lock:ST==='soon'?op:0;
+  if(target){const cd=()=>{const t=Math.max(0,Math.floor((target-Date.now())/1000)),f=x=>String(x).padStart(2,'0');const e=q('tpCd');if(e){const D=Math.floor(t/86400),H=Math.floor(t%86400/3600);e.style.direction=D?'rtl':'ltr';e.textContent=D?(D===1?'يوم':D===2?'يومين':D+(D<=10?' أيام':' يوم'))+(H?' و'+(H===1?'ساعة':H===2?'ساعتين':H+(H<=10?' ساعات':' ساعة')):''):`${f(Math.floor(t/3600))}:${f(Math.floor(t%3600/60))}:${f(t%60)}`};if(t<=0){clearInterval(tick);renderTP()}};cd();tick=setInterval(cd,1000)}
+  if(ST==='soon'){q('builder').hidden=true;return}
+  // التشكيلة: المحفوظة من السيرفر، أو اللي على الجهاز
+  const btn=[...document.querySelectorAll('#clubs .club')].find(b=>b.textContent.includes(sq.name));
+  const prevXi=(saved&&saved.mid===M.id)?saved.xi:null;
+  pickClub(sq,btn);
+  document.body.classList.toggle('tplock',ST!=='pick');
+  let keys=null;
+  try{const a=await F.tok();const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`).then(r=>r.ok?r.json():null);if(r&&r.x)keys=r.x.split('~')}catch(e){}
+  if(!keys){try{keys=JSON.parse(localStorage.getItem('el3azy_tp_'+M.id)||'null')}catch(e){}}
+  MINE=keys;
+  if(keys){const by={};sq.p.forEach(p=>by[tk(p)]=p);const L=keys.map(k=>by[k]).filter(Boolean);
+    // نرتب حسب المراكز في الخطة الحالية
+    const used=new Set();FMS[fm].forEach(([x,y,r],i)=>{const p=L.find(p=>!used.has(tk(p))&&p[2]===r);if(p){xi[i]=p;used.add(tk(p))}});
+    FMS[fm].forEach((_,i)=>{if(!xi[i]){const p=L.find(p=>!used.has(tk(p)));if(p){xi[i]=p;used.add(tk(p))}}})}
+  else if(prevXi)xi=prevXi;
+  renderPitch();
+  const pitch=q('pitch');
+  if(ST==='pick'){
+    pitch.after(el(`<button class="tp-go" id="tpGo">✅ اعتمد توقعي</button>`));
+    q('tpGo').after(el(`<div class="tp-sub" id="tpSub">${keys?'توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل':'تقدر تعدّل لين ما يقفل · الخطة للشكل بس، والنقاط على أسماء اللاعبين'}</div>`));
+    q('tpGo').onclick=save;upd();
+  }
+  if(ST==='locked')pitch.after(el(`<div class="tp-sub">${keys?'توقعك محفوظ ✅ ما تقدر تعدّله بعد القفل':'ما اعتمدت توقع لهالمباراة. توقّع المباراة الجاية قبل ما تقفل.'}</div>`));
+  if(ST==='reveal'){
+    const L=LU[M.id],real=new Set(M.h===c?L.hs:L.as);
+    if(!keys){pitch.before(el(`<div class="tp-msg">ما توقعت تشكيلة هالمباراة.<br>التشكيلة الجاية تنفتح مع الجولة الجاية.</div>`));}
+    else{const hits=keys.filter(k=>real.has(k)).length;
+      pitch.before(el(`<div class="tp-res"><div class="big">${hits} <small>من 11</small></div><div class="l">صبت ${hits} من التشكيلة الأساسية ${hits?'✅':''} وجبت <b>${hits} ${hits===1?'نقطة':hits===2?'نقطتين':'نقاط'}</b> لك ولجمهور ${nm(c)}</div></div>`));
+      const by={};sq.p.forEach(p=>by[tk(p)]=p);const miss=[...real].filter(k=>!keys.includes(k)).map(k=>by[k]).filter(Boolean).map(p=>p[6]||p[1]);
+      if(miss.length)pitch.after(el(`<div class="tp-miss">❌ <b>أساسيين ما توقعتهم:</b> ${miss.join('، ')}</div>`));}
+  }
+}
+function decorate(){
+  if(mode!=='tp')return;
+  if(ST==='reveal'&&M&&LU[M.id]&&MINE){const c=EL3FAN.club(),L=LU[M.id],real=new Set(M.h===c?L.hs:L.as);
+    document.querySelectorAll('#slots .slot').forEach((b,i)=>{const p=xi[i];if(p)b.classList.add(real.has(tk(p))?'tp-ok':'tp-no')})}
+  if(ST!=='pick')document.querySelectorAll('#slots .slot').forEach(b=>b.onclick=null);
+  upd();
+}
+function upd(){const g=q('tpGo');if(g){const n=xi.filter(Boolean).length;g.disabled=n<11;g.textContent=n<11?`اختار ${11-n} ${11-n===1?'لاعب':'لاعبين'} بعد`:'✅ اعتمد توقعي'}}
+async function save(){
+  const k=xi.filter(Boolean).map(tk);if(k.length<11||new Set(k).size<11)return;
+  const g=q('tpGo');g.disabled=true;g.textContent='يحفظ...';
+  try{localStorage.setItem('el3azy_tp_'+M.id,JSON.stringify(k))}catch(e){}
+  try{const F=EL3FAN;try{await F.sync()}catch(e){}const a=await F.tok();
+    const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`,{method:'PUT',body:JSON.stringify({c:F.club(),x:k.join('~'),w:{'.sv':'timestamp'}})});
+    if(!r.ok)throw 0;MINE=k;q('tpSub').textContent='توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل';toast('✅ انحفظ توقعك');try{window.el3stat&&el3stat('tashkila','tp')}catch(e){}
+  }catch(e){toast(Date.now()>=M.t-LOCK?'انقفل التوقع':'ما انحفظ، تأكد من الإنترنت وجرب مرة ثانية')}
+  upd();
+}
+window.addEventListener('el3fan',()=>{if(mode==='tp')renderTP()});
+boot();
+})();
+</script>
 <script data-goatcounter="https://el3azy22.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
