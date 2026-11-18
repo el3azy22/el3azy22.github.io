@@ -350,13 +350,12 @@ def boards(per, names, hide, ok=None):
                 xi_out[c], extra = xi_list(byc[c])
                 if extra:
                     xi_tie[c] = extra      # متعادلين بالكامل مع رقم 11 وبرا القائمة: يطلع عددهم، والمشجع منهم يشوف إنه متعادل
+        # أعلى المشجعين: الكل بالترتيب بدون فراغات (قرار 19 نوفمبر). اللي ما كتب اسمه يطلع «مشجع»، واللي ما اختار نادي بدون شعار
         named = []
         for rk, x in full:
             if x['pts'] <= 0:
                 continue
-            nm = ((names.get(x['u']) or {}).get('n') or '') if names else x['nm']
-            if len(nm.strip()) >= 2 and x['c'] in NAME and x['u'] not in hide:
-                named.append([nm.strip()[:16], x['c'], x['pts'], rk, x['u']])
+            named.append([nm_of(x), x['c'] if x['c'] in NAME else '', x['pts'], rk, x['u']])
         top = [r for r in named if r[3] <= named[min(TOP, len(named)) - 1][3]] if named else []
         out[b] = {'clubs': clubs, 'fans': top[:TOP], 'more': max(0, len(top) - TOP), 'xi': xi_out, 'xt': xi_tie, 'pend': dict(pend)}
     return out, ranks

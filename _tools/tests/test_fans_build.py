@@ -65,7 +65,9 @@ if __name__ == '__main__':
     T.check('التراكم ما ينحسب مرتين', acc['weeks'], [1])
     rk = json.load(open(os.path.join(d, 'fans/ranks.json')))
     T.check('مركز سالم في الموسم (6 + 4 = 10)', rk['season']['fanA00000000']['all'][1], 10)
-    T.check('اسم سالم يطلع في أعلى المشجعين', [x[0] for x in data['season']['all']['fans']], ['سالم'])
+    T.check('اسم سالم يطلع في أعلى المشجعين', 'سالم' in [x[0] for x in data['season']['all']['fans']], True)
+    fl = data['season']['all']['fans']
+    T.check('أعلى المشجعين بالترتيب بدون فراغات (اللي بدون اسم = «»)', [x[3] for x in fl] == sorted(x[3] for x in fl) and fl[0][3] == 1 and '' in [x[0] for x in fl], True)
     d2 = tree([], {'rounds': {}, 'clubs': {}})
     rc, data = run(d2, W1_END + 5 * MIN, db='http://localhost:9')
     T.check('فشل قراءة Firebase: التشغيل يفشل وما ينكتب ملف', (rc != 0, data), (True, None))
