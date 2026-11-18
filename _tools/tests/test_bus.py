@@ -16,6 +16,19 @@ L = mid - 2 * DAY          # اليوم 3 شغال (في القواعد)
 TS = {'.sv': 'timestamp'}
 
 
+# المُعيد في الاختبار: نفس verify.py، بس صفحته ما تطلع برا الجهاز (قاعدة 11: الاختبارات ما تلمس Firebase الحقيقي)
+_BLOCK = """import runpy, sys
+from playwright.sync_api._generated import Browser
+_np = Browser.new_page
+def _h(r):
+    return r.continue_() if r.request.url.startswith(('http://127.0.0.1', 'http://localhost', 'data:', 'blob:')) else r.abort()
+def _new(self, *a, **k):
+    pg = _np(self, *a, **k); pg.route('**/*', _h); return pg
+Browser.new_page = _new
+runpy.run_path(sys.argv[1], run_name='__main__')"""
+VERIFY = [sys.executable, '-c', _BLOCK, os.path.join(T.ROOT, '_tools', 'bus', 'verify.py')]
+
+
 def body(d, k='0:10', s='ain', r='ain_A', c='ain', m='777'):
     return {'m': m, 's': s, 'r': r, 'k': k, 'c': c, 'd': d, 't': TS}
 
@@ -28,12 +41,12 @@ def recording(dnum):
         time.sleep(1)
         with sync_playwright() as p:
             b = p.chromium.launch(executable_path='/usr/bin/google-chrome'); pg = b.new_page()
-            pg.route('**/*.mp3', lambda r: r.abort())
+            pg.route('**/*', lambda r: r.continue_() if r.request.url.startswith('http://127.0.0.1') and not r.request.url.endswith('.mp3') else r.abort())
             pg.goto('http://127.0.0.1:8798/bus/#qa'); pg.wait_for_function('window.__bus && __bus.routes().length > 0')
             if not pg.evaluate("'STAR3' in __bus"):
                 b.close(); return None
             o = pg.evaluate("""([day, dnum]) => {const B=__bus;const st='ain';
-              B.day=day;B.setRoute(st+'_A');const a=B.autosim(true);const rec=B.rec.slice();const s=B.sim(rec);return {r:st+'_A',rec,a,nP:s.np,other:'wasl'}}""", [V.ymd(dnum), dnum])
+              B.day=day;B.setRoute(st+'_A');const a=B.autosim(true);const rec=B.rec.slice();const s=B.sim(rec);return {r:st+'_A',rec,a,nP:s.np,other:'wasl',enc:B.encK?B.encK(rec):null}}""", [V.ymd(dnum), dnum])
             b.close()
         return o
     finally:
@@ -54,8 +67,8 @@ if __name__ == '__main__':
 
     print('\n— باص الفريق: المُعيد —')
     o = recording(3)
-    if o is None:
-        print('⏳ المُعيد ينتظر سطرين في اللعبة (__bus.daily و np في sim) — ينضافون بعد ما تخلص جلسة اختبار اللعبة')
+    T.check('اللعبة فيها اللي يحتاجه المُعيد (STAR3 و np في sim)', o is not None, True)
+    if o: T.check('الصفحة تضغط الحركات بنفس صيغة المُعيد', o['enc'], V.encode(o['rec']))
     fix = os.path.join(T.ROOT, '_tools', 'tests', '_bus_fix.json')
     json.dump({'matches': [{'id': '777', 'wk': 9, 't': V.START + 2 * DAY + 20 * 3600000, 'h': 'ain', 'a': 'wasl'}]}, open(fix, 'w'))
     rk = lambda: V.encode(o['rec'])
@@ -65,7 +78,7 @@ if __name__ == '__main__':
                                'ud': {**body(3, k=rk(), c='nasr', s='nasr', r='nasr_A'), 't': 5000}}}})   # نادي ما عنده مباراة ✗
     if o:
         env = {**os.environ, 'FBDB': T.B, 'FBNS': T.NS, 'TOKEN': 'owner', 'NOW': str(V.START + 2 * DAY + 3600000), 'BUS_FIX': fix}
-        r = subprocess.run([sys.executable, os.path.join(T.ROOT, '_tools/bus/verify.py')], env=env, capture_output=True, text=True)
+        r = subprocess.run(VERIFY, env=env, capture_output=True, text=True)
         T.check('المُعيد اشتغل', r.returncode, 0)
         bv = requests.get(T.url('bv/3'), headers=T.OWNER).json() or {}
         a = bv.get('ua')
@@ -75,7 +88,7 @@ if __name__ == '__main__':
         T.check('مشجع الضيف يسوق لنفس الملعب وينقبل', (bv.get('ub') or {}).get('ok'), 1)
         T.check('ملعب غير ملعب المباراة يرفض', (bv.get('uc') or {}).get('ok'), 0)
         T.check('نادي ما عنده مباراة هاليوم يرفض', (bv.get('ud') or {}).get('ok'), 0)
-        r2 = subprocess.run([sys.executable, os.path.join(T.ROOT, '_tools/bus/verify.py')], env=env, capture_output=True, text=True)
+        r2 = subprocess.run(VERIFY, env=env, capture_output=True, text=True)
         T.check('مرة ثانية: ما يعيد اللي انعاد', 'ما في سباقات' in r2.stdout, True)
 
     if os.path.exists(fix):

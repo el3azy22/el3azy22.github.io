@@ -25,21 +25,24 @@ html,body{height:100%;background:#05121c;overflow:hidden;font-family:'Readex Pro
 .bar i{position:absolute;top:0;bottom:0;right:0;width:0;background:linear-gradient(270deg,#f3cf72,#D7B465)}
 .pausebtn{pointer-events:auto;width:50px;border-radius:16px;background:rgba(7,18,26,.84);border:2px solid rgba(215,180,101,.55);display:grid;place-items:center;cursor:pointer}
 .pausebtn span{display:flex;gap:5px}.pausebtn span i{width:6px;height:20px;background:#f3e6c8;border-radius:2px}
-.ctl{position:absolute;pointer-events:auto;border-radius:50%;background:rgba(18,22,28,.8);border:3px solid rgba(215,180,101,.6);display:grid;place-items:center;font-weight:700;touch-action:none;cursor:pointer;transition:transform .06s}
-.ctl.down{background:rgba(215,180,101,.28);transform:scale(.94)}
+.ctl{position:absolute;pointer-events:none;z-index:1;border-radius:50%;background:rgba(18,22,28,.8);border:3px solid rgba(215,180,101,.6);display:grid;place-items:center;font-weight:700;touch-action:none;cursor:pointer;transition:transform .06s}
+.ctl.down{background:rgba(215,180,101,.32);border-color:var(--gold)}
+#pad{position:absolute;left:0;right:0;bottom:0;height:calc(var(--sb) + 230px);pointer-events:auto;touch-action:none;-webkit-tap-highlight-color:transparent}
 .ctl svg{display:block}
-#bL{left:calc(var(--sl) + 14px);bottom:calc(var(--sb) + 18px);width:96px;height:96px}
-#bR{right:calc(var(--sr) + 14px);bottom:calc(var(--sb) + 18px);width:96px;height:96px}
-#bBrake{left:calc(var(--sl) + 24px);bottom:calc(var(--sb) + 132px);width:76px;height:76px;font-size:16px;color:#f3e6c8}
-#bNitro{right:calc(var(--sr) + 18px);bottom:calc(var(--sb) + 128px);width:84px;height:84px;font-size:17px;color:var(--gold);border:none;background:rgba(10,12,16,.85)}
-#bNitro svg{position:absolute;inset:-4px;width:92px;height:92px;transform:rotate(-90deg)}
+/* إبهام يسار للتوجيه (◀ ▶)، وإبهام يمين للفرامل والنيترو: تقدر توجّه وتفرمل في نفس اللحظة لأي جهة */
+#bL{left:calc(var(--sl) + 10px);bottom:calc(var(--sb) + 20px);width:80px;height:80px}
+#bR{left:calc(var(--sl) + 106px);bottom:calc(var(--sb) + 20px);width:80px;height:80px}
+#bBrake{right:calc(var(--sr) + 10px);bottom:calc(var(--sb) + 20px);width:92px;height:92px;font-size:17px;color:#f3e6c8;background:rgba(18,22,28,.62)}
+#bNitro{right:calc(var(--sr) + 22px);bottom:calc(var(--sb) + 124px);width:70px;height:70px;font-size:14px;color:var(--gold);border:none;background:rgba(10,12,16,.7)}
+#bNitro svg{position:absolute;inset:-4px;width:78px;height:78px;transform:rotate(-90deg)}
 #bNitro .lbl{position:relative}
 #bNitro.off{color:#7d7766}
 #bNitro.active{box-shadow:0 0 22px rgba(80,170,255,.8)}
-.speed{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 22px);display:flex;align-items:center;gap:8px;direction:ltr;pointer-events:none}
+.speed{position:absolute;left:calc(var(--sl) + 10px);bottom:calc(var(--sb) + 110px);display:flex;align-items:center;gap:8px;direction:ltr;pointer-events:none}
 .speed .sv{text-align:center;min-width:76px}
 @media (max-width:370px){.stage .nm{font-size:12px}.box{min-width:58px}}
-@media (orientation:landscape){.speed{left:auto;transform:none;right:calc(var(--sr) + 128px);bottom:calc(var(--sb) + 26px)}}
+@media (max-width:340px){.speed .sv{min-width:60px}.speed .sv b{font-size:30px}.speed .limit{transform:scale(.85)}.sq{gap:3px}.sq i{font-size:9px;padding:1px 4px}.box small.k{font-size:9px;white-space:nowrap}.box{padding:5px 6px}}
+@media (orientation:landscape){.speed{left:50%;transform:translateX(-50%);bottom:calc(var(--sb) + 24px)}html body.mir .speed{left:50%;right:auto;transform:translateX(-50%)}}
 #bStart{position:sticky;bottom:calc(var(--sb) + 8px);z-index:2}
 .speed b{display:block;font-size:46px;font-weight:700;line-height:1;text-shadow:0 3px 0 rgba(0,0,0,.6);font-variant-numeric:tabular-nums}
 .speed b.over{color:#ff6a5f}
@@ -116,6 +119,8 @@ h1 em{font-style:normal;color:var(--gold)}
 #carBus .sl{height:200px}#carBus .sl canvas{width:auto;height:100%;max-width:100%}
 .car.stad .track{padding:0 12%}.car.stad .sl{flex:0 0 76%;height:120px;align-items:center}.car.stad .sl img{max-height:120px;width:auto;max-width:100%;margin:auto}
 .car .ph{width:70%;height:70%;border-radius:16px;background:rgba(255,255,255,.06)}
+.car.stad .sl img.thumb{height:120px;filter:blur(5px);opacity:.85;transition:filter .3s}
+@media (orientation:landscape) and (max-height:500px){.car.stad .sl img.thumb{height:80px}}
 .arr{position:absolute;top:50%;transform:translateY(-50%);z-index:2;width:38px;height:38px;border-radius:50%;border:1.5px solid rgba(215,180,101,.55);background:rgba(7,29,43,.75);color:var(--gold);font-size:26px;line-height:32px;font-family:inherit;cursor:pointer;padding:0}
 .arr.prev{right:0}.arr.next{left:0}
 @media (hover:none){.arr{display:none}}
@@ -129,7 +134,13 @@ h1 em{font-style:normal;color:var(--gold)}
 .rm .tm{display:flex;align-items:center;gap:6px}.rm .tm i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}.rm small{display:block;font-size:11.5px;color:#bdb193;font-weight:500;margin-top:2px}.rm em{color:#ff9a8a;font-style:normal;font-weight:700}
 #passS{overflow:auto;justify-content:flex-start}.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.pc{position:relative;padding:9px 10px 9px 30px;border-radius:12px;background:rgba(0,0,0,.28);border:2px solid transparent;text-align:start}.pc.got{border-color:rgba(215,180,101,.5)}.pc i{position:absolute;right:auto;left:10px;top:12px;width:12px;height:12px;border-radius:50%}.pc b{display:block;font-size:14px}.pc small{display:block;font-size:11px;color:#bdb193}.pc span{display:block;color:var(--gold);font-size:14px;letter-spacing:1px}.pc .b2{color:#9fb6c8;font-size:12px}
 .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.bg{padding:8px 10px;border-radius:12px;background:rgba(0,0,0,.25);opacity:.55;text-align:start}.bg.on{opacity:1;border:2px solid var(--gold)}.bg b{display:block;font-size:13.5px}.bg small{display:block;font-size:11px;color:#bdb193;line-height:1.45}
-.daily{display:flex;align-items:center;justify-content:space-between;gap:10px}.daily b{display:block;font-size:16px;color:var(--gold);margin:2px 0}.daily small{display:block;color:#cdbf9f;font-size:11.5px;line-height:1.5}.daily .tg{flex:none}
+.chm{margin-top:8px;padding:10px;border-radius:12px;background:rgba(0,0,0,.25);border:2px solid rgba(215,180,101,.45)}.chm .tm{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:#fff}.chm .tm i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}.chm small{display:block;font-size:11.5px;color:#bdb193;margin-top:3px}
+.chg{margin-top:8px;font-size:14.5px;font-weight:700;color:#fff;line-height:1.6}.chg.go{color:var(--gold2)}.chs{display:block;margin-top:4px;font-size:12px;color:#cdbf9f;line-height:1.6}.chs.ok{color:#8fe3a8}.chs.bad{color:#ff9a8a}
+.chr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:8px 10px;border-radius:12px;background:rgba(215,180,101,.12)}.chr .st{font-size:20px;color:var(--gold2);letter-spacing:2px;direction:ltr}.chr b{font-size:15px;color:#fff}
+.chb{margin-top:8px;font-family:inherit;font-weight:700;font-size:14px;color:var(--navy);background:var(--gold2);border:none;border-radius:11px;padding:9px 14px;cursor:pointer}
+.btn.off{opacity:.45;filter:grayscale(.4)}
+.chwarn{margin:10px 0 14px;padding:12px;border-radius:14px;background:rgba(255,154,138,.12);border:1px solid rgba(255,154,138,.55);color:#ffd9d2;font-weight:700;font-size:14.5px;line-height:1.7;text-align:center}
+.pnote{font-size:12.5px;color:#ffd9d2;text-align:center;line-height:1.6;margin:-4px 0 10px}
 .stads .club{font-size:14px;line-height:1.25;text-align:start;padding:8px}.stads .club small{display:block;font-size:11px;color:#bdb193;font-weight:500}.club .tag{margin-inline-start:auto;font-size:10px;background:var(--gold);color:#071D2B;border-radius:8px;padding:1px 6px;font-weight:700;flex:none}
 #preview{display:block;margin:6px auto 0;width:200px;height:216px}
 .btn{font-family:inherit;font-weight:700;font-size:19px;border:none;border-radius:15px;padding:14px;background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);cursor:pointer;width:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 18px rgba(0,0,0,.35)}
@@ -160,10 +171,14 @@ h1 em{font-style:normal;color:var(--gold)}
 #stCard .ds{flex:none;text-align:center;min-width:52px;line-height:1.1}#stCard .ds b{display:block;font-size:22px;color:#ffd34d;direction:ltr}#stCard .ds small{font-size:11px;color:#cdbf9f}
 #stCard.ok{border-color:#7ee08a;animation:stpop .45s}#stCard.ok .no{background:#7ee08a}#stCard.ok .ds b{color:#7ee08a}
 @keyframes stpop{0%{transform:translate(-50%,0) scale(1)}40%{transform:translate(-50%,0) scale(1.08)}100%{transform:translate(-50%,0) scale(1)}}
-#stopHint{position:fixed;right:calc(var(--sr) + 10px);bottom:calc(var(--sb) + 226px);display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 12px;border-radius:14px;background:rgba(7,29,43,.92);border:2px solid #ffd34d;color:#fff;font-size:15px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none}
+#stopHint{position:fixed;right:calc(var(--sr) + 10px);bottom:calc(var(--sb) + 206px);display:flex;flex-direction:column;align-items:center;gap:2px;padding:7px 12px;border-radius:14px;background:rgba(7,29,43,.92);border:2px solid #ffd34d;color:#fff;font-size:15px;font-weight:700;opacity:0;transition:opacity .2s;pointer-events:none}
 #stopHint.on{opacity:1}#stopHint i{font-style:normal;color:#ffd34d;font-size:14px;animation:bob .8s infinite}#stopHint.warn{border-color:#ff7a6e}#stopHint.warn i{color:#ff7a6e}#stopHint.good{border-color:#7ee08a}#stopHint.good i{color:#7ee08a}
 @keyframes bob{50%{transform:translateY(4px)}}
 .ctl.dim{opacity:.35}
+/* لليد اليسار: التوجيه يمين والفرامل والنيترو يسار */
+body.mir #bL{left:auto;right:calc(var(--sr) + 106px)}body.mir #bR{left:auto;right:calc(var(--sr) + 10px)}
+body.mir #bBrake{right:auto;left:calc(var(--sl) + 10px)}body.mir #bNitro{right:auto;left:calc(var(--sl) + 22px)}
+body.mir .speed{left:auto;right:calc(var(--sr) + 10px);flex-direction:row-reverse}body.mir #stopHint{right:auto;left:calc(var(--sl) + 10px)}
 .box small.k{font-size:10px;color:#cdbf9f;margin-top:1px}
 .rstars{display:flex;justify-content:center;gap:10px;direction:ltr}
 .rstars i{font-style:normal;font-size:46px;line-height:1;color:#3a3f46;text-shadow:0 3px 0 rgba(0,0,0,.4)}
@@ -225,10 +240,9 @@ h1 em{font-style:normal;color:var(--gold)}
       <div class="cname"><b id="stadName">ملعب هزاع بن زايد</b><small id="stadSub">ملعب ناديك</small></div>
       <div class="dots" id="stadDots"></div>
     </section>
-    <div class="modes" id="modes"><button data-m="free" class="on">لعب حر</button><button data-m="daily">مرحلة اليوم</button><button data-m="round">تحدي الجولة</button></div>
+    <div class="modes" id="modes"><button data-m="free" class="on">لعب حر</button><button data-m="round">تحدي الجولة</button></div>
     <div class="card panel" id="mPanel">
       <div data-p="free"><div class="stagecard"><div class="num" id="mRouteNo">الدور<br>الأول</div><div><b id="mRouteT">العين ← ملعب هزاع بن زايد</b><small id="mRouteSub"></small><small id="mRouteNote"></small><small id="mBest"></small></div></div><div class="mnote">لعب حر: أي باص وأي ملعب، للتدريب وما ينحسب لناديك.</div></div>
-      <div data-p="daily" hidden><div class="pinfo"><small>تتغير كل يوم الساعة 12 بالليل · نفس الطريق والزحمة للجميع</small><b id="mDailyT"></b><small id="mDailyS">بباص ناديك، ونقاطها تنحسب لجمهوره</small></div></div>
       <div data-p="round" hidden id="mRound" class="round"></div>
     </div>
     <div class="card season" id="mSeason"></div>
@@ -236,11 +250,19 @@ h1 em{font-style:normal;color:var(--gold)}
   </div>
 </div>
 
+<div class="modal" id="chM"><div class="mbox">
+  <div class="bigic">🏟️</div><h2 id="chMH">تحدي الجولة</h2><p class="l" id="chMT"></p>
+  <div class="chwarn">عندك محاولة وحدة تنحسب في دوري الجماهير. تدرّب في اللعب الحر قبل</div>
+  <button class="btn" id="bChGo">ابدا محاولتي</button>
+  <button class="btn ghost" id="bChPr" style="margin-top:10px">أتدرّب في اللعب الحر</button>
+  <button class="btn ghost" id="bChX" style="margin-top:10px;border:none;font-size:15px;opacity:.75">رجوع</button>
+</div></div>
+
 <div class="modal" id="howM"><div class="mbox">
   <div class="bigic">🚌</div><h2>باص الفريق</h2><p class="l">انت سوّاق باص ناديك. الفريق ينتظرك على الطريق، والمباراة ما تبدا إلا بوصولك.</p>
   <div class="step"><i>1</i><div><b>اختار باص ناديك</b><span>اسحب الباص يمين أو يسار، وملعب ناديك يتحدد بروحه. تقدر تغيّره من «الوجهة».</span></div></div>
   <div class="step"><i>2</i><div><b>وصّل قبل صافرة الحكم</b><span>الساعة فوق تعد لين البداية. كل صدمة أو مخالفة تضيّع عليك وقت.</span></div></div>
-  <div class="step"><i>3</i><div><b>ركّب اللاعبين الثلاثة</b><span>قبل كل محطة تطلع لك بطاقة فيها اسم اللاعب والمسافة. خلك يمين وخفّف تحت 40 في منطقة الوقوف.</span></div></div>
+  <div class="step"><i>3</i><div><b>ركّب اللاعبين الثلاثة</b><span>قبل كل محطة تطلع لك بطاقة فيها اسم اللاعب والمسافة. خلك يمين وخفّف تحت 40 في منطقة الوقوف. اللي يفوتك يلحقكم بروحه، وتتأخرون دقيقة.</span></div></div>
   <div class="step"><i>4</i><div><b>اجمع الكور والنجوم</b><span>الكور الذهبية على الطريق، والنجوم الثلاث على وقتك واللاعبين والمخالفات.</span></div></div>
   <button class="btn" id="bHowOk" style="margin-top:12px">يلا نلعب</button>
   <p class="l" style="margin:10px 0 0;font-size:12px;opacity:.6">الدليل الكامل في زر ؟ فوق</p>
@@ -253,8 +275,8 @@ h1 em{font-style:normal;color:var(--gold)}
   <div class="card gpane" data-g="how" id="gHow"></div>
   <div class="card gpane" data-g="ch" id="gCh" hidden></div>
   <div class="gpane" data-g="ctl" hidden><div class="cgrid">
-    <div><b>◀ ▶</b>تغيير المسار</div><div><b>فرامل</b>قبل الرادار والإشارة والمحطة</div>
-    <div><b>نيترو</b>140 لمدة ثانيتين · معك شحنتين</div><div><b>⏸</b>إيقاف مؤقت وإعدادات الصوت</div>
+    <div><b>◀ ▶</b>تغيير المسار (تحت يسار)</div><div><b>فرامل</b>قبل الرادار والإشارة والمحطة</div>
+    <div><b>نيترو</b>140 لمدة ثانيتين · معك شحنتين</div><div><b>II</b>إيقاف مؤقت، والصوت، وتبديل جهة الأزرار</div>
   </div><div class="card" style="margin-top:10px;font-size:13px;line-height:1.8;opacity:.9">في الكمبيوتر: الأسهم للتوجيه، زر المسطرة (Space) للفرامل، والسهم فوق للنيترو.</div></div>
 </div></div>
 
@@ -269,6 +291,8 @@ h1 em{font-style:normal;color:var(--gold)}
       <button class="tg on" id="tgVoice2"><i></i>صوت العازي</button>
       <button class="tg on" id="tgEngine2"><i></i>المؤثرات</button>
     </div>
+    <button class="btn ghost" id="bMirror">⇄ بدّل جهة الأزرار</button>
+    <p class="pnote" id="pNote" hidden>هذي محاولة التحدي: لو رجعت للقائمة، تنحسب بالي سوّيته لين الحين.</p>
     <button class="btn ghost" id="bRestart">عيد الجولة</button>
     <button class="btn ghost" id="bMenu">القائمة</button>
   </div>
@@ -821,7 +845,7 @@ const mEnd=m=>m.at+({exit:EXJ+(m.jump||100)+20,works:m.len,tunnel:m.len,buslane:
 let MECH=[],segments=[],finishIdx=0,finishZ=0,cars=[],totalStars=0,timeLimit=80,curZone='city',STATIONS=[],picked=[0,0,0];
 function lastY(){return segments.length?segments[segments.length-1].p2.world.y:0;}
 function addSegment(curve,y){const n=segments.length,z=ZC[curZone];segments.push({index:n,zone:curZone,limit:120,p1:{world:{y:lastY(),z:n*SEG},camera:{},screen:{}},p2:{world:{y:y,z:(n+1)*SEG},camera:{},screen:{}},curve,sprites:[],cars:[],items:[],color:Math.floor(n/RUMBLE)%2?z.d:z.l});}
-function addRoad(e,hd,l,curve,y){const sy=lastY(),ey=sy+y*SEG,t=e+hd+l;for(let n=0;n<e;n++)addSegment(easeIn(0,curve,n/e),easeInOut(sy,ey,n/t));for(let n=0;n<hd;n++)addSegment(curve,easeInOut(sy,ey,(e+n)/t));for(let n=0;n<l;n++)addSegment(easeInOut(curve,0,n/l),easeInOut(sy,ey,(e+hd+n)/t));}
+function addRoad(e,hd,l,curve,y){const sy=lastY(),ey=sy+y*SEG,t=e+hd+l;for(let n=0;n<e;n++)addSegment(easeInOut(0,curve,n/e),easeInOut(sy,ey,n/t));for(let n=0;n<hd;n++)addSegment(curve,easeInOut(sy,ey,(e+n)/t));for(let n=0;n<l;n++)addSegment(easeInOut(curve,0,n/l),easeInOut(sy,ey,(e+hd+n)/t));}
 const MARK={};
 /* ===== الطرق كبيانات: كل ملعب له طريقان (الدور الأول والدور الثاني) ===== */
 // كل عنصر في sections: [المنطقة، دخول، ثبات، خروج، منعطف، ارتفاع] أو {m:'اسم علامة'}
@@ -891,7 +915,6 @@ function loadStadium(){stadImg=null;const want=STAGE;loadImg('stadiums/'+HOST(ST
 let STAGE='ain',TH=STADS.ain;{let sv=null;try{sv=localStorage.getItem('bus_stage')}catch(e){}STAGE=STADS[sv]?sv:(STADS[club.id]?club.id:'ain');TH=STADS[STAGE];}
 const HOST=id=>CLUBS.find(c=>c.id===id);
 const DAYN=(()=>{const d=new Date(Date.now()+4*3600e3);return Math.floor(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())/864e5);})();
-const dailyStage=()=>CLUBS[DAYN%CLUBS.length].id;
 function hashStr(t){let h=2166136261;for(const ch of t)h=Math.imul(h^ch.charCodeAt(0),16777619);return h>>>0;}
 const ZHILL={city:12,coast:8,oasis:16,desert:34,mountain:44},ZCURV={city:[0,0,2,-2,2.5,-2.5],coast:[0,0,1.5,-1.5,2.5,-2.5],oasis:[0,2.5,-2.5,3,-3],desert:[0,0,2,-2,3,-3],mountain:[0,3,-3,3.5,-3.5,2,-2]};
 const ZLEN=[560,640,760];
@@ -940,11 +963,13 @@ function genRoute(id,v){
 for(const id in STADS){ROUTES[id+'_A']=genRoute(id,0);ROUTES[id+'_B']=genRoute(id,1);}
 
 // تعديل الوقت لكل طريق من اختبارات البوت (عشان كل الملاعب نفس الصعوبة)
-const TB={"ain_A":-3,"ain_B":-2,"ajman_A":-2,"ajman_B":-2,"baniyas_A":-4,"baniyas_B":-3,"dhafra_A":-5,"dhafra_B":-1,"hatta_A":-1,"hatta_B":-2,"jazira_A":-4,"jazira_B":-5,"kalba_A":-2,"kalba_B":-2,"khorfakkan_A":-1,"khorfakkan_B":1,"nasr_A":-2,"nasr_B":-4,"shabab_A":-2,"shabab_B":-3,"sharjah_A":2,"united_A":-5,"united_B":-4,"wahda_B":-2,"wasl_A":-8,"wasl_B":-8};   // من 840 جولة بوت لكل ضبط
+const TB={"ain_A":2,"ain_B":4,"ajman_A":2,"ajman_B":3,"baniyas_A":1,"baniyas_B":3,"dhafra_A":1,"dhafra_B":3,"hatta_A":4,"hatta_B":2,"jazira_A":3,"jazira_B":1,"kalba_A":4,"kalba_B":3,"khorfakkan_A":4,"khorfakkan_B":6,"nasr_A":4,"nasr_B":1,"shabab_A":4,"shabab_B":3,"sharjah_A":7,"sharjah_B":5,"united_A":1,"united_B":2,"wahda_A":6,"wahda_B":4,"wasl_A":-3,"wasl_B":-2};   // من 840 جولة بوت لكل ضبط
 let ROUND=9,routeKey='ain_A';
 const routeFor=r=>STAGE+(r>=14?'_B':'_A');
 // نعدّل المنعطفات بهدوء قرب المحطات والتقاطعات عشان الطريق يكون مستقيم هناك
-function flatten(a,b){for(let i=a-15;i<b+15;i++){const sg=segments[i];if(!sg||sg.round!==undefined||sg.hair!==undefined)continue;const d=i<a?(a-i)/15:i>=b?(i-b+1)/15:0;sg.curve*=Math.min(1,d);}}
+// منحنى الدوار: يدخل يمين ثم يسار ثم يطلع، والانتقال بين كل جزء ناعم على 6 مقاطع بدل القفزة
+const ROUNDC=k=>{const P=[[0,0],[6,4.5],[12,4.5],[18,-5.5],[27,-5.5],[33,3.5],[40,3.5],[46,0]];for(let j=1;j<P.length;j++)if(k<=P[j][0]){const[a0,v0]=P[j-1],[a1,v1]=P[j],u=(k-a0)/(a1-a0),sm=u*u*(3-2*u);return v0+(v1-v0)*sm;}return 0;};
+function flatten(a,b){const W=30,sm=u=>u*u*(3-2*u);for(let i=a-W;i<b+W;i++){const sg=segments[i];if(!sg||sg.round!==undefined||sg.hair!==undefined)continue;const d=i<a?(a-i)/W:i>=b?(i-b+1)/W:0;sg.curve*=sm(Math.min(1,d));}}
 function buildTrack(){
   segments=[];for(const k in MARK)delete MARK[k];
   const RT=ROUTES[routeKey];setLanes(RT.lanes||3);
@@ -984,7 +1009,7 @@ function buildTrack(){
   for(const m of MECH){
     {const r={exit:[-45,EXJ+4],light:[-40,6],bump:[-30,10],works:[-30,(m.len||0)+4],buslane:[-10,(m.len||0)]}[m.t];if(r)flatten(m.at+r[0],m.at+r[1]);}
     if(m.t==='round'){put(m.at-95,{img:S.wRound,ww:520,offset:1.35});const key=LANES+':'+m.ok.join('');if(!S.laneSign[key]){const ok=m.ok.slice();ok.n=LANES;S.laneSign[key]=mk(420,330,(g,w,h)=>drawLaneSign(g,w,h,ok));}put(m.at-60,{img:S.laneSign[key],ww:1500,offset:1.4});
-      for(let k=-30;k<46;k++){const sg=segments[m.at+k];sg.limit=60;if(k>=0){sg.round=m.i;sg.curve=k<15?4.5:k<30?-5.5:3.5;}special.add(m.at+k);}
+      for(let k=-30;k<46;k++){const sg=segments[m.at+k];sg.limit=60;if(k>=0){sg.round=m.i;sg.curve=ROUNDC(k);}special.add(m.at+k);}
       segments[m.at+14].sprites.push({img:S.clock,ww:2200,offset:-2.3});}
     else if(m.t==='light'){put(m.at-80,{img:S.wLight,ww:520,offset:1.35});segments[m.at].stopLine=true;for(let k=-35;k<4;k++){segments[m.at+k].limit=Math.min(segments[m.at+k].limit,80);special.add(m.at+k);}
       segments[m.at+1].sprites.push({light:m.i,ww:380,offset:1.22,ox:0});segments[m.at+1].sprites.push({light:m.i,ww:380,offset:-1.22});}
@@ -996,7 +1021,7 @@ function buildTrack(){
     else if(m.t==='exit'){m.jump=m.jump||100;for(let k=0;k<=EXN;k++){const sg=segments[m.at+k];sg.exA=k/EXN;sg.exB=(k+1)/EXN;sg.noRight=true;special.add(m.at+k);}for(let k=-45;k<0;k++){segments[m.at+k].noRight=true;special.add(m.at+k);}
       put(m.at-75,{img:S.exitS,ww:1300,offset:1.4});segments[m.at+10].sprites.push({img:S.sp80,ww:420,offset:rampC(10/EXN)+.48});segments[m.at+EXR].sprites.push({img:S.radar,ww:420,offset:rampC(EXR/EXN)+.48});}
     else if(m.t==='hairpin'){put(m.at-95,{img:S.wHair,ww:520,offset:m.dir>0?-1.35:1.35});for(let k=-40;k<40;k++){const sg=segments[m.at+k];sg.limit=Math.min(sg.limit,60);special.add(m.at+k);
-        if(k>=0&&k<36){sg.curve=m.dir*(k<6?k*7/6:k>30?(36-k)*7/6:7);sg.hair=m.i;if(k%3===0)sg.sprites.push({img:m.dir>0?S.chevR:S.chevL,ww:260,offset:m.dir>0?-1.18:1.18,ox:-.5});}}}
+        if(k>=0&&k<36){{const sm=u=>u*u*(3-2*u);sg.curve=m.dir*7*(k<12?sm(k/12):k>24?sm((36-k)/12):1);}sg.hair=m.i;if(k%3===0)sg.sprites.push({img:m.dir>0?S.chevR:S.chevL,ww:260,offset:m.dir>0?-1.18:1.18,ox:-.5});}}}
     else if(m.t==='tunnel'){put(m.at-90,{img:S.wTunnel,ww:520,offset:1.35});for(let k=-6;k<m.len+6;k++)special.add(m.at+k);for(let k=0;k<m.len;k++){const sg=segments[m.at+k];sg.tunnel=k;sg.noRight=true;}segments[m.at].portal=true;segments[m.at+m.len-1].tEnd=true;}
     else if(m.t==='amb'){m.fired=false;}
     else if(m.t==='buslane'){put(m.at-70,{img:S.busLaneS,ww:1100,offset:1.4});for(let k=0;k<m.len;k++){segments[m.at+k].busl=true;special.add(m.at+k);}}
@@ -1028,6 +1053,8 @@ function buildTrack(){
     }
   }
   // قاعدة: ما فيه تحدي قبل محطة بأقل من 120 مقطع (تعارض في المسارات)
+  // آخر خطوة: ما في منحنى يتغير فجأة. أقصى تغيّر بين مقطع واللي بعده 0.4 (ذهاب وإياب)
+  {const L=.4;for(let i=1;i<segments.length;i++){const p=segments[i-1].curve,c=segments[i];c.curve=Math.max(p-L,Math.min(p+L,c.curve));}for(let i=segments.length-2;i>=0;i--){const n=segments[i+1].curve,c=segments[i];c.curve=Math.max(n-L,Math.min(n+L,c.curve));}}
   CONFLICTS=MECH.filter(m=>m.t!=='buslane'&&STATIONS.some(st=>st.at>m.at-105&&st.at<mEnd(m)+90)||radars.some(r=>r.at>m.at-60&&r.at<mEnd(m)+20)).map(m=>m.t+'@'+m.at);
   // كل تحدي له تكلفة وقت تنضاف للصافرة، عشان كل الملاعب تبقى بنفس الصعوبة
   timeLimit=Math.round(timeLimit+MECH.reduce((a,m)=>a+(MECH_COST[m.t]||0),0)+(TB[routeKey]||0));
@@ -1100,7 +1127,7 @@ function updateCars(dt){
 }
 
 /* ===== الحالة والرسم ===== */
-let ramp=null,amb=null;let state='menu',position=0,playerX=0,speed=0,timeLeft=60,stars=0,crashes=0,fines=0,charges=2,boost=0,shake=0,tilt=0,farOff=0,nearOff=0,stadOff=0,countT=0,finishT=0,won=false,clock=0,flashA=0,lastIdx=0;
+let ramp=null,amb=null,curvNow=0;let state='menu',position=0,playerX=0,speed=0,timeLeft=60,stars=0,crashes=0,fines=0,charges=2,boost=0,shake=0,tilt=0,farOff=0,nearOff=0,stadOff=0,countT=0,finishT=0,won=false,clock=0,flashA=0,lastIdx=0;
 const keys={left:false,right:false,brake:false};
 function project(p,cx,cy,cz){p.camera.x=-cx;p.camera.y=p.world.y-cy;p.camera.z=p.world.z-cz;p.screen.scale=CAMDEPTH/p.camera.z;p.screen.x=Math.round(W/2+p.screen.scale*p.camera.x*WS);p.screen.y=Math.round(HZ-p.screen.scale*p.camera.y*VS);p.screen.w=Math.round(p.screen.scale*ROADW*WS);}
 function poly(x1,y1,x2,y2,x3,y3,x4,y4,c){ctx.fillStyle=c;ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.lineTo(x3,y3);ctx.lineTo(x4,y4);ctx.closePath();ctx.fill();}
@@ -1221,8 +1248,8 @@ function update(dt){
   position+=speed*dt;
   const steer=state==='play'?(keys.left?-1:0)+(keys.right?1:0):0;
   if(ramp){const k=(position+PLAYERZ)/SEG-ramp.at;ramp.rel=clamp(ramp.rel+dxs*steer,-.3,.3);playerX=rampC(Math.max(0,k)/EXN)+ramp.rel;}
-  else{playerX+=dxs*steer;playerX-=dxs*sp*pSeg.curve*.27;}
-  tilt=interp(tilt,steer*.03,Math.min(1,dt*8));
+  else{const nS=segments[(pSeg.index+1)%segments.length],fr=((position+PLAYERZ)%SEG)/SEG,cv=pSeg.curve+(nS.curve-pSeg.curve)*fr;playerX+=dxs*steer;playerX-=dxs*sp*cv*.27;curvNow=cv;}
+  tilt=interp(tilt,steer*.03-curvNow*sp*.006,Math.min(1,dt*5));   // الباص يميل شوي مع المنحنى، وبهدوء
   if(state==='play'){
     if(boost>0){boost-=dt;speed+=ACC*1.4*dt;if(speed>NITROS)speed=NITROS;}
     else if(keys.brake)speed+=BRAKE*dt;
@@ -1243,7 +1270,7 @@ function update(dt){
     for(const s of[pSeg,segments[Math.max(0,pSeg.index-1)]])for(const it of s.items)if(!it.taken&&overlap(playerX,BUS_W,it.offset,.24)){it.taken=true;if(it.type==='star'){stars++;sfx('star');}else{if(charges<3){charges++;toast('+ شحنة نيترو');}else toast('النيترو مليان');sfx('pick');}}
     for(const st of STATIONS){if(picked[st.i])continue;const d=pSeg.index-st.at;
       if(d>=0&&d<BAY&&Math.abs(playerX-RIGHT())<.3&&toKmh(speed)<=BOARD_KMH){picked[st.i]=1;boardFx(st.i);sfx('board');V(5,2,1);paintSquad();}
-      else if(d>=BAY){picked[st.i]=2;sfx('miss');V(6,2,1);toast('فاتك '+POS[st.i]+' '+PK(st.i),true);paintSquad();}}
+      else if(d>=BAY){picked[st.i]=2;timeLeft-=MISS_T;sfx('miss');V(6,2,1);toast('فاتك '+POS[st.i]+' '+PK(st.i)+'! بيلحقكم بروحه، وتأخرتوا دقيقة',true);paintSquad();}}
     if(!SIM){stationHud(pSeg.index);firstTick(pSeg.index);}
     if(state==='play'&&rec.length%6===0)curPath.push(Math.round(position),Math.round(playerX*1000));
     // التحديات
@@ -1286,7 +1313,7 @@ function update(dt){
 /* ===== الواجهة ===== */
 const hud=$('hud'),tTime=$('tTime'),tStars=$('tStars'),tSpeed=$('tSpeed'),tLimit=$('tLimit'),prog=$('prog'),timerBox=$('timerBox'),nRing=$('nRing'),bNitro=$('bNitro'),countEl=$('count'),flashEl=$('flash');
 const fmt=t=>{t=Math.max(0,Math.ceil(t));return Math.floor(t/60)+':'+String(t%60).padStart(2,'0');};
-let KICK=20*3600;const SCALE=12,STAR2=5,STAR3=10;   // نجمتين: قبل الصافرة بدقيقة. 3 نجوم: بدقيقتين وبدون مخالفات   // كل ثانية لعب = 12 ثانية من وقت المباراة، والصافرة 8:00 م
+let KICK=20*3600;const SCALE=12,STAR2=5,STAR3=16,MISS_T=5;   // اللاعب اللي يفوتك يلحقكم بروحه، والفريق ما يكمل إلا بوصوله: دقيقة من ساعة المباراة (5 ث)   // نجمتين: قبل الصافرة بدقيقة. 3 نجوم: بثلاث دقايق وبدون مخالفات   // كل ثانية لعب = 12 ثانية من وقت المباراة، والصافرة 8:00 م
 function clockStr(tl){const t=Math.max(0,KICK-Math.ceil(tl*SCALE));let h=Math.floor(t/3600),m=Math.floor(t%3600/60);if(h>12)h-=12;return h+':'+String(m).padStart(2,'0');}
 function earlyStr(tl){const g=Math.max(0,Math.round(tl*SCALE)),m=Math.floor(g/60),s=g%60;const mw=m===1?'دقيقة':m===2?'دقيقتين':m<=10?m+' دقايق':m+' دقيقة';const sw=x=>x===1?'ثانية':x===2?'ثانيتين':x<=10?x+' ثواني':x+' ثانية';return m>0?(mw+(s?' و'+sw(s):'')):sw(s);}
 let SIM=false,tut=true;try{tut=!localStorage.getItem('bus_tut3')}catch(e){}
@@ -1317,12 +1344,12 @@ function showCount(t){countEl.style.display='block';countEl.textContent=t;countE
 function resetRace(){stationHudOff();picked=[0,0,0];vSaid=new Set();vQueue=[];vCount=0;vEnd=0;window.__vEndP=0;lastStarT=-9;ramp=null;amb=null;for(const m of MECH){m.x=-1.75;m.active=false;m.done=false;m.skid=false;m.hit=false;m.used=false;m.fired=false;m.rad=false;}for(const st of STATIONS)st.warned=false;curPath=[];paintSquad();position=0;playerX=0;speed=0;inv=0;sparks=[];rec=[];nitroQ=false;playT=0;tipStage=0;timeLeft=timeLimit;stars=0;crashes=0;fines=0;charges=2;boost=0;shake=0;tilt=0;stadOff=0;lastIdx=0;for(const s of segments)for(const it of s.items)it.taken=false;resetCars();}
 let lastCount=4;
 let LAST=null;
-function startRace(){if(MODE!=='free'&&fanId()===null&&window.EL3FAN&&!startRace.asked){startRace.asked=true;openFan();return;}initAudio();loadMusic();{const k=KICK,h=Math.floor(k/3600)%12||12,m=Math.floor(k%3600/60);const e=$('tKick');if(e)e.textContent='الصافرة '+h+':'+String(m).padStart(2,'0');}gc('start-'+MODE+'-'+STAGE);if(!musicUnlocked){musicUnlocked=true;const pr=music.play();if(pr)pr.then(()=>{if(state==='menu'||!musicOn)music.pause();}).catch(()=>{});}resetRace();['menu','result','pauseS'].forEach(i=>$(i).classList.remove('on'));hud.classList.add('on');state='count';countT=3.2;lastCount=4;musicSync();}
+function startRace(){if(MODE==='round'&&!CH){chStart();return;}DAY=ymdOf(pday(Date.now()));initAudio();loadMusic();{const k=KICK,h=Math.floor(k/3600)%12||12,m=Math.floor(k%3600/60);const e=$('tKick');if(e)e.textContent='الصافرة '+h+':'+String(m).padStart(2,'0');}gc('start-'+MODE+'-'+STAGE);if(!musicUnlocked){musicUnlocked=true;const pr=music.play();if(pr)pr.then(()=>{if(state==='menu'||!musicOn)music.pause();}).catch(()=>{});}resetRace();['menu','result','pauseS'].forEach(i=>$(i).classList.remove('on'));hud.classList.add('on');state='count';countT=3.2;lastCount=4;musicSync();}
 function endRace(w){won=w;state='finish';finishT=w?1.8:1.4;keys.left=keys.right=keys.brake=false;showCount(w?'وصلت!':'الصافرة!');sfx(w?'win':'lose');V(w?9:10,3,1);$('tip').classList.remove('on');
   if(tipStage>=3){tut=false;try{localStorage.setItem('bus_tut3','1')}catch(e){}}}
 let best=0,bestStars=0;
-// أفضل نتيجة لكل وضع بروحه: اللعب الحر لكل طريق، مرحلة اليوم لكل يوم، وتحدي الجولة لكل مباراة
-function bestKey(){return MODE==='daily'?'bus_best_d'+DAY+'_'+routeKey:MODE==='round'&&RMATCH?'bus_best_r'+RMATCH.id:'bus_best_'+routeKey;}
+// أفضل نتيجة لكل وضع بروحه: اللعب الحر لكل طريق، وتحدي الجولة لكل مباراة
+function bestKey(){return MODE==='round'&&RMATCH?'bus_best_r'+RMATCH.id:'bus_best_'+routeKey;}
 function loadBest(){best=0;bestStars=0;ghostPath=null;try{best=+localStorage.getItem(bestKey())||0;bestStars=+localStorage.getItem('bus_stars_'+routeKey)||0;const g=localStorage.getItem('bus_ghost_'+routeKey);if(g)ghostPath=JSON.parse(g);}catch(e){}
   if(routeKey==='ain_A'&&!best){try{best=+localStorage.getItem('bus_best_s1v3')||0;bestStars=+localStorage.getItem('bus_stars_s1v3')||0;}catch(e){}}}
 function paintBest(){const el=$('mBest');if(el)el.textContent=best?('أفضل نتيجة: '+best+' · '+'★'.repeat(bestStars)+'☆'.repeat(3-bestStars)):'';}
@@ -1335,7 +1362,9 @@ function showResult(){
   $('rArrive').textContent=won?('وصلت الساعة '+clockStr(timeLeft)+' م، قبل الصافرة بـ '+earlyStr(timeLeft)):('باقي لك '+Math.max(1,Math.round((1-(position+PLAYERZ)/finishZ)*100))+'% من الطريق');
   const row=(k,v,neg)=>'<div'+(neg?' class="neg"':'')+'><span>'+k+'</span><span>'+v+'</span></div>';
   $('rBd').innerHTML=(won?row('الوصول المبكر ('+Math.max(0,timeLeft).toFixed(1)+' ث × 100)','+'+early):'')+row('اللاعبين ('+nP+'/3 × 300)','+'+pb)+row('الكور الذهبية ('+stars+'/'+totalStars+' × 50)','+'+bl)+(crashes?row('الاصطدامات ('+crashes+' × 30)','−'+cr,true):'')+(fines?row('مخالفات الرادار','×'+fines+' (تأخير '+fines*36+' ث)',true):'')+row('النتيجة',won?String(score):'0 · ما وصلت قبل الصافرة');
-  $('rHint').textContent=!won?'جرّب النيترو في الطرق المفتوحة، وخفّف قبل الرادار.':rating===1?'للنجمة الثانية: ركّب لاعبين اثنين على الأقل من المحطات.':rating===2?(nP<3?'للنجمة الثالثة: ركّب اللاعبين الثلاثة، ووصّل قبل الصافرة بدقيقتين بدون مخالفات.':'للنجمة الثالثة: وصّل قبل الصافرة بدقيقتين وبدون مخالفات رادار.'):'ثلاث نجوم! حاول تكسر رقمك بالكور الذهبية.';
+  const nMiss=picked.filter(x=>x===2).length;
+  $('rHint').textContent=nMiss&&!won?'فاتك '+(nMiss===1?'لاعب':nMiss===2?'لاعبين':'3 لاعبين')+'، وكل واحد أخّركم دقيقة. ركّب فريقك عشان توصل بالوقت.':!won?'جرّب النيترو في الطرق المفتوحة، وخفّف قبل الرادار.':rating===1?'للنجمة الثانية: ركّب لاعبين اثنين على الأقل من المحطات.':rating===2?(nP<3?'للنجمة الثالثة: ركّب اللاعبين الثلاثة، ووصّل قبل الصافرة بثلاث دقايق بدون مخالفات.':'للنجمة الثالثة: وصّل قبل الصافرة بثلاث دقايق وبدون مخالفات رادار.'):'ثلاث نجوم! حاول تكسر رقمك بالكور الذهبية.';
+  if(CH)chFinish(rating,nP,score);
   paintResultFan();
   let bt,rec_=false;if(score>best){best=score;rec_=true;try{localStorage.setItem(bestKey(),best)}catch(e){};bt='رقم شخصي جديد!';}else bt=best?'أفضل نتيجة لك: '+best:'وصّل قبل الصافرة عشان تسجّل نتيجة';
   if(won&&(!ghostPath||curPath.length<ghostPath.length)){ghostPath=curPath.slice();try{localStorage.setItem('bus_ghost_'+routeKey,JSON.stringify(ghostPath))}catch(e){}}
@@ -1343,11 +1372,14 @@ function showResult(){
   if(rating>bestStars){bestStars=rating;try{localStorage.setItem('bus_stars_'+routeKey,bestStars)}catch(e){}}
   const nb=recordRun(won,rating,nP);LAST={won,timeLeft,rating,score,nP};
   $('rBest').textContent=bt+(nb.length?' · وسام جديد: '+nb.map(b=>b.name).join('، '):'');paintBest();
-  hud.classList.remove('on');$('result').classList.add('on');
+  paintAgain();hud.classList.remove('on');$('result').classList.add('on');
 }
-function pause(){if(state!=='play'&&state!=='count')return;state='pause';hud.classList.remove('on');$('pauseS').classList.add('on');musicSync();}
+// لو الإصبع على زر وتطلع من اللعبة (اتصال، تبديل تطبيق)، ما يعلق الزر بعد ما ترجع
+function releaseAll(){keys.left=keys.right=keys.brake=false;document.querySelectorAll('.ctl.down').forEach(e=>e.classList.remove('down'));}
+addEventListener('blur',()=>{if(state==='play'||state==='count')releaseAll();});
+function pause(){if(state!=='play'&&state!=='count')return;releaseAll();if(CH&&CH.on)chSnap();$('pNote').hidden=!(CH&&CH.on);$('bRestart').hidden=!!CH;state='pause';hud.classList.remove('on');$('pauseS').classList.add('on');musicSync();}
 function resume(){$('pauseS').classList.remove('on');hud.classList.add('on');state='count';countT=1.2;lastCount=2;musicSync();}
-function toMenu(){stationHudOff();state='menu';hud.classList.remove('on');['result','pauseS'].forEach(i=>$(i).classList.remove('on'));countEl.style.display='none';$('menu').classList.add('on');musicSync();}
+function toMenu(){if(CH){if(CH.on&&state!=='done')chFinish(0,picked.filter(v=>v===1).length,0,true);CH=null;}stationHudOff();state='menu';hud.classList.remove('on');['result','pauseS'].forEach(i=>$(i).classList.remove('on'));countEl.style.display='none';$('menu').classList.add('on');musicSync();try{paintRoundCard();}catch(e){}}
 
 /* ===== صوت العازي: 24 جملة بصوت إبراهيم ===== */
 // 1 يلا عليهم · 2 شي رادار خفف · 3 زخك رادار · 4 انتبه للمواتر · 5 ركب اللاعب · 6 سحبت على اللاعب · 7 نيترو · 8 الوقت يمر
@@ -1416,6 +1448,8 @@ function musicSync(){if(!hasMusic||!musicSrcReady)return;hookMusic();const want=
 function paintToggles(){['tgMusic','tgMusic2'].forEach(i=>$(i).classList.toggle('on',musicOn));['tgEngine','tgEngine2'].forEach(i=>$(i).classList.toggle('on',engineOn));['tgVoice','tgVoice2'].forEach(i=>$(i).classList.toggle('on',voiceOn));$('bSnd').classList.toggle('mute',!musicOn&&!engineOn&&!voiceOn);try{localStorage.setItem('bus_snd',JSON.stringify({e:engineOn,m:musicOn,v:voiceOn}))}catch(e){}}
 ['tgMusic','tgMusic2'].forEach(i=>$(i).addEventListener('click',()=>{musicOn=!musicOn;paintToggles();initAudio();musicSync();if(!musicOn)music.pause();}));
 ['tgEngine','tgEngine2'].forEach(i=>$(i).addEventListener('click',()=>{engineOn=!engineOn;paintToggles();}));
+try{if(localStorage.getItem('bus_mir')==='1')document.body.classList.add('mir');}catch(e){}
+$('bMirror').addEventListener('click',()=>{const on=document.body.classList.toggle('mir');try{localStorage.setItem('bus_mir',on?'1':'0')}catch(e){}});
 ['tgVoice','tgVoice2'].forEach(i=>$(i).addEventListener('click',()=>{voiceOn=!voiceOn;if(!voiceOn){try{vSrc&&vSrc.stop()}catch(e){}voiceT=0;vQueue=[];}paintToggles();}));
 // مكساج: كل الأصوات تمر على قناة رئيسية فيها ضاغط، عشان ما تتزاحم ولا تعلى فجأة
 let outN=null;function OUT(){return outN||ac.destination;}
@@ -1455,14 +1489,31 @@ function sfx(k){const small=k==='star'||k==='pick';
 }catch(e){}}
 
 /* ===== التحكم ===== */
-function bindHold(el,k){const on=e=>{e.preventDefault();keys[k]=true;el.classList.add('down');try{el.setPointerCapture(e.pointerId)}catch(_){}};const off=()=>{keys[k]=false;el.classList.remove('down');};
-  el.addEventListener('pointerdown',on);el.addEventListener('pointerup',off);el.addEventListener('pointercancel',off);el.addEventListener('lostpointercapture',off);}
-bindHold($('bL'),'left');bindHold($('bR'),'right');bindHold($('bBrake'),'brake');
-bNitro.addEventListener('pointerdown',e=>{e.preventDefault();bNitro.classList.add('down');nitroQ=true;});
-['pointerup','pointercancel','pointerleave'].forEach(ev=>bNitro.addEventListener(ev,()=>bNitro.classList.remove('down')));
+/* ===== التحكم باللمس: مناطق بدل أزرار =====
+   طبقة وحدة شفافة تحت تقرا كل الأصابع الموجودة على الشاشة في كل لمسة (touches)، وتحسب منها شو مضغوط.
+   - ما في زر يعلق: الحالة تنحسب من الأصابع اللي فعلاً على الشاشة، مب من «ضغط/فك» كل زر بروحه.
+   - تسحب إبهامك من ◀ لـ ▶ بدون ما تشيله، والاتجاه يتبدل.
+   - منطقة اللمس أوسع من الدائرة المرسومة، فلو إبهامك طاح شوي برا الزر يحسب. */
+const pad=document.createElement('div');pad.id='pad';hud.appendChild(pad);
+['bL','bR','bBrake','bNitro'].forEach(i=>$(i).style.pointerEvents='none');
+function zoneAt(x,y){const r=id=>$(id).getBoundingClientRect(),grow=(b,g)=>({l:b.left-g,r:b.right+g,t:b.top-g,b:b.bottom+g}),inR=(b)=>x>=b.l&&x<=b.r&&y>=b.t&&y<=b.b;
+  const N=grow(r('bNitro'),10),B=grow(r('bBrake'),18),L=r('bL'),R=r('bR');
+  if(inR(N))return 'nitro';if(inR(B))return 'brake';
+  const sl=Math.min(L.left,R.left)-14,sr=Math.max(L.right,R.right)+14,st=Math.min(L.top,R.top)-34,sb=innerHeight;
+  if(x>=sl&&x<=sr&&y>=st&&y<=sb){const mid=((L.left+L.right)/2+(R.left+R.right)/2)/2;return (x<mid)===(L.left<R.left)?'left':'right';}
+  return null;}
+let padIds=new Map();
+function padSync(list,fresh){const z=new Set();for(const t of list){const k=zoneAt(t.clientX,t.clientY);if(k)z.add(k);}
+  const play=state==='play'||state==='count';
+  keys.left=play&&z.has('left')&&!z.has('right')?true:false;keys.right=play&&z.has('right')&&!z.has('left')?true:false;keys.brake=play&&z.has('brake');
+  if(play&&fresh)for(const t of fresh)if(zoneAt(t.clientX,t.clientY)==='nitro')nitroQ=true;
+  $('bL').classList.toggle('down',keys.left);$('bR').classList.toggle('down',keys.right);$('bBrake').classList.toggle('down',keys.brake);bNitro.classList.toggle('down',z.has('nitro'));}
+const tl=e=>{e.preventDefault();padSync(e.touches,e.type==='touchstart'?e.changedTouches:null);};
+['touchstart','touchmove','touchend','touchcancel'].forEach(ev=>pad.addEventListener(ev,tl,{passive:false}));
+// للماوس (الكمبيوتر) نفس المنطق بإصبع واحد
+let mouseDown=false;pad.addEventListener('mousedown',e=>{mouseDown=true;padSync([e],[e]);});addEventListener('mousemove',e=>{if(mouseDown)padSync([e]);});addEventListener('mouseup',()=>{if(mouseDown){mouseDown=false;padSync([]);}});
 $('bPause').addEventListener('click',pause);$('bResume').addEventListener('click',resume);$('bRestart').addEventListener('click',startRace);
-$('bMenu').addEventListener('click',toMenu);$('bMenu2').addEventListener('click',toMenu);$('bAgain').addEventListener('click',startRace);$('bStart').addEventListener('click',startRace);$('bShare').addEventListener('click',()=>{if(LAST)doShare(LAST);});document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>{if(state!=='menu')return;const m=b.dataset.m;
-  if(m==='free'){setFree();paintRoute();}else if(m==='daily'){setFree();MODE='daily';setTab('daily');useFanBus();pickStage(dailyStage());}else{setTab('round');useFanBus();const fc=fanClub()||club,fx=fixtures(),mine=fx.find(x=>x.h===fc.id||x.a===fc.id)||fx[0];if(mine)pickRound(mine);}}));
+$('bMenu').addEventListener('click',toMenu);$('bMenu2').addEventListener('click',toMenu);$('bAgain').addEventListener('click',()=>{if(MODE==='round'){setFree();paintRoute();}startRace();});$('bStart').addEventListener('click',startRace);$('bShare').addEventListener('click',()=>{if(LAST)doShare(LAST);});document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>{if(state!=='menu')return;if(b.dataset.m==='free'){setFree();paintRoute();}else roundTab();}));
 const km={ArrowLeft:'left',ArrowRight:'right',ArrowDown:'brake',' ':'brake'};
 addEventListener('keydown',e=>{if(km[e.key]){keys[km[e.key]]=true;e.preventDefault();}if(e.key==='ArrowUp'||e.key==='Shift'||e.key==='n')nitroQ=true;if(e.key==='Escape'||e.key==='p')state==='pause'?resume():pause();});
 addEventListener('keyup',e=>{if(km[e.key])keys[km[e.key]]=false;});
@@ -1472,7 +1523,8 @@ document.addEventListener('contextmenu',e=>e.preventDefault());
 $('bSnd').addEventListener('click',e=>{e.stopPropagation();$('sndP').classList.toggle('on');});
 $('sndP').addEventListener('click',e=>e.stopPropagation());document.addEventListener('click',()=>$('sndP').classList.remove('on'));
 /* ===== التعليمات: نافذة أول دخول، الدليل، وبطاقة أول مرة لكل تحدي ===== */
-const MFIRST={round:['⟳','دوار قدّام','شوف اللوحة الزرقا، وادخل المسار الأخضر قبل الدوار. المسار الغلط يلفّك لفة زيادة.'],
+const MFIRST={station:['🚏','محطة لاعب','خلك يمين وخفّف تحت 40 في منطقة الوقوف. لو فاتك يلحقكم بروحه، وتتأخرون دقيقة.'],
+  round:['⟳','دوار قدّام','شوف اللوحة الزرقا، وادخل المسار الأخضر قبل الدوار. المسار الغلط يلفّك لفة زيادة.'],
   light:['🚦','إشارة قدّام','الإشارة الحمرا يعني وقّف قبل الخط. قطعها مخالفة تضيّع عليك نص دقيقة.'],
   bump:['〰','مطب قدّام','خفّف تحت 40 قبل المطب، وإلا الباص بينط ويبطّئ.'],
   works:['🚧','أعمال طرق','مسار مسكّر بالأقماع. غيّر مسارك قبل لا توصلها.'],
@@ -1487,7 +1539,7 @@ const MFIRST={round:['⟳','دوار قدّام','شوف اللوحة الزرق
 let SEEN={};try{SEEN=JSON.parse(localStorage.getItem('bus_seen')||'{}')}catch(e){}
 let fcT=null;function firstCard(t){if(SIM||SEEN[t]||!MFIRST[t])return;SEEN[t]=1;try{localStorage.setItem('bus_seen',JSON.stringify(SEEN))}catch(e){}
   const [ic,ti,tx]=MFIRST[t];$('fcIc').textContent=ic;$('fcT').textContent=ti;$('fcX').textContent=tx;$('fcard').classList.add('on');clearTimeout(fcT);fcT=setTimeout(()=>$('fcard').classList.remove('on'),4500);}
-function firstTick(pi){if(SIM)return;for(const m of MECH){if(SEEN[m.t])continue;const d=m.at-pi;if(d<=150&&d>100){firstCard(m.t);break;}}}
+function firstTick(pi){if(SIM)return;if(!SEEN.station){const st=STATIONS.find(s=>!picked[s.i]&&s.at-pi<=ST_ANN+40&&s.at-pi>ST_ANN-20);if(st){firstCard('station');return;}}for(const m of MECH){if(SEEN[m.t])continue;const d=m.at-pi;if(d<=150&&d>100){firstCard(m.t);break;}}}
 {const steps=[...document.querySelectorAll('#howM .step')].map(x=>x.outerHTML).join('');$('gHow').innerHTML=steps;
  $('gCh').innerHTML=Object.keys(MFIRST).map(k=>{const [ic,ti,tx]=MFIRST[k];return '<div class="grow"><span class="gic">'+ic+'</span><div><b>'+ti.replace(' قدّام','')+'</b><span>'+tx+'</span></div></div>';}).join('')+
    '<div class="grow"><span class="gic">📷</span><div><b>الرادار</b><span>اللوحة تقولك الحد. إذا عديته تضيّع نص دقيقة.</span></div></div>';}
@@ -1522,16 +1574,24 @@ var busSl=[],busIm=[];
 function paintBusSlide(i){const c=busSl[i];if(!c)return;const p=c.getContext('2d'),cl=CLUBS[i],im=busIm[i];p.clearRect(0,0,c.width,c.height);
   if(im&&im.complete&&im.naturalWidth){drawRealBus(p,im,0,0,c.width,false);if(cl===club){const lw=c.width*.42,lx=(c.width-lw)/2,ly=c.width*509/472*.1;p.fillStyle='rgba(0,0,0,.85)';rr(p,lx,ly,lw,c.width*.065,6);p.fill();txt(p,'إلى '+TH.st,c.width/2,ly+c.width*.034,FONT(600,Math.round(c.width*.03)),'#ffb52e',0,lw-8);}}
   else p.drawImage(mk(360,340,(g,w,h)=>drawBus(g,w,h,cl,false),1),0,(c.height-c.width*340/360)/2,c.width,c.width*340/360);}
+/* تحميل صور القائمة بالأولوية: الباص والملعب المختارين أول، بعدهم اللي جنبهم، وبعدين الباقي (3 في نفس الوقت بالكثير)
+   وكل ملعب له صورة صغيرة مغبشة داخل الصفحة تبين على طول لين توصل الصورة. ونسخة القائمة أخف (560 بكسل) */
+const STHUMB={"ajman": "data:image/webp;base64,UklGRggCAABXRUJQVlA4WAoAAAAQAAAAHwAADAAAQUxQSOIAAAABgKtt2yHn/fNPbDst23S2kypXToCtS6NKZZulbbO00dv5Z3ZnjTmDiFCYtAFDd08hRw2g0IDCEAisn4pAGvPAEYBDbz6hACGUNJXAFKCEG0oG8bemACWgGUHgKAeYISqagKMwo37uJqhzQrILkAlvy1QAoZ5wyCIIBUKAbFu0PK9NXe9MLt5Nra2eT4wMHc93jJ+0de2WV62XFhwVBO8rJEFU1N+IjBd4XudnTOAZLzCmvXjZ2qdCLgUyxfuSQjD+kcsFRdmwgkkxUQgeU/CShhg/phBECZArkkfY958E/LJUVlA4IAABAABQBQCdASogAA0APtFUo0uoJKMhsAgBABoJbACdMoRwEGAEeCGSeP1MADRiwvhWQ9EK+wAA/oHiCNy4/o+KVSPLivC2v7yliRxuYgcz45+Pr2Q5x6SIozhtHgHDCvmln93gFEz5ehNbEJfdGS2QPQ+kz4ORT6QU6BmwwCRDCkZcw3wuEPhfye/+Cl62f47ynBsX7UyjCivGpccL1Sl77fBFWI/uLOmfaDZOxEtSfgNiKgHVCv5Oqp9yiLKto/FAAV9b+wAgeEtr/N/XJccSJ/wTq595uteab3tqkzT56m4bkD3B82+zQ365ND9YBxbr7NnOU++hEFFqP59vr9/LWqAA", "al_ain": "data:image/webp;base64,UklGRnABAABXRUJQVlA4WAoAAAAQAAAAHwAACQAAQUxQSJcAAAABgFvb1rLo4SE10IBmmlECuUNKTBEsIocGqMFTiN19JnL/9I5LBxExAWQyExHZQ9lGf3Z5+/BwfR61ihmvjYgMZhMZiCzORPOg8Us+LUUcRGSgYGkGAIpzIaVUSkopuNAAXgZ5H9UAKMal+rVgHADq0Eyov5aCadxr9Z9SX50h/wXrIcR/CLQKEPofBXJR/vz6NXv9SxYGAFZQOCCyAAAAcAQAnQEqIAAKAD7RVKNLqCSjIbAIAQAaCWUAA+JrwD9YFkZlG5g+q+ov8UAA/t+KTPei7tN+wga13mwspseZcw1TxYJsJwcbRpGye2O5cdWMEYk8GzJxCy4Incm+EFwgda56cSMl5CyFfx5h46p+kWVpw0duGYRSPxwedj30EAMipzalpWZBk49hv+1EH6gaTSRBA9jXKlEyif4IUIjfhN9fpCfEj6fvChx7wNsEAAAAAA==", "al_dhafra": "data:image/webp;base64,UklGRuYBAABXRUJQVlA4WAoAAAAQAAAAHwAACwAAQUxQSOkAAAAFgGrbtrJln3txt+Tubp2fBpXEoFHdIfEO3si0P6LN3d09ufv9Tvj0ESJiArByWSkV9ASCnsHQS+WOLcbwQo/UBEHTYFUIsCZUU0k1Sk7eWEHvF+Dv5YWfn8/3L+glBcWtw7XyhvCMvIyEyIhAHw8J9ff99nh7cbCx94DgvCmUieyKgggYM4MIxvdrI3s/U3ANJQBKgYgAEBhgMENK4KhmlsoPq2ojiGCf+a7HnTDJpcuivUs48tfd45M/FTqYnuqnwVnxfLReP14CKHIIApj2yf6XBIDYCVYe268l/6QzZhDABIAJgOaxAABWUDgg1gAAANAEAJ0BKiAADAA+0VikS6glI6GwCAEAGgliAJ0FqCUA2UyKAL+M3wNj2YL8FUsAANHvybyR82xbW59VKNEtxKeGHo2rbrmVE/kNeUKdgir9soYTA5yOxzAjgL/0NZZAMTl/4E9P3gDrAoBiwQt6ozBwNkWYWGH85LPCCal/oKN1KrRuxKQGDsNsmsmUnKyjKF7hA1qdj7M1G9/0zytL2jSDc/PG3hY9ag9JJv5vA+Cf2YXf8ey5EozTEob32llUkB8MCA0ezRpVSVxQQd88YpOLqvgAAAA=", "al_jazira": "data:image/webp;base64,UklGRhQCAABXRUJQVlA4WAoAAAAQAAAAHwAADgAAQUxQSAoBAAANkGrb1rItaz/f97tLcsHd3d2drlfgnehkEh0SkfFHnObuVHf45NnhlWuIiAk4f+Djq7tX3leFyStc6N+7eOzAhY30j12wefREjOR2CCe3A+z+01CBtkP3r7d/c562HyvmuRQoVAJIpbo/+47OBqfJNy+faio1RGNAFsUX10JNxEaSqheXTHcwINLr772nQtJ2ZLRrCSb378aezmUTB7rq/PfTm4c3fvz4U0fSKfLYtQtnkVRD98i0mU+v3nYw2aF6CVxCJK2O/sM11WIElIIK5aBanCJXTXs0uV2MmGyJaoGkM8Ai0zKSAUtpRlhGGGFhGQEWARAIBAgHsEAgVClFCyMAyyKpKBkIRVZQOCDkAAAA8AQAnQEqIAAPAD7RVKNLqCSjIbAIAQAaCWUAsPgUcr1jcOi2prheQzklhvALeAOAAM4d8hNu8tAj8e+IT+01uVYL9flE6lI8SxxU+nG4mG6vBZeVRaZbV9xPg6Ae3ASZKE2Q1vA8/YujsGfcwpk13xmX0AXqNz/8zmOei81jp3MJPOfgN5k7+8feKZ8hw5zbQEzYY1I7WT3+dyqJHBN4/TS12MQ0S4x9fS3Db9nYPSeUanEPKZMBb3l7u6ZnQUtnuOg/rRdRzPqkV4suzW13F05d3Hywzs9gg6j3oPmyBK/P2+AA", "al_nasr": "data:image/webp;base64,UklGRsIBAABXRUJQVlA4WAoAAAAQAAAAHwAACgAAQUxQSLcAAAAFgJpt27Llvt/3x909uiQ6I7gkqwzABDQG8ER1X+FvNE8uzd2e90E+3SAiJgBWgJLm1sba8pzsNFoVvD/dXB0f7R7dAVaMK+zraCuHr4Lwdtc7myuPxg1OVAJOQBDEf4UqaAxwPrY0Mo9PGiJKdZqKofGab4voJXFVZRRxUpPt3yYAPTSASyQnFwKFd4nB520hAAZS/lOPrvQVeCsAAlAqFYT3wO2cTU3YhE1YisLXqojI99eXjAIAVlA4IOQAAAAQBQCdASogAAsAPtFUo0uoJKMhsAgBABoJYgCdAaeznjfYBgU9G/SnP5k4E+KqUYsAAPxmB6KRNl4fpjggqrUy0GnQfKC7nFrFODLNoBFW1+vROHpiZBUb7yZRUW18zEN91ENSFnLVa6/qCik7apLZF/codpQUO+ZxkqNIF44aVbJheJDhvAqXEinSctLaauETQOu12UEyh81yRj8ddQtTPOxIjDCbcQTMkEzuRx51gKky5enKA8YqO7x+kVRW9Q1i7J80//QHfZD2MU2m56i5iUHqIF+FwHEu6opAlkEAQANKMAA=", "al_wahda": "data:image/webp;base64,UklGRgACAABXRUJQVlA4WAoAAAAQAAAAHwAACgAAQUxQSPUAAAABgGPb2rHneb/3j20nrW2nSulUdjpbtW10tm1/7xdOwMYI+Nv/P4OIUNu2DQPZnpxyB4b2VlABCgAQICTRk/yBBZ1NgCkU4A6AwCieAhloJIAYrwBEYTDVBlsq2KRLw0vHwhEHYDsXHJnlq2Wjg3QsACOVnKbwJp15qIUycI+APLDPhQGo9ktMjcpMNgRY4z/sHnY/5t9UXBUPjeUfl7Vd5j62rS0PXk+9/F+p1vD/OXxF4fE5/No3PpvL4bI5EimCw5b8QQI2/zXm518S9r8IuT/8fUfDK18pvrDRKjmhaYamGcLQDEMIkTzAnDKEJluWCJQEAABWUDgg5AAAADAEAJ0BKiAACwA+0VajS6gkoyGwCAEAGglsAJ0ygxgZbERCgg4o6TQEAAD8jEbQuRMmgTnwzRevSPH6/bTNMlf9zbIT4d7JcosaIs6fMSuZxyPWxHQK9bGgorj1rIEdQ4l0rK18OkkAcz5PAGK85JGGeV92ZE9QcCQr6YHNuTKjX2yXVGtClWSpGb3bb/80eOH+rf8Lld5Ffr7fjzz3F5RvQi9pwc3oyHC/QrVMKMMPosmtb3c6LF/2q/pDIWjminPu+KXWWHEPkrWDBNFxPY7162Yrp7zs7hZnhMJr6lZwmHAAAA==", "al_wasl": "data:image/webp;base64,UklGRsoBAABXRUJQVlA4WAoAAAAQAAAAHwAACAAAQUxQSNIAAAANgFvbtmplnXcv7u5ORKohIdRARBEQauglUATj50gL7u7uvPf+v/fgNUTEBAwM9dwGChqo8reIB0RLlqcOL9LFAXj+q8pPeV6pW13D5Gel5GZwKxE4UUGN722bNQ41H/PlebkXrrUvtHO7Fo+i4Dh3OMBR+eYLXPrRQm6q6rKgOKmZIRmR2vvHiiDMeksP5Slx3a+PUdJUv5U1IM6qD+DttT1lnaTsbXdYnwGkAWg6miaaLiAmsGRjORgfBuFXUUQR5U8VbyZKnpWfKvxT5RdRpAlWUDgg0gAAALAEAJ0BKiAACQA+0VakS6gko6GwCAEAGgloAJ0EcAtK39Jx75dv4bQZ7t8zIbgA/mo6zQinww+ZPqURX0D+F0qGdN+zK942Z54YhGwoBGNsNjQUuLYJ7kPTIefTfNEFiJqX7W4pwZ+B1OlcAWHKy+6PqTc9m/Ve/Tm0wryW6Y3Yrqv6YMexn/iNUcKi36/zs6qYU7SeJ0vzk9DkL3Ub2/KrOtTGZuOLO+XyIQp89s7jYe9ifqvrcIV/J/T4OcqvesSkPghx7Z+wiRnAelpnv0AAAA==", "baniyas": "data:image/webp;base64,UklGRhwCAABXRUJQVlA4WAoAAAAQAAAAHwAADwAAQUxQSAoBAAABkLJt2/qnG7p/NkvuS9bcfdWi+9I+wHBo7hAhuzatHFR3b06cy+99n+e9cX4RMQH456gbPgB4HhL1U9pP5YUekvYiFC7wLKIgQF42vP/xQyDj2Lp50gYAsxNpAYLgb34IIJp8QxXKlcHKXv2U7vmlefAAeCEAVO15SRpVq6SN7dJ8iGN7UiJ4ANC0974ljVVVFWOcE/LlZb4GyuDl7X7kSBdb/auIqBoyjk8PXM8MHpCMreh/21gdyRH0PFj8KJqwMSY+iK3f79mkVETP+JdITdy6/cAjFycmaueCnO+UfxFV+U1URNXwBuqVjv/oSEeSjiQdV+7m7lhbWl75+/LKPy6vLC+vfrgzCVZQOCDsAAAA8AQAnQEqIAAQAD7RVqVMKCSjojAIAQAaCWMArjxMuATiVKuJMV+wA4kEuFasywcAAP7vzkD/vYS8he/5x30f9rPp/9Rt9b98vq/1ASckSNiHsPp3LP1XPW3M4LYp5ukH9CmsnBUg49VAgnEyy6u6x+FCSg4qiLSFgXI9m8YpjrGwG1T/ULuceCPJN7c80l5SxbLp+Vmc7Su2K1ZvL7olgOoti8lTZilXjn7FgFOXQuJdIYinzvDmqTZ5ZR6JY2asSTe+BVJTba7VqsEEZW4aGzMpVxdRSAYYAAP4SlQIh5uu0B3IUKPMKAPYAAA=", "hatta": "data:image/webp;base64,UklGRhACAABXRUJQVlA4WAoAAAAQAAAAHwAADQAAQUxQSPgAAAANkCPbtmorc1377u7/AznE/JQGELrGGllM5pn1wKEF1gBid4fI/d67V/CkXhMiYgKSuH7nfFrTyazav7o1ifn1p+iweXD8/lv+HEFVZ2rdvjUCf14iNyhxC4Vp+rAH0r7vNHXQ0jSVh37WKEGGJKbWvhcGxdyb90k0hEEqayBYPTmSCqDm3LUAaoow6tm09Cqp17x7Hz22wGlsWF55gdc8u/c39GX+EsukzBOqaUy9dzNrEBP7Pstbyi8yWMqQBZjKFogt6eUT63AIZAfINCaSwcMbdzw/7DIXbVoNLaPKD6fktLRAAFYzpaR/SrdIi6qkMcvLCpARGVZQOCDyAAAAcAUAnQEqIAAOAD7RVKNLqCSjIbAIAQAaCUATplBj/TgFIAVv1nxJ+eMNPfF12BFLFCYAAAD+mFymS/vBhL/eCwGesq+LdA9+Xcn5N+uzRnFWnh2EyM2q/rM1k4dUpBC3q+270SqfjGC5dLxTfKFvSFUrNGfT1yFrk6bq9ex89jIx/CSXMlGr9ORn9Fih/t3eHBdcVCZcneSHVVCFgQnWF+tOxfPGWQNp1zZiLSrtvpeqGSEZWsicHts4+8KYYofk8HpsPTcxol7BkHdW60SagyYGQ7lyjeCnQZcz0egMDvaxbK0S2vUneHINeaHR9mKIAAA=", "kalba": "data:image/webp;base64,UklGRhYCAABXRUJQVlA4WAoAAAAQAAAAHwAADAAAQUxQSPsAAAAFgLJt2/lX9/383tl2W7ZtJqMhetmf4n8s2l5dspvZbev3f99nRkRMgMWqoUVIkDDixyZGAELW5Ua91k6uawp/q6no4BaVsAAQ+xQYJMBfEKzLW6+JAbPQWRSMMgCRPYYfFw3hs1XWKAoufIS9tbXLi7mpqdAISkr92er04fnh9vXBbFwUnw474K/vK/RhWdpZkuG1fRp8s28duaq76wdmwYvKj7Y8fW96x8o6Uhq1gGt7qaxMdBNzZrBi7cVopt+b0INYsW+eMMEPFQgAMeGH+pO11EBgwm/5kxQvZM34T3oyMwMA/hsCoJ/YkwYiaMREAIMYDGIGMyvcAgBWUDgg9AAAAHAEAJ0BKiAADQA+0VajS6gkoyGwCAEAGglkAJ0ygCWqFlJj9/heyFrThp7MAP2wyy4+XjHufz1XG3XvzOHcXt5VGQ6pfZtOQn1zw3J0IxRRmV7Y2PwsKOh5TlQ9bD/rb/WbwvK0Y4EaL/+sjCrjiYq86I78eP727D8Vu+KA8Q0jAhm8vt9czSRtU1rFXr40E8a+rJT02cPrhfOMNOwSStrcXA18N9PxC8YffmT02V9oHjNtt3xEc9vz5b+yfgjzvngJ3zlRbD6u7LgOCfagZggsoanM2bPUNmN4nHLr5uM2zp5IZvGcMj0SI/Ah4x4ja+twAAA=", "khorfakkan": "data:image/webp;base64,UklGRtIBAABXRUJQVlA4WAoAAAAQAAAAHwAACgAAQUxQSN8AAAAFkGNr27FX1/MhdlI6lVXZduUJcAKsU9nJFGyWHIBxKnY2v+97qqMZRMQEhD0dnrccQFAQBUEFBSynazTR3uo/NzyEv1cML2ei5VXGlaWigqB/ICgK4mReStEp/7PknIYQz7EcE1wTVQNFcE3UtVzL+LxnVMWNhH0J+eqaAZ+wze/4ub8I/uKZAR8DPwy9PJa63f6ws67lz1Gla6SGXlD49p7O4zfBnUtFb0ebj5zW7L5gg3/rfZx6WE48icYVQBEUQRFQATB4Wbqf5BjCv1bPehJtqyiCior8RhUQVFQcAFZQOCDMAAAAsAQAnQEqIAALAD7RVKNLqCSjIbAIAQAaCWIAnTKBr6otfpk0SusEdJ7jR/QyUAD2IS8VAo70gBRSoRNx/O8OkCCN4n0Sn3hZy4ckUHtRF4ajrzHiddLT+tsNCEBNDpl4KOxS5n0+XITWLME9jCd3DBUgttbIG0WEadph/DyUB3kFFWYb19dPa+4qyQlrLE40hdqnagjHykiL7/v12N8qEKvrHn+AGBvxWRs5a7SytPnptwQnFQ7hwgoBQ5GLIeSSi6eYmhQQWLDOAAAA", "shabab_al_ahli": "data:image/webp;base64,UklGRn4CAABXRUJQVlA4WAoAAAAQAAAAHwAADAAAQUxQSCgBAAANkGxt27Et530/72/7/3PNbNu2XePmDRtp1GoPbI5s27Ztu+7nzrUJETEBNJ3T6pM4/1M8c/+k09Rcjhrq/hfiIBJd358ffIOT63GI6F+4gDk402uBZX9EfOLmB3/xa1nPheJkvAdFxeVbXpH9VfL0nSBOjOgrIiypfyBL5A/ub1rNw533BZEvE8s/J6Hy9gu1YnRVYlQJ1ya3e2Df0h4tQD6+mdoAKMU0EYwUxWLjcVQKyZVpOeIt1xzsFxBC0OOnelaT67va1DMzwNa26nd4Vs08POJ8TTbPlpur302SmzNbWQoQpnT4fHM49k0FEKxLyzXPk9oDdu9LdX61JG3g2xxVfm+vwtdyHqZ9KVL9jThvv36M/Fa8Uodnle4kI+9XHHjF7z1kAlZQOCAwAQAAUAUAnQEqIAANAD7RVqRLqCSjobAIAQAaCWwAnTKBFGHkZlMj8epYo2FGYCesU1DLKNYAAP2ctZTJp/uamCe9wAiao7uA3HRekC8RJWC1AD6hKvkIjHZ1wGT3tjCUmSeMhxmoDbZZXl7sT5Vsso+n6kVxslA7qO2Nf1sOT6V/ZB+gpFeTMVHeX6CW9N2w7zTSMkFAC3KvP/Y3Tyf8WFUW4rqo1M/+thXxPGrKL9emWCqESLOfKnz9AvE+Pk58ATrB5cB4dH0c7AlCW20knR/8epc9+pMw6v/95ny7J8Ft9XP9jvKbKnNMOpF/mxrF9T2kb78++Ddw5lr+ffHOwF2nStCvn0LZCPXC3n+PfP3760Pa3OiryJbKpbzEkoF96F/fXHf5rQVGF2NjRTmyLRoAAA==", "sharjah": "data:image/webp;base64,UklGRgoCAABXRUJQVlA4WAoAAAAQAAAAHwAADQAAQUxQSAUBAAAFkGtr27FH9/N+sW0btZ0cgGtV6WxUNqp0SWVW6m0nrW1z8D7j+f8ziIgJiGpOOiaGaontRsrM2gKu1WC2WrLqOikkVC1k+BEc5kkdwWeK65T4LplUIhQZdqTYTUGdYVffYh2cjO01JSnMIDAIYIJk+nLxcnQxoe1vUWkNVe/WPW1rWEzqVORtXhiEfblhfc0nNqBnmOmsPVv6lzcg8s48vegmYClu1PpUPkFb+WBt8c4G2h67ycMhC2a1/Uajp+3W2TWj3p0aAJjwuxQZO3ElrReZjvGWHQKQ378qmmCAGAQG4ds3TUUAMsO86YsQEADj3wkMllKr0C/lmwDAoP8AgwCp0QUAVlA4IN4AAABQBACdASogAA4APtFUpEuoJKOhsAgBABoJYgCdH8AgnRc/wg0t7G+o/TiAAPyOudoaXnaaLRhIcYCWMPSjPOjG1rcgrc4CO9vdnvYK8h+9CNcihJir8hriNL/mAGi+GiIAvVn2FibaBGz56Y0fezpIy/23IlvMbkbLxpCPLpxW7VJzC47GkHrd4dAQJlw8U5rhujb4Smsrd7myZVBqg5o/CPkTl9GaSXx+ZIp+VFx/Sln9f0zKm/vh3k7L08X8guI3jp2w95FE5oS7Vgn7u3JMpoA/q+1qZR/kMKhGgAA=", "united": "data:image/webp;base64,UklGRsIBAABXRUJQVlA4WAoAAAAQAAAAHwAACgAAQUxQSLcAAAAFgJpt27Llvt/3x909uiQ6I7gkqwzABDQG8ER1X+FvNE8uzd2e90E+3SAiJgBWgJLm1sba8pzsNFoVvD/dXB0f7R7dAVaMK+zraCuHr4Lwdtc7myuPxg1OVAJOQBDEf4UqaAxwPrY0Mo9PGiJKdZqKofGab4voJXFVZRRxUpPt3yYAPTSASyQnFwKFd4nB520hAAZS/lOPrvQVeCsAAlAqFYT3wO2cTU3YhE1YisLXqojI99eXjAIAVlA4IOQAAAAQBQCdASogAAsAPtFUo0uoJKMhsAgBABoJYgCdAaeznjfYBgU9G/SnP5k4E+KqUYsAAPxmB6KRNl4fpjggqrUy0GnQfKC7nFrFODLNoBFW1+vROHpiZBUb7yZRUW18zEN91ENSFnLVa6/qCik7apLZF/codpQUO+ZxkqNIF44aVbJheJDhvAqXEinSctLaauETQOu12UEyh81yRj8ddQtTPOxIjDCbcQTMkEzuRx51gKky5enKA8YqO7x+kVRW9Q1i7J80//QHfZD2MU2m56i5iUHqIF+FwHEu6opAlkEAQANKMAA="};
+const imgQ=[];let imgQRun=0,imgQGo=false;
+function qLoad(kind,i,fn){imgQ.push({kind,i,fn});if(imgQGo)pumpQ();}
+function pumpQ(){imgQGo=true;const selB=CLUBS.indexOf(club),selS=CLUBS.findIndex(c=>c.id===STAGE),n=CLUBS.length;
+  const dist=t=>{const c=t.kind==='b'?selB:selS,d=Math.abs(t.i-c);return Math.min(d,n-d)*2+(t.kind==='s'?1:0);};
+  imgQ.sort((a,b)=>dist(a)-dist(b));while(imgQRun<3&&imgQ.length){const t=imgQ.shift();imgQRun++;t.fn().finally(()=>{imgQRun--;pumpQ();});}}
 var carB=carousel($('carBus'),CLUBS.length,(d,i)=>{const c=document.createElement('canvas');c.width=400;c.height=431;d.appendChild(c);busSl[i]=c;paintBusSlide(i);
-    loadImg('buses/'+CLUBS[i].file+'.webp').then(im=>{busIm[i]=im;paintBusSlide(i);});},
+    qLoad('b',i,()=>loadImg('buses/'+CLUBS[i].file+'.webp').then(im=>{busIm[i]=im;paintBusSlide(i);}));},
   {dots:$('busDots'),show:i=>{$('busName').textContent=CLUBS[i].name;$('busEn').textContent=CLUBS[i].en;}},
   i=>{const c=CLUBS[i];if(c===club||state!=='menu')return;club=c;try{localStorage.setItem('bus_club_id',c.id)}catch(e){};setTimeout(loadRated,0);setFree();pickStage(c.id);busSl.forEach((_,k)=>paintBusSlide(k));},.56);
 // الملاعب: صور ملاعب الأندية
-var carS=carousel($('carStad'),CLUBS.length,(d,i)=>{const ph=document.createElement('div');ph.className='ph';d.appendChild(ph);
-    loadImg('stadiums/'+CLUBS[i].file+'.webp').then(im=>{if(!im)return;const e=document.createElement('img');e.src=im.src;e.alt=STADS[CLUBS[i].id].st;d.replaceChildren(e);});},
-  {dots:$('stadDots'),show:i=>{const id=CLUBS[i].id,T=STADS[id];$('stadName').textContent=T.st;$('stadSub').textContent=(id===club.id?'ملعب ناديك · ':'')+HOST(id).name+(T.city!==HOST(id).name?' · '+T.city:'')+(id===dailyStage()?' · مرحلة اليوم':'');}},
+var carS=carousel($('carStad'),CLUBS.length,(d,i)=>{const f=CLUBS[i].file,e=document.createElement('img');e.alt=STADS[CLUBS[i].id].st;e.className='thumb';e.src=STHUMB[f]||'';d.appendChild(e);
+    qLoad('s',i,()=>new Promise(ok=>{const im=new Image();im.decoding='async';im.onload=()=>{e.src=im.src;e.classList.remove('thumb');ok();};im.onerror=()=>ok();im.src='stadiums/sm/'+f+'.webp';}));},
+  {dots:$('stadDots'),show:i=>{const id=CLUBS[i].id,T=STADS[id];$('stadName').textContent=T.st;$('stadSub').textContent=(id===club.id?'ملعب ناديك · ':'')+HOST(id).name+(T.city!==HOST(id).name?' · '+T.city:'');}},
   i=>{const id=CLUBS[i].id;if(id===STAGE||state!=='menu')return;setFree();pickStage(id);},.74);
-setTimeout(()=>{carB.go(CLUBS.indexOf(club),false,true);carS.go(CLUBS.findIndex(c=>c.id===STAGE),false,true);},50);
+setTimeout(()=>{carB.go(CLUBS.indexOf(club),false,true);carS.go(CLUBS.findIndex(c=>c.id===STAGE),false,true);pumpQ();},50);
 
 /* ===== الحلقة ===== */
 function resize(){DPR=Math.min([2,1.5,1][qLevel],window.devicePixelRatio||1);W=innerWidth;H=innerHeight;cvs.width=Math.round(W*DPR);cvs.height=Math.round(H*DPR);HZ=Math.round(H*.46);VS=H*.355;WS=Math.min(W,H*.62)/2;buildBg();}
@@ -1539,19 +1599,19 @@ let lt=0;
 const STEP=1/60;let accT=0;
 function frame(ts){const dt=Math.min(.25,(ts-lt)/1000||0);lt=ts;inFrame=true;voiceTick(dt);
   if(state==='count'){countT-=dt;const c=Math.ceil(countT);if(c!==lastCount&&c>0&&c<=3){lastCount=c;showCount(String(c));sfx('c');}
-    if(countT<=0){state='play';nitroQ=false;showCount('انطلق!');sfx('go');V(1,3);setTimeout(()=>{if(state==='play')countEl.style.display='none';},700);}clock+=dt;}
+    if(countT<=0){state='play';nitroQ=false;if(CH&&!CH.on)chOn();showCount('انطلق!');sfx('go');V(1,3);setTimeout(()=>{if(state==='play')countEl.style.display='none';},700);}clock+=dt;}
   else if(state==='menu'){clock+=dt;position+=MAXS*.35*dt;if(position>finishZ-3000)position=0;updateCars(dt);}
   else if(state!=='pause'){accT+=dt;let n=0;const _u=performance.now();while(accT>=STEP&&n<10){update(STEP);accT-=STEP;n++;}if(n>=10)accT=0;perfStat.upd=(perfStat.upd||0)+performance.now()-_u;perfStat.steps=(perfStat.steps||0)+n;}
   render();const _h=performance.now();updateHud(Math.min(dt,.05));perfStat.hud=(perfStat.hud||0)+performance.now()-_h;engineTick();audioTick(Math.min(dt,.05));inFrame=false;requestAnimationFrame(frame);}
 let QA_NOTRAFFIC=false;
-if(location.hash==='#qa')window.__bus={set noTraffic(v){QA_NOTRAFFIC=v},get state(){return state},set pos(z){position=z},get pos(){return position},get finishZ(){return finishZ},get stars(){return stars},get crashes(){return crashes},get fines(){return fines},get timeLimit(){return timeLimit},get timeLeft(){return timeLeft},set timeLeft(v){timeLeft=v},get speed(){return toKmh(speed)},get x(){return playerX},set x(v){playerX=v},keys,cars:()=>traffic.filter(c=>c.on),get rec(){return rec},set day(v){DAY=v},
+if(location.hash==='#qa')window.__bus={curves:()=>segments.map(s=>s.curve),get charges(){return charges},get boost(){return boost},get picked(){return picked.slice()},set speedRaw(v){speed=v},set noTraffic(v){QA_NOTRAFFIC=v},get state(){return state},set pos(z){position=z},get pos(){return position},get finishZ(){return finishZ},get stars(){return stars},get crashes(){return crashes},get fines(){return fines},get timeLimit(){return timeLimit},get timeLeft(){return timeLeft},set timeLeft(v){timeLeft=v},get speed(){return toKmh(speed)},get x(){return playerX},set x(v){playerX=v},keys,cars:()=>traffic.filter(c=>c.on),get rec(){return rec},set day(v){DAY=v},
 botsim(day,skill){DAY=day;const R=rng(day*7+skill),react=[18,8,3][skill],look=[22,34,46][skill],err=[.25,.1,.02][skill];
   resetRace();state='play';const was=tut;tut=false;SIM=true;let n=0,target=0,walls=0,cuts=0,wallOn=false;const prevOff=new Map();
   while(state==='play'&&n<20000){const pz=position+PLAYERZ;
     if(n%react===0){let best=target,bc=-1e9;const cur=LANE_X.reduce((m,L)=>Math.abs(L-playerX)<Math.abs(m-playerX)?L:m,LANE_X[0]);for(const L of LANE_X){if(skill>0&&Math.abs(L-cur)>.7)continue;if(skill>0&&L!==cur&&traffic.some(car=>car.on&&Math.abs(car.offset-L)<.45&&(car.z-pz)/SEG>-1.5&&(car.z-pz)/SEG<5))continue;let c=99;for(const car of traffic){if(!car.on)continue;const d=(car.z-pz)/SEG,lo=Math.min(car.offset,car.tOff)-.42,hi=Math.max(car.offset,car.tOff)+.42;if(d>-1.5&&d<look&&L>lo&&L<hi)c=Math.min(c,d);}const sc=c-Math.abs(L-playerX)*6+(R()<err?(R()-.5)*30:0);if(sc>bc){bc=sc;best=L;}}target=best;
       let br=false;for(let i=0;i<70;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar&&toKmh(speed)>sg.radar-(skill?0:-8))br=true;}if(skill>0&&traffic.some(car=>{if(!car.on||Math.abs(car.offset-playerX)>.42)return false;const d=(car.z-pz)/SEG,rv=Math.max(0,speed-car.speed)/MAXS;return d>0&&d<3+19*rv*rv;})&&Math.abs(target-playerX)<.1)br=true;if(skill>0&&traffic.some(car=>car.on&&Math.abs(car.offset-playerX)<.42&&(car.z-pz)/SEG>0&&(car.z-pz)/SEG<2.2&&car.speed<speed))br=true;keys.brake=br;
       if(skill>0&&charges>0&&boost<=0){let rd=false;const pi=Math.floor(pz/SEG);for(let i=0;i<120;i++){const sg=segments[pi+i];if(sg&&(sg.radar||sg.limit<120))rd=true;}if(STATIONS.some(st=>!picked[st.i]&&st.at-pi>-BAY&&st.at-pi<150)||MECH.some(m=>m.at-pi>-10&&m.at-pi<150)||ramp)rd=true;if(!rd&&R()<.5)nitroQ=true;}}
-    if((skill>0&&!window.__skipSt)||R()<.002){const pIdx=Math.floor(pz/SEG);for(const st of STATIONS){if(picked[st.i])continue;const d=pIdx-st.at;if(d>-60&&d<BAY){target=RIGHT();if(d>=-[16,13,11][skill]&&d<BAY-3&&toKmh(speed)>BOARD_KMH-8)keys.brake=true;break;}}}
+    if(!window.__skipSt){const pIdx=Math.floor(pz/SEG);for(const st of STATIONS){if(picked[st.i]||(skill===0&&((day*7+st.i*13)%10)>=7))continue;const d=pIdx-st.at;if(d>-60&&d<BAY){target=RIGHT();if(d>=-[16,13,11][skill]&&d<BAY-3&&toKmh(speed)>BOARD_KMH-8)keys.brake=true;break;}}}
     {const pIdx=Math.floor(pz/SEG),v=toKmh(speed);for(const m of MECH){const d=m.at-pIdx;
       if(m.t==='round'&&d>0&&d<110){if(skill>0||R()<.5)target=LANE_X[m.ok[m.ok.length-1]];if(d<34&&v>58)keys.brake=true;}
       if(m.t==='round'&&d<=0&&d>-46&&v>70)keys.brake=true;
@@ -1585,22 +1645,20 @@ get perf(){return perfStat},setRoute(k){const st_=ROUTES[k].stage;if(st_&&st_!==
   }
   for(const it of segments.flatMap(s=>s.items.map(x=>[s.index,x])))if(segments[it[0]].tunnel!==undefined&&Math.abs(it[1].offset)>.9)out.push(['itemWall',it[0]]);
   return out;},routes:()=>Object.keys(ROUTES).filter(k=>ROUTES[k].stage),get path(){return curPath},get ghost(){return {has:!!ghostPath,len:ghostPath&&ghostPath.length,gIdx,gZ,pz:position+PLAYERZ,rec:rec.length}},get voice(){return {loaded:VBUF.filter(Boolean).length,said:[...vSaid],voiceOn,voiceT}},get audio(){return {hasMusic,musicOn,paused:music.paused,ready:music.readyState,net:music.networkState,err:music.error&&music.error.code,t:music.currentTime,ac:ac&&ac.state,gain:musicGain?musicGain.gain.value:null,toggleHidden:$('tgMusic').hidden}},get q(){return qLevel},set carN(v){CAR_N=v},set crashT(v){CRASH_T=v},setTB(o){Object.assign(TB,o)},get ct(){return CT},resetCT(){CT={}},
-autosim(nitro){resetRace();state='play';const was=tut;tut=false;let n=0;while(state==='play'&&n<20000){const pz=position+PLAYERZ;keys.left=playerX>.05;keys.right=playerX<-.05;let br=false;for(let i=0;i<70;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar&&toKmh(speed)>sg.radar)br=true;}keys.brake=br;if(nitro&&charges>0&&boost<=0){let rd=false;for(let i=0;i<120;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar)rd=true;}if(!rd)nitroQ=true;}update(STEP);n++;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines};state='menu';return o;},sim(r){const inp=r.slice();resetRace();state='play';const was=tut;tut=false;for(const b of inp){keys.left=!!(b&1);keys.right=!!(b&2);keys.brake=!!(b&4);if(b&8)nitroQ=true;update(STEP);if(state!=='play')break;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines,steps:inp.length};state='menu';return o;},get result(){return {timeLeft,crashes,stars,fines,won}},seg:z=>findSeg(z),PLAYERZ,MARK,get pz(){return position+PLAYERZ}};
+autosim(nitro){resetRace();state='play';const was=tut;tut=false;let n=0;while(state==='play'&&n<20000){const pz=position+PLAYERZ;keys.left=playerX>.05;keys.right=playerX<-.05;let br=false;for(let i=0;i<70;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar&&toKmh(speed)>sg.radar)br=true;}keys.brake=br;if(nitro&&charges>0&&boost<=0){let rd=false;for(let i=0;i<120;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar)rd=true;}if(!rd)nitroQ=true;}update(STEP);n++;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines};state='menu';return o;},sim(r){const inp=r.slice();resetRace();state='play';const was=tut;tut=false;for(const b of inp){keys.left=!!(b&1);keys.right=!!(b&2);keys.brake=!!(b&4);if(b&8)nitroQ=true;update(STEP);if(state!=='play')break;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines,steps:inp.length,np:picked.filter(v=>v===1).length};state='menu';return o;},get result(){return {timeLeft,crashes,stars,fines,won}},seg:z=>findSeg(z),PLAYERZ,MARK,get pz(){return position+PLAYERZ},STAR3,encK,chTick(){for(const k in chPolled)chPolled[k]=0;chTick();},get ch(){return {CH,CHR,live:chLive(),st:chState().k}}};
 const MNAME={round:'الدوارات',light:'الإشارات',bump:'المطبات',works:'أعمال الطرق',dust:'الغبار',camel:'الجمال',fog:'الضباب',exit:'المخارج المختصرة',hairpin:'المنعطفات الحادة',tunnel:'الأنفاق',amb:'الإسعاف',buslane:'مسار الباصات',highway4:'طريق 4 مسارات'};
-function paintFan(){const e=$('hdrSub');if(!e)return;const f=fanClub(),id=fanId();{const d=$('mDailyS');if(d)d.textContent=f?'بباص '+f.name+'، ونقاطها تنحسب لجمهوره':'اختار ناديك من بطاقة المشجع عشان تنحسب نقاطها لجمهوره';}
+function paintFan(){const e=$('hdrSub');if(!e)return;const f=fanClub(),id=fanId();
   if(f){e.innerHTML='تلعب لجمهور <b>'+f.name+'</b>';e.onclick=null;e.classList.remove('ask');}
   else if(id===''){e.textContent='وصّل فريقك قبل الصافرة';e.onclick=null;e.classList.remove('ask');}
   else{e.innerHTML='<u>اختار ناديك</u> عشان تنحسب نقاطك لجمهوره';e.onclick=openFan;e.classList.add('ask');}}
-addEventListener('el3fan',()=>{paintFan();try{paintRoundCard();}catch(e){}if(typeof LAST!=='undefined'&&LAST&&state==='over')paintResultFan();});
-function paintResultFan(){const f=fanClub();
-  if(MODE==='free'){$('rFan').textContent='لعب حر';$('rDot').style.background=(f||club).c1;$('rFanS').textContent='للتدريب، ما ينحسب لناديك. «مرحلة اليوم» و«تحدي الجولة» هم اللي ينحسبون'+(f?' لجمهور '+f.name:'')+'.';$('rFanC').onclick=null;return;}
-  if(fanId()===''){$('rFan').textContent='محايد';$('rDot').style.background='#55606b';$('rFanS').textContent='انت محايد في بطاقة المشجع، فنتيجتك ما تنحسب لنادي. اختار ناديك عشان تنحسب لجمهوره.';$('rFanC').onclick=openFan;return;}
-  if(f){$('rFan').textContent='جمهور '+f.name;$('rDot').style.background=f.c1;$('rFanS').textContent='نتيجتك بتنحسب لجمهور ناديك أول ما ينطلق دوري الجماهير على المنصة.';$('rFanC').onclick=null;}
-  else{$('rFan').textContent='ما اخترت نادي';$('rDot').style.background='#55606b';$('rFanS').textContent='اختار ناديك من بطاقة المشجع عشان تنحسب نتيجتك لجمهوره.';$('rFanC').onclick=openFan;}}
+addEventListener('el3fan',()=>{paintFan();try{if(MODE==='round'&&state==='menu')roundTab();else paintRoundCard();}catch(e){}if(typeof LAST!=='undefined'&&LAST&&state==='done')paintResultFan();});
+function paintResultFan(){const f=fanClub();$('rFanC').classList.remove('ch');
+  if(MODE==='round'&&CHR){const x=CHR,F=fanClub()||club;$('rDot').style.background=F.c1;$('rFan').textContent='دوري الجماهير: '+PTS[x.rt]+' نقاط';$('rFanS').innerHTML=chStatus(x);$('rFanC').onclick=null;return;}
+  if(MODE==='free'){$('rFan').textContent='لعب حر';$('rDot').style.background=(f||club).c1;$('rFanS').textContent='للتدريب، وما ينحسب. «تحدي الجولة» هو اللي ينحسب'+(f?' لجمهور '+f.name:'')+' في دوري الجماهير.';$('rFanC').onclick=null;return;}
+  $('rFan').textContent='ما اخترت نادي';$('rDot').style.background='#55606b';$('rFanS').textContent='اختار ناديك من بطاقة المشجع عشان تدخل «تحدي الجولة».';$('rFanC').onclick=openFan;}
 function paintRoute(){const RT=ROUTES[routeKey],b=/_B$/.test(routeKey);paintFan();$('mRouteNo').innerHTML=b?'الدور<br>الثاني':'الدور<br>الأول';$('mRouteSub').textContent=RT.sub;
   $('mRouteT').textContent=club.name+' ← '+TH.st;const hn=$('hudNm');if(hn)hn.textContent=club.name+' ← '+TH.short;
   $('mRouteNote').textContent='التحدي: '+MNAME[TH.prim]+' و'+MNAME[TH.sec]+(b?' · الطريق الجديد للدور الثاني':' · طريق جديد يفتح مع الجولة 14');
-  const d=dailyStage(),dt=$('mDailyT');if(dt)dt.textContent=STADS[d].st+' · '+HOST(d).name;const bd=$('bDaily');if(bd){bd.classList.toggle('on',d!==STAGE);bd.textContent=d===STAGE?'مختارة':'العبها';}
   paintStads();paintBest();paintSeason();}
 function paintStads(){if(typeof carS==='undefined')return;const k=CLUBS.findIndex(c=>c.id===STAGE);if(carS.i!==k)carS.go(k,true,true);else carS.look();}
 function pickStage(id){setStage(id);routeKey=routeFor(ROUND);buildTrack();resetRace();loadBest();paintRoute();paintPreview();}
@@ -1611,7 +1669,7 @@ const EMIRATE={ain:'أبوظبي',wahda:'أبوظبي',jazira:'أبوظبي',ban
 const CID=c=>c==='shababahli'?'shabab':c;
 // نسخة احتياطية من مباريات الجولة (على المنصة تنقرا من predict/data.json)
 const FIX_FALLBACK=[{id:'84540',wk:9,t:1795092300000,h:'wasl',a:'hatta'},{id:'84536',wk:9,t:1795101900000,h:'ain',a:'dhafra'}];
-let MODE='free',RMATCH=null;   // free = لعب حر، daily = مرحلة اليوم، round = تحدي الجولة
+let MODE='free',RMATCH=null;   // free = لعب حر (للتدريب وما ينحسب)، round = تحدي الجولة (ينحسب في دوري الجماهير)
 function fixtures(){const src=FIX_DATA||FIX_FALLBACK;
   const now=Date.now(),up=src.filter(m=>m.t>now&&STADS[m.h]&&STADS[m.a]).sort((a,b)=>a.t-b.t);if(!up.length)return up;const n=up.find(m=>m.wk>=ROUND)||up[0];return up.filter(m=>m.wk===n.wk);}
 // الديربي بين أندية نفس المدينة فقط (العاصمة، دبي، الساحل الشرقي)
@@ -1651,17 +1709,110 @@ function paintSeason(){const el=$('mSeason');if(!el)return;const [s,m]=passStars
   el.innerHTML='<div class="sh"><b>موسم <bdi dir="ltr">'+SEASON.name+'</bdi></b><span>الجولة '+ROUND+' من '+SEASON.rounds+' · باقي '+left+' يوم</span></div><div class="sbar"><i style="width:'+(pr*100).toFixed(1)+'%"></i><em style="right:'+(13/26*100)+'%" title="الدور الثاني"></em></div>'+
     '<button class="pass" id="bPass"><span>ملاعبي</span><b>'+s+' / '+m+' ★</b><small>'+badgeState().filter(b=>b.on).length+' / '+BADGES.length+' وسام</small></button>';
   $('bPass').onclick=openPass;paintRoundCard();}
-function paintRoundCard(){const el=$('mRound');if(!el)return;const fc=fanClub()||club,fx=fixtures(),mine=fx.filter(m=>m.h===fc.id||m.a===fc.id),rest=fx.filter(m=>!mine.includes(m));
-  const list=[...mine,...rest];/* كل مباريات الجولة: مباراة نادي المشجع فوق، والباقي بالوقت */const wk=list.length?list[0].wk:ROUND+1;
-  let h='<div class="rh"><b>الجولة '+wk+'</b><small>بباص ناديك لملعب صاحب الأرض، والصافرة بموعد المباراة الحقيقي. يقفل مع صافرتها.</small></div>';
-  if(!list.length)h+='<div class="rm none">مباريات الجولة الياية تنزل هنا أول ما تنشرها الرابطة.</div>';
-  for(const m of list){const H=HOST(m.h),A=HOST(m.a),d=derby(m),best=PROG.rounds[m.id]||0,sel=MODE==='round'&&RMATCH&&RMATCH.id===m.id;
-    h+='<button class="rm'+(sel?' sel':'')+((m.h===fc.id||m.a===fc.id)?' mine':'')+'" data-id="'+m.id+'"><span class="tm"><i style="background:'+H.c1+'"></i>'+H.name+' × '+A.name+'<i style="background:'+A.c1+'"></i></span><small>'+STADS[m.h].st+' · '+kickStr(m.t)+(d?' · <em>'+d+'</em>':'')+(best?' · '+'★'.repeat(best):'')+'</small></button>';}
-  el.innerHTML=h;el.querySelectorAll('.rm[data-id]').forEach(b=>b.onclick=()=>{if(state!=='menu')return;const m=list.find(x=>x.id===b.dataset.id);pickRound(m);});}
+/* ===== «تحدي الجولة» في دوري الجماهير =====
+   باص نادي المشجع لملعب مباراته في الجولة (ملعب صاحب الأرض، للمستضيف والضيف)، في يوم المباراة بس، ومحاولة وحدة.
+   التلفون يرسل الحركات بس إلى b/<يوم>/<uid>، والمُعيد (_tools/bus/verify.py) يعيد السباق ويكتب النتيجة الرسمية في bv/<يوم>/<uid>.
+   محلياً: bus_ch_<يوم> = {m,s,r,c,d,wk,h,a,k,st,rt,np,sc,u,v}  st: play (بدا) · wait (تنتظر الإرسال) · sent · dup (انلعب من جهاز ثاني) · late (فات يومها) */
+const P0=1794859200000,PDMS=864e5,PTS=[0,3,6,9],DB=RATE_DB;
+const pday=t=>Math.floor((t-P0)/PDMS)+1;
+function ymdOf(d){const x=new Date(P0+(d-1)*PDMS+4*3600e3);return x.getUTCFullYear()*10000+(x.getUTCMonth()+1)*100+x.getUTCDate();}
+const DEMO=!!window.BUS_DEMO;   // نسخة التجربة (bus/preview): التحدي مفتوح على مباراة ناديك الياية كأنها اليوم، وما ينرسل شي
+let BUS_START=0,CH=null,CHR=null;try{BUS_START=+localStorage.getItem('bus_start')||0;}catch(e){}
+function chLive(){return DEMO||BUS_START>0&&pday(Date.now())>=BUS_START;}
+const CHK=DEMO?'bus_chd_':'bus_ch_';
+function chGet(d){try{return JSON.parse(localStorage.getItem(CHK+d)||'null');}catch(e){return null;}}
+function chSet(d,v){try{localStorage.setItem(CHK+d,JSON.stringify(v));}catch(e){}}
+function chDays(){const o=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith(CHK)&&/^\d+$/.test(k.slice(CHK.length)))o.push(+k.slice(CHK.length));}}catch(e){}return o.sort((a,b)=>a-b);}
+function encK(a){const o=[];let p=-1,n=0;for(const b of a){if(b===p)n++;else{if(n)o.push(p.toString(16)+':'+n);p=b;n=1;}}if(n)o.push(p.toString(16)+':'+n);return o.join(',');}
+function fbAcc(){try{const a=JSON.parse(localStorage.getItem('el3azy_fb')||'null');return a&&a.u?a:null;}catch(e){return null;}}
+function myMatches(){const fc=fanClub();if(!fc)return [];return (FIX_DATA||FIX_FALLBACK).filter(m=>(m.h===fc.id||m.a===fc.id)&&STADS[m.h]&&STADS[m.a]).sort((a,b)=>a.t-b.t);}
+function fanMatch(){const today=pday(Date.now());return myMatches().find(m=>pday(m.t)>=today)||null;}
+function chState(){const id=fanId(),fc=fanClub();
+  if(!fc)return {k:id===''?'neutral':'noclub'};
+  const today=pday(Date.now()),m=fanMatch(),last=chDays().filter(d=>d<today).map(chGet).filter(Boolean).pop()||null;
+  if(!m)return {k:'nomatch',last};
+  const d=DEMO?today:pday(m.t),x=chGet(d);
+  if(d>today)return {k:'before',m,d,last};
+  if(x&&!(CH&&CH.d===d))return {k:'done',m,d,x};
+  if(!chLive())return {k:'soon',m,d};
+  return {k:'open',m,d,home:m.h===fc.id};}
+const dateStr=t=>{const x=new Date(t+4*3600e3),M=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],D=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];return D[x.getUTCDay()]+' '+x.getUTCDate()+' '+M[x.getUTCMonth()];};
+const starStr=n=>'☆'.repeat(3-n)+'★'.repeat(n);
+// حالة النتيجة بعد اللعب (للبطاقة وشاشة النتيجة)
+function chStatus(x){const v=x.v;
+  if(v&&v.ok)return '<span class="chs ok">✓ انحسبت في دوري الجماهير</span>';
+  if(v&&v.ok===0)return '<span class="chs bad">ما انقبلت النتيجة في التحقق، فما انحسبت.</span>';
+  if(x.st==='late')return '<span class="chs bad">ما وصلت نتيجتك يوم المباراة، فما انحسبت.</span>';
+  if(x.st==='dup')return '<span class="chs">لعبت التحدي من جهاز ثاني، والمحسوبة هي أول محاولة. تنحسب بعد التحقق خلال 15 دقيقة تقريباً.</span>';
+  if(x.st==='sent')return '<span class="chs">تنحسب بعد التحقق خلال 15 دقيقة تقريباً.</span>';
+  return '<span class="chs">تنحسب بعد التحقق خلال 15 دقيقة تقريباً. نرسلها أول ما يتوفر النت، لا تسكّر الصفحة.</span>';}
+function chMatchHTML(m){const H=HOST(m.h),A=HOST(m.a),dr=derby(m);
+  return '<div class="chm"><span class="tm"><i style="background:'+H.c1+'"></i>'+H.name+' × '+A.name+'<i style="background:'+A.c1+'"></i></span><small>'+STADS[m.h].st+' · '+kickStr(m.t)+(dr?' · <em>'+dr+'</em>':'')+'</small></div>';}
+function lastLine(x){if(!x)return '';const v=x.v&&x.v.ok?x.v:null,rt=v?v.rt:x.rt;return '<span class="chs'+(v?' ok':'')+'">نتيجتك في الجولة '+(x.wk||'')+': '+starStr(rt||0)+' · '+PTS[rt||0]+' نقاط'+(v?' ✓':x.v&&x.v.ok===0?' (ما انقبلت)':'')+'</span>';}
+function paintRoundCard(){const el=$('mRound');if(!el)return;const S=chState(),F=fanClub();
+  let h='<div class="rh"><b>تحدي الجولة'+(S.m?' '+S.m.wk:'')+'</b><small>محاولة وحدة في يوم مباراة ناديك، وكل نجمة فيها بـ 3 نقاط لجمهوره في دوري الجماهير.</small></div>';
+  if(S.k==='noclub'||S.k==='neutral'){h+='<div class="chg">'+(S.k==='neutral'?'انت محايد في بطاقة المشجع، والتحدي لجمهور الأندية.':'التحدي لجمهور الأندية، وانت ما اخترت ناديك.')+'</div><span class="chs">اختار ناديك من بطاقة المشجع عشان تدخل التحدي. لين ذاك الوقت تقدر تلعب حر.</span>';}
+  else if(S.k==='nomatch')h+='<div class="chg">ما في مباراة ل'+F.name+' في الجدول لين الحين.</div><span class="chs">تنزل هنا أول ما تنشرها الرابطة.</span>'+lastLine(S.last);
+  else{h+=chMatchHTML(S.m);
+    if(S.k==='before')h+='<div class="chg">يفتح يوم المباراة: '+dateStr(S.m.t)+'</div><span class="chs">يفتح من أول يوم المباراة لين 12 بالليل. لين ذاك الوقت تدرّب في اللعب الحر.</span>'+lastLine(S.last);
+    else if(S.k==='soon')h+='<div class="chg">اليوم يوم المباراة، والتحدي يبدا مع دخول «باص الفريق» دوري الجماهير.</div><span class="chs">لين ذاك الوقت تقدر تلعب حر.</span>';
+    else if(S.k==='open')h+='<div class="chg go">'+(S.home?'وصّل باص ناديك لملعبك قبل الصافرة':'وصّل باص ناديك لملعب الخصم')+'</div><span class="chs">مفتوح اليوم لين 12 بالليل · محاولة وحدة بس</span>';
+    else{const x=S.x,v=x.v&&x.v.ok?x.v:null,rt=v?v.rt:(x.rt||0);
+      h+='<div class="chr"><span class="st">'+starStr(rt)+'</span><b>'+PTS[rt]+' نقاط</b></div>'+chStatus(x);}}
+  if(DEMO)h+='<span class="chs" style="color:#9fd4ff">نسخة تجربة: مباراة ناديك الياية كأنها اليوم، وما ينرسل شي للدوري. التحقق يطلع بعد 8 ثواني.</span>'+(S.k==='done'?'<button class="chb" id="bChReset">عيد التجربة</button>':'');
+  el.innerHTML=h;paintStart();{const r=$('bChReset');if(r)r.onclick=()=>{for(const d of chDays())try{localStorage.removeItem(CHK+d)}catch(e){}paintRoundCard();};}
+  if(S.k==='done'&&S.x&&!(S.x.v))chPoll(S.d);}
+function paintStart(){const b=$('bStart');if(!b)return;let t='انطلق',off=false;
+  if(MODE==='round'){const k=chState().k;t={open:'ابدا التحدي',noclub:'اختار ناديك',neutral:'اختار ناديك',before:'يفتح يوم المباراة',done:'لعبت تحدي هالجولة',soon:'التحدي ما بدا',nomatch:'التحدي مقفول'}[k];off=!['open','noclub','neutral'].includes(k);}
+  b.textContent=t;b.classList.toggle('off',off);b.setAttribute('aria-disabled',off?'true':'false');}
+function paintAgain(){const a=$('bAgain');if(a)a.textContent=MODE==='round'?'العب حر على نفس الطريق':'عيد الجولة';const m=$('bMenu2');if(m)m.textContent=MODE==='round'?'القائمة':'غيّر الباص';}
+function roundTab(){MODE='round';setTab('round');const S=chState();if(S.m){pickRound(S.m);}else{RMATCH=null;paintRoundCard();}}
+// زر «ابدا التحدي»: تحذير المحاولة الوحدة، وبعده تأكيد من السيرفر إنه ما لعب قبل
+function chStart(){const S=chState();
+  if(S.k==='noclub'||S.k==='neutral'){openFan();return;}
+  if(S.k!=='open')return;
+  pickRound(S.m);const H=HOST(S.m.h),A=HOST(S.m.a);
+  $('chMH').textContent='تحدي الجولة '+S.m.wk;$('chMT').textContent='باص '+(fanClub()||club).name+' ← '+STADS[S.m.h].st+' · '+H.name+' × '+A.name;
+  $('chM').classList.add('on');}
+async function chGo(){const S=chState();$('chM').classList.remove('on');if(S.k!=='open')return;
+  const a=DEMO?null:fbAcc();if(a&&window.EL3FAN){try{const t=await Promise.race([EL3FAN.tok(),new Promise((_,no)=>setTimeout(no,2500))]);
+    const g=await Promise.race([fetch(DB+'/b/'+S.d+'/'+t.u+'.json?auth='+t.t).then(r=>r.ok?r.json():null),new Promise(ok=>setTimeout(()=>ok(null),2500))]);
+    if(g){chSet(S.d,{m:S.m.id,s:S.m.h,r:g.r,c:fanId(),d:S.d,wk:S.m.wk,h:S.m.h,a:S.m.a,k:g.k,st:'dup',u:t.u});toast('لعبت تحدي هالجولة من قبل',true);paintRoundCard();return;}}catch(e){}}
+  pickRound(S.m);CHR=null;
+  CH={d:S.d,m:S.m,on:0,c:fanId(),r:routeKey};startRace();}
+// السباق بدا فعلياً (خلص العد): المحاولة انحسبت
+function chOn(){CH.on=1;const m=CH.m;chSet(CH.d,{m:m.id,s:m.h,r:CH.r,c:CH.c,d:CH.d,wk:m.wk,h:m.h,a:m.a,k:'',st:'play',rt:0,np:0,sc:0});gc('ch-start-'+m.h);}
+function chSnap(){if(!CH||!CH.on)return;const x=chGet(CH.d);if(x&&x.st==='play'){x.k=encK(rec);chSet(CH.d,x);}}
+function chFinish(rt,np,sc,quit){if(!CH||!CH.on)return;const x=chGet(CH.d)||{};Object.assign(x,{k:encK(rec),st:'wait',rt,np,sc,q:quit?1:0});chSet(CH.d,x);CHR=x;const d=CH.d;gc('ch-end-'+rt);
+  CH=null;if(quit)CHR=null;chSend(d);}
+let chBusy=false;
+async function chSend(d){const x=chGet(d);if(!x||x.st!=='wait'||chBusy)return;
+  if(DEMO){x.st='sent';x.u='demo';chSet(d,x);chPaint(d,x);setTimeout(()=>{const y=chGet(d);if(y){y.v={ok:1,rt:y.rt||0,sc:y.sc||0,cr:0};chSet(d,y);chPaint(d,y);}},8000);return;}
+  if(Date.now()>P0+d*PDMS+15*60e3-5e3){x.st='late';chSet(d,x);chPaint(d,x);return;}
+  if(!window.EL3FAN)return;chBusy=true;
+  try{try{await EL3FAN.sync();}catch(e){}const a=await EL3FAN.tok(),U=DB+'/b/'+d+'/'+a.u+'.json?auth='+a.t;
+    const r=await fetch(U,{method:'PUT',body:JSON.stringify({m:x.m,s:x.s,r:x.r,k:x.k,c:x.c,d,t:{'.sv':'timestamp'}})});
+    if(r.ok){x.st='sent';x.u=a.u;}
+    else{const g=await fetch(U).then(r=>r.ok?r.json():null).catch(()=>null);if(g){x.st=g.k===x.k?'sent':'dup';x.u=a.u;}}
+    chSet(d,x);}catch(e){}finally{chBusy=false;chPaint(d,chGet(d));}}
+function chPaint(d,x){if(CHR&&CHR.d===d){CHR=x;if(state==='done'&&MODE==='round')paintResultFan();}if(state==='menu')paintRoundCard();}
+// النتيجة الرسمية من المُعيد (bv مقروء للكل)
+const chPolled={};
+async function chPoll(d){const x=chGet(d);if(DEMO){if(x&&!x.v&&x.st==='sent'&&!chPolled[d]){chPolled[d]=1;setTimeout(()=>{const y=chGet(d);if(y&&!y.v){y.v={ok:1,rt:y.rt||0,sc:y.sc||0,cr:0};chSet(d,y);chPaint(d,y);}},8000);}return;}if(!x||!x.u||x.v||Date.now()-(chPolled[d]||0)<60e3)return;chPolled[d]=Date.now();
+  try{const v=await fetch(DB+'/bv/'+d+'/'+x.u+'.json').then(r=>r.ok?r.json():null);if(v&&v.ok!==undefined){x.v={ok:v.ok,rt:v.rt||0,sc:v.sc||0,cr:v.cr||0};chSet(d,x);chPaint(d,x);}}catch(e){}}
+function chTick(){const today=pday(Date.now());for(const d of chDays()){const x=chGet(d);if(!x)continue;
+    if(x.st==='play'&&!(CH&&CH.d===d)){x.st='wait';x.q=1;chSet(d,x);}   // سباق انقطع (الصفحة تسكّرت): ينرسل باللي انسوّى
+    if(x.st==='wait')chSend(d);else if((x.st==='sent'||x.st==='dup')&&!x.v&&d>=today-2)chPoll(d);}}
+function chInit(){fetch('config.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(c=>{if(c){BUS_START=+c.start||0;try{localStorage.setItem('bus_start',BUS_START)}catch(e){}if(state==='menu'){paintRoundCard();}}}).catch(()=>{});
+  setTimeout(chTick,1500);setInterval(chTick,60e3);addEventListener('online',chTick);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)chTick();});
+  addEventListener('pagehide',chSnap);
+  $('bChGo').onclick=chGo;$('bChX').onclick=()=>$('chM').classList.remove('on');
+  $('bChPr').onclick=()=>{$('chM').classList.remove('on');setFree();paintRoute();startRace();};}
 function useFanBus(){const f=fanClub();if(!f||f===club)return;club=f;try{carB.go(CLUBS.indexOf(f),false,true);}catch(e){}busSl.forEach((_,k)=>paintBusSlide(k));setTimeout(loadRated,0);}
 function setTab(m){document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));document.querySelectorAll('#mPanel [data-p]').forEach(d=>d.hidden=d.dataset.p!==m);}
-function pickRound(m){MODE='round';setTab('round');useFanBus();RMATCH=m;KICK=kickSec(m.t);pickStage(m.h);paintRoundCard();}
-function setFree(){if(MODE!=='free'||KICK!==20*3600){MODE='free';RMATCH=null;KICK=20*3600;}if(typeof setTab==='function')setTab('free');}
+function pickRound(m){MODE='round';setTab('round');useFanBus();RMATCH=m;KICK=kickSec(m.t);if(STAGE!==m.h||routeKey!==routeFor(ROUND))pickStage(m.h);else paintRoute();paintRoundCard();}
+function setFree(){if(MODE!=='free'||KICK!==20*3600){MODE='free';RMATCH=null;KICK=20*3600;}if(typeof setTab==='function')setTab('free');paintStart();}
 function openPass(){const el=$('passS');let h='<div class="wrap"><h1 style="font-size:30px">ملاعبي</h1>';const [s,m]=passStars();
   h+='<div class="sub2">'+s+' من '+m+' نجمة'+(ROUND<14?' · طرق الدور الثاني تفتح مع الجولة 14':'')+'</div><div class="pgrid">';
   const ids=[club.id,...CLUBS.map(c=>c.id).filter(i=>i!==club.id)];
@@ -1707,7 +1858,7 @@ async function loadSquads(){try{const r=await fetch('../tashkila/squads.json',{c
       const m=sq.p.find(p=>pos.includes(p[2])&&(NRM(p[6]).includes(k)||NRM(p[1]).includes(k)))||sq.p.find(p=>NRM(p[6]).includes(k))||sq.p.find(p=>p[2]===pos[0]);
       return m?m[6]:n;});}
   if(state==='menu'){buildStations&&buildStations();}}catch(e){}}
-function init(){resize();loadStadium();buildSprites();routeKey=routeFor(ROUND);buildTrack();loadBest();paintRoute();loadSquads();loadRound();resetRace();paintToggles();paintBest();addEventListener('resize',resize);requestAnimationFrame(frame);}
+function init(){chInit();resize();loadStadium();buildSprites();routeKey=routeFor(ROUND);buildTrack();loadBest();paintRoute();loadSquads();loadRound();resetRace();paintToggles();paintBest();addEventListener('resize',resize);requestAnimationFrame(frame);}
 const fontsReady=document.fonts?Promise.race([Promise.all([document.fonts.load(FONT(700,30)),document.fonts.load(FONT(600,15))]),new Promise(r=>setTimeout(r,2500))]):Promise.resolve();
 fontsReady.then(init,init);
 })();
