@@ -64,6 +64,46 @@ async function sync(){
 }
 function set(c,n){const old=club();PID.set('club',c);if(n!==undefined)PID.set('name',cleanName(n));if(old!==c)gc('club-'+(c||'none'));sync();render();window.dispatchEvent(new Event('el3fan'))}
 
+
+/* ---------- «رمز النقل»: ينقل البطاقة لتلفون أو متصفح ثاني بدون تسجيل (قرار إبراهيم 18 نوفمبر) ----------
+   التلفون القديم يسوي رمز من 8 حروف، صالح 10 دقايق ومرة وحدة. البيانات (الحساب المجهول + بيانات اللعب المحلية)
+   تنشفّر بالرمز نفسه (AES-GCM) وتنحفظ في x/<sha256(الرمز)>، فاللي ما عنده الرمز ما يوصل لها ولا يقدر يقراها. */
+const AB='ABCDEFGHJKMNPQRSTUVWXYZ23456789',TE=new TextEncoder();
+const hex=b=>[...new Uint8Array(b)].map(x=>x.toString(16).padStart(2,'0')).join('');
+const b64=b=>{const u=new Uint8Array(b);let s='';for(let i=0;i<u.length;i+=8192)s+=String.fromCharCode.apply(null,u.subarray(i,i+8192));return btoa(s)};
+const ub64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
+const normCode=s=>(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
+const fmtCode=c=>c.slice(0,4)+'-'+c.slice(4);
+async function kd(code){const h=hex(await crypto.subtle.digest('SHA-256',TE.encode('el3azy-x|'+code)));
+  const k=await crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',TE.encode('el3azy-k|'+code)),'AES-GCM',false,['encrypt','decrypt']);return{h,k}}
+const MOVE=k=>/^el3azy_/.test(k)&&!/^el3azy_(fb|mano_fb|rate_fb|gc_key|adm_range)$/.test(k);
+async function makeCode(){
+  await sync();const a=await tok();
+  const code=Array.from(crypto.getRandomValues(new Uint8Array(8)),v=>AB[v%AB.length]).join('');
+  const ls={};try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(MOVE(k))ls[k]=localStorage.getItem(k)}}catch(e){}
+  const {h,k}=await kd(code),iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,TE.encode(JSON.stringify({r:a.r,u:a.u,ls})));
+  const e=Date.now()+10*60e3;
+  const r=await fetch(`${FB.db}/x/${h}.json?auth=${a.t}`,{method:'PUT',body:JSON.stringify({u:a.u,c:b64(ct),i:b64(iv),e})});
+  if(!r.ok)throw new Error('save');gc('move-make');return{code,e};
+}
+async function useCode(input){
+  const code=normCode(input);if(code.length!==8)throw new Error('bad');
+  const {h,k}=await kd(code);
+  const d=await fetch(`${FB.db}/x/${h}.json`).then(r=>r.ok?r.json():null).catch(()=>null);
+  if(!d||!d.c)throw new Error('bad');
+  const p=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(d.i)},k,ub64(d.c))));
+  const r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.key,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(p.r)}).then(x=>x.ok?x.json():null).catch(()=>null);
+  if(!r||!r.id_token||r.user_id!==p.u)throw new Error('net');
+  const a={t:r.id_token,r:r.refresh_token,u:r.user_id,exp:Date.now()+r.expires_in*1e3};
+  try{const old=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(MOVE(k)||/^el3azy_(mano_fb|rate_fb)$/.test(k))old.push(k)}old.forEach(k=>localStorage.removeItem(k));
+    Object.entries(p.ls||{}).forEach(([k,v])=>{if(MOVE(k))localStorage.setItem(k,v)})}catch(e){}
+  PID.set('fb',a);
+  const f=await fetch(`${FB.db}/f/${a.u}.json?auth=${a.t}`).then(x=>x.ok?x.json():null).catch(()=>null);
+  if(f&&f.c){PID.set('fan_srv',f);PID.set('club',f.c==='none'?'':f.c);PID.set('name',f.n||'')}
+  fetch(`${FB.db}/x/${h}.json?auth=${a.t}`,{method:'DELETE'}).catch(()=>{});
+  gc('move-use');return f;
+}
 /* ---------- الواجهة ---------- */
 const css=`
 .fz-chip{display:inline-flex!important;align-items:center;gap:7px;width:auto!important;height:38px!important;padding:0 11px 0 9px!important;border:1px solid rgba(215,180,101,.45)!important;border-radius:12px!important;background:rgba(215,180,101,.07)!important;color:#F6E3AE!important;font:600 13px 'Readex Pro',system-ui,sans-serif!important;white-space:nowrap;cursor:pointer;text-decoration:none;max-width:62vw;min-width:0;flex:0 1 auto;overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -78,7 +118,8 @@ const css=`
 @keyframes fzpop{from{transform:scale(.94);opacity:0}to{transform:none;opacity:1}}
 .fz-tile{width:58px;height:58px;margin:0 auto 6px;border-radius:17px;display:grid;place-items:center;background:linear-gradient(160deg,rgba(215,180,101,.22),rgba(215,180,101,.05));border:1px solid rgba(215,180,101,.55)}
 .fz-tile svg{width:32px;height:32px}
-.fz-sh h2{color:#D7B465;font-size:21px;margin:4px 0 6px}
+.fz-sh h2{color:#D7B465;font-size:21px;margin:4px 0 6px;display:block!important;text-align:center}
+.fz-sh h2:before,.fz-sh h2:after{display:none!important}
 .fz-sh .fz-why{font-size:13px;opacity:.8;line-height:1.8;margin-bottom:12px}
 .fz-sh .fz-why b{color:#D7B465;font-weight:600}
 .fz-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:12px}
@@ -94,6 +135,10 @@ const css=`
 .fz-row{display:flex;justify-content:space-between;margin-top:8px}
 .fz-grid button:disabled{opacity:.3;cursor:default}
 .fz-lock{font-size:11.5px;color:#D7B465;opacity:.85;margin:-4px 2px 12px;line-height:1.7}
+.fz-mv{display:flex;justify-content:center;gap:4px;flex-wrap:wrap;margin-top:10px;padding-top:10px;border-top:1px solid rgba(215,180,101,.18)}
+.fz-code{direction:ltr;font:700 34px 'Readex Pro';letter-spacing:4px;color:#F6E3AE;background:#071D2B;border:1.5px dashed rgba(215,180,101,.6);border-radius:16px;padding:12px 8px;margin:4px 0 8px;user-select:all;-webkit-user-select:all}
+.fz-in{direction:ltr;text-transform:uppercase;letter-spacing:3px;font-weight:700!important;font-size:20px!important}
+.fz-err{font-size:12.5px;color:#ef8f86;min-height:20px;margin:2px 0 8px}
 .fz-link{background:none;border:0;color:#D7B465;font:400 12.5px 'Readex Pro';text-decoration:underline;padding:6px;cursor:pointer}
 `;
 function addCss(){if(document.getElementById('fz-css'))return;const s=document.createElement('style');s.id='fz-css';s.textContent=css;document.head.appendChild(s)}
@@ -116,7 +161,8 @@ function open(){
     <input class="fz-name" maxlength="16" placeholder="اسمك (اختياري)" value="${esc(name())}">
     <p class="fz-hint">اكتب اسمك عشان يطلع في <b>نخبة جمهور ناديك</b> وفي <b>أعلى المشجعين</b>. مب تسجيل، وإذا خليته فاضي يطلع «مشجع».</p>
     <button class="fz-ok" type="button"></button>
-    <div class="fz-row"><button class="fz-link fz-none" type="button"${locked||cur===''?' style="visibility:hidden"':''}>ما أشجع نادي معيّن</button><button class="fz-link fz-close" type="button" style="opacity:.7">${edit?'إغلاق':'بعدين'}</button></div></div>`;
+    <div class="fz-row"><button class="fz-link fz-none" type="button"${locked||cur===''?' style="visibility:hidden"':''}>ما أشجع نادي معيّن</button><button class="fz-link fz-close" type="button" style="opacity:.7">${edit?'إغلاق':'بعدين'}</button></div>
+    <div class="fz-mv">${edit?'<button class="fz-link fz-mk" type="button">📲 انقل بطاقتك لتلفون ثاني</button>':''}<button class="fz-link fz-gt" type="button">${edit?'عندي رمز نقل':'📲 عندي رمز نقل من تلفون ثاني'}</button></div></div>`;
   document.body.appendChild(bg);
   const ok=bg.querySelector('.fz-ok');
   const upd=()=>{ok.disabled=!pick;ok.textContent=pick?(edit&&pick===cur?'حفظ':'أنا مع جمهور '+CL[pick]+' 💪'):'اختار ناديك'};upd();
@@ -126,6 +172,45 @@ function open(){
   bg.querySelector('.fz-close').onclick=close;
   bg.querySelector('.fz-none').onclick=()=>{set('',bg.querySelector('.fz-name').value);close()};
   ok.onclick=()=>{if(!pick)return;set(pick,bg.querySelector('.fz-name').value);close()};
+  const mk=bg.querySelector('.fz-mk');if(mk)mk.onclick=()=>moveOut(bg);
+  bg.querySelector('.fz-gt').onclick=()=>moveIn(bg);
+}
+const TILE='<div class="fz-tile"><svg viewBox="0 0 32 32" fill="none" stroke="#D7B465" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="11" height="20" rx="2.5" fill="rgba(215,180,101,.25)"/><rect x="17" y="7" width="11" height="20" rx="2.5"/><path d="M12 15h8m-2.5-2.5L20 15l-2.5 2.5"/></svg></div>';
+async function moveOut(bg){
+  const sh=bg.querySelector('.fz-sh');sh.innerHTML=TILE+'<h2>انقل بطاقتك</h2><p class="fz-why">لحظة، نجهز الرمز...</p>';
+  let m;try{m=await makeCode()}catch(e){sh.innerHTML=TILE+'<h2>انقل بطاقتك</h2><p class="fz-err">ما قدرنا نسوي الرمز، تأكد من الإنترنت وجرب مرة ثانية.</p><button class="fz-link fz-close" type="button">إغلاق</button>';sh.querySelector('.fz-close').onclick=()=>bg.remove();return}
+  const link=location.origin+'/#nql='+m.code;
+  sh.innerHTML=TILE+`<h2>انقل بطاقتك</h2>
+    <p class="fz-why">في التلفون الثاني (أو المتصفح الثاني) افتح <b>el3azy.com</b>،<br>واضغط بطاقة المشجع ← <b>«عندي رمز نقل»</b> واكتب:</p>
+    <div class="fz-code">${fmtCode(m.code)}</div>
+    <p class="fz-lock">⏳ ينتهي بعد <b class="fz-t"></b> · ينستخدم مرة وحدة · لا ترسله لأحد</p>
+    <button class="fz-ok fz-cp" type="button">انسخ رابط النقل</button>
+    <p class="fz-hint" style="margin-top:8px">أو انسخ الرابط وافتحه في المتصفح الثاني (مثلاً من X إلى سفاري)، وينفتح الرمز جاهز.<br>نقاطك وناديك وتوقعاتك تنتقل كلها، وتقدر تلعب من الثنين.</p>
+    <div class="fz-row" style="justify-content:center"><button class="fz-link fz-close" type="button">تم</button></div>`;
+  const t=sh.querySelector('.fz-t'),tk=()=>{const s=Math.max(0,Math.round((m.e-Date.now())/1e3));if(!document.body.contains(t)){clearInterval(iv);return}t.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;if(!s){clearInterval(iv);t.textContent='انتهى'}},iv=setInterval(tk,1000);tk();
+  sh.querySelector('.fz-cp').onclick=async e=>{try{await navigator.clipboard.writeText(link);e.target.textContent='✓ انتسخ الرابط'}catch(_){prompt('انسخ الرابط:',link)}};
+  sh.querySelector('.fz-close').onclick=()=>bg.remove();
+}
+function moveIn(bg,pre){
+  if(!bg){addCss();bg=document.createElement('div');bg.className='fz-bg';bg.innerHTML='<div class="fz-sh" role="dialog" aria-modal="true"></div>';document.body.appendChild(bg);bg.onclick=e=>{if(e.target===bg)bg.remove()}}
+  const sh=bg.querySelector('.fz-sh'),had=club()!==null;
+  sh.innerHTML=TILE+`<h2>عندي رمز نقل</h2>
+    <p class="fz-why">اكتب الرمز اللي طلع لك في تلفونك الثاني<br>(بطاقة المشجع ← «انقل بطاقتك لتلفون ثاني»).</p>
+    <input class="fz-name fz-in" maxlength="9" placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${pre?fmtCode(normCode(pre)):''}">
+    <p class="fz-err"></p>
+    ${had?'<p class="fz-hint">البطاقة اللي في هالتلفون بتتبدل بالبطاقة اللي تنقلها.</p>':''}
+    <button class="fz-ok fz-go" type="button">انقل البطاقة</button>
+    <div class="fz-row" style="justify-content:center"><button class="fz-link fz-close" type="button" style="opacity:.7">إلغاء</button></div>`;
+  const inp=sh.querySelector('.fz-in'),go=sh.querySelector('.fz-go'),err=sh.querySelector('.fz-err');
+  inp.oninput=()=>{const c=normCode(inp.value).slice(0,8);inp.value=c.length>4?fmtCode(c):c;err.textContent=''};
+  sh.querySelector('.fz-close').onclick=()=>bg.remove();
+  go.onclick=async()=>{if(normCode(inp.value).length!==8){err.textContent='الرمز 8 حروف وأرقام';return}
+    go.disabled=true;go.textContent='لحظة...';
+    try{const f=await useCode(inp.value);
+      sh.innerHTML=TILE+`<h2>رجعت لك بطاقتك ✅</h2><p class="fz-why">${f&&f.c&&f.c!=='none'?`جمهور <b>${CL[f.c]||''}</b>${f.n?' · '+esc(f.n):''}<br>`:''}نقاطك وتوقعاتك كلها هني.</p>`;
+      setTimeout(()=>location.reload(),1400)}
+    catch(e){go.disabled=false;go.textContent='انقل البطاقة';err.textContent=e.message==='net'?'ما قدرنا نكمل، تأكد من الإنترنت وجرب مرة ثانية':'الرمز غلط أو انتهى. سو رمز يديد من تلفونك الثاني'}};
+  if(!pre)setTimeout(()=>inp.focus(),50);
 }
 
 function chipHTML(){const c=club(),n=name();
@@ -150,6 +235,7 @@ function render(){
   else if(card)card.remove();
 }
 window.EL3FAN={club,name,set,open,render,sync,tok,lock};
-const go=()=>{render();sync()};
+const go=()=>{render();sync();
+  const m=location.hash.match(/nql=([A-Za-z0-9-]{8,9})/);if(m){history.replaceState(null,'',location.pathname+location.search);moveIn(null,m[1])}};
 document.readyState==='loading'?document.addEventListener('DOMContentLoaded',go):go();
 })();

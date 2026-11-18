@@ -12,7 +12,7 @@ fi
 curl -s -m 3 localhost:8765 >/dev/null || (setsid python3 -m http.server 8765 >/tmp/http.log 2>&1 </dev/null &)
 sleep 1
 fail=0
-for t in test_scoring test_rules test_fans_build ui_mano ui_q ui_stat ui_grid ui_tp test_bus; do
+for t in ${ONLY:-test_scoring test_rules test_fans_build ui_mano ui_q ui_stat ui_grid ui_tp ui_move test_bus}; do
   r=$(python3 _tools/tests/$t.py 2>&1); line=$(echo "$r" | grep -E "^النتيجة" | tail -1)
   echo "$t: ${line:-❌ ما خلص (شوف الخطأ تحت)}"
   echo "$r" | grep -E "^❌" | head -5
