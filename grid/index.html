@@ -321,7 +321,7 @@ Promise.all([
   fetch('../mano/aliases.json').then(r=>r.json()).catch(()=>({}))
 ]).then(([g,d,cr,al])=>{
   CR=cr;CLN=d.clubs||{};ALIAS=al||{};P=d.players;
-  P.forEach(p=>{PM[p.id]=p;p._k=norm(p.n+' '+(p.e||'')+' '+((ALIAS[p.id]||[]).join(' ')))});
+  P.forEach(p=>{PM[p.id]=p;p._k=norm(p.n+' '+(p.e||'')+' '+((ALIAS[p.id]||[]).join(' ')));const kn=(ALIAS[p.id]||[]).find(x=>/[\u0600-\u06FF]/.test(x));if(kn&&!p.n.includes(kn))p.n+=' ('+kn+')'});
   if(!g||!g.r){$('#main').innerHTML='<div class="msg">⏳ <b>شبكة الدوري</b> تنزل قريب.<br>كل يوم شبكة جديدة 12 بالليل.</div>';return}
   G=g;draw();clk();setInterval(clk,1000);
   setInterval(()=>{if(now()>=START+DNUM*DAY)location.reload()},30000);
