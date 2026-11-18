@@ -235,12 +235,31 @@ def grid_tests():
     check('الثواني تنقبل', put('u1', 'gp/3/u1/s', 95), 200)
     check('نادي ثاني بعد الأول يرفض', put('u1', 'gp/3/u1/c', 'ain'), 401)
 
+def tp_tests():
+    now = int(time.time() * 1000)
+    ms = [{'id': '9101', 'wk': 1, 't': now + 3 * 3600000, 'h': 'ain', 'a': 'wahda', 'st': 1},   # تقفل بعد ساعة
+          {'id': '9102', 'wk': 1, 't': now + 90 * 60000, 'h': 'wasl', 'a': 'ain', 'st': 1},     # انقفلت (أقل من ساعتين)
+          {'id': '9103', 'wk': 2, 't': now + 2 * DAY, 'h': 'ain', 'a': 'nasr', 'st': 1}]         # الجولة الجاية: ما انفتحت
+    load_rules(now - DAY, ms); reset({'f': {'p1': {'c': 'ain', 't': 1}, 'p2': {'c': 'nasr', 't': 1}, 'p3': {'t': 1}}})
+    print('\n— توقّع تشكيلة ناديك —')
+    x11 = '~'.join(f'k{i}' for i in range(11))
+    rec = {'c': 'ain', 'x': x11, 'w': TS}
+    check('توقع 11 لاعب قبل القفل ينقبل', put('p1', 'tp/9101/p1', rec), 200)
+    check('التعديل قبل القفل ينقبل', put('p1', 'tp/9101/p1', {**rec, 'x': x11.replace('k0', 'k99')}), 200)
+    check('بعد القفل (ساعتين قبل البداية) يرفض', put('p1', 'tp/9102/p1', rec), 401)
+    check('الجولة اللي ما انفتحت ترفض', put('p1', 'tp/9103/p1', rec), 401)
+    check('10 لاعبين بس يرفض', put('p1', 'tp/9101/p1', {**rec, 'x': '~'.join(f'k{i}' for i in range(10))}), 401)
+    check('نادي غير نادي البطاقة يرفض', put('p1', 'tp/9101/p1', {**rec, 'c': 'wahda'}), 401)
+    check('نادي مب طرف في المباراة يرفض', put('p2', 'tp/9101/p2', {**rec, 'c': 'nasr'}), 401)
+    check('اللي ما اختار نادي يرفض', put('p3', 'tp/9101/p3', {**rec, 'c': ''}), 401)
+    check('ما يقرا توقع غيره', requests.get(url('tp/9101/p1', 'p2')).status_code, 401)
+
 
 if __name__ == '__main__':
     try:
         requests.get(f'{B}/.json?ns={NS}', timeout=3)
     except Exception:
         sys.exit('المحاكي مب شغال على ' + B)
-    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests()
+    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests(); tp_tests()
     print(f'\nالنتيجة: {ok} نجح · {fail} فشل')
     sys.exit(1 if fail else 0)

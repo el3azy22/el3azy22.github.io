@@ -104,6 +104,14 @@ BUS_START = int(os.environ.get('BUS_START') or BUS_START)
 if BUS_START:
     CHALLENGES.append({'id': 'bus', 'name': 'باص الفريق', 'icon': '🚌'})
 BUS_PTS = {0: 0, 1: 3, 2: 6, 3: 9}   # ★ 3 · ★★ 6 · ★★★ 9 (v3.2، قاعدة الوزن)
+# «توقّع تشكيلة ناديك» (صفحة تشكيلتي): من يوم انطلاقه (tashkila/config.json → start). كل لاعب صح من التشكيلة الأساسية = نقطة
+try:
+    TP_START = int(json.load(open(os.path.join(ROOT, 'tashkila', 'config.json'), encoding='utf8')).get('start') or 0)
+except Exception:
+    TP_START = 0
+TP_START = int(os.environ.get('TP_START') or TP_START)
+if TP_START:
+    CHALLENGES.append({'id': 'tp', 'name': 'توقّع تشكيلة ناديك', 'icon': '🧩'})
 GRID_THR, GRID_RARE = 30, 10   # النسب بعد 30 حل للخانة · النادر أقل من 10% (v3.2)
 BOARDS = ['all'] + [c['id'] for c in CHALLENGES]
 FAIL_MIS = 6  # منو اللاعب: ما عرفه = 6 أخطاء
@@ -260,6 +268,34 @@ def collect_bus(bv_all, d0, d1, act=None):
     return users
 
 
+def collect_tp(tp_all, lineups, d0, d1, act=None):
+    """tp_all = {مباراة: {uid: {c, x, w}}} · lineups = tashkila/lineups.json.
+    النقاط = كم لاعب من الـ11 اللي توقعهم بدا أساسي مع ناديه · الأخطاء = الباقي · اللعب = 1 لكل مباراة."""
+    users = defaultdict(stat)
+    for mid, preds in (tp_all or {}).items():
+        L = (lineups or {}).get(str(mid))
+        if not L or not preds:
+            continue
+        d = (int(L['t']) - START) // DAYMS + 1
+        if not (d0 <= d <= d1) or d < TP_START:
+            continue
+        for u, x in preds.items():
+            c = (x or {}).get('c')
+            if c not in (L['h'], L['a']):
+                continue
+            real = set(L['hs'] if c == L['h'] else L['as'])
+            mine = list(dict.fromkeys(((x or {}).get('x') or '').split('~')))[:11]
+            hits = sum(1 for k in mine if k in real)
+            s = users[u[:12]]
+            if act is not None:
+                act.setdefault(u[:12], set()).add(d)
+            s['plays'] += 1; s['pts'] += hits; s['mis'] += 11 - hits
+            t = int(x.get('w') or 0)
+            if t >= s['ct']:
+                s['c'], s['ct'] = c, t
+    return users
+
+
 def boards(per, names, hide, ok=None):
     """per = {challenge: {uid12: stat}} ⇒ اللوحات (أندية + أول 10 مشجعين) + مراكز الكل + تشكيلة كل نادي."""
     allu = defaultdict(stat)
@@ -379,6 +415,16 @@ def main():
             v = fb(f'bv/{d}', None, H)
             if v:
                 bv_all[str(d)] = v
+    tp_all, lineups = {}, {}
+    if TP_START and H and cur:
+        lp = os.path.join(ROOT, 'tashkila', 'lineups.json')
+        lineups = json.load(open(lp, encoding='utf8')) if os.path.exists(lp) else {}
+        lo, hi = START + (max(TP_START, (first - 1) * WEEK + 1) - 1) * DAYMS, START + min(today, max(first, cur) * WEEK) * DAYMS
+        for mid, L in lineups.items():
+            if lo <= int(L['t']) < hi:
+                v = fb(f'tp/{mid}', None, H)
+                if v:
+                    tp_all[mid] = v
     names = (fb('f', None, H) or {}) if H else {}
     names = {u[:12]: v for u, v in names.items() if isinstance(v, dict)}
 
@@ -396,6 +442,8 @@ def main():
             per['grid'] = collect_grid(g_all, d0, d1, act)
         if BUS_START:
             per['bus'] = collect_bus(bv_all, d0, d1, act)
+        if TP_START:
+            per['tp'] = collect_tp(tp_all, lineups, d0, d1, act)
         final = now >= final_at(w) and w < cur
         as_of = d1 if final else min(today, d1)
         bd, ranks = boards(per, names, hide, approved(act, as_of))

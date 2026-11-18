@@ -149,5 +149,22 @@ if __name__ == '__main__':
     T.check('الشبكة تدخل «الكل»', pts(wk(data, 1)['boards'], 'all'), {'ain': 3, 'wasl': 1})
     rc, data = run(dg, S + DAY + 12 * 3600000)
     T.check('قبل الانطلاق: الشبكة ما تدخل الدوري', [c['id'] for c in data['challenges']], ['mano', 'pred'])
+
+    # ── توقّع تشكيلة ناديك: كل لاعب صح من التشكيلة الأساسية = نقطة ──
+    sys.path.insert(0, os.path.join(T.ROOT, '_tools', 'fans'))
+    os.environ['TP_START'] = '1'
+    import importlib, build as FB
+    importlib.reload(FB)
+    L = {'501': {'t': S + DAY + 3600000, 'wk': 9, 'h': 'ain', 'a': 'wasl', 'hs': [f'a{i}' for i in range(11)], 'as': [f'w{i}' for i in range(11)]}}
+    tp = {'501': {'tA': {'c': 'ain', 'x': '~'.join([f'a{i}' for i in range(8)] + ['x1', 'x2', 'x3']), 'w': 5},
+                  'tB': {'c': 'wasl', 'x': '~'.join([f'w{i}' for i in range(11)]), 'w': 5},
+                  'tC': {'c': 'nasr', 'x': '~'.join([f'a{i}' for i in range(11)]), 'w': 5},
+                  'tD': {'c': 'ain', 'x': '~'.join(['a0'] * 11), 'w': 5}}}
+    U = FB.collect_tp(tp, L, 1, 7)
+    T.check('التوقع: 8 من 11 = 8 نقاط و3 أخطاء', (U['tA']['pts'], U['tA']['mis'], U['tA']['plays']), (8, 3, 1))
+    T.check('التوقع: 11 من 11 لجمهور الضيف من تشكيلته هو', U['tB']['pts'], 11)
+    T.check('نادي مب طرف في المباراة ما ينحسب', 'tC' in U, False)
+    T.check('لاعب مكرر ينحسب مرة وحدة', U['tD']['pts'], 1)
+    os.environ.pop('TP_START', None)
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)

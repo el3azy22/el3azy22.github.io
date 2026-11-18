@@ -141,12 +141,34 @@ def team(tm, side, ev, sq):
                 'cap': 1 if pa.get('captain') == '1' else None,
                 'g': g or None, 'og': og or None, 'cd': cards or None,
                 'ph': photo(pid, m[5] if m and len(m) > 5 else ''),
+                'k': (m[5] or f'{m[0] if m[0] is not None else ""}|{m[1]}') if m else None,   # مفتاح اللاعب في tashkila/squads.json («توقّع تشكيلة ناديك»)
             }.items() if v is not None})
     coach = next((o for o in tm.get('official') or [] if o.get('title_name_en') == 'Coach'), None)
     form = (a.get('formation') or '').split(':')[-1].strip()
     return {'c': slug, 'cid': a['id'], 'name': a['name_ar'], 'sc': int(a['score']) if (a.get('score') or '').isdigit() else None,
             'fm': form, 'coach': {'i': 'c' + coach['person_id'], 'n': fix_ya(coach['shortname_ar'].strip())} if coach else None,
             'pl': players}
+
+
+LINEUPS = os.path.join(ROOT, 'tashkila', 'lineups.json')
+
+
+def save_lineups(matches):
+    """«توقّع تشكيلة ناديك»: التشكيلة الأساسية الرسمية لكل مباراة (مفاتيح tashkila/squads.json)، ملف يتجمع طول الموسم.
+    {رقم المباراة: {t, wk, h: نادي، a: نادي، hs: [مفاتيح أساسيين]، as: [...]}}"""
+    L = json.load(open(LINEUPS, encoding='utf8')) if os.path.exists(LINEUPS) else {}
+    ch = False
+    for m in matches:
+        hp, ap = m['h'].get('pl'), m['a'].get('pl')
+        if not hp or not ap:
+            continue
+        x = {'t': m['t'], 'wk': m['wk'], 'h': m['h']['c'], 'a': m['a']['c'],
+             'hs': [p['k'] for p in hp if p.get('s') and p.get('k')], 'as': [p['k'] for p in ap if p.get('s') and p.get('k')],
+             'hn': sum(1 for p in hp if p.get('s')), 'an': sum(1 for p in ap if p.get('s'))}
+        if L.get(m['id']) != x:
+            L[m['id']] = x; ch = True
+    if ch:
+        json.dump(L, open(LINEUPS, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
 
 
 def main():
@@ -192,6 +214,7 @@ def main():
         if it.get('team1_score', '') != '' and m['h'].get('sc') is None:
             m['h']['sc'], m['a']['sc'] = int(it['team1_score'] or 0), int(it['team2_score'] or 0)
         out.append(m)
+    save_lineups(out)
     data = {'updated': now.strftime('%Y-%m-%d %H:%M'), 'matches': out}
     # ما نكتب الملف لو ما تغيّر شي غير وقت التحديث (عشان ما تنعمل commits فاضية)
     if os.path.exists(OUT):

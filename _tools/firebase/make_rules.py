@@ -152,6 +152,23 @@ rules["rules"]["pr"]={m['id']:_pr(m['t'],_op[m['wk']]) for m in _ms}
 if _ms:json.dump({m['id']:m['t'] for m in _ms},open(os.path.join(os.path.dirname(_pd),'lock.json'),'w'),separators=(',',':'))
 if _ms:json.dump({str(w):t for w,t in _op.items()},open(os.path.join(os.path.dirname(_pd),'open.json'),'w'),separators=(',',':'))   # متى تفتح كل جولة (للصفحة)
 
+# ── «توقّع تشكيلة ناديك» (صفحة «تشكيلتي»، قرار إبراهيم 18 نوفمبر) ──
+# tp/<مباراة>/<uid> = {c: نادي المشجع، x: 11 مفتاح لاعب مفصولة بـ ~، w: وقت السيرفر}
+#   يتعدل لين ساعتين قبل البداية، وينفتح مع جولة التوقعات (نفس O). النادي = بطاقة المشجع ولازم يكون طرف في المباراة.
+#   النقاط يحسبها _tools/fans/build.py من التشكيلة الرسمية (tashkila/lineups.json).
+TPLOCK=2*3600000
+def _tp(m,O=0):
+  T=m['t']-TPLOCK
+  return {"$u":{
+    ".read":"auth != null && auth.uid == $u",
+    ".write":f"auth != null && auth.uid == $u && now < {T}"+(f" && now >= {O}" if O else ""),
+    ".validate":"newData.hasChildren(['c','x','w'])",
+    "c":{".validate":f"newData.isString() && newData.val() == {FCU}.child('c').val() && (newData.val() == '{m['h']}' || newData.val() == '{m['a']}')"},
+    "x":{".validate":"newData.isString() && newData.val().length <= 2000 && newData.val().matches(/^[^~]+(~[^~]+){10}$/)"},
+    "w":{".validate":"newData.val() == now"},
+    "$other":{".validate":False}}}
+rules["rules"]["tp"]={m['id']:_tp(m,_op[m['wk']]) for m in _ms}
+
 # ── عداد الإحصائيات الخاص (موافقة إبراهيم 16 نوفمبر) ── v/<يوم>/{t,u,r,p/<قسم>,s/<أغنية>/<حدث>}
 # زيادة +1 بس لكل طلب. القراءة مفتوحة مثل s و c (أرقام مجمعة بدون أي بيانات شخصية، واللوحة ما فيها تسجيل دخول Firebase).
 VINC=f"newData.isNumber() && {inc}"
