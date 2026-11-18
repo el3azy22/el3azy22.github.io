@@ -9,6 +9,7 @@ import test_rules as T
 
 PROD = 'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app'
 D = json.load(open(os.path.join(T.ROOT, 'mano', 'data.json')))
+NM = {p['id']: p['n'] for p in D['players']}
 E = D.get('schedule') or ['soufiane-rahimi'] + [p['id'] for p in D['players'] if p.get('ap', 0) >= 5 and p['id'] != 'soufiane-rahimi'][:40]   # بعد النقل: الجدول في q (الاختبار يكتبه في المحاكي)
 P = ['alassane-diallo']
 day = (int(time.time() * 1000) - 1794859200000) // 86400000 + 1
@@ -32,7 +33,7 @@ def to_emu(lose_patch=False):
     return h
 
 
-async def play(b, uid, club, easy, pro=None, lose=False, extra=None):
+async def play(b, uid, club, easy, pro=None, lose=False, extra=None, act=None):
     seed = {f'g_{day}_easy': easy, 'seenHow': True, 'mode': 'pro' if pro else 'easy', **(extra or {})}
     if pro:
         seed[f'g_{day}_pro'] = pro
@@ -46,6 +47,8 @@ async def play(b, uid, club, easy, pro=None, lose=False, extra=None):
     await pg.route('**/securetoken.googleapis.com/**', lambda r: r.abort())
     await pg.route(PROD + '/**', to_emu(lose))
     await pg.goto('http://localhost:8765/mano/'); await pg.wait_for_timeout(3000)
+    if act:      # يكتب اسم لاعب في خانة البحث ويختار أول اقتراح
+        await pg.fill('#gIn', NM[act]); await pg.wait_for_timeout(300); await pg.press('#gIn', 'Enter'); await pg.wait_for_timeout(2500)
     st = await pg.evaluate(f"[localStorage.getItem('el3azy_mano_sub_{day}_easy'),localStorage.getItem('el3azy_mano_sub_{day}_pro')]")
     await ctx.close()
     return [json.loads(x) if x else None for x in st]
@@ -77,6 +80,14 @@ async def main():
         t0 = 1794859200000 + (day - 1) * 86400000 + 3600000
         st = await play(b, 'ua5', 'kalba', win2, extra={f'st_{day}_easy': t0, f'fin_{day}_easy': t0 + 83000})
         T.check('وقت الحل ينرسل (83 ثانية) والسيرفر يقبله', (st[0], T.get(f'p/{day}/easy/ua5').json().get('sec')), ({'g': 2, 'c': 'kalba'}, 83))
+        # سجل نهاية اللعبة الخاص (رصد الكشّاف): ينكتب لحظة ما تخلص اللعبة، حتى بدون نادي
+        five = {'guesses': [E[3], E[4], E[6], E[7], E[8]], 'done': False, 'win': False}
+        await play(b, 'ua6', '', five, act=E[9])
+        adm = T.get(f'r/{day}/easy/ua6', 'Vt7pBIwn9jhQCI2LSORFpnU3aCa2').json() or {}
+        T.check('خسارة كاملة تنسجل في السجل الخاص مع البصمة', (adm.get('g'), len(adm.get('dv') or ''), bool(adm.get('t'))), (0, 12, True))
+        await play(b, 'ua7', '', {'guesses': [], 'done': False, 'win': False}, act=E[day - 1])
+        adm2 = T.get(f'r/{day}/easy/ua7', 'Vt7pBIwn9jhQCI2LSORFpnU3aCa2').json() or {}
+        T.check('فوز من أول محاولة ينسجل وبنفس بصمة التلفون', (adm2.get('g'), adm2.get('dv')), (1, adm.get('dv')))
         await b.close()
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)

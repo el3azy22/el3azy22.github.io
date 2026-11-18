@@ -470,7 +470,7 @@ function guess(id){
   const win=id===ANS.id;
   if(win){S.done=true;S.win=true}else if(S.guesses.length>=MAX){S.done=true}
   save();
-  if(S.done){record();paintSeg()}
+  if(S.done){record();paintSeg();logEnd(mode)}
   render();
   if(S.guesses.length===1)gc('start-'+mode);
   if(win){gc('win-'+mode);vib([30,40,60]);confetti();const n=S.guesses.length;sfx(mode==='pro'?'yasalam':n===1?'mainoon':n<=4?'kafu':'sawaha')}
@@ -565,6 +565,24 @@ async function fbTok(){
 }
 const myClub=()=>PID.get('club','el3azy_mano_club'); // null = ما انسأل، '' = ما يشجع حد · نادي المشجع للمنصة كلها
 async function crowdSubmit(){if(mode==='pro')await submitMode('easy');await submitMode(mode)}
+// سجل خاص بنهاية اللعبة (للمدير بس): بصمة مختصرة للتلفون نفسه (مب للمتصفح)، عشان نرصد اللي يخسر بحساب ثاني ويكشف الاسم
+async function devHash(){
+  const ua=navigator.userAgent,os=(ua.match(/OS (\d+)[_.]/)||ua.match(/Android (\d+)/)||['',''])[1],
+    md=(ua.match(/Android [^;)]*; ([^;)]+)\)/)||['',''])[1],sc=screen,w=Math.min(sc.width,sc.height),h=Math.max(sc.width,sc.height);
+  let tz='';try{tz=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+  const k=[/iPhone|iPad/.test(ua)?'ios':/Android/.test(ua)?'and':'oth',os,md,w,h,window.devicePixelRatio||1,sc.colorDepth,navigator.maxTouchPoints||0,tz].join('|');
+  const b=await crypto.subtle.digest('SHA-256',new TextEncoder().encode('el3azy-dv|'+k));
+  return [...new Uint8Array(b)].slice(0,6).map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+async function logEnd(m){
+  try{
+    if(!CROWD||!crypto.subtle)return;const k='r_'+DAY+'_'+m;if(store.get(k,null))return;
+    const st=store.get('g_'+DAY+'_'+m,null);if(!st||!st.done)return;
+    const a=await fbTok(),g=st.win?st.guesses.length:0;
+    const r=await fetch(FB.db+`/r/${DAY}/${m}/${a.u}.json?auth=`+a.t,{method:'PUT',body:JSON.stringify({d:DAY,g,dv:await devHash(),t:{'.sv':'timestamp'}})});
+    if(r.ok||r.status===401)store.set(k,1);
+  }catch(e){}
+}
 async function submitMode(m){
   const k='sub_'+DAY+'_'+m;if(store.get(k,null))return;
   const st=store.get('g_'+DAY+'_'+m,null);if(!st||!st.done)return;
