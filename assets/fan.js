@@ -74,6 +74,8 @@ const b64=b=>{const u=new Uint8Array(b);let s='';for(let i=0;i<u.length;i+=8192)
 const ub64=s=>Uint8Array.from(atob(s),c=>c.charCodeAt(0));
 const normCode=s=>(s||'').toUpperCase().replace(/[^A-Z0-9]/g,'');
 const fmtCode=c=>c.slice(0,4)+'-'+c.slice(4);
+// يقبل الرمز أو رابط النقل كامل (لو لصق الرابط في خانة الرمز)
+const pickCode=v=>{v=v||'';const m=v.match(/nql=([A-Za-z0-9]{4}-?[A-Za-z0-9]{4})/)||v.match(/\b([A-Za-z0-9]{4}-[A-Za-z0-9]{4})\b/);return normCode(m?m[1]:v).slice(0,8)};
 async function kd(code){const h=hex(await crypto.subtle.digest('SHA-256',TE.encode('el3azy-x|'+code)));
   const k=await crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',TE.encode('el3azy-k|'+code)),'AES-GCM',false,['encrypt','decrypt']);return{h,k}}
 const MOVE=k=>/^el3azy_/.test(k)&&!/^el3azy_(fb|mano_fb|rate_fb|gc_key|adm_range)$/.test(k);
@@ -184,11 +186,14 @@ async function moveOut(bg){
     <p class="fz-why">في التلفون الثاني (أو المتصفح الثاني) افتح <b>el3azy.com</b>،<br>واضغط بطاقة المشجع ← <b>«عندي رمز نقل»</b> واكتب:</p>
     <div class="fz-code">${fmtCode(m.code)}</div>
     <p class="fz-lock">⏳ ينتهي بعد <b class="fz-t"></b> · ينستخدم مرة وحدة · لا ترسله لأحد</p>
-    <button class="fz-ok fz-cp" type="button">انسخ رابط النقل</button>
-    <p class="fz-hint" style="margin-top:8px">أو انسخ الرابط وافتحه في المتصفح الثاني (مثلاً من X إلى سفاري)، وينفتح الرمز جاهز.<br>نقاطك وناديك وتوقعاتك تنتقل كلها، وتقدر تلعب من الثنين.</p>
+    <button class="fz-ok fz-cc" type="button">انسخ الرمز</button>
+    <p class="fz-hint" style="margin-top:10px">تنقل من X إلى سفاري في نفس التلفون؟ <button class="fz-link fz-cp" type="button" style="padding:2px;font-size:12px">انسخ رابط النقل</button><br>والصقه في سفاري، وينفتح الرمز جاهز.</p>
+    <p class="fz-hint">نقاطك وناديك وتوقعاتك تنتقل كلها، وتقدر تلعب من الثنين.</p>
     <div class="fz-row" style="justify-content:center"><button class="fz-link fz-close" type="button">تم</button></div>`;
   const t=sh.querySelector('.fz-t'),tk=()=>{const s=Math.max(0,Math.round((m.e-Date.now())/1e3));if(!document.body.contains(t)){clearInterval(iv);return}t.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;if(!s){clearInterval(iv);t.textContent='انتهى'}},iv=setInterval(tk,1000);tk();
-  sh.querySelector('.fz-cp').onclick=async e=>{try{await navigator.clipboard.writeText(link);e.target.textContent='✓ تم نسخ الرابط'}catch(_){prompt('انسخ الرابط:',link)}};
+  const cp=async(t,btn,done)=>{try{await navigator.clipboard.writeText(t);btn.textContent=done}catch(_){prompt('انسخ:',t)}};
+  sh.querySelector('.fz-cc').onclick=e=>cp(fmtCode(m.code),e.target,'✓ تم نسخ الرمز');
+  sh.querySelector('.fz-cp').onclick=e=>cp(link,e.target,'✓ تم نسخ الرابط');
   sh.querySelector('.fz-close').onclick=()=>bg.remove();
 }
 function moveIn(bg,pre){
@@ -196,17 +201,17 @@ function moveIn(bg,pre){
   const sh=bg.querySelector('.fz-sh'),had=club()!==null;
   sh.innerHTML=TILE+`<h2>عندي رمز نقل</h2>
     <p class="fz-why">اكتب الرمز اللي طلع لك في تلفونك الثاني<br>(بطاقة المشجع ← «انقل بطاقتك لتلفون ثاني»).</p>
-    <input class="fz-name fz-in" maxlength="9" placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${pre?fmtCode(normCode(pre)):''}">
+    <input class="fz-name fz-in" placeholder="XXXX-XXXX" autocomplete="off" autocapitalize="characters" spellcheck="false" value="${pre?fmtCode(pickCode(pre)):''}">
     <p class="fz-err"></p>
     ${had?'<p class="fz-hint">البطاقة اللي في هالتلفون بتتبدل بالبطاقة اللي تنقلها.</p>':''}
     <button class="fz-ok fz-go" type="button">انقل البطاقة</button>
     <div class="fz-row" style="justify-content:center"><button class="fz-link fz-close" type="button" style="opacity:.7">إلغاء</button></div>`;
   const inp=sh.querySelector('.fz-in'),go=sh.querySelector('.fz-go'),err=sh.querySelector('.fz-err');
-  inp.oninput=()=>{const c=normCode(inp.value).slice(0,8);inp.value=c.length>4?fmtCode(c):c;err.textContent=''};
+  inp.oninput=()=>{const c=pickCode(inp.value);inp.value=c.length>4?fmtCode(c):c;err.textContent=''};
   sh.querySelector('.fz-close').onclick=()=>bg.remove();
-  go.onclick=async()=>{if(normCode(inp.value).length!==8){err.textContent='الرمز 8 حروف وأرقام';return}
+  go.onclick=async()=>{if(pickCode(inp.value).length!==8){err.textContent='الرمز 8 حروف وأرقام';return}
     go.disabled=true;go.textContent='لحظة...';
-    try{const f=await useCode(inp.value);
+    try{const f=await useCode(pickCode(inp.value));
       sh.innerHTML=TILE+`<h2>رجعت لك بطاقتك ✅</h2><p class="fz-why">${f&&f.c&&f.c!=='none'?`جمهور <b>${CL[f.c]||''}</b>${f.n?' · '+esc(f.n):''}<br>`:''}نقاطك وتوقعاتك كلها هني.</p>`;
       setTimeout(()=>location.reload(),1400)}
     catch(e){go.disabled=false;go.textContent='انقل البطاقة';err.textContent=e.message==='net'?'ما قدرنا نكمل، تأكد من الإنترنت وجرب مرة ثانية':'الرمز غلط أو انتهى. سو رمز يديد من تلفونك الثاني'}};
