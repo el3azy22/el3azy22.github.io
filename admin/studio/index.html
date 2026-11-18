@@ -212,9 +212,9 @@ async function cardC(wk){
   const {cv,x,W}=frame('ترتيب الأندية · الأسبوع '+wk,'منصة العازي','دوري الجماهير');
   x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 54px ${F}`;
   x.fillText(done?(tops.length>1?'أبطال الأسبوع':'بطل الأسبوع'):'الترتيب لين الحين',W/2,360);
-  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 25px ${F}`;x.fillText('نقاط أفضل 11 مشجع في كل نادي (التشكيلة) من كل التحديات',W/2,412);
+  x.fillStyle='rgba(255,245,229,.6)';x.font=`500 25px ${F}`;x.fillText('نقاط أفضل 11 مشجع في كل نادي (نخبة الجمهور) من كل التحديات',W/2,412);
   const mx=Math.max(1,...rows.map(o=>o.pts));const y0=470,rh=52;
-  x.font=`500 22px ${F}`;x.fillStyle='rgba(255,245,229,.45)';x.textAlign='center';x.fillText('النقاط',190,y0-24);x.fillText('التشكيلة',106,y0-24);
+  x.font=`500 22px ${F}`;x.fillStyle='rgba(255,245,229,.45)';x.textAlign='center';x.fillText('النقاط',190,y0-24);x.fillText('النخبة',106,y0-24);
   rows.slice(0,14).forEach((o,i)=>{const y=y0+i*rh;const lead=o.rk===1;
     if(lead){rr(x,48,y-4,W-96,rh-6,14);x.fillStyle='rgba(215,180,101,.16)';x.fill();x.strokeStyle='rgba(215,180,101,.6)';x.lineWidth=2;x.stroke()}
     const cy=y+rh/2-5;x.textAlign='center';x.fillStyle=lead?'#D7B465':'rgba(255,245,229,.55)';x.font=`600 26px ${F}`;x.fillText(String(o.rk),W-112,cy);
@@ -229,7 +229,7 @@ async function cardC(wk){
   const many=tops.length>1;
   const text=!rows.length?'':done
     ?`🏆 ${many?'أبطال':'بطل'} دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' بطل الأسبوع'} بـ${tops[0].pts} نقطة 👏\n\nالأسبوع اليديد بدا، العب وارفع ترتيب ناديك 👇\n${URL_F}`
-    :`🏆 دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' متصدر'} بـ${tops[0].pts} نقطة.\nكل تحدي تلعبه يزيد نقاط تشكيلة ناديك.\n\nمنو بيلحقهم؟ 👇\n${URL_F}`;
+    :`🏆 دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' متصدر'} بـ${tops[0].pts} نقطة.\nكل تحدي تلعبه يزيد نقاط نخبة جمهور ناديك.\n\nمنو بيلحقهم؟ 👇\n${URL_F}`;
   return {cv,text,empty:!rows.length};
 }
 

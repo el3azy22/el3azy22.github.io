@@ -455,7 +455,7 @@ def main():
             story = (f"جمهور {names_(tops)} يتصدر الموسم بـ{pts1:,} نقطة" if len(tops) == 1
                      else f"{names_(tops)} متعادلين في صدارة الموسم بـ{pts1:,} نقطة")
             if wtops and set(wtops) != set(tops):
-                story += f"، و{names_(wtops)} {'أقوى تشكيلة' if len(wtops) == 1 else 'أقوى تشكيلات'} في الأسبوع {L['w']}"
+                story += f"، و{names_(wtops)} {'أقوى نخبة جمهور' if len(wtops) == 1 else 'أقوى نخب'} في الأسبوع {L['w']}"
     out = {'v': 3, 'challenges': CHALLENGES, 'xi': XI, 'updated': datetime.fromtimestamp(now / 1000, UAE).strftime('%Y-%m-%d %H:%M'),
            'approve': APPROVE, 'cur': cur, 'done': len(done), 'ends': START + cur * WEEK * DAYMS if cur else START,
            'weeks': weeks, 'season': season, 'story': story, 'names': bool(H)}

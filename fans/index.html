@@ -323,7 +323,7 @@ function left(){const ms=D.ends-Date.now();if(ms<=0)return 'يخلص الحين'
 const MYU=()=>{try{return ((JSON.parse(localStorage.getItem('el3azy_fb')||'null')||{}).u||'').slice(0,12)}catch(e){return ''}};
 const nf=n=>Number(n||0).toLocaleString('en-US');
 const BN=()=>Object.fromEntries([['all','كل التحديات'],...(D.challenges||[]).map(c=>[c.id,c.icon+' '+c.name])]);
-function stepsH(){return `<div class="steps"><div><i>1</i><b>اختار<br>ناديك</b></div><div><i>2</i><b>العب وتوقع<br>المباريات</b></div><div><i>3</i><b>اجمع نقاط<br>وادخل تشكيلة ناديك</b></div></div>`}
+function stepsH(){return `<div class="steps"><div><i>1</i><b>اختار<br>ناديك</b></div><div><i>2</i><b>العب وتوقع<br>المباريات</b></div><div><i>3</i><b>اجمع نقاط<br>وادخل نخبة جمهور ناديك</b></div></div>`}
 function askH(){return MY()===null&&window.EL3FAN?`<button class="ask" id="ask"><span style="font-size:24px">📣</span><span><b>اختار ناديك</b>عشان نقاطك تنحسب لجمهوره</span></button>`:''}
 /* سطرك: مركز ناديك ومركزك أنت في اللوحة المختارة */
 function myH(V,when){const my=MY(),u=MYU(),r=RK&&(T==='season'?RK.season:T==='week'?RK.week:null);
@@ -336,7 +336,7 @@ function myH(V,when){const my=MY(),u=MYU(),r=RK&&(T==='season'?RK.season:T==='we
 /* تفصيل رقم النادي: الأسبوع = تشكيلته (أفضل 11) · الموسم = نقاط تشكيلته في كل أسبوع */
 function xiH(V,r){const u=MYU(),xi=D.xi||11;
   if(T==='season'){const L=D.weeks.map(w=>{const x=((w.boards[B]||{}).clubs||[]).find(y=>y[0]===r[0]);return [w,x?x[2]:0]}).filter(a=>a[1]>0);
-    return `<div class="xip"><div class="xh">نقاط تشكيلة ${CL[r[0]]} في كل أسبوع</div>${L.map(([w,p])=>`<div class="xr"><span>الأسبوع ${w.w}${w.live?' (شغال)':''}</span><b>${nf(p)}</b></div>`).join('')}<div class="xs"><span>مجموع الموسم</span><span>${nf(r[2])}</span></div></div>`}
+    return `<div class="xip"><div class="xh">نقاط نخبة جمهور ${CL[r[0]]} في كل أسبوع</div>${L.map(([w,p])=>`<div class="xr"><span>الأسبوع ${w.w}${w.live?' (شغال)':''}</span><b>${nf(p)}</b></div>`).join('')}<div class="xs"><span>مجموع الموسم</span><span>${nf(r[2])}</span></div></div>`}
   const L=((V[B].xi||{})[r[0]])||[],ex=(((V[B].xt||{})[r[0]])||[]).length,last=L.length?L[L.length-1][3]:0;
   // التعادل: مجموعة من 3 وأكثر ⇒ عنوان واحد فوقها بدل «متعادل» في كل سطر · مجموعة من 2 ⇒ «متعادل» جنب الاسم
   const G={};L.forEach(x=>G[x[3]]=(G[x[3]]||0)+1);if(ex)G[last]=(G[last]||0)+ex;
@@ -344,25 +344,25 @@ function xiH(V,r){const u=MYU(),xi=D.xi||11;
   L.forEach(x=>{const g=G[x[3]];
     if(g>=3&&x[3]!==prev)h+=`<div class="xg">🤝 ${nf(g)} ${MSH(g)} متعادلين بالكامل في المركز ${x[3]}</div>`;prev=x[3];
     h+=`<div class="xr ${u&&x[2]===u?'me':''}"><span><i>${x[3]||''}</i>${x[0]?esc(x[0]):'مشجع'}${u&&x[2]===u?' · أنت':''}${g===2?' <small style="opacity:.6">(متعادل)</small>':''}</span><b>${nf(x[1])}</b></div>`});
-  return `<div class="xip"><div class="xh">تشكيلة ${CL[r[0]]}: أفضل ${xi} مشجع${L.length<xi?` (ناقصة ${xi-L.length})`:''}</div>${h}${ex>0?`<div class="xh" style="margin-top:6px">${ex===1?'ومشجع ثاني متعادل بالكامل مع آخر مكان وما يطلع هني':`و${nf(ex)} ${MSH(ex)} ثانيين متعادلين بالكامل مع آخر مكان وما يطلعون هني`}، لأن التشكيلة ${xi} بس. ${CL[r[0]]} ياخذ نفس النقاط أياً منهم انحسب.</div>`:''}<div class="xs"><span>المجموع = نقاط ${CL[r[0]]}</span><span>${nf(r[2])}</span></div>
-   ${(()=>{const n=(V[B].pend||{})[r[0]];return n?`<div class="xh" style="margin-top:6px">⏳ ${n===1?'مشجع يديد يدخل التشكيلة لما يلعب':`${nf(n)} ${MSH(n)} يدد يدخلون التشكيلة لما يلعبون`} في ${D.approve||3} أيام مختلفة.</div>`:''})()}
+  return `<div class="xip"><div class="xh">نخبة جمهور ${CL[r[0]]}: أفضل ${xi} مشجع${L.length<xi?` (ناقصة ${xi-L.length})`:''}</div>${h}${ex>0?`<div class="xh" style="margin-top:6px">${ex===1?'ومشجع ثاني متعادل بالكامل مع آخر مكان وما يطلع هني':`و${nf(ex)} ${MSH(ex)} ثانيين متعادلين بالكامل مع آخر مكان وما يطلعون هني`}، لأن النخبة ${xi} بس. ${CL[r[0]]} ياخذ نفس النقاط أياً منهم انحسب.</div>`:''}<div class="xs"><span>المجموع = نقاط ${CL[r[0]]}</span><span>${nf(r[2])}</span></div>
+   ${(()=>{const n=(V[B].pend||{})[r[0]];return n?`<div class="xh" style="margin-top:6px">⏳ ${n===1?'مشجع يديد يدخل النخبة لما يلعب':`${nf(n)} ${MSH(n)} يدد يدخلون النخبة لما يلعبون`} في ${D.approve||3} أيام مختلفة.</div>`:''})()}
    ${L.some(x=>!x[0])?`<div class="xh" style="margin-top:6px">«مشجع» = ما كتب اسمه في بطاقة المشجع.</div>`:''}</div>`}
 const MSH=n=>n===2||(n>=3&&n<=10)?'مشجعين':'مشجع';
 /* وين أنت من تشكيلة ناديك */
 function meXI(V){if(T==='season')return '';const u=MYU(),r=RK&&RK.week,me=r&&u&&r[u]&&r[u][B];if(!me||!me[3])return '';
-  const ac=r[u].act;if(ac&&ac[0]<ac[1])return `<div class="ml you">⏳ <span>نقاطك تدخل تشكيلة <b>${CL[me[3]]}</b> لما تلعب في <b>${ac[1]}</b> أيام مختلفة (لعبت ${ac[0]===1?'يوم واحد':ac[0]===2?'يومين':ac[0]+' أيام'}). وأول ما تكملها، تنحسب كل نقاطك هالأسبوع</span></div>`;
+  const ac=r[u].act;if(ac&&ac[0]<ac[1])return `<div class="ml you">⏳ <span>نقاطك تدخل نخبة جمهور <b>${CL[me[3]]}</b> لما تلعب في <b>${ac[1]}</b> أيام مختلفة (لعبت ${ac[0]===1?'يوم واحد':ac[0]===2?'يومين':ac[0]+' أيام'}). وأول ما تكملها، تنحسب كل نقاطك هالأسبوع</span></div>`;
   const c=me[3],L=((V[B].xi||{})[c])||[],xi=D.xi||11,row=(V[B].clubs||[]).find(x=>x[0]===c),k=L.findIndex(x=>x[2]===u);
-  const nn=window.EL3FAN&&!(EL3FAN.name()||'').trim()?`<div class="ml you">✍️ <span>اسمك ما يطلع في التشكيلة، يطلع «مشجع». <button class="lk" id="nmBtn2">اكتب اسمك</button></span></div>`:'';
-  if(k>=0)return `<div class="ml you">⚽ <span>أنت رقم ${L[k][3]||k+1}${L[k][4]?' (متعادل)':''} في تشكيلة <b>${CL[c]}</b>، وجبت <b>${nf(me[1])}</b> نقطة من <b>${nf(row?row[2]:0)}</b></span></div>`+nn;
-  if((((V[B].xt||{})[c])||[]).includes(u))return `<div class="ml you">⚽ <span>أنت متعادل بالكامل مع آخر مكان في تشكيلة <b>${CL[c]}</b> (${nf(me[1])} نقطة). العب أكثر وتقدّم</span></div>`;
-  if(L.length>=xi)return `<div class="ml you">⚽ <span>آخر واحد في تشكيلة <b>${CL[c]}</b> عنده <b>${nf(L[xi-1][1])}</b> نقطة وأنت <b>${nf(me[1])}</b>. العب أكثر عشان تدخل</span></div>`;
+  const nn=window.EL3FAN&&!(EL3FAN.name()||'').trim()?`<div class="ml you">✍️ <span>اسمك ما يطلع في نخبة الجمهور، يطلع «مشجع». <button class="lk" id="nmBtn2">اكتب اسمك</button></span></div>`:'';
+  if(k>=0)return `<div class="ml you">⚽ <span>أنت رقم ${L[k][3]||k+1}${L[k][4]?' (متعادل)':''} في نخبة جمهور <b>${CL[c]}</b>، وجبت <b>${nf(me[1])}</b> نقطة من <b>${nf(row?row[2]:0)}</b></span></div>`+nn;
+  if((((V[B].xt||{})[c])||[]).includes(u))return `<div class="ml you">⚽ <span>أنت متعادل بالكامل مع آخر مكان في نخبة جمهور <b>${CL[c]}</b> (${nf(me[1])} نقطة). العب أكثر وتقدّم</span></div>`;
+  if(L.length>=xi)return `<div class="ml you">⚽ <span>آخر واحد في نخبة جمهور <b>${CL[c]}</b> عنده <b>${nf(L[xi-1][1])}</b> نقطة وأنت <b>${nf(me[1])}</b>. العب أكثر عشان تدخل</span></div>`;
   return ''}
 function bsegH(){return `<div class="bseg">${Object.entries(BN()).map(([k,v])=>`<button data-b="${k}" class="${k===B?'on':''}">${v}</button>`).join('')}</div>`}
 /* الأندية: نقاط أفضل 11 مشجع (التشكيلة). الصف: [النادي، المركز، النقاط، التشكيلة/الأسابيع، المشاركين، الأخطاء، الثواني] */
 function clubsH(V,W){const rows=V[B].clubs||[],my=MY(),any=rows.some(r=>r[2]>0),xi=D.xi||11;
   if(!any)return `<div class="card how" style="text-align:center">ما في نقاط ${B==='pred'?'من دوري التوقعات ':''}لين الحين${B==='pred'&&W&&W.live&&!W.pred?' · هالأسبوع ما فيه جولة دوري':''}</div>`;
   return `<div class="tbl v2"><div class="th"><span>#</span><span></span><span>النادي</span><span>النقاط</span></div>${rows.filter(r=>r[2]>0).map(r=>{
-    const sub=T==='season'?`جاب نقاط في ${r[3]===1?'أسبوع واحد':r[3]===2?'أسبوعين':nf(r[3])+(r[3]>10?' أسبوع':' أسابيع')}`:(r[3]>=xi?`تشكيلة كاملة · لعب ${nf(r[4])} ${MSH(r[4])}`:`تشكيلة ناقصة: ${nf(r[3])} من ${xi}`);
+    const sub=T==='season'?`جاب نقاط في ${r[3]===1?'أسبوع واحد':r[3]===2?'أسبوعين':nf(r[3])+(r[3]>10?' أسبوع':' أسابيع')}`:(r[3]>=xi?`النخبة كاملة · لعب ${nf(r[4])} ${MSH(r[4])}`:`النخبة ناقصة: ${nf(r[3])} من ${xi}`);
     return `<div class="tr ${r[0]===my?'mine':''} ${r[1]<=3?'p'+r[1]:''} ${OPEN===r[0]?'open':''}" data-c="${r[0]}"><i>${r[1]}</i><span class="cw">${crest(r[0],26)}</span><span class="nm">${CL[r[0]]}<small>${sub}</small></span><span class="tot">${nf(r[2])}</span></div>${OPEN===r[0]?xiH(V,r):''}`}).join('')}
    ${rows.filter(r=>!r[2]).length?`<div class="sep">ما جابوا نقاط لين الحين: ${rows.filter(r=>!r[2]).map(r=>CL[r[0]]).join('، ')}</div>`:''}</div>`}
 /* المشجعين: أول 10 مراكز (اللي كاتبين اسم ومختارين نادي) */
@@ -378,16 +378,16 @@ function howH(){return `<details class="hw" open><summary>📘 كيف ينحسب
 <li>🕵️ <b>منو اللاعب؟</b> من أول محاولة 6 نقاط، ومن الثانية 5… ومن السادسة 1.</li>
 <li>🔮 <b>دوري التوقعات:</b> النتيجة بالضبط 10، والفائز مع الفارق 6، والفائز بس 4.</li></ul></div>
 <div class="hs"><div class="hh">⭐ ترتيب المشجعين</div><p>الأكثر نقاط يتصدر. إذا تساووا: <b>الأقل أخطاء</b> ← <b>الأكثر لعب</b> ← <b>الأسرع</b>.</p></div>
-<div class="hs"><div class="hh">🏆 ترتيب الأندية</div><p>كل نادي تنحسب له <b>نقاط أفضل 11 مشجع</b> عنده، مثل التشكيلة. إذا تساووا: <b>الأقل أخطاء</b> ← <b>الأسرع</b>.<br>المشجع يدخل تشكيلة ناديه لما يلعب في <b>3 أيام مختلفة</b>، وأول ما يكملها تنحسب كل نقاطه في الأسبوع.<br><small style="opacity:.75">اضغط على أي نادي وتشوف تشكيلته.</small></p></div>
+<div class="hs"><div class="hh">🏆 ترتيب الأندية</div><p>كل نادي تنحسب له <b>نقاط أفضل 11 مشجع</b> عنده (نخبة الجمهور). إذا تساووا: <b>الأقل أخطاء</b> ← <b>الأسرع</b>.<br>المشجع يدخل نخبة جمهور ناديه لما يلعب في <b>3 أيام مختلفة</b>، وأول ما يكملها تنحسب كل نقاطه في الأسبوع.<br><small style="opacity:.75">اضغط على أي نادي وتشوف نخبة جمهوره.</small></p></div>
 <div class="hs"><div class="hh">🗓️ الأسبوع والموسم</div><p>الأسبوع من الثلاثاء لين نهاية الإثنين. والموسم مجموع نقاط كل الأسابيع.</p></div>
 <details class="det"><summary>التفاصيل</summary><ul>
 <li><b>الأخطاء:</b> كل تخمين غلط في «منو اللاعب؟» خطأ (واللي ما عرف اللاعب = 6 أخطاء)، وكل توقع جاب صفر خطأ.</li>
 <li><b>الأكثر لعب:</b> عدد التحديات اللي لعبتها والتوقعات اللي انحسبت.</li>
 <li><b>الأسرع:</b> مجموع الوقت من فتح التحدي لين الجواب في «منو اللاعب؟» (بحد ساعة للتحدي).</li>
-<li><b>التشكيلة:</b> أفضل 11 مشجع للنادي في نفس الترتيب (أسبوع أو موسم، وكل التحديات أو تحدي واحد). النادي اللي لعب له أقل من 11 يلعب ناقص. وعدد المسجلين في النادي ما يدخل في أي حسبة.</li>
-<li><b>3 أيام مختلفة:</b> كل يوم تلعب فيه «منو اللاعب؟»، وكل جولة توقعات انحسبت لك، يوم لعب. الشرط عشان ما يدخل أحد التشكيلة بحسابات زايدة. وفي أول يومين من الموسم يكفي يوم أو يومين. ونقاطك في ترتيب المشجعين تنحسب لك من أول يوم.</li>
+<li><b>نخبة الجمهور:</b> أفضل 11 مشجع للنادي في نفس الترتيب (أسبوع أو موسم، وكل التحديات أو تحدي واحد). النادي اللي لعب له أقل من 11 يلعب ناقص. وعدد المسجلين في النادي ما يدخل في أي حسبة.</li>
+<li><b>3 أيام مختلفة:</b> كل يوم تلعب فيه «منو اللاعب؟»، وكل جولة توقعات انحسبت لك، يوم لعب. الشرط عشان ما يدخل أحد النخبة بحسابات زايدة. وفي أول يومين من الموسم يكفي يوم أو يومين. ونقاطك في ترتيب المشجعين تنحسب لك من أول يوم.</li>
 <li><b>ناديك:</b> نقاطك تنحسب للنادي اللي مختاره وقت ما لعبت أو توقعت.</li>
-<li><b>الموسم للأندية:</b> مجموع نقاط تشكيلة النادي في كل أسبوع، مثل جدول الدوري.</li>
+<li><b>الموسم للأندية:</b> مجموع نقاط نخبة جمهور النادي في كل أسبوع، مثل جدول الدوري.</li>
 <li><b>التحديث:</b> نقاطك تنضاف للترتيب خلال 15 دقيقة تقريباً من ما تلعب أو تنتهي المباراة. والأسبوع يتثبت الثلاثاء الساعة 12:40 بالليل. وجولة الدوري تنحسب في الأسبوع اللي فيه أكثر مبارياتها.</li>
 <li>إذا تساوى كل شي: <b>نفس المركز</b>.</li>
 </ul></details></div></details>`}

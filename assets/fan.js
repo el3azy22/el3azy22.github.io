@@ -114,7 +114,7 @@ function open(){
     <div class="fz-grid">${ORDER.map(k=>`<button type="button" data-c="${k}" class="${k===pick?'on':''}"${locked&&k!==cur?' disabled':''}>${crest(k,34)}<span>${CL[k]}</span></button>`).join('')}</div>
     <p class="fz-lock">${note}</p>
     <input class="fz-name" maxlength="16" placeholder="اسمك (اختياري)" value="${esc(name())}">
-    <p class="fz-hint">اكتب اسمك عشان يطلع في <b>تشكيلة ناديك</b> وفي <b>أعلى المشجعين</b>. مب تسجيل، وإذا خليته فاضي يطلع «مشجع».</p>
+    <p class="fz-hint">اكتب اسمك عشان يطلع في <b>نخبة جمهور ناديك</b> وفي <b>أعلى المشجعين</b>. مب تسجيل، وإذا خليته فاضي يطلع «مشجع».</p>
     <button class="fz-ok" type="button"></button>
     <div class="fz-row"><button class="fz-link fz-none" type="button"${locked||cur===''?' style="visibility:hidden"':''}>ما أشجع نادي معيّن</button><button class="fz-link fz-close" type="button" style="opacity:.7">${edit?'إغلاق':'بعدين'}</button></div></div>`;
   document.body.appendChild(bg);
