@@ -188,7 +188,7 @@ async function moveOut(bg){
     <p class="fz-hint" style="margin-top:8px">أو انسخ الرابط وافتحه في المتصفح الثاني (مثلاً من X إلى سفاري)، وينفتح الرمز جاهز.<br>نقاطك وناديك وتوقعاتك تنتقل كلها، وتقدر تلعب من الثنين.</p>
     <div class="fz-row" style="justify-content:center"><button class="fz-link fz-close" type="button">تم</button></div>`;
   const t=sh.querySelector('.fz-t'),tk=()=>{const s=Math.max(0,Math.round((m.e-Date.now())/1e3));if(!document.body.contains(t)){clearInterval(iv);return}t.textContent=`${Math.floor(s/60)}:${String(s%60).padStart(2,'0')}`;if(!s){clearInterval(iv);t.textContent='انتهى'}},iv=setInterval(tk,1000);tk();
-  sh.querySelector('.fz-cp').onclick=async e=>{try{await navigator.clipboard.writeText(link);e.target.textContent='✓ انتسخ الرابط'}catch(_){prompt('انسخ الرابط:',link)}};
+  sh.querySelector('.fz-cp').onclick=async e=>{try{await navigator.clipboard.writeText(link);e.target.textContent='✓ تم نسخ الرابط'}catch(_){prompt('انسخ الرابط:',link)}};
   sh.querySelector('.fz-close').onclick=()=>bg.remove();
 }
 function moveIn(bg,pre){
