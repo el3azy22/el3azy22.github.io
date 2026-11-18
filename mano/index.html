@@ -471,7 +471,7 @@ function guess(id){
   render();
   if(S.guesses.length===1)gc('start-'+mode);
   if(win){gc('win-'+mode);vib([30,40,60]);confetti();const n=S.guesses.length;sfx(n===1?'mainoon':n<=4?'kafu':'sawaha')}
-  else if(S.done){gc('lose-'+mode);vib([60,40,60]);sfx('lose')}
+  else if(S.done){gc('lose-'+mode);vib([60,40,60]);/* صوت الخسارة موقف لين يوصل تسجيل «هابوش ما ضبطت وياك» (التسجيل الحالي ينسمع «ضبطت») */}
   else if(!S.done){vib(40);sfx('mubho',.85);if(mode==='easy')toast('🔓 انفتح تلميح يديد');else if(DAY>=2&&S.guesses.length===3)toast('🔓 انكشف نادي لاعبك السري');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
   if(S.done)setTimeout(()=>{const r=document.querySelector('.result');r&&r.scrollIntoView({behavior:'smooth',block:'start'})},350);
 }
