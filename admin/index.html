@@ -205,7 +205,7 @@ function render(){
     for(let t=first;t<b;t+=DAYMS)pts.push([String(new Date(t).getUTCDate()),dd[t]||0])}
   h+=`<div class="lbl">${single?'الزوار في كل ساعة':'الزوار في كل يوم'}</div><div class="card"><p class="cap">${single?'كل عمود = ساعة من اليوم (بتوقيت الإمارات)، والرقم = كم شخص زار المنصة فيها.':'كل عمود = يوم، والرقم تحته = تاريخ اليوم في الشهر، وفوقه أعلى يوم.'}</p>${cols(pts)}</div>`;
   // sections
-  const SEC=[['/','home','الصفحة الرئيسية'],['/tashkila','tashkila','اختار تشكيلتك'],['/mano','mano','منو اللاعب؟'],['/rate','rate','قيّم اللاعبين'],['/predict','predict','دوري التوقعات'],['/fans','fans','دوري الجماهير'],['/songs','songs','أغاني دورينا وأنديتنا']];
+  const SEC=[['/','home','الصفحة الرئيسية'],['/tashkila','tashkila','تشكيلتي'],['/mano','mano','منو اللاعب؟'],['/rate','rate','قيّم اللاعبين'],['/predict','predict','دوري التوقعات'],['/fans','fans','دوري الجماهير'],['/songs','songs','أغاني دورينا وأنديتنا']];
   h+=`<div class="lbl">أي قسم يدخلونه أكثر</div><div class="card"><p class="cap">كم زيارة لكل قسم في الفترة${useV?' (عدادنا)':''}.</p>${bars(SEC.map(([x,y,t])=>[t,useV?(V.p[y]||0):(pg[x]||0)]))}</div>`;
   // referrers (async, cached)
   h+=`<div class="lbl">من وين يجون الزوار</div><div class="card"><p class="cap">من أي مكان ضغطوا على رابط المنصة.</p><div id="refs"><div class="empty">لحظة...</div></div></div>`;
@@ -238,7 +238,8 @@ function render(){
     const td='padding:9px 4px;text-align:center;font-weight:700;font-size:15px',th='padding:4px;text-align:center;font-size:12px;opacity:.7;font-weight:600';
     h+=`<div class="lbl">🎵 أغاني دورينا وأنديتنا</div><div class="card"><p class="cap">زيارات صفحة الأغاني <b>${nf(pg['/songs']||0)}</b> في الفترة. 🔗 = كم واحد دخل من رابط الأغنية نفسها (مثل اللي تنشره في X). ▶️ = كم مرة انشغلت: من ١٦ نوفمبر ١١ بالليل مرة وحدة لكل زيارة، وقبلها كانت كل ضغطة تشغيل تنحسب، فالأرقام القديمة أعلى من الحقيقي.</p>${rows.length?`<table style="width:100%;border-collapse:collapse"><tr><th style="${th};text-align:start">الأغنية</th><th style="${th}">🔗 من رابطها</th><th style="${th}">▶️ تشغيل</th><th style="${th}">⬇️ تنزيل</th><th style="${th}">📤 مشاركة</th></tr>${rows.map(r=>`<tr style="border-top:1px solid rgba(255,245,229,.08)"><td style="padding:9px 4px"><span style="display:flex;align-items:center;gap:8px;font-weight:600"><img src="${r.o.club?'../mano/assets/'+r.o.club+'.png':'../mano/assets/logo.png'}" style="width:24px;height:24px;object-fit:contain" alt="">${esc(r.o.title)}</span></td><td style="${td}">${nf(r.vi)}</td><td style="${td}">${nf(r.pl)}</td><td style="${td}">${nf(r.dl)}</td><td style="${td}">${nf(r.sh)}</td></tr>`).join('')}</table>`:'<div class="empty">لحظة...</div>'}</div>`}
   h+=`<div class="lbl">🔮 دوري التوقعات</div><div class="card" id="predC"><div class="empty">لحظة...</div></div>`;
-  $('#app').innerHTML=h;bindSeg();loadRefs(a,b);loadPred();
+  h+=`<div class="lbl">🧩 توقّع تشكيلة ناديك</div><div class="card" id="tpC"><div class="empty">لحظة...</div></div>`;
+  $('#app').innerHTML=h;bindSeg();loadRefs(a,b);loadPred();loadTP();
 }
 async function loadPred(){ // المشاركين + تنبيه لو مواعيد المباريات تغيرت عن اللي في قواعد Firebase
   const v=Date.now(),[D,L,TB]=await Promise.all(['data','lock','table'].map(f=>fetch('../predict/'+f+'.json?v='+v).then(r=>r.ok?r.json():null).catch(()=>null)));
@@ -249,6 +250,19 @@ async function loadPred(){ // المشاركين + تنبيه لو مواعيد 
   else h+=`<p class="cap">✅ قواعد Firebase مطابقة لمواعيد المباريات الجاية (${fut.length} مباراة).</p>`;
   const R=TB&&TB.rounds?Object.entries(TB.rounds):[];
   if(R.length)h+=bars(R.map(([w,rows])=>['الجولة '+w+' · متوقعين',rows.length]));else h+='<div class="empty">الترتيب يطلع بعد صافرة أول مباراة فيها توقعات</div>';
+  el.innerHTML=h;
+}
+async function loadTP(){ // fans/tp.json: أعداد مجمعة لكل مباراة (من تشغيل دوري الجماهير، كل 15 دقيقة تقريباً)
+  const S=await fetch('../fans/tp.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
+  const el=$('#tpC');if(!el)return;const M=S?Object.values(S).sort((x,y)=>x.t-y.t):[];
+  if(!M.length){el.innerHTML='<div class="empty">الأرقام تطلع هني أول ما يتوقع الجمهور (تتحدث كل 15 دقيقة تقريباً)</div>';return}
+  const T=Date.now(),tot=M.reduce((x,m)=>x+m.n,0),AR=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];
+  let h=`<p class="cap"><b>${nf(tot)}</b> توقع في ${M.length} مباراة. كل توقع من مشجع اختار واحد من الفريقين. بعد ما تنزل التشكيلة الرسمية يطلع متوسط اللي صابوه.</p>`;
+  h+=bars(M.map(m=>[`${CLUBS[m.h]||m.h} × ${CLUBS[m.a]||m.a}`,m.n]));
+  M.filter(m=>m.n).forEach(m=>{h+=`<div class="mini"><b>${CLUBS[m.h]} × ${CLUBS[m.a]}:</b> ${nf(m[m.h]||0)} من جمهور ${CLUBS[m.h]} · ${nf(m[m.a]||0)} من جمهور ${CLUBS[m.a]}</div>`});
+  M.filter(m=>m.d).forEach(m=>{const n=m.d.reduce((x,v)=>x+v,0),avg=m.d.reduce((x,v,i)=>x+v*i,0)/n,best=m.d.reduce((x,v,i)=>v?i:x,0);
+    h+=`<div class="mini"><b>${CLUBS[m.h]} × ${CLUBS[m.a]}:</b> متوسط الصح ${avg.toFixed(1)} من 11 · أعلى نتيجة ${best} من 11${m.d[11]?` · ${nf(m.d[11])} صابوا الـ11 كلهم`:''}</div>`});
+  const nx=M.find(m=>m.t>T);if(nx)h+=`<div class="mini">⏳ أقرب قفل: ${CLUBS[nx.h]} × ${CLUBS[nx.a]}، ${AR[new Date(nx.t+4*3600e3).getUTCDay()]} قبل المباراة بساعتين</div>`;
   el.innerHTML=h;
 }
 async function loadRefs(a,b){

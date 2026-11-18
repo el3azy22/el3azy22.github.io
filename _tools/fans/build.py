@@ -362,6 +362,39 @@ def boards(per, names, hide, ok=None):
     return out, ranks
 
 
+def tp_summary(pred_d, lineups, tp_all, now, H, read=None):
+    """ملخص «توقّع تشكيلة ناديك» للوحة الإحصائيات (fans/tp.json، أرقام مجمعة بس، بدون توقعات أي أحد):
+    لكل مباراة مفتوحة أو لعبت من بداية التحدي: كم توقع وكم من جمهور كل فريق، وبعد التشكيلة الرسمية: متوسط الصح وتوزيعه."""
+    read = read or (lambda mid: fb(f'tp/{mid}', None, H))
+    try:
+        op = json.load(open(os.path.join(ROOT, 'predict/open.json'), encoding='utf8'))
+    except Exception:
+        op = {}
+    out = {}
+    for m in pred_d.get('matches', []):
+        mid, t = str(m['id']), int(m['t'])
+        if t < START + (TP_START - 1) * DAYMS or int(op.get(str(m['wk'])) or 0) > now or t > now + 8 * DAYMS:
+            continue
+        v = tp_all.get(mid)
+        if v is None:
+            v = read(mid) or {}
+        row = {'t': t, 'wk': m['wk'], 'h': m['h'], 'a': m['a'], 'n': 0, m['h']: 0, m['a']: 0}
+        L = (lineups or {}).get(mid)
+        dist = [0] * 12
+        for x in v.values():
+            c = (x or {}).get('c')
+            if c not in (m['h'], m['a']):
+                continue
+            row['n'] += 1; row[c] += 1
+            if L and t <= now:
+                real = set(L['hs'] if c == L['h'] else L['as'])
+                dist[sum(1 for k in dict.fromkeys(((x or {}).get('x') or '').split('~')) if k in real)] += 1
+        if L and t <= now and row['n']:
+            row['d'] = dist
+        out[mid] = row
+    return out
+
+
 def main():
     now = int(os.environ.get('NOW') or time.time() * 1000)
     today = max(1, day_of(now))
@@ -425,6 +458,7 @@ def main():
                 v = fb(f'tp/{mid}', None, H)
                 if v:
                     tp_all[mid] = v
+    tp_sum = tp_summary(pred_d, lineups, tp_all, now, H) if TP_START and H else None
     names = (fb('f', None, H) or {}) if H else {}
     names = {u[:12]: v for u, v in names.items() if isinstance(v, dict)}
 
@@ -518,6 +552,8 @@ def main():
         print('fans/data.json ما تغير')
     if H:
         json.dump(acc, open(acc_path, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
+        if tp_sum is not None:
+            json.dump(tp_sum, open(os.path.join(ROOT, 'fans/tp.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
         json.dump({'w': cur, 'week': week_ranks, 'season': s_ranks}, open(os.path.join(ROOT, 'fans/ranks.json'), 'w', encoding='utf8'),
                   ensure_ascii=False, separators=(',', ':'))
 

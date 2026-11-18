@@ -165,6 +165,14 @@ if __name__ == '__main__':
     T.check('التوقع: 11 من 11 لجمهور الضيف من تشكيلته هو', U['tB']['pts'], 11)
     T.check('نادي مب طرف في المباراة ما ينحسب', 'tC' in U, False)
     T.check('لاعب مكرر ينحسب مرة وحدة', U['tD']['pts'], 1)
+    # ملخص اللوحة (fans/tp.json): أعداد بس، والتوزيع بعد التشكيلة الرسمية
+    pdm = {'matches': [{'id': 501, 't': S + DAY + 3600000, 'wk': 9, 'h': 'ain', 'a': 'wasl'},
+                       {'id': 502, 't': S + 3 * DAY, 'wk': 9, 'h': 'nasr', 'a': 'hatta'}]}
+    sm = FB.tp_summary(pdm, L, tp, S + DAY + 5 * 3600000, None, read=lambda mid: {'z': {'c': 'nasr', 'x': 'q'}} if mid == '502' else None)
+    T.check('الملخص: عدد التوقعات ولكل جمهور (اللي مب طرف ما ينعد)', (sm['501']['n'], sm['501']['ain'], sm['501']['wasl']), (3, 2, 1))
+    T.check('الملخص: توزيع الصح بعد التشكيلة', (sm['501']['d'][8], sm['501']['d'][11], sm['501']['d'][1]), (1, 1, 1))
+    T.check('الملخص: مباراة ياية بدون توزيع', (sm['502']['n'], 'd' in sm['502']), (1, False))
+    T.check('الملخص ما فيه توقعات أحد', '"x"' in json.dumps(sm) or 'q' in json.dumps(sm), False)
     os.environ.pop('TP_START', None)
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)
