@@ -50,7 +50,7 @@ jobs:
             python3 _tools/firebase/deploy.py || echo "::warning::نشر القواعد فشل في هالدورة"
             [ -n "$BUS" ] && { python3 _tools/bus/verify.py || echo "::warning::مُعيد الباص فشل"; }
             python3 _tools/fans/build.py || echo "::warning::دوري الجماهير فشل في هالدورة"
-            git add rate/data.json rate/p tashkila/lineups.json predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json predict/open.json setup/rules.html fans/data.json fans/acc.json fans/ranks.json
+            git add rate/data.json rate/p tashkila/lineups.json predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json predict/open.json setup/rules.html fans/data.json fans/acc.json fans/ranks.json fans/tp.json
             if ! git diff --cached --quiet; then
               git commit -m "قيّم اللاعبين + دوري التوقعات: تحديث المباريات" -q
               git pull --rebase -q && git push -q || echo "::warning::push فشل في هالدورة"
