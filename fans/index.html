@@ -104,6 +104,7 @@ header .sub{line-height:1.5;font-size:12px;color:var(--gold);font-weight:600}
 .rr .me b{display:block;font-size:14px;opacity:1}
 .avg{width:50px;height:40px;border-radius:12px;display:grid;place-items:center;font-size:17px;font-weight:700;color:var(--navy);flex-shrink:0}
 .avg.na{background:rgba(255,245,229,.06);color:rgba(255,245,229,.4);font-size:14px}
+.d3n{font-size:13.5px;line-height:1.8;text-align:center;padding:12px 14px;margin:0 0 14px;border-radius:18px;border:1.5px solid rgba(215,180,101,.6);background:linear-gradient(160deg,rgba(215,180,101,.16),rgba(7,29,43,.6))}.d3n b{color:var(--gold2)}
 .note{font-size:12px;opacity:.65;line-height:1.8;text-align:center;margin:6px 0}
 .cardimg{display:block;width:100%;border-radius:16px;margin:4px 0;border:1px solid rgba(215,180,101,.35);box-shadow:0 10px 30px rgba(0,0,0,.35);aspect-ratio:4/5;background:var(--navy)}
 .empty{text-align:center;padding:26px 10px;opacity:.8;line-height:1.9}
@@ -409,6 +410,8 @@ function draw(){
     ${top?(TOPS.length===1?`<div class="lead"><div class="cw">${crest(top[0],52)}</div><div><b>جمهور ${CL[top[0]]}</b><span>${nf(top[2])} نقطة من كل التحديات</span></div></div>`:`<div class="lead"><div class="cw2">${TOPS.slice(0,4).map(r=>crest(r[0],40)).join('')}</div><div><b>${TOPS.map(r=>CL[r[0]]).join(' و')}</b><span>متعادلين · ${nf(top[2])} نقطة لكل نادي</span></div></div>`):`<div class="lead"><div class="cw" style="font-size:40px">🏆</div><div><b>ما في نقاط لين الحين</b><span>العب «منو اللاعب؟» وخلّ ناديك أول نادي في الجدول</span></div></div>`}
     ${D.story&&T==='last'?`<div class="story">🚀 ${esc(D.story)}</div>`:''}
     <div class="meta"><span>${T==='week'&&live?`الأسبوع يخلص بعد <b>${left()}</b> · يتحدث كل 15 دقيقة تقريباً`:T==='season'?'الموسم = مجموع كل الأسابيع':'الأسبوع نهائي'}</span></div></div>`;
+  // تنبيه اليوم الثالث بس (19 نوفمبر): شرط الـ3 أيام بدا الليلة ونقاط النخب نزلت مؤقتاً (قرار إبراهيم)
+  {const P0=1794859200000,n=Date.now();if(T==='week'&&n>=P0+2*864e5&&n<P0+3*864e5)h+=`<div class="d3n">⏳ من اليوم يحتاج المشجع <b>3 أيام لعب</b> عشان يدخل نخبة ناديه.<br>العب اليوم، وترجع نقاطك كلها لجمهورك.</div>`}
   h+=bsegH()+`<div class="lbl">📣 الأندية · ${BN()[B]}</div>`+clubsH(V,W)+fansH(V)+howH();
   $('#app').innerHTML=h;
   document.querySelectorAll('#tabs button').forEach(b=>b.onclick=()=>{T=b.dataset.t;OPEN='';gc('fans-tab-'+T);draw()});
