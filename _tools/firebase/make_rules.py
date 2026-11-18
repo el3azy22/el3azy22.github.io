@@ -248,5 +248,16 @@ rules["rules"]["b"]={"$d":{"$u":{
   "d":{".validate":"newData.isNumber()"},"t":{".validate":"newData.val() == now"},
   "$other":{".validate":False}}}}
 rules["rules"]["bv"]={".read":True}   # نتايج المُعيد (مقروءة للكل، الكتابة لحساب الخدمة بس)
+# r = سجل خاص بنهاية كل لعبة في «منو اللاعب» (فاز أو خسر، بنادي أو بدون) + بصمة جهاز مختصرة مجهولة (dv)
+# الهدف: نرصد «الكشّاف» (حساب ثاني بنفس التلفون يخسر عشان يطلع الاسم، وبعدها فوز من أول محاولة). القراءة للمدير بس
+rules["rules"]["r"]={".read":ISADM,"$d":{"$m":{"$u":{
+   ".write":"auth != null && auth.uid == $u && !data.exists()",
+   ".validate":("newData.hasChildren(['d','g','dv','t']) && $m.matches(/^(easy|pro)$/) && $d.matches(/^[0-9]{1,4}$/)"
+     f" && newData.child('d').isNumber() && $d == '' + newData.child('d').val() && now >= {L} + (newData.child('d').val() - 1) * {DAYMS} && now < {L} + newData.child('d').val() * {DAYMS} + {GRACE}"),
+   "d":{".validate":True},
+   "g":{".validate":"newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 6"},
+   "dv":{".validate":"newData.isString() && newData.val().matches(/^[0-9a-f]{12}$/)"},
+   "t":{".validate":"newData.val() == now"},
+   "$other":{".validate":False}}}}}
 
 json.dump(rules,open('rules.json','w'),ensure_ascii=False,separators=(',',':'))

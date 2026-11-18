@@ -274,11 +274,34 @@ def x_tests():
     check('صاحب البطاقة (من التلفون اليديد) يمسحه بعد الاستخدام', requests.delete(url(f'x/{h}', 'p1')).status_code, 200)
 
 
+def r_tests():
+    now = int(time.time() * 1000)
+    load_rules(now - DAY, []); reset({})
+    print('\n— سجل نهاية اللعبة (رصد الكشّاف) —')
+    TS = {'.sv': 'timestamp'}
+    rec = {'d': 2, 'g': 0, 'dv': '0123456789ab', 't': TS}
+    check('اللاعب يسجل نهاية لعبته', put('p1', 'r/2/easy/p1', rec), 200)
+    check('ما يكتب مرة ثانية فوقها', put('p1', 'r/2/easy/p1', {**rec, 'g': 1}), 401)
+    check('ما يسجل باسم غيره', put('p2', 'r/2/easy/p1', rec), 401)
+    check('اللاعب نفسه ما يقرا السجل', requests.get(url('r/2/easy/p1', 'p1')).status_code, 401)
+    check('أحد ثاني ما يقرا السجل', requests.get(url('r', 'p2')).status_code, 401)
+    check('بدون تسجيل ما يقرا', requests.get(url('r')).status_code, 401)
+    check('المدير يقرا السجل', requests.get(url('r', 'Vt7pBIwn9jhQCI2LSORFpnU3aCa2')).status_code, 200)
+    check('بصمة بشكل غلط ترفض', put('p3', 'r/2/easy/p3', {**rec, 'dv': 'XYZ'}), 401)
+    check('بصمة أطول ترفض', put('p3', 'r/2/easy/p3', {**rec, 'dv': 'a' * 40}), 401)
+    check('يوم غير اليوم يرفض', put('p3', 'r/3/easy/p3', {**rec, 'd': 3}), 401)
+    check('وقت من التلفون (مب السيرفر) يرفض', put('p3', 'r/2/easy/p3', {**rec, 't': now}), 401)
+    check('محاولات أكثر من 6 ترفض', put('p3', 'r/2/easy/p3', {**rec, 'g': 7}), 401)
+    check('تحدي غير معروف يرفض', put('p3', 'r/2/zzz/p3', rec), 401)
+    check('حقل زايد يرفض', put('p3', 'r/2/pro/p3', {**rec, 'z': 1}), 401)
+    check('تحدي الخبير يتسجل', put('p3', 'r/2/pro/p3', {**rec, 'g': 3}), 200)
+
+
 if __name__ == '__main__':
     try:
         requests.get(f'{B}/.json?ns={NS}', timeout=3)
     except Exception:
         sys.exit('المحاكي مب شغال على ' + B)
-    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests(); tp_tests(); x_tests()
+    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests(); tp_tests(); x_tests(); r_tests()
     print(f'\nالنتيجة: {ok} نجح · {fail} فشل')
     sys.exit(1 if fail else 0)
