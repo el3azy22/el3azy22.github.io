@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <script src="/assets/stat.js"></script>
+<script src="/assets/players.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>قيّم اللاعبين | العازي</title>
 <meta name="description" content="قيّم لاعبين دوري أدنوك للمحترفين بعد كل مباراة، وشوف تقييم الجماهير ونجم المباراة.">
@@ -213,7 +214,10 @@ const qs=new URLSearchParams(location.search);
 Promise.all([
   fetch('data.json?v='+Math.floor(now()/60e3)).then(r=>r.json()),
   fetch(dbu('rn')).then(r=>r.ok?r.json():{}).catch(()=>({}))
-]).then(([d,rn])=>{D=d;RN=rn||{};route();if(!store.get('seenHow',false))$('#howto').hidden=false})
+]).then(async([d,rn])=>{D=d;RN=rn||{};
+  // الاسم المعروف بين قوسين (assets/players.js) — ما نخلي الصفحة تنطر أكثر من ثانية ونص
+  if(window.EL3P){await Promise.race([EL3P.ready,new Promise(r=>setTimeout(r,1500))]);D.matches.forEach(m=>['h','a'].forEach(s=>((m[s]||{}).pl||[]).forEach(p=>{if(p.k)p.n=EL3P.label(p.k,p.n)})))}
+  route();if(!store.get('seenHow',false))$('#howto').hidden=false})
 .catch(e=>{console.error(e);$('#app').innerHTML='<div class="card empty">ما قدرنا نحمّل المباريات. حدّث الصفحة 🔄</div>'});
 window.addEventListener('popstate',route);
 function go(id){const q=new URLSearchParams(location.search);id?q.set('m',id):q.delete('m');history.pushState(null,'','?'+q);route();scrollTo(0,0)}

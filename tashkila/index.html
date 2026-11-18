@@ -2,6 +2,7 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="utf-8">
+<script src="../assets/players.js"></script>
 <script src="/assets/stat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#071D2B">
@@ -403,17 +404,14 @@ document.addEventListener('keydown',e=>{if(e.key!=='Escape')return;if($('addDlg'
 $('q').oninput=renderList;
 $('clearSlot').onclick=()=>{xi[active]=null;closeSheet();renderPitch()};
 
-/* البحث بالإنجليزي وبالأسماء المعروفة (ميلسون، بالا…): نفس بيانات «منو اللاعب» (mano/data.json + aliases.json) */
-let SK={},KN={};
-Promise.all([fetch('../mano/data.json').then(r=>r.json()),fetch('../mano/aliases.json').then(r=>r.json()).catch(()=>({}))]).then(([d,al])=>{
-  (d.players||[]).forEach(p=>{const a=al[p.id]||[];SK[p.id]=(p.e+' '+a.join(' ')).toLowerCase().replace(/\s+/g,'');const k=a.find(x=>/[\u0600-\u06FF]/.test(x));if(k)KN[p.id]=k});
-  if($('sheet').classList.contains('on'))renderList()}).catch(()=>{});
+/* البحث بالإنجليزي وبالأسماء المعروفة (ميلسون، بالا…): assets/players.js، نفس كل التحديات */
+if(window.EL3P)EL3P.ready.then(()=>{if($('sheet').classList.contains('on'))renderList()});
 function renderList(){
   const L=$('list');L.innerHTML='';const q=$('q').value.trim();
   const all=club.p.concat(extra[club.id]||[]);
   const used=new Set(xi.filter(Boolean).map(key));
   const NQ=x=>String(x||'').replace(/[ً-ْـ]/g,'').replace(/[أإآ]/g,'ا').replace(/ة/g,'ه').replace(/ى/g,'ي').replace(/\s+/g,'');const nq=NQ(q);
-  const f=all.filter(p=>!q||NQ(p[1]).includes(nq)||NQ(p[6]).includes(nq)||(p[5]&&NQ(SK[p[5]]).includes(nq.toLowerCase()))||String(p[0]??'')===q);
+  const f=all.filter(p=>!q||NQ(p[1]).includes(nq)||NQ(p[6]).includes(nq)||(p[5]&&window.EL3P&&EL3P.keys(p[5]).includes(EL3P.norm(q)))||String(p[0]??'')===q);
   if(!all.length){L.innerHTML='<div class="empty-list">قائمة '+club.name+' مب متوفرة لين الحين. أضف اللاعب يدوي من الزر فوق.</div>';return}
   if(!f.length){L.innerHTML='<div class="empty-list">ما لقيت لاعب بهالاسم. تقدر تضيفه يدوي من الزر فوق.</div>';return}
   // تجميع
@@ -427,7 +425,7 @@ function renderList(){
       const b=document.createElement('button');b.className='pl';const k=key(p);
       const isCur=xi[active]&&key(xi[active])===k;b.disabled=used.has(k)&&!isCur;
       const no=document.createElement('span');const kk=kit(p[2]||'');no.className='pic';no.style.setProperty('--rb',kk.body);no.innerHTML=picHTML(p,kk);
-      const nm=document.createElement('span');nm.textContent=p[1]+(p[5]&&KN[p[5]]&&!p[1].includes(KN[p[5]])?' ('+KN[p[5]]+')':'');
+      const nm=document.createElement('span');nm.textContent=p[5]&&window.EL3P?EL3P.label(p[5],p[1]):p[1];
       b.append(no,nm);
       if(p[2]){const t=document.createElement('span');t.className='tag';t.textContent=p[4]?'مضاف · '+ROLE[p[2]]:ROLE[p[2]];b.appendChild(t)}
       b.onclick=()=>{xi[active]=p;closeSheet();renderPitch()};
