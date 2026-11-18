@@ -91,6 +91,7 @@ async def main():
         # بدون ?tpqa والإطلاق 0: الصفحة مثل ما هي
         pg = await b.new_page()
         await pg.route('**/*firebasedatabase.app/**', lambda r: r.abort() if r.request.method != 'GET' else r.continue_())
+        await pg.route('**/tashkila/config.json*', lambda r: r.fulfill(status=200, body='{"start":0}', content_type='application/json'))
         await pg.goto(BASE + '/tashkila/')
         await pg.wait_for_timeout(1200)
         chk(await pg.locator('.tp-tabs').count() == 0, 'التبويب ظاهر قبل الإطلاق')

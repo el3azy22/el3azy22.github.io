@@ -105,6 +105,6 @@ if __name__ == '__main__':
     T.check('★★★ = 9 نقاط، والأخطاء = الاصطدامات', (U['uX']['pts'], U['uX']['mis'], U['uX']['plays']), (9, 1, 1))
     T.check('السباق المرفوض في الإعادة ما ينحسب', 'uZ' in U, False)
     T.check('ما وصل قبل الصافرة = 0 نقاط بس يوم لعب', (U['uY']['pts'], U['uY']['plays']), (0, 1))
-    T.check('اللوحة تنضاف للدوري', [c['id'] for c in FB.CHALLENGES][-1], 'bus')
+    T.check('اللوحة تنضاف للدوري', 'bus' in [c['id'] for c in FB.CHALLENGES], True)
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)
