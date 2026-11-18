@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-<head>
-<base href="/bus/">
+<head><base href="/bus/"><script>window.BUS_DEMO=1</script>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
 <title>باص الفريق · منصة العازي</title>
@@ -135,7 +134,13 @@ h1 em{font-style:normal;color:var(--gold)}
 .rm .tm{display:flex;align-items:center;gap:6px}.rm .tm i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}.rm small{display:block;font-size:11.5px;color:#bdb193;font-weight:500;margin-top:2px}.rm em{color:#ff9a8a;font-style:normal;font-weight:700}
 #passS{overflow:auto;justify-content:flex-start}.pgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}.pc{position:relative;padding:9px 10px 9px 30px;border-radius:12px;background:rgba(0,0,0,.28);border:2px solid transparent;text-align:start}.pc.got{border-color:rgba(215,180,101,.5)}.pc i{position:absolute;right:auto;left:10px;top:12px;width:12px;height:12px;border-radius:50%}.pc b{display:block;font-size:14px}.pc small{display:block;font-size:11px;color:#bdb193}.pc span{display:block;color:var(--gold);font-size:14px;letter-spacing:1px}.pc .b2{color:#9fb6c8;font-size:12px}
 .bgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}.bg{padding:8px 10px;border-radius:12px;background:rgba(0,0,0,.25);opacity:.55;text-align:start}.bg.on{opacity:1;border:2px solid var(--gold)}.bg b{display:block;font-size:13.5px}.bg small{display:block;font-size:11px;color:#bdb193;line-height:1.45}
-.daily{display:flex;align-items:center;justify-content:space-between;gap:10px}.daily b{display:block;font-size:16px;color:var(--gold);margin:2px 0}.daily small{display:block;color:#cdbf9f;font-size:11.5px;line-height:1.5}.daily .tg{flex:none}
+.chm{margin-top:8px;padding:10px;border-radius:12px;background:rgba(0,0,0,.25);border:2px solid rgba(215,180,101,.45)}.chm .tm{display:flex;align-items:center;gap:6px;font-size:15px;font-weight:700;color:#fff}.chm .tm i{width:14px;height:14px;border-radius:50%;border:2px solid rgba(255,255,255,.7);flex:none}.chm small{display:block;font-size:11.5px;color:#bdb193;margin-top:3px}
+.chg{margin-top:8px;font-size:14.5px;font-weight:700;color:#fff;line-height:1.6}.chg.go{color:var(--gold2)}.chs{display:block;margin-top:4px;font-size:12px;color:#cdbf9f;line-height:1.6}.chs.ok{color:#8fe3a8}.chs.bad{color:#ff9a8a}
+.chr{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-top:8px;padding:8px 10px;border-radius:12px;background:rgba(215,180,101,.12)}.chr .st{font-size:20px;color:var(--gold2);letter-spacing:2px;direction:ltr}.chr b{font-size:15px;color:#fff}
+.chb{margin-top:8px;font-family:inherit;font-weight:700;font-size:14px;color:var(--navy);background:var(--gold2);border:none;border-radius:11px;padding:9px 14px;cursor:pointer}
+.btn.off{opacity:.45;filter:grayscale(.4)}
+.chwarn{margin:10px 0 14px;padding:12px;border-radius:14px;background:rgba(255,154,138,.12);border:1px solid rgba(255,154,138,.55);color:#ffd9d2;font-weight:700;font-size:14.5px;line-height:1.7;text-align:center}
+.pnote{font-size:12.5px;color:#ffd9d2;text-align:center;line-height:1.6;margin:-4px 0 10px}
 .stads .club{font-size:14px;line-height:1.25;text-align:start;padding:8px}.stads .club small{display:block;font-size:11px;color:#bdb193;font-weight:500}.club .tag{margin-inline-start:auto;font-size:10px;background:var(--gold);color:#071D2B;border-radius:8px;padding:1px 6px;font-weight:700;flex:none}
 #preview{display:block;margin:6px auto 0;width:200px;height:216px}
 .btn{font-family:inherit;font-weight:700;font-size:19px;border:none;border-radius:15px;padding:14px;background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);cursor:pointer;width:100%;box-shadow:inset 0 1px 0 rgba(255,255,255,.5),0 8px 18px rgba(0,0,0,.35)}
@@ -235,16 +240,23 @@ body.mir .speed{left:auto;right:calc(var(--sr) + 10px);flex-direction:row-revers
       <div class="cname"><b id="stadName">ملعب هزاع بن زايد</b><small id="stadSub">ملعب ناديك</small></div>
       <div class="dots" id="stadDots"></div>
     </section>
-    <div class="modes" id="modes"><button data-m="free" class="on">لعب حر</button><button data-m="daily">مرحلة اليوم</button><button data-m="round">تحدي الجولة</button></div>
+    <div class="modes" id="modes"><button data-m="free" class="on">لعب حر</button><button data-m="round">تحدي الجولة</button></div>
     <div class="card panel" id="mPanel">
       <div data-p="free"><div class="stagecard"><div class="num" id="mRouteNo">الدور<br>الأول</div><div><b id="mRouteT">العين ← ملعب هزاع بن زايد</b><small id="mRouteSub"></small><small id="mRouteNote"></small><small id="mBest"></small></div></div><div class="mnote">لعب حر: أي باص وأي ملعب، للتدريب وما ينحسب لناديك.</div></div>
-      <div data-p="daily" hidden><div class="pinfo"><small>تتغير كل يوم الساعة 12 بالليل · نفس الطريق والزحمة للجميع</small><b id="mDailyT"></b><small id="mDailyS">بباص ناديك، ونقاطها تنحسب لجمهوره</small></div></div>
       <div data-p="round" hidden id="mRound" class="round"></div>
     </div>
     <div class="card season" id="mSeason"></div>
     <button class="btn" id="bStart">انطلق</button>
   </div>
 </div>
+
+<div class="modal" id="chM"><div class="mbox">
+  <div class="bigic">🏟️</div><h2 id="chMH">تحدي الجولة</h2><p class="l" id="chMT"></p>
+  <div class="chwarn">عندك محاولة وحدة تنحسب في دوري الجماهير. تدرّب في اللعب الحر قبل</div>
+  <button class="btn" id="bChGo">ابدا محاولتي</button>
+  <button class="btn ghost" id="bChPr" style="margin-top:10px">أتدرّب في اللعب الحر</button>
+  <button class="btn ghost" id="bChX" style="margin-top:10px;border:none;font-size:15px;opacity:.75">رجوع</button>
+</div></div>
 
 <div class="modal" id="howM"><div class="mbox">
   <div class="bigic">🚌</div><h2>باص الفريق</h2><p class="l">انت سوّاق باص ناديك. الفريق ينتظرك على الطريق، والمباراة ما تبدا إلا بوصولك.</p>
@@ -280,6 +292,7 @@ body.mir .speed{left:auto;right:calc(var(--sr) + 10px);flex-direction:row-revers
       <button class="tg on" id="tgEngine2"><i></i>المؤثرات</button>
     </div>
     <button class="btn ghost" id="bMirror">⇄ بدّل جهة الأزرار</button>
+    <p class="pnote" id="pNote" hidden>هذي محاولة التحدي: لو رجعت للقائمة، تنحسب بالي سوّيته لين الحين.</p>
     <button class="btn ghost" id="bRestart">عيد الجولة</button>
     <button class="btn ghost" id="bMenu">القائمة</button>
   </div>
@@ -902,7 +915,6 @@ function loadStadium(){stadImg=null;const want=STAGE;loadImg('stadiums/'+HOST(ST
 let STAGE='ain',TH=STADS.ain;{let sv=null;try{sv=localStorage.getItem('bus_stage')}catch(e){}STAGE=STADS[sv]?sv:(STADS[club.id]?club.id:'ain');TH=STADS[STAGE];}
 const HOST=id=>CLUBS.find(c=>c.id===id);
 const DAYN=(()=>{const d=new Date(Date.now()+4*3600e3);return Math.floor(Date.UTC(d.getUTCFullYear(),d.getUTCMonth(),d.getUTCDate())/864e5);})();
-const dailyStage=()=>CLUBS[DAYN%CLUBS.length].id;
 function hashStr(t){let h=2166136261;for(const ch of t)h=Math.imul(h^ch.charCodeAt(0),16777619);return h>>>0;}
 const ZHILL={city:12,coast:8,oasis:16,desert:34,mountain:44},ZCURV={city:[0,0,2,-2,2.5,-2.5],coast:[0,0,1.5,-1.5,2.5,-2.5],oasis:[0,2.5,-2.5,3,-3],desert:[0,0,2,-2,3,-3],mountain:[0,3,-3,3.5,-3.5,2,-2]};
 const ZLEN=[560,640,760];
@@ -1332,12 +1344,12 @@ function showCount(t){countEl.style.display='block';countEl.textContent=t;countE
 function resetRace(){stationHudOff();picked=[0,0,0];vSaid=new Set();vQueue=[];vCount=0;vEnd=0;window.__vEndP=0;lastStarT=-9;ramp=null;amb=null;for(const m of MECH){m.x=-1.75;m.active=false;m.done=false;m.skid=false;m.hit=false;m.used=false;m.fired=false;m.rad=false;}for(const st of STATIONS)st.warned=false;curPath=[];paintSquad();position=0;playerX=0;speed=0;inv=0;sparks=[];rec=[];nitroQ=false;playT=0;tipStage=0;timeLeft=timeLimit;stars=0;crashes=0;fines=0;charges=2;boost=0;shake=0;tilt=0;stadOff=0;lastIdx=0;for(const s of segments)for(const it of s.items)it.taken=false;resetCars();}
 let lastCount=4;
 let LAST=null;
-function startRace(){if(MODE!=='free'&&fanId()===null&&window.EL3FAN&&!startRace.asked){startRace.asked=true;openFan();return;}initAudio();loadMusic();{const k=KICK,h=Math.floor(k/3600)%12||12,m=Math.floor(k%3600/60);const e=$('tKick');if(e)e.textContent='الصافرة '+h+':'+String(m).padStart(2,'0');}gc('start-'+MODE+'-'+STAGE);if(!musicUnlocked){musicUnlocked=true;const pr=music.play();if(pr)pr.then(()=>{if(state==='menu'||!musicOn)music.pause();}).catch(()=>{});}resetRace();['menu','result','pauseS'].forEach(i=>$(i).classList.remove('on'));hud.classList.add('on');state='count';countT=3.2;lastCount=4;musicSync();}
+function startRace(){if(MODE==='round'&&!CH){chStart();return;}DAY=ymdOf(pday(Date.now()));initAudio();loadMusic();{const k=KICK,h=Math.floor(k/3600)%12||12,m=Math.floor(k%3600/60);const e=$('tKick');if(e)e.textContent='الصافرة '+h+':'+String(m).padStart(2,'0');}gc('start-'+MODE+'-'+STAGE);if(!musicUnlocked){musicUnlocked=true;const pr=music.play();if(pr)pr.then(()=>{if(state==='menu'||!musicOn)music.pause();}).catch(()=>{});}resetRace();['menu','result','pauseS'].forEach(i=>$(i).classList.remove('on'));hud.classList.add('on');state='count';countT=3.2;lastCount=4;musicSync();}
 function endRace(w){won=w;state='finish';finishT=w?1.8:1.4;keys.left=keys.right=keys.brake=false;showCount(w?'وصلت!':'الصافرة!');sfx(w?'win':'lose');V(w?9:10,3,1);$('tip').classList.remove('on');
   if(tipStage>=3){tut=false;try{localStorage.setItem('bus_tut3','1')}catch(e){}}}
 let best=0,bestStars=0;
-// أفضل نتيجة لكل وضع بروحه: اللعب الحر لكل طريق، مرحلة اليوم لكل يوم، وتحدي الجولة لكل مباراة
-function bestKey(){return MODE==='daily'?'bus_best_d'+DAY+'_'+routeKey:MODE==='round'&&RMATCH?'bus_best_r'+RMATCH.id:'bus_best_'+routeKey;}
+// أفضل نتيجة لكل وضع بروحه: اللعب الحر لكل طريق، وتحدي الجولة لكل مباراة
+function bestKey(){return MODE==='round'&&RMATCH?'bus_best_r'+RMATCH.id:'bus_best_'+routeKey;}
 function loadBest(){best=0;bestStars=0;ghostPath=null;try{best=+localStorage.getItem(bestKey())||0;bestStars=+localStorage.getItem('bus_stars_'+routeKey)||0;const g=localStorage.getItem('bus_ghost_'+routeKey);if(g)ghostPath=JSON.parse(g);}catch(e){}
   if(routeKey==='ain_A'&&!best){try{best=+localStorage.getItem('bus_best_s1v3')||0;bestStars=+localStorage.getItem('bus_stars_s1v3')||0;}catch(e){}}}
 function paintBest(){const el=$('mBest');if(el)el.textContent=best?('أفضل نتيجة: '+best+' · '+'★'.repeat(bestStars)+'☆'.repeat(3-bestStars)):'';}
@@ -1352,6 +1364,7 @@ function showResult(){
   $('rBd').innerHTML=(won?row('الوصول المبكر ('+Math.max(0,timeLeft).toFixed(1)+' ث × 100)','+'+early):'')+row('اللاعبين ('+nP+'/3 × 300)','+'+pb)+row('الكور الذهبية ('+stars+'/'+totalStars+' × 50)','+'+bl)+(crashes?row('الاصطدامات ('+crashes+' × 30)','−'+cr,true):'')+(fines?row('مخالفات الرادار','×'+fines+' (تأخير '+fines*36+' ث)',true):'')+row('النتيجة',won?String(score):'0 · ما وصلت قبل الصافرة');
   const nMiss=picked.filter(x=>x===2).length;
   $('rHint').textContent=nMiss&&!won?'فاتك '+(nMiss===1?'لاعب':nMiss===2?'لاعبين':'3 لاعبين')+'، وكل واحد أخّركم دقيقة. ركّب فريقك عشان توصل بالوقت.':!won?'جرّب النيترو في الطرق المفتوحة، وخفّف قبل الرادار.':rating===1?'للنجمة الثانية: ركّب لاعبين اثنين على الأقل من المحطات.':rating===2?(nP<3?'للنجمة الثالثة: ركّب اللاعبين الثلاثة، ووصّل قبل الصافرة بثلاث دقايق بدون مخالفات.':'للنجمة الثالثة: وصّل قبل الصافرة بثلاث دقايق وبدون مخالفات رادار.'):'ثلاث نجوم! حاول تكسر رقمك بالكور الذهبية.';
+  if(CH)chFinish(rating,nP,score);
   paintResultFan();
   let bt,rec_=false;if(score>best){best=score;rec_=true;try{localStorage.setItem(bestKey(),best)}catch(e){};bt='رقم شخصي جديد!';}else bt=best?'أفضل نتيجة لك: '+best:'وصّل قبل الصافرة عشان تسجّل نتيجة';
   if(won&&(!ghostPath||curPath.length<ghostPath.length)){ghostPath=curPath.slice();try{localStorage.setItem('bus_ghost_'+routeKey,JSON.stringify(ghostPath))}catch(e){}}
@@ -1359,14 +1372,14 @@ function showResult(){
   if(rating>bestStars){bestStars=rating;try{localStorage.setItem('bus_stars_'+routeKey,bestStars)}catch(e){}}
   const nb=recordRun(won,rating,nP);LAST={won,timeLeft,rating,score,nP};
   $('rBest').textContent=bt+(nb.length?' · وسام جديد: '+nb.map(b=>b.name).join('، '):'');paintBest();
-  hud.classList.remove('on');$('result').classList.add('on');
+  paintAgain();hud.classList.remove('on');$('result').classList.add('on');
 }
 // لو الإصبع على زر وتطلع من اللعبة (اتصال، تبديل تطبيق)، ما يعلق الزر بعد ما ترجع
 function releaseAll(){keys.left=keys.right=keys.brake=false;document.querySelectorAll('.ctl.down').forEach(e=>e.classList.remove('down'));}
 addEventListener('blur',()=>{if(state==='play'||state==='count')releaseAll();});
-function pause(){if(state!=='play'&&state!=='count')return;releaseAll();state='pause';hud.classList.remove('on');$('pauseS').classList.add('on');musicSync();}
+function pause(){if(state!=='play'&&state!=='count')return;releaseAll();if(CH&&CH.on)chSnap();$('pNote').hidden=!(CH&&CH.on);$('bRestart').hidden=!!CH;state='pause';hud.classList.remove('on');$('pauseS').classList.add('on');musicSync();}
 function resume(){$('pauseS').classList.remove('on');hud.classList.add('on');state='count';countT=1.2;lastCount=2;musicSync();}
-function toMenu(){stationHudOff();state='menu';hud.classList.remove('on');['result','pauseS'].forEach(i=>$(i).classList.remove('on'));countEl.style.display='none';$('menu').classList.add('on');musicSync();}
+function toMenu(){if(CH){if(CH.on&&state!=='done')chFinish(0,picked.filter(v=>v===1).length,0,true);CH=null;}stationHudOff();state='menu';hud.classList.remove('on');['result','pauseS'].forEach(i=>$(i).classList.remove('on'));countEl.style.display='none';$('menu').classList.add('on');musicSync();try{paintRoundCard();}catch(e){}}
 
 /* ===== صوت العازي: 24 جملة بصوت إبراهيم ===== */
 // 1 يلا عليهم · 2 شي رادار خفف · 3 زخك رادار · 4 انتبه للمواتر · 5 ركب اللاعب · 6 سحبت على اللاعب · 7 نيترو · 8 الوقت يمر
@@ -1500,8 +1513,7 @@ const tl=e=>{e.preventDefault();padSync(e.touches,e.type==='touchstart'?e.change
 // للماوس (الكمبيوتر) نفس المنطق بإصبع واحد
 let mouseDown=false;pad.addEventListener('mousedown',e=>{mouseDown=true;padSync([e],[e]);});addEventListener('mousemove',e=>{if(mouseDown)padSync([e]);});addEventListener('mouseup',()=>{if(mouseDown){mouseDown=false;padSync([]);}});
 $('bPause').addEventListener('click',pause);$('bResume').addEventListener('click',resume);$('bRestart').addEventListener('click',startRace);
-$('bMenu').addEventListener('click',toMenu);$('bMenu2').addEventListener('click',toMenu);$('bAgain').addEventListener('click',startRace);$('bStart').addEventListener('click',startRace);$('bShare').addEventListener('click',()=>{if(LAST)doShare(LAST);});document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>{if(state!=='menu')return;const m=b.dataset.m;
-  if(m==='free'){setFree();paintRoute();}else if(m==='daily'){setFree();MODE='daily';setTab('daily');useFanBus();pickStage(dailyStage());}else{setTab('round');useFanBus();const fc=fanClub()||club,fx=fixtures(),mine=fx.find(x=>x.h===fc.id||x.a===fc.id)||fx[0];if(mine)pickRound(mine);}}));
+$('bMenu').addEventListener('click',toMenu);$('bMenu2').addEventListener('click',toMenu);$('bAgain').addEventListener('click',()=>{if(MODE==='round'){setFree();paintRoute();}startRace();});$('bStart').addEventListener('click',startRace);$('bShare').addEventListener('click',()=>{if(LAST)doShare(LAST);});document.querySelectorAll('#modes button').forEach(b=>b.addEventListener('click',()=>{if(state!=='menu')return;if(b.dataset.m==='free'){setFree();paintRoute();}else roundTab();}));
 const km={ArrowLeft:'left',ArrowRight:'right',ArrowDown:'brake',' ':'brake'};
 addEventListener('keydown',e=>{if(km[e.key]){keys[km[e.key]]=true;e.preventDefault();}if(e.key==='ArrowUp'||e.key==='Shift'||e.key==='n')nitroQ=true;if(e.key==='Escape'||e.key==='p')state==='pause'?resume():pause();});
 addEventListener('keyup',e=>{if(km[e.key])keys[km[e.key]]=false;});
@@ -1577,7 +1589,7 @@ var carB=carousel($('carBus'),CLUBS.length,(d,i)=>{const c=document.createElemen
 // الملاعب: صور ملاعب الأندية
 var carS=carousel($('carStad'),CLUBS.length,(d,i)=>{const f=CLUBS[i].file,e=document.createElement('img');e.alt=STADS[CLUBS[i].id].st;e.className='thumb';e.src=STHUMB[f]||'';d.appendChild(e);
     qLoad('s',i,()=>new Promise(ok=>{const im=new Image();im.decoding='async';im.onload=()=>{e.src=im.src;e.classList.remove('thumb');ok();};im.onerror=()=>ok();im.src='stadiums/sm/'+f+'.webp';}));},
-  {dots:$('stadDots'),show:i=>{const id=CLUBS[i].id,T=STADS[id];$('stadName').textContent=T.st;$('stadSub').textContent=(id===club.id?'ملعب ناديك · ':'')+HOST(id).name+(T.city!==HOST(id).name?' · '+T.city:'')+(id===dailyStage()?' · مرحلة اليوم':'');}},
+  {dots:$('stadDots'),show:i=>{const id=CLUBS[i].id,T=STADS[id];$('stadName').textContent=T.st;$('stadSub').textContent=(id===club.id?'ملعب ناديك · ':'')+HOST(id).name+(T.city!==HOST(id).name?' · '+T.city:'');}},
   i=>{const id=CLUBS[i].id;if(id===STAGE||state!=='menu')return;setFree();pickStage(id);},.74);
 setTimeout(()=>{carB.go(CLUBS.indexOf(club),false,true);carS.go(CLUBS.findIndex(c=>c.id===STAGE),false,true);pumpQ();},50);
 
@@ -1587,7 +1599,7 @@ let lt=0;
 const STEP=1/60;let accT=0;
 function frame(ts){const dt=Math.min(.25,(ts-lt)/1000||0);lt=ts;inFrame=true;voiceTick(dt);
   if(state==='count'){countT-=dt;const c=Math.ceil(countT);if(c!==lastCount&&c>0&&c<=3){lastCount=c;showCount(String(c));sfx('c');}
-    if(countT<=0){state='play';nitroQ=false;showCount('انطلق!');sfx('go');V(1,3);setTimeout(()=>{if(state==='play')countEl.style.display='none';},700);}clock+=dt;}
+    if(countT<=0){state='play';nitroQ=false;if(CH&&!CH.on)chOn();showCount('انطلق!');sfx('go');V(1,3);setTimeout(()=>{if(state==='play')countEl.style.display='none';},700);}clock+=dt;}
   else if(state==='menu'){clock+=dt;position+=MAXS*.35*dt;if(position>finishZ-3000)position=0;updateCars(dt);}
   else if(state!=='pause'){accT+=dt;let n=0;const _u=performance.now();while(accT>=STEP&&n<10){update(STEP);accT-=STEP;n++;}if(n>=10)accT=0;perfStat.upd=(perfStat.upd||0)+performance.now()-_u;perfStat.steps=(perfStat.steps||0)+n;}
   render();const _h=performance.now();updateHud(Math.min(dt,.05));perfStat.hud=(perfStat.hud||0)+performance.now()-_h;engineTick();audioTick(Math.min(dt,.05));inFrame=false;requestAnimationFrame(frame);}
@@ -1633,22 +1645,20 @@ get perf(){return perfStat},setRoute(k){const st_=ROUTES[k].stage;if(st_&&st_!==
   }
   for(const it of segments.flatMap(s=>s.items.map(x=>[s.index,x])))if(segments[it[0]].tunnel!==undefined&&Math.abs(it[1].offset)>.9)out.push(['itemWall',it[0]]);
   return out;},routes:()=>Object.keys(ROUTES).filter(k=>ROUTES[k].stage),get path(){return curPath},get ghost(){return {has:!!ghostPath,len:ghostPath&&ghostPath.length,gIdx,gZ,pz:position+PLAYERZ,rec:rec.length}},get voice(){return {loaded:VBUF.filter(Boolean).length,said:[...vSaid],voiceOn,voiceT}},get audio(){return {hasMusic,musicOn,paused:music.paused,ready:music.readyState,net:music.networkState,err:music.error&&music.error.code,t:music.currentTime,ac:ac&&ac.state,gain:musicGain?musicGain.gain.value:null,toggleHidden:$('tgMusic').hidden}},get q(){return qLevel},set carN(v){CAR_N=v},set crashT(v){CRASH_T=v},setTB(o){Object.assign(TB,o)},get ct(){return CT},resetCT(){CT={}},
-autosim(nitro){resetRace();state='play';const was=tut;tut=false;let n=0;while(state==='play'&&n<20000){const pz=position+PLAYERZ;keys.left=playerX>.05;keys.right=playerX<-.05;let br=false;for(let i=0;i<70;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar&&toKmh(speed)>sg.radar)br=true;}keys.brake=br;if(nitro&&charges>0&&boost<=0){let rd=false;for(let i=0;i<120;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar)rd=true;}if(!rd)nitroQ=true;}update(STEP);n++;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines};state='menu';return o;},sim(r){const inp=r.slice();resetRace();state='play';const was=tut;tut=false;for(const b of inp){keys.left=!!(b&1);keys.right=!!(b&2);keys.brake=!!(b&4);if(b&8)nitroQ=true;update(STEP);if(state!=='play')break;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines,steps:inp.length};state='menu';return o;},get result(){return {timeLeft,crashes,stars,fines,won}},seg:z=>findSeg(z),PLAYERZ,MARK,get pz(){return position+PLAYERZ}};
+autosim(nitro){resetRace();state='play';const was=tut;tut=false;let n=0;while(state==='play'&&n<20000){const pz=position+PLAYERZ;keys.left=playerX>.05;keys.right=playerX<-.05;let br=false;for(let i=0;i<70;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar&&toKmh(speed)>sg.radar)br=true;}keys.brake=br;if(nitro&&charges>0&&boost<=0){let rd=false;for(let i=0;i<120;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar)rd=true;}if(!rd)nitroQ=true;}update(STEP);n++;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines};state='menu';return o;},sim(r){const inp=r.slice();resetRace();state='play';const was=tut;tut=false;for(const b of inp){keys.left=!!(b&1);keys.right=!!(b&2);keys.brake=!!(b&4);if(b&8)nitroQ=true;update(STEP);if(state!=='play')break;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines,steps:inp.length,np:picked.filter(v=>v===1).length};state='menu';return o;},get result(){return {timeLeft,crashes,stars,fines,won}},seg:z=>findSeg(z),PLAYERZ,MARK,get pz(){return position+PLAYERZ},STAR3,encK,chTick(){for(const k in chPolled)chPolled[k]=0;chTick();},get ch(){return {CH,CHR,live:chLive(),st:chState().k}}};
 const MNAME={round:'الدوارات',light:'الإشارات',bump:'المطبات',works:'أعمال الطرق',dust:'الغبار',camel:'الجمال',fog:'الضباب',exit:'المخارج المختصرة',hairpin:'المنعطفات الحادة',tunnel:'الأنفاق',amb:'الإسعاف',buslane:'مسار الباصات',highway4:'طريق 4 مسارات'};
-function paintFan(){const e=$('hdrSub');if(!e)return;const f=fanClub(),id=fanId();{const d=$('mDailyS');if(d)d.textContent=f?'بباص '+f.name+'، ونقاطها تنحسب لجمهوره':'اختار ناديك من بطاقة المشجع عشان تنحسب نقاطها لجمهوره';}
+function paintFan(){const e=$('hdrSub');if(!e)return;const f=fanClub(),id=fanId();
   if(f){e.innerHTML='تلعب لجمهور <b>'+f.name+'</b>';e.onclick=null;e.classList.remove('ask');}
   else if(id===''){e.textContent='وصّل فريقك قبل الصافرة';e.onclick=null;e.classList.remove('ask');}
   else{e.innerHTML='<u>اختار ناديك</u> عشان تنحسب نقاطك لجمهوره';e.onclick=openFan;e.classList.add('ask');}}
-addEventListener('el3fan',()=>{paintFan();try{paintRoundCard();}catch(e){}if(typeof LAST!=='undefined'&&LAST&&state==='over')paintResultFan();});
-function paintResultFan(){const f=fanClub();
-  if(MODE==='free'){$('rFan').textContent='لعب حر';$('rDot').style.background=(f||club).c1;$('rFanS').textContent='للتدريب، ما ينحسب لناديك. «مرحلة اليوم» و«تحدي الجولة» هم اللي ينحسبون'+(f?' لجمهور '+f.name:'')+'.';$('rFanC').onclick=null;return;}
-  if(fanId()===''){$('rFan').textContent='محايد';$('rDot').style.background='#55606b';$('rFanS').textContent='انت محايد في بطاقة المشجع، فنتيجتك ما تنحسب لنادي. اختار ناديك عشان تنحسب لجمهوره.';$('rFanC').onclick=openFan;return;}
-  if(f){$('rFan').textContent='جمهور '+f.name;$('rDot').style.background=f.c1;$('rFanS').textContent='نتيجتك بتنحسب لجمهور ناديك أول ما ينطلق دوري الجماهير على المنصة.';$('rFanC').onclick=null;}
-  else{$('rFan').textContent='ما اخترت نادي';$('rDot').style.background='#55606b';$('rFanS').textContent='اختار ناديك من بطاقة المشجع عشان تنحسب نتيجتك لجمهوره.';$('rFanC').onclick=openFan;}}
+addEventListener('el3fan',()=>{paintFan();try{if(MODE==='round'&&state==='menu')roundTab();else paintRoundCard();}catch(e){}if(typeof LAST!=='undefined'&&LAST&&state==='done')paintResultFan();});
+function paintResultFan(){const f=fanClub();$('rFanC').classList.remove('ch');
+  if(MODE==='round'&&CHR){const x=CHR,F=fanClub()||club;$('rDot').style.background=F.c1;$('rFan').textContent='دوري الجماهير: '+PTS[x.rt]+' نقاط';$('rFanS').innerHTML=chStatus(x);$('rFanC').onclick=null;return;}
+  if(MODE==='free'){$('rFan').textContent='لعب حر';$('rDot').style.background=(f||club).c1;$('rFanS').textContent='للتدريب، وما ينحسب. «تحدي الجولة» هو اللي ينحسب'+(f?' لجمهور '+f.name:'')+' في دوري الجماهير.';$('rFanC').onclick=null;return;}
+  $('rFan').textContent='ما اخترت نادي';$('rDot').style.background='#55606b';$('rFanS').textContent='اختار ناديك من بطاقة المشجع عشان تدخل «تحدي الجولة».';$('rFanC').onclick=openFan;}
 function paintRoute(){const RT=ROUTES[routeKey],b=/_B$/.test(routeKey);paintFan();$('mRouteNo').innerHTML=b?'الدور<br>الثاني':'الدور<br>الأول';$('mRouteSub').textContent=RT.sub;
   $('mRouteT').textContent=club.name+' ← '+TH.st;const hn=$('hudNm');if(hn)hn.textContent=club.name+' ← '+TH.short;
   $('mRouteNote').textContent='التحدي: '+MNAME[TH.prim]+' و'+MNAME[TH.sec]+(b?' · الطريق الجديد للدور الثاني':' · طريق جديد يفتح مع الجولة 14');
-  const d=dailyStage(),dt=$('mDailyT');if(dt)dt.textContent=STADS[d].st+' · '+HOST(d).name;const bd=$('bDaily');if(bd){bd.classList.toggle('on',d!==STAGE);bd.textContent=d===STAGE?'مختارة':'العبها';}
   paintStads();paintBest();paintSeason();}
 function paintStads(){if(typeof carS==='undefined')return;const k=CLUBS.findIndex(c=>c.id===STAGE);if(carS.i!==k)carS.go(k,true,true);else carS.look();}
 function pickStage(id){setStage(id);routeKey=routeFor(ROUND);buildTrack();resetRace();loadBest();paintRoute();paintPreview();}
@@ -1659,7 +1669,7 @@ const EMIRATE={ain:'أبوظبي',wahda:'أبوظبي',jazira:'أبوظبي',ban
 const CID=c=>c==='shababahli'?'shabab':c;
 // نسخة احتياطية من مباريات الجولة (على المنصة تنقرا من predict/data.json)
 const FIX_FALLBACK=[{id:'84540',wk:9,t:1795092300000,h:'wasl',a:'hatta'},{id:'84536',wk:9,t:1795101900000,h:'ain',a:'dhafra'}];
-let MODE='free',RMATCH=null;   // free = لعب حر، daily = مرحلة اليوم، round = تحدي الجولة
+let MODE='free',RMATCH=null;   // free = لعب حر (للتدريب وما ينحسب)، round = تحدي الجولة (ينحسب في دوري الجماهير)
 function fixtures(){const src=FIX_DATA||FIX_FALLBACK;
   const now=Date.now(),up=src.filter(m=>m.t>now&&STADS[m.h]&&STADS[m.a]).sort((a,b)=>a.t-b.t);if(!up.length)return up;const n=up.find(m=>m.wk>=ROUND)||up[0];return up.filter(m=>m.wk===n.wk);}
 // الديربي بين أندية نفس المدينة فقط (العاصمة، دبي، الساحل الشرقي)
@@ -1699,17 +1709,110 @@ function paintSeason(){const el=$('mSeason');if(!el)return;const [s,m]=passStars
   el.innerHTML='<div class="sh"><b>موسم <bdi dir="ltr">'+SEASON.name+'</bdi></b><span>الجولة '+ROUND+' من '+SEASON.rounds+' · باقي '+left+' يوم</span></div><div class="sbar"><i style="width:'+(pr*100).toFixed(1)+'%"></i><em style="right:'+(13/26*100)+'%" title="الدور الثاني"></em></div>'+
     '<button class="pass" id="bPass"><span>ملاعبي</span><b>'+s+' / '+m+' ★</b><small>'+badgeState().filter(b=>b.on).length+' / '+BADGES.length+' وسام</small></button>';
   $('bPass').onclick=openPass;paintRoundCard();}
-function paintRoundCard(){const el=$('mRound');if(!el)return;const fc=fanClub()||club,fx=fixtures(),mine=fx.filter(m=>m.h===fc.id||m.a===fc.id),rest=fx.filter(m=>!mine.includes(m));
-  const list=[...mine,...rest];/* كل مباريات الجولة: مباراة نادي المشجع فوق، والباقي بالوقت */const wk=list.length?list[0].wk:ROUND+1;
-  let h='<div class="rh"><b>الجولة '+wk+'</b><small>بباص ناديك لملعب صاحب الأرض، والصافرة بموعد المباراة الحقيقي. يقفل مع صافرتها.</small></div>';
-  if(!list.length)h+='<div class="rm none">مباريات الجولة الياية تنزل هنا أول ما تنشرها الرابطة.</div>';
-  for(const m of list){const H=HOST(m.h),A=HOST(m.a),d=derby(m),best=PROG.rounds[m.id]||0,sel=MODE==='round'&&RMATCH&&RMATCH.id===m.id;
-    h+='<button class="rm'+(sel?' sel':'')+((m.h===fc.id||m.a===fc.id)?' mine':'')+'" data-id="'+m.id+'"><span class="tm"><i style="background:'+H.c1+'"></i>'+H.name+' × '+A.name+'<i style="background:'+A.c1+'"></i></span><small>'+STADS[m.h].st+' · '+kickStr(m.t)+(d?' · <em>'+d+'</em>':'')+(best?' · '+'★'.repeat(best):'')+'</small></button>';}
-  el.innerHTML=h;el.querySelectorAll('.rm[data-id]').forEach(b=>b.onclick=()=>{if(state!=='menu')return;const m=list.find(x=>x.id===b.dataset.id);pickRound(m);});}
+/* ===== «تحدي الجولة» في دوري الجماهير =====
+   باص نادي المشجع لملعب مباراته في الجولة (ملعب صاحب الأرض، للمستضيف والضيف)، في يوم المباراة بس، ومحاولة وحدة.
+   التلفون يرسل الحركات بس إلى b/<يوم>/<uid>، والمُعيد (_tools/bus/verify.py) يعيد السباق ويكتب النتيجة الرسمية في bv/<يوم>/<uid>.
+   محلياً: bus_ch_<يوم> = {m,s,r,c,d,wk,h,a,k,st,rt,np,sc,u,v}  st: play (بدا) · wait (تنتظر الإرسال) · sent · dup (انلعب من جهاز ثاني) · late (فات يومها) */
+const P0=1794859200000,PDMS=864e5,PTS=[0,3,6,9],DB=RATE_DB;
+const pday=t=>Math.floor((t-P0)/PDMS)+1;
+function ymdOf(d){const x=new Date(P0+(d-1)*PDMS+4*3600e3);return x.getUTCFullYear()*10000+(x.getUTCMonth()+1)*100+x.getUTCDate();}
+const DEMO=!!window.BUS_DEMO;   // نسخة التجربة (bus/preview): التحدي مفتوح على مباراة ناديك الياية كأنها اليوم، وما ينرسل شي
+let BUS_START=0,CH=null,CHR=null;try{BUS_START=+localStorage.getItem('bus_start')||0;}catch(e){}
+function chLive(){return DEMO||BUS_START>0&&pday(Date.now())>=BUS_START;}
+const CHK=DEMO?'bus_chd_':'bus_ch_';
+function chGet(d){try{return JSON.parse(localStorage.getItem(CHK+d)||'null');}catch(e){return null;}}
+function chSet(d,v){try{localStorage.setItem(CHK+d,JSON.stringify(v));}catch(e){}}
+function chDays(){const o=[];try{for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(k.startsWith(CHK)&&/^\d+$/.test(k.slice(CHK.length)))o.push(+k.slice(CHK.length));}}catch(e){}return o.sort((a,b)=>a-b);}
+function encK(a){const o=[];let p=-1,n=0;for(const b of a){if(b===p)n++;else{if(n)o.push(p.toString(16)+':'+n);p=b;n=1;}}if(n)o.push(p.toString(16)+':'+n);return o.join(',');}
+function fbAcc(){try{const a=JSON.parse(localStorage.getItem('el3azy_fb')||'null');return a&&a.u?a:null;}catch(e){return null;}}
+function myMatches(){const fc=fanClub();if(!fc)return [];return (FIX_DATA||FIX_FALLBACK).filter(m=>(m.h===fc.id||m.a===fc.id)&&STADS[m.h]&&STADS[m.a]).sort((a,b)=>a.t-b.t);}
+function fanMatch(){const today=pday(Date.now());return myMatches().find(m=>pday(m.t)>=today)||null;}
+function chState(){const id=fanId(),fc=fanClub();
+  if(!fc)return {k:id===''?'neutral':'noclub'};
+  const today=pday(Date.now()),m=fanMatch(),last=chDays().filter(d=>d<today).map(chGet).filter(Boolean).pop()||null;
+  if(!m)return {k:'nomatch',last};
+  const d=DEMO?today:pday(m.t),x=chGet(d);
+  if(d>today)return {k:'before',m,d,last};
+  if(x&&!(CH&&CH.d===d))return {k:'done',m,d,x};
+  if(!chLive())return {k:'soon',m,d};
+  return {k:'open',m,d,home:m.h===fc.id};}
+const dateStr=t=>{const x=new Date(t+4*3600e3),M=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'],D=['الأحد','الاثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'];return D[x.getUTCDay()]+' '+x.getUTCDate()+' '+M[x.getUTCMonth()];};
+const starStr=n=>'☆'.repeat(3-n)+'★'.repeat(n);
+// حالة النتيجة بعد اللعب (للبطاقة وشاشة النتيجة)
+function chStatus(x){const v=x.v;
+  if(v&&v.ok)return '<span class="chs ok">✓ انحسبت في دوري الجماهير</span>';
+  if(v&&v.ok===0)return '<span class="chs bad">ما انقبلت النتيجة في التحقق، فما انحسبت.</span>';
+  if(x.st==='late')return '<span class="chs bad">ما وصلت نتيجتك يوم المباراة، فما انحسبت.</span>';
+  if(x.st==='dup')return '<span class="chs">لعبت التحدي من جهاز ثاني، والمحسوبة هي أول محاولة. تنحسب بعد التحقق خلال 15 دقيقة تقريباً.</span>';
+  if(x.st==='sent')return '<span class="chs">تنحسب بعد التحقق خلال 15 دقيقة تقريباً.</span>';
+  return '<span class="chs">تنحسب بعد التحقق خلال 15 دقيقة تقريباً. نرسلها أول ما يتوفر النت، لا تسكّر الصفحة.</span>';}
+function chMatchHTML(m){const H=HOST(m.h),A=HOST(m.a),dr=derby(m);
+  return '<div class="chm"><span class="tm"><i style="background:'+H.c1+'"></i>'+H.name+' × '+A.name+'<i style="background:'+A.c1+'"></i></span><small>'+STADS[m.h].st+' · '+kickStr(m.t)+(dr?' · <em>'+dr+'</em>':'')+'</small></div>';}
+function lastLine(x){if(!x)return '';const v=x.v&&x.v.ok?x.v:null,rt=v?v.rt:x.rt;return '<span class="chs'+(v?' ok':'')+'">نتيجتك في الجولة '+(x.wk||'')+': '+starStr(rt||0)+' · '+PTS[rt||0]+' نقاط'+(v?' ✓':x.v&&x.v.ok===0?' (ما انقبلت)':'')+'</span>';}
+function paintRoundCard(){const el=$('mRound');if(!el)return;const S=chState(),F=fanClub();
+  let h='<div class="rh"><b>تحدي الجولة'+(S.m?' '+S.m.wk:'')+'</b><small>محاولة وحدة في يوم مباراة ناديك، وكل نجمة فيها بـ 3 نقاط لجمهوره في دوري الجماهير.</small></div>';
+  if(S.k==='noclub'||S.k==='neutral'){h+='<div class="chg">'+(S.k==='neutral'?'انت محايد في بطاقة المشجع، والتحدي لجمهور الأندية.':'التحدي لجمهور الأندية، وانت ما اخترت ناديك.')+'</div><span class="chs">اختار ناديك من بطاقة المشجع عشان تدخل التحدي. لين ذاك الوقت تقدر تلعب حر.</span>';}
+  else if(S.k==='nomatch')h+='<div class="chg">ما في مباراة ل'+F.name+' في الجدول لين الحين.</div><span class="chs">تنزل هنا أول ما تنشرها الرابطة.</span>'+lastLine(S.last);
+  else{h+=chMatchHTML(S.m);
+    if(S.k==='before')h+='<div class="chg">يفتح يوم المباراة: '+dateStr(S.m.t)+'</div><span class="chs">يفتح من أول يوم المباراة لين 12 بالليل. لين ذاك الوقت تدرّب في اللعب الحر.</span>'+lastLine(S.last);
+    else if(S.k==='soon')h+='<div class="chg">اليوم يوم المباراة، والتحدي يبدا مع دخول «باص الفريق» دوري الجماهير.</div><span class="chs">لين ذاك الوقت تقدر تلعب حر.</span>';
+    else if(S.k==='open')h+='<div class="chg go">'+(S.home?'وصّل باص ناديك لملعبك قبل الصافرة':'وصّل باص ناديك لملعب الخصم')+'</div><span class="chs">مفتوح اليوم لين 12 بالليل · محاولة وحدة بس</span>';
+    else{const x=S.x,v=x.v&&x.v.ok?x.v:null,rt=v?v.rt:(x.rt||0);
+      h+='<div class="chr"><span class="st">'+starStr(rt)+'</span><b>'+PTS[rt]+' نقاط</b></div>'+chStatus(x);}}
+  if(DEMO)h+='<span class="chs" style="color:#9fd4ff">نسخة تجربة: مباراة ناديك الياية كأنها اليوم، وما ينرسل شي للدوري. التحقق يطلع بعد 8 ثواني.</span>'+(S.k==='done'?'<button class="chb" id="bChReset">عيد التجربة</button>':'');
+  el.innerHTML=h;paintStart();{const r=$('bChReset');if(r)r.onclick=()=>{for(const d of chDays())try{localStorage.removeItem(CHK+d)}catch(e){}paintRoundCard();};}
+  if(S.k==='done'&&S.x&&!(S.x.v))chPoll(S.d);}
+function paintStart(){const b=$('bStart');if(!b)return;let t='انطلق',off=false;
+  if(MODE==='round'){const k=chState().k;t={open:'ابدا التحدي',noclub:'اختار ناديك',neutral:'اختار ناديك',before:'يفتح يوم المباراة',done:'لعبت تحدي هالجولة',soon:'التحدي ما بدا',nomatch:'التحدي مقفول'}[k];off=!['open','noclub','neutral'].includes(k);}
+  b.textContent=t;b.classList.toggle('off',off);b.setAttribute('aria-disabled',off?'true':'false');}
+function paintAgain(){const a=$('bAgain');if(a)a.textContent=MODE==='round'?'العب حر على نفس الطريق':'عيد الجولة';const m=$('bMenu2');if(m)m.textContent=MODE==='round'?'القائمة':'غيّر الباص';}
+function roundTab(){MODE='round';setTab('round');const S=chState();if(S.m){pickRound(S.m);}else{RMATCH=null;paintRoundCard();}}
+// زر «ابدا التحدي»: تحذير المحاولة الوحدة، وبعده تأكيد من السيرفر إنه ما لعب قبل
+function chStart(){const S=chState();
+  if(S.k==='noclub'||S.k==='neutral'){openFan();return;}
+  if(S.k!=='open')return;
+  pickRound(S.m);const H=HOST(S.m.h),A=HOST(S.m.a);
+  $('chMH').textContent='تحدي الجولة '+S.m.wk;$('chMT').textContent='باص '+(fanClub()||club).name+' ← '+STADS[S.m.h].st+' · '+H.name+' × '+A.name;
+  $('chM').classList.add('on');}
+async function chGo(){const S=chState();$('chM').classList.remove('on');if(S.k!=='open')return;
+  const a=DEMO?null:fbAcc();if(a&&window.EL3FAN){try{const t=await Promise.race([EL3FAN.tok(),new Promise((_,no)=>setTimeout(no,2500))]);
+    const g=await Promise.race([fetch(DB+'/b/'+S.d+'/'+t.u+'.json?auth='+t.t).then(r=>r.ok?r.json():null),new Promise(ok=>setTimeout(()=>ok(null),2500))]);
+    if(g){chSet(S.d,{m:S.m.id,s:S.m.h,r:g.r,c:fanId(),d:S.d,wk:S.m.wk,h:S.m.h,a:S.m.a,k:g.k,st:'dup',u:t.u});toast('لعبت تحدي هالجولة من قبل',true);paintRoundCard();return;}}catch(e){}}
+  pickRound(S.m);CHR=null;
+  CH={d:S.d,m:S.m,on:0,c:fanId(),r:routeKey};startRace();}
+// السباق بدا فعلياً (خلص العد): المحاولة انحسبت
+function chOn(){CH.on=1;const m=CH.m;chSet(CH.d,{m:m.id,s:m.h,r:CH.r,c:CH.c,d:CH.d,wk:m.wk,h:m.h,a:m.a,k:'',st:'play',rt:0,np:0,sc:0});gc('ch-start-'+m.h);}
+function chSnap(){if(!CH||!CH.on)return;const x=chGet(CH.d);if(x&&x.st==='play'){x.k=encK(rec);chSet(CH.d,x);}}
+function chFinish(rt,np,sc,quit){if(!CH||!CH.on)return;const x=chGet(CH.d)||{};Object.assign(x,{k:encK(rec),st:'wait',rt,np,sc,q:quit?1:0});chSet(CH.d,x);CHR=x;const d=CH.d;gc('ch-end-'+rt);
+  CH=null;if(quit)CHR=null;chSend(d);}
+let chBusy=false;
+async function chSend(d){const x=chGet(d);if(!x||x.st!=='wait'||chBusy)return;
+  if(DEMO){x.st='sent';x.u='demo';chSet(d,x);chPaint(d,x);setTimeout(()=>{const y=chGet(d);if(y){y.v={ok:1,rt:y.rt||0,sc:y.sc||0,cr:0};chSet(d,y);chPaint(d,y);}},8000);return;}
+  if(Date.now()>P0+d*PDMS+15*60e3-5e3){x.st='late';chSet(d,x);chPaint(d,x);return;}
+  if(!window.EL3FAN)return;chBusy=true;
+  try{try{await EL3FAN.sync();}catch(e){}const a=await EL3FAN.tok(),U=DB+'/b/'+d+'/'+a.u+'.json?auth='+a.t;
+    const r=await fetch(U,{method:'PUT',body:JSON.stringify({m:x.m,s:x.s,r:x.r,k:x.k,c:x.c,d,t:{'.sv':'timestamp'}})});
+    if(r.ok){x.st='sent';x.u=a.u;}
+    else{const g=await fetch(U).then(r=>r.ok?r.json():null).catch(()=>null);if(g){x.st=g.k===x.k?'sent':'dup';x.u=a.u;}}
+    chSet(d,x);}catch(e){}finally{chBusy=false;chPaint(d,chGet(d));}}
+function chPaint(d,x){if(CHR&&CHR.d===d){CHR=x;if(state==='done'&&MODE==='round')paintResultFan();}if(state==='menu')paintRoundCard();}
+// النتيجة الرسمية من المُعيد (bv مقروء للكل)
+const chPolled={};
+async function chPoll(d){const x=chGet(d);if(DEMO){if(x&&!x.v&&x.st==='sent'&&!chPolled[d]){chPolled[d]=1;setTimeout(()=>{const y=chGet(d);if(y&&!y.v){y.v={ok:1,rt:y.rt||0,sc:y.sc||0,cr:0};chSet(d,y);chPaint(d,y);}},8000);}return;}if(!x||!x.u||x.v||Date.now()-(chPolled[d]||0)<60e3)return;chPolled[d]=Date.now();
+  try{const v=await fetch(DB+'/bv/'+d+'/'+x.u+'.json').then(r=>r.ok?r.json():null);if(v&&v.ok!==undefined){x.v={ok:v.ok,rt:v.rt||0,sc:v.sc||0,cr:v.cr||0};chSet(d,x);chPaint(d,x);}}catch(e){}}
+function chTick(){const today=pday(Date.now());for(const d of chDays()){const x=chGet(d);if(!x)continue;
+    if(x.st==='play'&&!(CH&&CH.d===d)){x.st='wait';x.q=1;chSet(d,x);}   // سباق انقطع (الصفحة تسكّرت): ينرسل باللي انسوّى
+    if(x.st==='wait')chSend(d);else if((x.st==='sent'||x.st==='dup')&&!x.v&&d>=today-2)chPoll(d);}}
+function chInit(){fetch('config.json',{cache:'no-store'}).then(r=>r.ok?r.json():null).then(c=>{if(c){BUS_START=+c.start||0;try{localStorage.setItem('bus_start',BUS_START)}catch(e){}if(state==='menu'){paintRoundCard();}}}).catch(()=>{});
+  setTimeout(chTick,1500);setInterval(chTick,60e3);addEventListener('online',chTick);
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden)chTick();});
+  addEventListener('pagehide',chSnap);
+  $('bChGo').onclick=chGo;$('bChX').onclick=()=>$('chM').classList.remove('on');
+  $('bChPr').onclick=()=>{$('chM').classList.remove('on');setFree();paintRoute();startRace();};}
 function useFanBus(){const f=fanClub();if(!f||f===club)return;club=f;try{carB.go(CLUBS.indexOf(f),false,true);}catch(e){}busSl.forEach((_,k)=>paintBusSlide(k));setTimeout(loadRated,0);}
 function setTab(m){document.querySelectorAll('#modes button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));document.querySelectorAll('#mPanel [data-p]').forEach(d=>d.hidden=d.dataset.p!==m);}
-function pickRound(m){MODE='round';setTab('round');useFanBus();RMATCH=m;KICK=kickSec(m.t);pickStage(m.h);paintRoundCard();}
-function setFree(){if(MODE!=='free'||KICK!==20*3600){MODE='free';RMATCH=null;KICK=20*3600;}if(typeof setTab==='function')setTab('free');}
+function pickRound(m){MODE='round';setTab('round');useFanBus();RMATCH=m;KICK=kickSec(m.t);if(STAGE!==m.h||routeKey!==routeFor(ROUND))pickStage(m.h);else paintRoute();paintRoundCard();}
+function setFree(){if(MODE!=='free'||KICK!==20*3600){MODE='free';RMATCH=null;KICK=20*3600;}if(typeof setTab==='function')setTab('free');paintStart();}
 function openPass(){const el=$('passS');let h='<div class="wrap"><h1 style="font-size:30px">ملاعبي</h1>';const [s,m]=passStars();
   h+='<div class="sub2">'+s+' من '+m+' نجمة'+(ROUND<14?' · طرق الدور الثاني تفتح مع الجولة 14':'')+'</div><div class="pgrid">';
   const ids=[club.id,...CLUBS.map(c=>c.id).filter(i=>i!==club.id)];
@@ -1755,7 +1858,7 @@ async function loadSquads(){try{const r=await fetch('../tashkila/squads.json',{c
       const m=sq.p.find(p=>pos.includes(p[2])&&(NRM(p[6]).includes(k)||NRM(p[1]).includes(k)))||sq.p.find(p=>NRM(p[6]).includes(k))||sq.p.find(p=>p[2]===pos[0]);
       return m?m[6]:n;});}
   if(state==='menu'){buildStations&&buildStations();}}catch(e){}}
-function init(){resize();loadStadium();buildSprites();routeKey=routeFor(ROUND);buildTrack();loadBest();paintRoute();loadSquads();loadRound();resetRace();paintToggles();paintBest();addEventListener('resize',resize);requestAnimationFrame(frame);}
+function init(){chInit();resize();loadStadium();buildSprites();routeKey=routeFor(ROUND);buildTrack();loadBest();paintRoute();loadSquads();loadRound();resetRace();paintToggles();paintBest();addEventListener('resize',resize);requestAnimationFrame(frame);}
 const fontsReady=document.fonts?Promise.race([Promise.all([document.fonts.load(FONT(700,30)),document.fonts.load(FONT(600,15))]),new Promise(r=>setTimeout(r,2500))]):Promise.resolve();
 fontsReady.then(init,init);
 })();
