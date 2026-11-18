@@ -176,7 +176,7 @@ function render(){
   const sumEv=re=>Object.entries(ev).filter(([x])=>re.test(x)).reduce((s,[,v])=>s+v,0);
   const visits=Object.values(pg).reduce((s,v)=>s+v,0);
   const starts=sumEv(/^start-/),wins=sumEv(/^win-/),loses=sumEv(/^lose-/),shM=sumEv(/^share-(easy|pro)$/);
-  const shT=ev['share-tashkila']||0,shR=ev['share-rate']||0,shS=SONGS.reduce((x,o)=>x+(ev['share-'+o.id]||0),0),subs=sumEv(/^submit-/),opens=sumEv(/^open-/),shares=shM+shT+shR+shS;
+  const shT=ev['share-tashkila']||0,shP=ev['share-tp']||0,shR=ev['share-rate']||0,shS=SONGS.reduce((x,o)=>x+(ev['share-'+o.id]||0),0),subs=sumEv(/^submit-/),opens=sumEv(/^open-/),shares=shM+shT+shP+shR+shS;
   const pre=Date.now()<LAUNCH-OFF;
   const useV=a>=VSTART,V=vsum(a,b);
   let h=segHTML();
@@ -190,7 +190,7 @@ function render(){
     h+=k('🔁','الزوار العائدون',nf(V.r),'تلفونات زارت المنصة في يوم قبل ورجعت.',V.u?`${pct(V.r,V.u)}% من الزوار`:'');
   }
   h+=k('👥',useV?'زيارات (GoatCounter)':'زيارات المنصة',nf(visits),useV?(visits>V.t&&range==='today'&&dubaiToday()===VSTART?'نفس الزيارات من GoatCounter للمقارنة. اليوم أكثر من عدادنا لأن عدادنا بدا الصبح، ومن باجر بيطلع أقل (مانع الإعلانات يمنع GoatCounter).':'نفس الزيارات من GoatCounter للمقارنة. أقل من عدادنا لأن مانع الإعلانات يمنعه.'):'كم مرة انفتحت صفحات المنصة. الشخص اللي يفتح أكثر من قسم، أو يرجع يوم ثاني، ينحسب أكثر من مرة. الرقم الحقيقي أعلى تقريباً ١٠–٢٥٪، لأن اللي عنده مانع إعلانات ما تنحسب زيارته.');
-  h+=k('📤','مشاركات',nf(shares),'كم مرة ضغط أحد «شارك» ونشر صورته أو نتيجته. كل مشاركة توصل المنصة لناس يدد.',`تشكيلتي ${nf(shT)} · منو اللاعب ${nf(shM)} · التقييم ${nf(shR)} · الأغاني ${nf(shS)}`);
+  h+=k('📤','مشاركات',nf(shares),'كم مرة ضغط أحد «شارك» ونشر صورته أو نتيجته. كل مشاركة توصل المنصة لناس يدد.',`تشكيلتي ${nf(shT)} · توقّع التشكيلة ${nf(shP)} · منو اللاعب ${nf(shM)} · التقييم ${nf(shR)} · الأغاني ${nf(shS)}`);
   if(pre&&!starts&&!subs){h+=k('🕵️','«منو اللاعب؟» و«قيّم اللاعبين»','قريباً','أرقام اللعب والتقييمات تبدا تنحسب مع الإطلاق: «منو اللاعب؟» الثلاثاء ١٧ نوفمبر، و«قيّم اللاعبين» الخميس ١٩ نوفمبر بعد أول مباراة.')}else{
   h+=k('🕵️','لعبوا «منو اللاعب؟»',pre&&!starts?'—':nf(starts),pre&&!starts?'تنطلق اللعبة الثلاثاء ١٧ نوفمبر.':'كم شخص بدا التحدي اليومي (أول تخمين).',starts?`عادي ${nf(ev['start-easy'])} · خبير ${nf(ev['start-pro'])}`:'');
   h+=k('✅','عرفوا اللاعب',(wins+loses)?pct(wins,wins+loses)+'%':'—',(wins+loses)?`من ${nf(wins+loses)} خلصوا التحدي، ${nf(wins)} عرفوه و${nf(loses)} ما عرفوه.`:'تطلع النسبة لما يخلص الناس التحدي.');

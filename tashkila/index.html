@@ -472,7 +472,7 @@ $('reset').onclick=()=>{xi=Array(11).fill(null);renderPitch();toast('تم مسح
 const imgCache={};
 function loadImg(src){return imgCache[src]||(imgCache[src]=new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src}))}
 function fitText(ctx,t,max,size,weight){let s=size;do{ctx.font=weight+' '+s+'px Readex';if(ctx.measureText(t).width<=max)break;s-=1}while(s>14);return s}
-async function drawCard(){
+async function drawCard(o={}){
   await document.fonts.load('700 40px Readex');
   const W=1080,H=1350,Q=2,cv=document.createElement('canvas');cv.width=W*Q;cv.height=H*Q;const x=cv.getContext('2d');x.scale(Q,Q);x.imageSmoothingQuality='high';
   const c=club,TOP=232,FY=H-104,SH=FY-TOP;
@@ -491,15 +491,21 @@ async function drawCard(){
   if(sadu){x.globalAlpha=.55;for(let i=0;i<14;i++)x.drawImage(sadu,62+i*18,TOP-26,18,12);x.globalAlpha=1}
   drawContain(x,crest,W-62-128,44,128,128);
   const R0=W-62-128-30;x.direction='rtl';x.textAlign='right';x.textBaseline='middle';
-  x.fillStyle='#FFF5E5';x.font='700 62px Readex';x.fillText('تشكيلتي',R0,82);const RY=146;
+  x.fillStyle='#FFF5E5';x.font='700 62px Readex';x.fillText(o.title||'تشكيلتي',R0,82);const RY=146;
   x.fillStyle='#D7B465';x.font='600 32px Readex';x.fillText(c.name,R0,RY);
   const nw=x.measureText(c.name).width;
   // الخطة في كبسولة ذهبية (اتجاه إنجليزي عشان الأرقام ما تتلخبط)
-  x.fillStyle='rgba(255,245,229,.35)';x.fillText('·',R0-nw-14,RY);
+  if(!o.noFm){x.fillStyle='rgba(255,245,229,.35)';x.fillText('·',R0-nw-14,RY);
   x.direction='ltr';x.font='600 32px Readex';const fw=x.measureText(fm).width,fx0=R0-nw-28-fw;
-  x.fillStyle='#F0D99A';x.textAlign='left';x.fillText(fm,fx0,RY);
-  x.direction='rtl';x.textAlign='right';x.fillStyle='rgba(255,245,229,.6)';x.font='500 24px Readex';x.fillText(STADIUMS[stad]||'',R0,198);
-  if(byName){ // اسم المدرب: في نص خط السدو وفوقه
+  x.fillStyle='#F0D99A';x.textAlign='left';x.fillText(fm,fx0,RY);}
+  x.direction='rtl';x.textAlign='right';x.fillStyle='rgba(255,245,229,.6)';x.font='500 24px Readex';x.fillText(o.line||STADIUMS[stad]||'',R0,198);
+  if(o.badge){ // شارة التحدي يسار الرأس
+    x.textBaseline='middle';x.textAlign='center';x.direction='rtl';const CX=62+7*18;
+    x.fillStyle='rgba(215,180,101,.75)';x.font='500 22px Readex';x.fillText(o.badge[0],CX,104);
+    const bs=fitText(x,o.badge[1],250,44,'700');x.font='700 '+bs+'px Readex';const bw=Math.min(300,x.measureText(o.badge[1]).width+50);
+    rr(x,CX-bw/2,128,bw,70,35);let bg=x.createLinearGradient(0,128,0,198);bg.addColorStop(0,'#F6E3AE');bg.addColorStop(.55,'#D7B465');bg.addColorStop(1,'#B08A3E');x.fillStyle=bg;x.fill();
+    x.fillStyle='#071D2B';x.fillText(o.badge[1],CX,165)}
+  else if(byName){ // اسم المدرب: في نص خط السدو وفوقه
     const lat=/^[@A-Za-z0-9_.\s]+$/.test(byName),CX=62+7*18;
     x.textBaseline='middle';x.textAlign='center';x.direction='rtl';
     x.fillStyle='rgba(215,180,101,.7)';x.font='500 21px Readex';x.fillText('المدرب',CX,140);
@@ -536,13 +542,19 @@ async function drawCard(){
     x.fillStyle=k.num;x.font='700 30px Readex';x.textBaseline='middle';x.direction='ltr';x.fillText(p[0]??'',cx,cy+7);x.direction='rtl';
     plate(cx,cy+R+10,lb(p),MW[i]);
   });
+  if(o.marks)FMS[fm].forEach(([fx,fy,r0],i)=>{const m=o.marks[i];if(!m)return; // ✓ ✕ على كل لاعب
+    const cx=P.x+P.w*fx/100,cy=P.y+P.h*(r0==='GK'?fy:fy-5)/100-16,bx=cx+34,by=cy-36;
+    x.save();x.shadowColor='rgba(0,0,0,.5)';x.shadowBlur=8;x.beginPath();x.arc(bx,by,20,0,7);x.fillStyle='#071D2B';x.fill();x.restore();
+    x.beginPath();x.arc(bx,by,17,0,7);x.fillStyle=m==='ok'?'#3FB27F':'#E07A6E';x.fill();
+    x.strokeStyle='#fff';x.lineWidth=4.5;x.lineCap='round';x.lineJoin='round';x.beginPath();
+    if(m==='ok'){x.moveTo(bx-8,by+1);x.lineTo(bx-2,by+7);x.lineTo(bx+9,by-6)}else{x.moveTo(bx-6.5,by-6.5);x.lineTo(bx+6.5,by+6.5);x.moveTo(bx+6.5,by-6.5);x.lineTo(bx-6.5,by+6.5)}x.stroke()});
   // شريط المنصة: هوية العازي + الرابط
   {const FY=H-104;
    let gg=x.createLinearGradient(0,FY,0,H);gg.addColorStop(0,'#071D2B');gg.addColorStop(1,'#0C2638');x.fillStyle=gg;x.fillRect(0,FY,W,H-FY);
    gg=x.createLinearGradient(60,0,W-60,0);gg.addColorStop(0,'rgba(215,180,101,0)');gg.addColorStop(.5,'#D7B465');gg.addColorStop(1,'rgba(215,180,101,0)');
    x.strokeStyle=gg;x.lineWidth=2;x.beginPath();x.moveTo(60,FY);x.lineTo(W-60,FY);x.stroke();
-   const cy=FY+52;x.textBaseline='middle';x.direction='ltr';x.textAlign='center';x.fillStyle='rgba(215,180,101,.8)';x.font='500 30px Readex';x.fillText('el3azy.com/tashkila',W/2,cy);
-   const dw=x.measureText('el3azy.com/tashkila').width/2+34;
+   const cy=FY+52;x.textBaseline='middle';x.direction='ltr';x.textAlign='center';x.fillStyle='rgba(215,180,101,.8)';x.font='500 30px Readex';const U=o.url||'el3azy.com/tashkila';x.fillText(U,W/2,cy);
+   const dw=x.measureText(U).width/2+34;
    if(sadu){x.globalAlpha=.35;for(let i=0;i<6;i++){x.drawImage(sadu,W/2+dw+i*18,cy-6,18,12);x.drawImage(sadu,W/2-dw-18-i*18,cy-6,18,12)}x.globalAlpha=1}
    // إطار ذهبي
    x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(x,14,14,W-28,H-28,34);x.stroke();}
@@ -620,6 +632,7 @@ fetch('squads.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(r.stat
 .tp-rule{font-size:12.5px;line-height:1.7;opacity:.85;margin:8px 2px 0}
 .tp-go{width:100%;margin-top:10px;font:inherit;font-weight:700;font-size:17px;border:0;border-radius:16px;padding:14px;color:#0B2434;background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E)}
 .tp-go:disabled{opacity:.45}
+.tp-sh{background:rgba(255,245,229,.06);color:#F6E3AE;border:1.5px solid rgba(215,180,101,.6);font-size:16px;padding:12px}
 .tp-sub{font-size:12px;text-align:center;opacity:.75;margin-top:6px;line-height:1.6}
 .tp-msg{border-radius:20px;padding:18px 14px;margin:12px 0;text-align:center;line-height:1.9;border:1px solid rgba(215,180,101,.3);background:rgba(255,245,229,.04)}
 .tp-msg b{color:#F6E3AE}.tp-msg button{font:inherit;font-weight:700;margin-top:8px;border:0;border-radius:14px;padding:10px 18px;color:#0B2434;background:linear-gradient(180deg,#F6E3AE,#D7B465 55%,#B08A3E)}
@@ -722,15 +735,35 @@ async function renderTP(){
     q('tpGo').after(el(`<div class="tp-sub" id="tpSub">${keys?'توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل':'تقدر تعدّل لين ما يقفل · الخطة للشكل بس، والنقاط على أسماء اللاعبين'}</div>`));
     q('tpGo').onclick=save;upd();
   }
-  if(ST==='locked')pitch.after(el(`<div class="tp-sub">${keys?'توقعك محفوظ ✅ ما تقدر تعدّله بعد القفل':'ما اعتمدت توقع لهالمباراة. توقّع المباراة الجاية قبل ما تقفل.'}</div>`));
+  if(ST==='locked'){pitch.after(el(`<div class="tp-sub">${keys?'توقعك محفوظ ✅ ما تقدر تعدّله بعد القفل':'ما اعتمدت توقع لهالمباراة. توقّع المباراة الجاية قبل ما تقفل.'}</div>`));
+    if(keys){pitch.after(el(`<button class="tp-go tp-sh" id="tpSh" type="button">𝕏 شارك توقعي</button>`));q('tpSh').onclick=()=>shareTP(null)}}
   if(ST==='reveal'){
     const L=LU[M.id],real=new Set(M.h===c?L.hs:L.as);
     if(!keys){pitch.before(el(`<div class="tp-msg">ما توقعت تشكيلة هالمباراة.<br>التشكيلة الجاية تنفتح مع الجولة الجاية.</div>`));}
     else{const hits=keys.filter(k=>real.has(k)).length;
       pitch.before(el(`<div class="tp-res"><div class="big">${hits} <small>من 11</small></div><div class="l">صبت ${hits} من التشكيلة الأساسية ${hits?'✅':''} وجبت <b>${hits} ${hits===1?'نقطة':hits===2?'نقطتين':'نقاط'}</b> لك ولجمهور ${nm(c)}</div></div>`));
       const by={};sq.p.forEach(p=>by[tk(p)]=p);const miss=[...real].filter(k=>!keys.includes(k)).map(k=>by[k]).filter(Boolean).map(p=>p[6]||p[1]);
-      if(miss.length)pitch.after(el(`<div class="tp-miss">❌ <b>أساسيين ما توقعتهم:</b> ${miss.join('، ')}</div>`));}
+      if(miss.length)pitch.after(el(`<div class="tp-miss">❌ <b>أساسيين ما توقعتهم:</b> ${miss.join('، ')}</div>`));
+      pitch.after(el(`<button class="tp-go tp-sh" id="tpSh" type="button">𝕏 شارك نتيجتي</button>`));q('tpSh').onclick=()=>shareTP({real,hits});}
   }
+}
+/* المشاركة بعد القفل بس (قرار إبراهيم: محد ياخذ توقع الثاني قبل القفل) */
+const kick=()=>{const d=new Date(M.t+4*3600e3),h=d.getUTCHours();return `${AR[d.getUTCDay()]} ${(h%12)||12}:${String(d.getUTCMinutes()).padStart(2,'0')} ${h<12?'ص':'م'}`};
+async function shareTP(R){
+  if(!M||ST==='pick')return;const b=q('tpSh');b.disabled=true;
+  const c=EL3FAN.club(),cn=club.name,vs=`${(CLUBS.find(y=>y.id===(TCLUB[M.h]||M.h))||{}).name||M.h} × ${(CLUBS.find(y=>y.id===(TCLUB[M.a]||M.a))||{}).name||M.a}`,U='el3azy.com/tashkila/?tp';
+  gc('share-tp');try{window.el3stat&&el3stat('tp','share')}catch(e){}
+  try{
+    const o=R?{title:'توقّعي',line:`الجولة ${M.wk} · ${vs}`,noFm:1,badge:['من التشكيلة الأساسية',`صبت ${R.hits} من 11`],marks:xi.map(p=>p?(R.real.has(tk(p))?'ok':'no'):null),url:U}
+             :{title:'توقّعي',line:`الجولة ${M.wk} · ${vs}`,noFm:1,badge:['🔒 توقعي قبل المباراة',kick()],url:U};
+    const cv=await drawCard(o),blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.93));
+    const file=new File([blob],`tawaqqu-${c}-${M.id}.jpg`,{type:'image/jpeg'});
+    const text=R?`صبت ${R.hits} من 11 في تشكيلة ${cn} ✅\n${vs}\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`
+                :`توقعي لتشكيلة ${cn} 🔒\n${vs}\nنشوف كم بصيب منها 👀\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`;
+    if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text});return}catch(e){if(e&&e.name==='AbortError')return}}
+    const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=file.name;document.body.appendChild(a);a.click();a.remove();
+    window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank');toast('نزّلت الصورة، ارفقها في التغريدة');
+  }catch(e){toast('صار خطأ، جرب مرة ثانية')}finally{b.disabled=false}
 }
 function decorate(){
   if(mode!=='tp')return;

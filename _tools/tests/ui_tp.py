@@ -83,6 +83,18 @@ async def run(b, state, w, saved):
     return pg, puts
 
 
+async def share_img(pg, path):
+    """نضغط زر المشاركة ونمسك الصورة والنص (navigator.share وهمي)"""
+    await pg.evaluate("""()=>{navigator.canShare=()=>true;navigator.share=async d=>{const r=new FileReader();
+      window.__sh=await new Promise(ok=>{r.onload=()=>ok({img:r.result,text:d.text});r.readAsDataURL(d.files[0])})}}""")
+    await pg.click('#tpSh')
+    await pg.wait_for_function('window.__sh', timeout=15000)
+    d = await pg.evaluate('window.__sh')
+    import base64
+    open(path, 'wb').write(base64.b64decode(d['img'].split(',', 1)[1]))
+    return d['text']
+
+
 async def main():
     serve()
     os.makedirs(OUT, exist_ok=True)
@@ -114,6 +126,7 @@ async def main():
                 chk(await pg.locator('#sheetAdd').is_hidden(), 'إضافة يدوية في القائمة')
                 await pg.locator('#list .pl:not([disabled])').first.click()
                 await pg.wait_for_timeout(200)
+            chk(await pg.locator('#tpSh').count() == 0, 'زر المشاركة قبل القفل')
             chk(not await pg.locator('#tpGo').is_disabled(), 'الاعتماد ما تفعّل بعد 11')
             await pg.click('#tpGo')
             await pg.wait_for_timeout(800)
@@ -140,14 +153,21 @@ async def main():
             await pg.locator('#slots .slot').first.click()
             await pg.wait_for_timeout(300)
             chk(not await pg.locator('#sheet.on').count(), 'القائمة تنفتح بعد القفل')
+            chk(await pg.locator('#tpSh').count() == 1 and 'توقعي' in await pg.text_content('#tpSh'), 'زر مشاركة التوقع بعد القفل')
             await pg.screenshot(path=f'{OUT}/tp_locked_{w}.png', full_page=True)
+            if w == 390:
+                await share_img(pg, f'{OUT}/tp_share_locked.jpg')
             await pg.close()
 
             pg, _ = await run(b, 'reveal', w, True)
             chk('8' in await pg.text_content('.tp-res .big'), 'النتيجة')
             chk(await pg.locator('.slot.tp-ok').count() == 8 and await pg.locator('.slot.tp-no').count() == 3, 'علامات ✓ ✕')
             chk(await pg.locator('.tp-miss').count() == 1, 'قائمة الأساسيين اللي ما توقعهم')
+            chk('نتيجتي' in await pg.text_content('#tpSh'), 'زر مشاركة النتيجة')
             await pg.screenshot(path=f'{OUT}/tp_reveal_{w}.png', full_page=True)
+            if w == 390:
+                t = await share_img(pg, f'{OUT}/tp_share_reveal.jpg')
+                chk('صبت 8 من 11' in (t or ''), f'نص المشاركة {t}')
             await pg.close()
 
             if OPEN.get(str(M['wk'])):
