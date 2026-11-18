@@ -81,12 +81,13 @@ header .day{font-size:12px;color:var(--gold);font-weight:600}
 .legend span{background:rgba(7,29,43,.7);border-radius:9px;padding:6px 2px;font-size:11px;text-align:center}
 .legend i{display:inline-block;width:9px;height:9px;border-radius:3px;margin-left:4px;vertical-align:middle}
 .heads,.row{display:grid;grid-template-columns:1.45fr repeat(5,1fr);gap:5px}
-.heads{font-size:12px;font-weight:600;color:var(--gold);text-align:center;margin:10px 0 6px}
+.heads{font-size:12px;font-weight:600;color:var(--gold);text-align:center;margin:10px 0 6px;align-items:end;line-height:1.25}
 .heads div:first-child{text-align:right}
 .row{margin-bottom:6px}
 .row>div{border-radius:10px;min-height:54px;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;font-size:13px;font-weight:600;background:var(--gray);padding:3px;animation:flip .5s both;line-height:1.15}
 .row>div:first-child{background:transparent;align-items:flex-start;text-align:right;font-size:12.5px;font-weight:500}
 .row small{font-size:9.5px;font-weight:600;opacity:.95;margin-top:2px;line-height:1.2}
+.row small.arw{font-size:19px;line-height:1;margin-top:1px;opacity:1}
 .row .fl{font-size:22px}
 .ok{background:var(--green)!important}.near{background:var(--yellow)!important}
 @keyframes flip{from{transform:rotateX(90deg);opacity:0}to{transform:none;opacity:1}}
@@ -401,7 +402,7 @@ function cmp(p){
   r.no=p.no==null?'':p.no===a.no?'ok':(Math.abs(p.no-a.no)<=3?'near':'');
   return r;
 }
-const arrow=(g,a)=>g==null||g===a?'':`<small>${a>g?'⬆ السري أكبر':'⬇ السري أصغر'}</small>`;
+const arrow=(g,a)=>g==null||g===a?'':`<small class="arw" aria-label="${a>g?'أكبر':'أصغر'}">${a>g?'⬆':'⬇'}</small>`;
 
 /* ---------- render ---------- */
 function shirtSVG(){return `<svg viewBox="0 0 100 100"><defs><linearGradient id="sg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${S.done?'#F0D99A':'#14384F'}"/><stop offset="1" stop-color="${S.done?'#D7B465':'#0C2638'}"/></linearGradient></defs><path d="M33 8 L18 14 L4 32 L16 42 L24 34 L24 94 L76 94 L76 34 L84 42 L96 32 L82 14 L67 8 Q50 22 33 8Z" fill="url(#sg)" stroke="#D7B465" stroke-width="2.5" stroke-linejoin="round"/></svg>`}
@@ -426,14 +427,14 @@ function render(){
   }else{
     // من اليوم 2: بعد 3 محاولات غلط ينكشف نادي لاعبك السري
     if(DAY>=2&&!S.done&&S.guesses.length>=3)h+=`<div class="clubhint">${crest(ANS.c,30)}<div><small>🔓 تلميح بعد 3 محاولات</small><b>لاعبك السري من ${D.clubs[ANS.c]}</b></div></div>`;
-    if(S.guesses.length<2)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارن لك لاعبك باللاعب السري في 5 خانات: <b>النادي، المركز، الجنسية، العمر، الرقم</b>. لون كل خانة يقولك قد شو قربت، ومنها تعرف اللاعب السري.</div>`;
-    h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري بالضبط</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب: <b>المركز</b> في الخط اللي جنبه في الملعب (مثلاً وسط بدال مهاجم)، أو <b>العمر</b> بفرق سنتين أو أقل، أو <b>الرقم</b> بفرق 3 أو أقل</span></div><div><i></i><span><b>رمادي</b> = بعيد. والنادي والجنسية يا أخضر يا رمادي</span></div><div><i class="ar">⬆⬇</i><span>تحت العمر والرقم: <b>اللاعب السري أكبر ⬆ أو أصغر ⬇</b> من لاعبك</span></div></div>`;
+    if(S.guesses.length<2)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارن لك لاعبك باللاعب السري في 5 خانات: <b>النادي، المركز، الجنسية، العمر، رقم القميص</b>. لون كل خانة يقولك قد شو قربت، ومنها تعرف اللاعب السري.</div>`;
+    h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري بالضبط</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب: <b>المركز</b> في الخط اللي جنبه في الملعب (مثلاً وسط بدال مهاجم)، أو <b>العمر</b> بفرق سنتين أو أقل، أو <b>رقم القميص</b> بفرق 3 أو أقل</span></div><div><i></i><span><b>رمادي</b> = بعيد. والنادي والجنسية يا أخضر يا رمادي</span></div><div><i class="ar">⬆⬇</i><span>تحت العمر ورقم القميص: <b>⬆ اللاعب السري أكبر، ⬇ أصغر</b> من لاعبك</span></div></div>`;
   }
   if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب بالعربي أو بالإنجليزي..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
   if(mode==='easy'){
     h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],w=id===ANS.id;return `<div class="eg ${w?'w':''}">${ph(p,34)}<span>${p.n}</span><b>${w?'✅ صح!':'❌ مب هو'}</b></div>`}).join('');
   }else if(used){
-    h+=`<div class="heads"><div>تخمينك</div><div>النادي</div><div>المركز</div><div>الجنسية</div><div>العمر</div><div>الرقم</div></div>`;
+    h+=`<div class="heads"><div>تخمينك</div><div>النادي</div><div>المركز</div><div>الجنسية</div><div>العمر</div><div>رقم القميص</div></div>`;
     h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],r=cmp(p);return `<div class="row"><div>${p.n}</div><div class="${r.c}">${crest(p.c,28)}</div><div class="${r.p}">${POSS[p.p]}</div><div class="${r.n}"><span class="fl">${flag(p.f)}</span></div><div class="${r.a}">${p.a!=null?AR(p.a):'—'}${arrow(p.a,ANS.a)}</div><div class="${r.no}">${p.no!=null?AR(p.no):'—'}${arrow(p.no,ANS.no)}</div></div>`}).join('');
   }
   h+=`</div>`;
@@ -700,7 +701,7 @@ async function buildCard(){
     }
     x.fillStyle='rgba(255,245,229,.55)';x.font=`500 28px ${F}`;x.fillText('كل غلطة تفتح تلميح، وعندك 6 محاولات',W/2,y+s+105);
   }else{
-    const heads=['النادي','المركز','الجنسية','العمر','الرقم'];
+    const heads=['النادي','المركز','الجنسية','العمر','رقم القميص'];
     const cw=150,ch=64,gx=14,gy=12,tot=5*cw+4*gx,X0=W/2+tot/2;
     const rowsH=MAX*ch+(MAX-1)*gy,y0=top+48+((bot-top-48)-rowsH)/2;
     x.font=`600 26px ${F}`;x.fillStyle='rgba(255,245,229,.6)';
