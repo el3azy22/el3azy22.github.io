@@ -143,7 +143,7 @@ function render(){
     else{const w=document.querySelector('.wrap');if(w){let h=w.querySelector('.fz-top');if(!h){h=document.createElement('div');h.className='fz-top';w.insertBefore(h,w.firstChild)}h.appendChild(chip)}}
   }
   // بطاقة «تشجع أي نادي انت؟» فوق «منو اللاعب؟» في الصفحة الرئيسية
-  const feat=document.getElementById('feat');let card=document.querySelector('.fz-card');
+  const feat=document.getElementById('fanSlot')||document.getElementById('feat');let card=document.querySelector('.fz-card');
   if(c===null&&feat){if(!card){card=document.createElement('a');card.className='tool fz-card';card.setAttribute('role','button');card.href='#';
       card.innerHTML=`<div class="ic">${'<svg viewBox="2.6 2.6 26.8 26.8" fill="none" stroke="url(#gg)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5.6q5.3-1.9 10.5 0t10.5 0v4.6q-5.3 1.9-10.5 0t-10.5 0z" class="s"/><path d="M10.8 4.7v4.5M16 5.6v4.6M21.2 6.6v4.5" stroke-width="1.3"/><path d="M5.5 6.6H3.4M5.5 9.2H3.4M26.5 6.6h2.1M26.5 9.2h2.1" stroke-width="1.2"/><circle cx="16" cy="16.3" r="2.7"/><path d="M11.6 21.2 7.6 10.6M20.4 21.2l4-10.6"/><path d="M10.6 28v-3.2a5.4 5.4 0 0 1 10.8 0V28"/></svg>'}</div><div><b>تشجع أي نادي انت؟</b><span class="d">اختار ناديك، ونتيجتك في التحديات تنحسب لجمهوره</span></div><div class="go">‹</div>`;
       card.onclick=e=>{e.preventDefault();open()};feat.parentNode.insertBefore(card,feat)}}
