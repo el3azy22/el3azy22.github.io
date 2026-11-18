@@ -169,6 +169,19 @@ def _tp(m,O=0):
     "$other":{".validate":False}}}
 rules["rules"]["tp"]={m['id']:_tp(m,_op[m['wk']]) for m in _ms}
 
+# ── «رمز النقل» (قرار إبراهيم 18 نوفمبر): ينقل بطاقة المشجع لتلفون أو متصفح ثاني بدون تسجيل ──
+# x/<sha256(الرمز)> = {u: صاحب البطاقة، c: البيانات مشفّرة بالرمز (AES-GCM)، i: IV، e: ينتهي (10 دقايق، 15 بالكثير)}
+# اللي يعرف الرمز بس يوصل للمسار ويفك التشفير. ما ينقرا بعد ما ينتهي، وما في قراءة للقائمة. ينمسح بعد ما ينستخدم.
+rules["rules"]["x"]={"$h":{
+  ".read":"data.child('e').val() > now",
+  ".write":"auth != null && (!data.exists() || data.child('u').val() == auth.uid)",
+  ".validate":"$h.matches(/^[a-f0-9]{64}$/) && newData.hasChildren(['u','c','i','e'])",
+  "u":{".validate":"newData.val() == auth.uid"},
+  "c":{".validate":"newData.isString() && newData.val().length <= 60000"},
+  "i":{".validate":"newData.isString() && newData.val().length <= 40"},
+  "e":{".validate":"newData.isNumber() && newData.val() > now && newData.val() <= now + 900000"},
+  "$other":{".validate":False}}}
+
 # ── عداد الإحصائيات الخاص (موافقة إبراهيم 16 نوفمبر) ── v/<يوم>/{t,u,r,p/<قسم>,s/<أغنية>/<حدث>}
 # زيادة +1 بس لكل طلب. القراءة مفتوحة مثل s و c (أرقام مجمعة بدون أي بيانات شخصية، واللوحة ما فيها تسجيل دخول Firebase).
 VINC=f"newData.isNumber() && {inc}"

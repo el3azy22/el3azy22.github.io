@@ -255,11 +255,30 @@ def tp_tests():
     check('ما يقرا توقع غيره', requests.get(url('tp/9101/p1', 'p2')).status_code, 401)
 
 
+def x_tests():
+    now = int(time.time() * 1000)
+    load_rules(now - DAY, []); reset({'x': {'b' * 64: {'u': 'p1', 'c': 'old', 'i': 'iv', 'e': now - 1000}}})
+    print('\n— رمز النقل —')
+    h = 'a' * 64
+    rec = {'u': 'p1', 'c': 'enc', 'i': 'iv', 'e': now + 600000}
+    check('صاحب البطاقة يسوي رمز', put('p1', f'x/{h}', rec), 200)
+    check('أي أحد يعرف الرمز يقراه قبل ما ينتهي', requests.get(url(f'x/{h}')).status_code, 200)
+    check('ما يقدر يقرا قائمة الرموز', requests.get(url('x', 'p2')).status_code, 401)
+    check('رمز منتهي ما ينقرا', requests.get(url(f'x/{"b" * 64}')).status_code, 401)
+    check('غيره ما يكتب فوق رمزه', put('p2', f'x/{h}', {**rec, 'u': 'p2'}), 401)
+    check('ما يسوي رمز باسم غيره', put('p2', f'x/{"c" * 64}', rec), 401)
+    check('مدة أطول من 15 دقيقة ترفض', put('p1', f'x/{"d" * 64}', {**rec, 'e': now + 3600000}), 401)
+    check('مسار مب hash يرفض', put('p1', 'x/abc', rec), 401)
+    check('حقل زايد يرفض', put('p1', f'x/{"e" * 64}', {**rec, 'z': 1}), 401)
+    check('بدون تسجيل ما يكتب', requests.put(url(f'x/{"f" * 64}'), data=json.dumps(rec)).status_code, 401)
+    check('صاحب البطاقة (من التلفون اليديد) يمسحه بعد الاستخدام', requests.delete(url(f'x/{h}', 'p1')).status_code, 200)
+
+
 if __name__ == '__main__':
     try:
         requests.get(f'{B}/.json?ns={NS}', timeout=3)
     except Exception:
         sys.exit('المحاكي مب شغال على ' + B)
-    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests(); tp_tests()
+    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests(); tp_tests(); x_tests()
     print(f'\nالنتيجة: {ok} نجح · {fail} فشل')
     sys.exit(1 if fail else 0)
