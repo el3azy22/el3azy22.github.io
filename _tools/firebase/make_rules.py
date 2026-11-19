@@ -249,6 +249,11 @@ rules["rules"]["b"]={"$d":{"$u":{
   "d":{".validate":"newData.isNumber()"},"t":{".validate":"newData.val() == now"},
   "$other":{".validate":False}}}}
 rules["rules"]["bv"]={".read":True}   # نتايج المُعيد (مقروءة للكل، الكتابة لحساب الخدمة بس)
+# g = المنطقة الزمنية لتلفون صاحب بطاقة المشجع (مثل Asia/Dubai) — نعرف منها داخل الإمارات أو برا. القراءة للمدير بس،
+# واللوحة تعرض أرقام مجمعة بس (fans/geo.json) بدون أسماء
+rules["rules"]["g"]={".read":ISADM,"$u":{".write":"auth != null && auth.uid == $u",
+   ".validate":"newData.isString() && newData.val().length <= 40 && newData.val().matches(/^[A-Za-z_]+(\\/[A-Za-z0-9_+-]+){0,2}$/)"}}
+
 # r = سجل خاص بنهاية كل لعبة في «منو اللاعب» (فاز أو خسر، بنادي أو بدون) + بصمة جهاز مختصرة مجهولة (dv)
 # الهدف: نرصد «الكشّاف» (حساب ثاني بنفس التلفون يخسر عشان يطلع الاسم، وبعدها فوز من أول محاولة). القراءة للمدير بس
 rules["rules"]["r"]={".read":ISADM,"$d":{"$m":{"$u":{
