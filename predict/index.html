@@ -183,7 +183,8 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .rulesn{font-size:11.5px;opacity:.72;text-align:center;line-height:1.9;margin:10px 0 4px}
 .rulesn b{color:var(--gold2)}
 .meb{display:flex;align-items:center;gap:12px;border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.25),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 40%,rgba(215,180,101,.25)) border-box;border-radius:18px;padding:12px 14px;margin-bottom:12px}
-.meb .rk{font-size:30px;font-weight:700;color:var(--gold2);min-width:56px;text-align:center;direction:ltr}
+.meb .rk{font-size:30px;font-weight:700;color:var(--gold2);min-width:56px;text-align:center;direction:ltr;line-height:1.15}
+.meb .rk small{display:block;direction:rtl;font-size:11.5px;font-weight:600;color:var(--gold);opacity:.9}
 .meb .t{flex:1;min-width:0}.meb .t b{font-size:16px;display:block}.meb .t small{font-size:12px;opacity:.7}
 .lb{background:linear-gradient(165deg,var(--navy2),rgba(7,29,43,.9));border:1px solid rgba(255,245,229,.08);border-radius:18px;overflow:hidden;margin-bottom:12px}
 .lb .r{display:grid;grid-template-columns:30px 28px 1fr auto;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:14px}
@@ -476,7 +477,7 @@ function renderLb(){
   let h='';
   if(!rows.length){h+=`<div class="empty">الترتيب يطلع بعد صافرة أول مباراة في ${r?rlabel(r):'الجولة'}<br><span style="font-size:12.5px;opacity:.7">ويتحدث كل شوي وقت المباريات</span></div>`}
   else{
-    if(i>=0){const R=rows[i];h+=`<div class="meb"><div class="rk">#${i+1}</div><div class="t"><b>${nmOf(R[1],R[2])}</b><small>${R[3]} نقطة في ${rlabel(r)} · من ${nf(rows.length)} متوقع</small></div>${crest(R[2],34)}</div>`}
+    if(i>=0){const R=rows[i];h+=`<div class="meb"><div class="rk"><small>ترتيبك</small>#${i+1}</div><div class="t"><b>${nmOf(R[1],R[2])}</b><small>${R[3]} نقطة في ${rlabel(r)} · من ${nf(rows.length)} متوقع</small></div>${crest(R[2],34)}</div>`}
     else if(r&&r.ms.some(m=>MY[m.id]))h+=`<div class="note">ترتيبك يطلع بعد صافرة أول مباراة توقعتها</div>`;
     h+=`<div class="h3">🏆 ترتيب ${r?rlabel(r):''}</div><div class="lb">${lbRows(rows)}</div>`;
     if(i>=0)h+=`<button class="btn ghost" id="shareR">𝕏 شارك ترتيبك</button>`;
