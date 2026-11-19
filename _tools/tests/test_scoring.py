@@ -84,5 +84,11 @@ check('13 متعادلين بالكامل: 10 يطلعون والباقي في m
 m1 = F.collect_mano({'3': {'easy': {'U1xxxxxxxxxxx': {'g': 2, 'c': 'ain', 't': 5, 'sec': 40}}, 'pro': {'U1xxxxxxxxxxx': {'g': 0, 'c': 'ain', 't': 6, 'sec': 5000}}}}, 1, 7)
 check('منو اللاعب: نقاط 5، أخطاء 1+6، لعبتين، ثواني 40 + حد ساعة', [m1['U1xxxxxxxxxx'][k] for k in ('pts', 'mis', 'plays', 'sec')], [5, 7, 2, 3640])
 
+# نهاية المباراة من صفحة الاتحاد («نهاية الشوط الثاني» قبل الحالة الرسمية 6)
+PB = load('pbuild', '_tools/predict/build.py')
+for txt, live, want in [('نهاية الشوط الثاني', None, True), ('إنتهت المباراة', None, True), ('نهاية الشوط الأول', None, False), ('', '1', False), ('نهاية الشوط الثاني', '1', False)]:
+    PB.http_json = lambda url, _t=txt, _l=live: {'matches_updates_match': dict({'statustext': _t}, **({'live': _l} if _l else {}))}
+    check(f'نهاية المباراة: «{txt or "شغالة"}»{" (مباشر)" if live else ""}', PB.ended('1'), want)
+
 print(f'\nالنتيجة: {ok} نجح · {fail} فشل')
 sys.exit(1 if fail else 0)

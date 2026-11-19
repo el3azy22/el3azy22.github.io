@@ -209,6 +209,13 @@ def main():
                     m['h'], m['a'] = o['h'], o['a']
         elif o:
             m['h'], m['a'] = o['h'], o['a']
+        if m['st'] != 6 and k <= now.timestamp() * 1000 < k + 12 * 3600000:   # «نهاية الشوط الثاني» = خلصت (قرار إبراهيم 19 نوفمبر)
+            try:
+                u = get('matches_updates_match?lang=ar&match_id=' + mid).get('matches_updates_match') or {}
+                if str(u.get('live') or '0') != '1' and re.search(r'(?:إ|ا)نتهت|نهاية الشوط الثاني', u.get('statustext') or ''):
+                    m['st'] = 6
+            except Exception as e:
+                print('status fail', mid, e, file=sys.stderr)
         if m['st'] == 6 and not m['h'].get('pl'):
             m['st'] = 5  # خلصت بس التشكيلة مب جاهزة: لا تفتح التقييم
         if it.get('team1_score', '') != '' and m['h'].get('sc') is None:

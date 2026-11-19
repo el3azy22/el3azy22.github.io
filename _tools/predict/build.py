@@ -55,6 +55,20 @@ def kick_ms(t):  # "2026-11-08 4:55 م"
     return int(datetime(int(y), int(mo), int(d), h, int(mi), tzinfo=UAE).timestamp() * 1000)
 
 
+END_RE = re.compile(r'(?:إ|ا)نتهت|نهاية الشوط الثاني')   # «نهاية الشوط الأول» ما ينحسب
+
+
+def ended(mid):
+    """صفحة المباراة في موقع الاتحاد تكتب «نهاية الشوط الثاني» أول ما تخلص المباراة، والحالة الرسمية (6) تتأخر أحياناً ساعات.
+    الدوري ما فيه أشواط إضافية، فنهاية الشوط الثاني = نهاية المباراة (قرار إبراهيم 19 نوفمبر)."""
+    try:
+        u = http_json(API + 'matches_updates_match?lang=ar&match_id=' + str(mid)).get('matches_updates_match') or {}
+        return str(u.get('live') or '0') != '1' and bool(END_RE.search(u.get('statustext') or ''))
+    except Exception as e:
+        print('::warning::حالة المباراة', mid, e)
+        return False
+
+
 def fixtures():
     comp = http_json(API + 'matches?lang=ar&competition_id=' + COMP)
     if comp.get('error'):
@@ -73,6 +87,9 @@ def fixtures():
                 continue
             m = {'id': it['match_id'], 'wk': int(it['week_no']), 't': t, 'h': h, 'a': a, 'st': st}
             s1, s2 = it.get('team1_score'), it.get('team2_score')
+            now = time.time() * 1000
+            if st != FINISHED and t <= now < t + 12 * 3600000 and str(s1).isdigit() and str(s2).isdigit() and ended(it['match_id']):
+                st = m['st'] = FINISHED
             if st == FINISHED and str(s1).isdigit() and str(s2).isdigit():
                 m['sh'], m['sa'] = int(s1), int(s2)
             out.append(m)
