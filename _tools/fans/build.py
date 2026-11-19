@@ -394,6 +394,36 @@ def tp_summary(pred_d, lineups, tp_all, now, H, read=None):
     return out
 
 
+# المنطقة الزمنية للتلفون → الدولة (للأرقام المجمعة بس في لوحة الإحصائيات)
+TZC = {'Asia/Dubai': 'AE', 'Asia/Muscat': 'OM', 'Asia/Riyadh': 'SA', 'Asia/Qatar': 'QA', 'Asia/Bahrain': 'BH', 'Asia/Kuwait': 'KW',
+       'Africa/Cairo': 'EG', 'Asia/Amman': 'JO', 'Asia/Baghdad': 'IQ', 'Asia/Beirut': 'LB', 'Asia/Damascus': 'SY', 'Asia/Aden': 'YE',
+       'Africa/Casablanca': 'MA', 'Africa/Algiers': 'DZ', 'Africa/Tunis': 'TN', 'Africa/Khartoum': 'SD', 'Asia/Karachi': 'PK',
+       'Asia/Kolkata': 'IN', 'Asia/Calcutta': 'IN', 'Europe/London': 'GB', 'Europe/Istanbul': 'TR', 'Asia/Tehran': 'IR'}
+
+
+def geo_summary(f_all, g_all, now):
+    """fans/geo.json: كم صاحب بطاقة داخل الإمارات وكم برا (من المنطقة الزمنية للتلفون). أرقام مجمعة بس، بدون أسماء."""
+    tot = {'ae': 0, 'out': 0, 'unk': 0}
+    named = {'ae': 0, 'out': 0, 'unk': 0}
+    clubs, ctry = {}, defaultdict(int)
+    for u, v in (f_all or {}).items():
+        if not isinstance(v, dict) or not v.get('c'):
+            continue
+        z = (g_all or {}).get(u)
+        cc = TZC.get(z) if isinstance(z, str) else None
+        if isinstance(z, str) and not cc:
+            cc = 'Z:' + z.split('/')[0]
+        k = 'unk' if not cc else 'ae' if cc == 'AE' else 'out'
+        tot[k] += 1
+        if (v.get('n') or '').strip():
+            named[k] += 1
+        if v['c'] != 'none':
+            clubs.setdefault(v['c'], {'ae': 0, 'out': 0, 'unk': 0})[k] += 1
+        if k == 'out':
+            ctry[cc] += 1
+    return {'t': now, 'all': tot, 'named': named, 'clubs': clubs, 'out': dict(sorted(ctry.items(), key=lambda kv: -kv[1]))}
+
+
 def main():
     now = int(os.environ.get('NOW') or time.time() * 1000)
     today = max(1, day_of(now))
@@ -459,6 +489,7 @@ def main():
                     tp_all[mid] = v
     tp_sum = tp_summary(pred_d, lineups, tp_all, now, H) if TP_START and H else None
     names = (fb('f', None, H) or {}) if H else {}
+    geo = geo_summary(names, fb('g', None, H) or {}, now) if H else None
     names = {u[:12]: v for u, v in names.items() if isinstance(v, dict)}
 
     # أيام اللعب لكل مشجع (للاعتماد): المحفوظة من الأسابيع النهائية + اللي نقراها الحين
@@ -551,6 +582,14 @@ def main():
         print('fans/data.json ما تغير')
     if H:
         json.dump(acc, open(acc_path, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
+        if geo is not None:
+            old_g = None
+            try:
+                old_g = json.load(open(os.path.join(ROOT, 'fans/geo.json'), encoding='utf8'))
+            except Exception:
+                pass
+            if not old_g or {k: v for k, v in old_g.items() if k != 't'} != {k: v for k, v in geo.items() if k != 't'}:
+                json.dump(geo, open(os.path.join(ROOT, 'fans/geo.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
         if tp_sum is not None:
             json.dump(tp_sum, open(os.path.join(ROOT, 'fans/tp.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
         json.dump({'w': cur, 'week': week_ranks, 'season': s_ranks}, open(os.path.join(ROOT, 'fans/ranks.json'), 'w', encoding='utf8'),

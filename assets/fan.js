@@ -39,8 +39,12 @@ function lock(){const s=PID.get('fan_srv');const now=Date.now();
   return{free:false};
 }
 let syncing=null;
+// المنطقة الزمنية للتلفون (داخل الإمارات أو برا) — تنرسل مرة، وتتحدث لو تغيرت
+async function sendTz(){try{let z='';try{z=Intl.DateTimeFormat().resolvedOptions().timeZone||''}catch(e){}
+  if(!z||!/^[A-Za-z_]+(\/[A-Za-z0-9_+-]+){0,2}$/.test(z)||z.length>40||PID.get('tz_sent')===z)return;
+  const a=await tok(),r=await fetch(FB.db+'/g/'+a.u+'.json?auth='+a.t,{method:'PUT',body:JSON.stringify(z)});if(r.ok)PID.set('tz_sent',z)}catch(e){}}
 async function sync(){
-  const c=club();if(c===null)return;
+  const c=club();if(c===null)return;sendTz();
   const cv=c||'none',n=name(),srv=PID.get('fan_srv');
   if(srv&&srv.t&&srv.c===cv&&srv.n===n)return;
   if(syncing)return syncing;

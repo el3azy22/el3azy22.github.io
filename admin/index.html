@@ -237,9 +237,11 @@ function render(){
     const SS=id=>useV?(V.s[id]||{}):{play:ev['play-'+id],dl:ev['dl-'+id],share:ev['share-'+id]};const rows=SONGS.filter(o=>o.file).map(o=>({o,vi:SV[o.id]||0,pl:SS(o.id).play||0,dl:SS(o.id).dl||0,sh:SS(o.id).share||0})).sort((x,y)=>(y.vi+y.pl)-(x.vi+x.pl));
     const td='padding:9px 4px;text-align:center;font-weight:700;font-size:15px',th='padding:4px;text-align:center;font-size:12px;opacity:.7;font-weight:600';
     h+=`<div class="lbl">🎵 أغاني دورينا وأنديتنا</div><div class="card"><p class="cap">زيارات صفحة الأغاني <b>${nf(pg['/songs']||0)}</b> في الفترة. 🔗 = كم واحد دخل من رابط الأغنية نفسها (مثل اللي تنشره في X). ▶️ = كم مرة انشغلت: من ١٦ نوفمبر ١١ بالليل مرة وحدة لكل زيارة، وقبلها كانت كل ضغطة تشغيل تنحسب، فالأرقام القديمة أعلى من الحقيقي.</p>${rows.length?`<table style="width:100%;border-collapse:collapse"><tr><th style="${th};text-align:start">الأغنية</th><th style="${th}">🔗 من رابطها</th><th style="${th}">▶️ تشغيل</th><th style="${th}">⬇️ تنزيل</th><th style="${th}">📤 مشاركة</th></tr>${rows.map(r=>`<tr style="border-top:1px solid rgba(255,245,229,.08)"><td style="padding:9px 4px"><span style="display:flex;align-items:center;gap:8px;font-weight:600"><img src="${r.o.club?'../mano/assets/'+r.o.club+'.png':'../mano/assets/logo.png'}" style="width:24px;height:24px;object-fit:contain" alt="">${esc(r.o.title)}</span></td><td style="${td}">${nf(r.vi)}</td><td style="${td}">${nf(r.pl)}</td><td style="${td}">${nf(r.dl)}</td><td style="${td}">${nf(r.sh)}</td></tr>`).join('')}</table>`:'<div class="empty">لحظة...</div>'}</div>`}
+  h+=`<div class="lbl">🌍 من وين يدخلون؟</div><div class="card"><p class="cap"><b>الزوار</b> (${RNAME[range]}): من دولة الإنترنت. اللي يستخدم VPN يطلع من دولة الـVPN.</p><div id="geoV"><div class="empty">لحظة...</div></div>
+    <p class="cap" style="margin-top:14px"><b>أصحاب بطاقة المشجع</b> (من البداية): من توقيت التلفون. اللي ما فتح المنصة من يوم 19 نوفمبر ما نعرف منطقته لين يفتحها. أرقام بس، بدون أسماء.</p><div id="geoF"><div class="empty">لحظة...</div></div></div>`;
   h+=`<div class="lbl">🔮 دوري التوقعات</div><div class="card" id="predC"><div class="empty">لحظة...</div></div>`;
   h+=`<div class="lbl">🧩 توقّع تشكيلة ناديك</div><div class="card" id="tpC"><div class="empty">لحظة...</div></div>`;
-  $('#app').innerHTML=h;bindSeg();loadRefs(a,b);loadPred();loadTP();
+  $('#app').innerHTML=h;bindSeg();loadRefs(a,b);loadPred();loadTP();loadGeo(a,b);
 }
 async function loadPred(){ // المشاركين + تنبيه لو مواعيد المباريات تغيرت عن اللي في قواعد Firebase
   const v=Date.now(),[D,L,TB]=await Promise.all(['data','lock','table'].map(f=>fetch('../predict/'+f+'.json?v='+v).then(r=>r.ok?r.json():null).catch(()=>null)));
@@ -263,6 +265,30 @@ async function loadTP(){ // fans/tp.json: أعداد مجمعة لكل مبار�
   M.filter(m=>m.d).forEach(m=>{const n=m.d.reduce((x,v)=>x+v,0),avg=m.d.reduce((x,v,i)=>x+v*i,0)/n,best=m.d.reduce((x,v,i)=>v?i:x,0);
     h+=`<div class="mini"><b>${CLUBS[m.h]} × ${CLUBS[m.a]}:</b> متوسط الصح ${avg.toFixed(1)} من 11 · أعلى نتيجة ${best} من 11${m.d[11]?` · ${nf(m.d[11])} صابوا الـ11 كلهم`:''}</div>`});
   const nx=M.find(m=>m.t>T);if(nx)h+=`<div class="mini">⏳ أقرب قفل: ${CLUBS[nx.h]} × ${CLUBS[nx.a]}، ${AR[new Date(nx.t+4*3600e3).getUTCDay()]} قبل المباراة بساعتين</div>`;
+  el.innerHTML=h;
+}
+const RGN0={SA:'السعودية',US:'أمريكا',GB:'بريطانيا',AE:'الإمارات'};
+const RGN=(()=>{try{const d=new Intl.DisplayNames(['ar'],{type:'region'});return c=>RGN0[c]||(()=>{try{return d.of(c)||c}catch(e){return c}})()}catch(e){return c=>RGN0[c]||c}})();
+const GEOV={};
+async function loadGeo(a,b){ // الزوار من GoatCounter (حسب الفترة) + أصحاب البطاقات من fans/geo.json
+  const key=range;let st=GEOV[key];
+  if(!st){try{st=(await gc('/stats/locations',{start:iso(a),end:iso(b),limit:40})).stats||[];GEOV[key]=st}catch(e){st=null}}
+  if(key===range){const el=$('#geoV');if(el){
+    if(!st)el.innerHTML='<div class="empty">ما قدرنا نجيبها الحين</div>';
+    else{const C={};st.forEach(r=>{const c=/^[A-Za-z]{2}/.test(r.id||'')?r.id.slice(0,2).toUpperCase():'?';C[c]=(C[c]||0)+(r.count||0)});
+      const tot=Object.values(C).reduce((x,v)=>x+v,0),ae=C.AE||0,out=tot-ae-(C['?']||0);
+      const top=Object.entries(C).filter(([c])=>c!=='AE'&&c!=='?'&&c!=='').sort((x,y)=>y[1]-x[1]).slice(0,6);
+      el.innerHTML=tot?bars([['🇦🇪 داخل الإمارات',ae,{txt:pct(ae,ae+out)+'%'}],['🌍 برا الإمارات',out,{txt:pct(out,ae+out)+'%'}]])+`<div class="mini">${nf(ae)} زائر داخل الإمارات · ${nf(out)} برا</div>`
+        +(top.length?`<p class="cap" style="margin-top:8px">أكثر الدول برا الإمارات:</p>`+bars(top.map(([c,v])=>[RGN(c),v]))  :''):'<div class="empty">ما فيه بيانات للفترة</div>'}}}
+  const G=await fetch('../fans/geo.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);const el=$('#geoF');if(!el)return;
+  if(!G||!G.all){el.innerHTML='<div class="empty">ما قدرنا نجيبها الحين</div>';return}
+  const A=G.all,N=G.named||{},k=A.ae+A.out;
+  if(!k){el.innerHTML=`<div class="empty">لين الحين ما وصلت مناطق (${nf(A.unk)} بطاقة ننتظر يفتحون المنصة)</div>`;return}
+  let h=bars([['🇦🇪 داخل الإمارات',A.ae,{txt:pct(A.ae,k)+'%'}],['🌍 برا الإمارات',A.out,{txt:pct(A.out,k)+'%'}]]);
+  h+=`<div class="mini">${nf(A.ae)} بطاقة داخل الإمارات · ${nf(A.out)} برا</div><div class="mini">اللي كاتبين أساميهم: ${nf(N.ae||0)} داخل الإمارات · ${nf(N.out||0)} برا${A.unk?` · و${nf(A.unk)} بطاقة ما عرفنا منطقتها لين الحين`:''}</div>`;
+  const O=Object.entries(G.out||{}).filter(([c])=>!c.startsWith('Z:')).slice(0,6);if(O.length)h+=`<div class="mini">برا الإمارات: ${O.map(([c,v])=>`${RGN(c)} ${nf(v)}`).join(' · ')}</div>`;
+  const CL=Object.entries(G.clubs||{}).map(([c,v])=>[c,v,v.ae+v.out]).filter(x=>x[2]).sort((x,y)=>y[2]-x[2]);
+  if(CL.length)h+=`<p class="cap" style="margin-top:10px">لكل نادي (٪ داخل الإمارات):</p>`+bars(CL.map(([c,v,n])=>[`${CLUBS[c]||c}${v.out?` · ${nf(v.out)} برا`:''}`,pct(v.ae,n),{img:'../mano/assets/'+c+'.png',txt:pct(v.ae,n)+'%'}]));
   el.innerHTML=h;
 }
 async function loadRefs(a,b){

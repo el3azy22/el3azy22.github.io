@@ -44,7 +44,7 @@ jobs:
             git pull --rebase -q || { git rebase --abort 2>/dev/null; git reset -q --hard origin/main; git pull -q || true; }
             [ -n "$BUS" ] && { python3 _tools/bus/verify.py || echo "::warning::مُعيد الباص فشل"; }
             python3 _tools/fans/build.py || echo "::warning::دوري الجماهير فشل في هالدورة"
-            git add fans/data.json fans/acc.json fans/ranks.json fans/tp.json
+            git add fans/data.json fans/acc.json fans/ranks.json fans/tp.json fans/geo.json
             if ! git diff --cached --quiet; then
               git commit -m "دوري الجماهير: تحديث" -q
               for i in 1 2 3; do git pull --rebase -q && git push -q && break; sleep 10; done

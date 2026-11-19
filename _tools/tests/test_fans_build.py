@@ -176,5 +176,14 @@ if __name__ == '__main__':
     T.check('الملخص: مباراة ياية بدون توزيع', (sm['502']['n'], 'd' in sm['502']), (1, False))
     T.check('الملخص ما فيه توقعات أحد', '"x"' in json.dumps(sm) or 'q' in json.dumps(sm), False)
     os.environ.pop('TP_START', None)
+    # داخل الإمارات أو برا (fans/geo.json): أرقام مجمعة بس
+    gf = {'u1': {'c': 'ain', 'n': 'سالم'}, 'u2': {'c': 'ain', 'n': ''}, 'u3': {'c': 'wasl', 'n': 'x'}, 'u4': {'c': 'none', 'n': ''}, 'u5': {'c': 'wasl'}, 'u6': {'n': 'بدون نادي'}}
+    gg = {'u1': 'Asia/Dubai', 'u2': 'Asia/Riyadh', 'u3': 'Asia/Dubai', 'u4': 'Europe/Paris', 'u6': 'Asia/Dubai'}
+    geo = FB.geo_summary(gf, gg, 1)
+    T.check('المناطق: داخل/برا/ما نعرف', geo['all'], {'ae': 2, 'out': 2, 'unk': 1})
+    T.check('المناطق: اللي كاتبين أساميهم', geo['named'], {'ae': 2, 'out': 0, 'unk': 0})
+    T.check('المناطق: لكل نادي (المحايد ما ينحسب لنادي)', geo['clubs'], {'ain': {'ae': 1, 'out': 1, 'unk': 0}, 'wasl': {'ae': 1, 'out': 0, 'unk': 1}})
+    T.check('المناطق: الدول برا', geo['out'], {'SA': 1, 'Z:Europe': 1})
+    T.check('المناطق: ما فيها أسماء ولا معرفات', any(x in json.dumps(geo, ensure_ascii=False) for x in ('سالم', 'u1', 'Asia/')), False)
     print(f'\nالنتيجة: {T.ok} نجح · {T.fail} فشل')
     sys.exit(1 if T.fail else 0)

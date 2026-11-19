@@ -14,8 +14,8 @@ day = (int(time.time() * 1000) - S) // 86400000 + 1
 V = lambda: requests.get(T.url(f'v/{day}'), headers=T.OWNER).json() or {}
 
 
-async def visit(b, paths, ls=None, js=None):
-    ctx = await b.new_context()
+async def visit(b, paths, ls=None, js=None, tz=None):
+    ctx = await b.new_context(timezone_id=tz) if tz else await b.new_context()
     if ls:
         await ctx.add_init_script(''.join(f"localStorage.setItem({json.dumps(k)},{json.dumps(v)});" for k, v in ls.items()))
     pg = await ctx.new_page()
@@ -44,7 +44,18 @@ async def main():
         v = V()
         T.check('نفس التلفون في نفس اليوم: زيارة بس بدون زائر يديد', (v.get('t'), v.get('u'), v['p'].get('songs')), (4, 2, 1))
         T.check('أحداث الأغاني: تشغيل وتنزيل بس (الغلط ما ينحسب)', v.get('s'), {'wasl': {'play': 1, 'dl': 1}})
+        # منطقة التلفون (داخل الإمارات أو برا) تنحفظ لصاحب البطاقة بس، وتقراها لوحة المدير بس
+        fbk = lambda u: json.dumps({'t': T.tok(u), 'r': '', 'u': u, 'exp': int(time.time() * 1000) + 3600000})
+        await visit(b, ['/'], ls={'el3azy_club': '"wasl"', 'el3azy_fb': fbk('ugeo1')}, tz='Asia/Dubai')
+        await visit(b, ['/'], ls={'el3azy_club': '"ain"', 'el3azy_fb': fbk('ugeo2')}, tz='Asia/Riyadh')
+        await visit(b, ['/'], ls={'el3azy_fb': fbk('ugeo3')}, tz='Asia/Riyadh')
+        g = requests.get(T.url('g'), headers=T.OWNER).json() or {}
+        T.check('منطقة التلفون تنحفظ لأصحاب البطاقات بس', g, {'ugeo1': 'Asia/Dubai', 'ugeo2': 'Asia/Riyadh'})
         await b.close()
+    T.check('صاحب البطاقة ما يقرا المناطق', requests.get(T.url('g', 'ugeo1')).status_code, 401)
+    T.check('المدير يقرا المناطق', requests.get(T.url('g', 'Vt7pBIwn9jhQCI2LSORFpnU3aCa2')).status_code, 200)
+    T.check('منطقة بشكل غلط ترفض', requests.put(T.url('g/ugeo1', 'ugeo1'), data=json.dumps('<script>')).status_code, 401)
+    T.check('ما يكتب منطقة غيره', requests.put(T.url('g/ugeo1', 'ugeo2'), data=json.dumps('Asia/Dubai')).status_code, 401)
     put = lambda path, val: requests.put(T.url(path), data=json.dumps(val)).status_code
     T.check('السيرفر يرفض زيادة +2', put(f'v/{day}/t', V()['t'] + 2), 401)
     T.check('السيرفر يرفض قسم مب موجود', put(f'v/{day}/p/hack', 1), 401)
