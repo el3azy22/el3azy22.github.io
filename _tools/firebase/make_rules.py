@@ -153,7 +153,7 @@ if _ms:json.dump({m['id']:m['t'] for m in _ms},open(os.path.join(os.path.dirname
 if _ms:json.dump({str(w):t for w,t in _op.items()},open(os.path.join(os.path.dirname(_pd),'open.json'),'w'),separators=(',',':'))   # متى تفتح كل جولة (للصفحة)
 
 # ── «توقّع تشكيلة ناديك» (صفحة «تشكيلتي»، قرار إبراهيم 18 نوفمبر) ──
-# tp/<مباراة>/<uid> = {c: نادي المشجع، x: 11 مفتاح لاعب مفصولة بـ ~، w: وقت السيرفر}
+# tp/<مباراة>/<uid> = {c: نادي المشجع، x: 11 مفتاح لاعب مفصولة بـ ~ بترتيب الخانات، f: الخطة (اختياري)، w: وقت السيرفر}
 #   يتعدل لين ساعتين قبل البداية، وينفتح مع جولة التوقعات (نفس O). النادي = بطاقة المشجع ولازم يكون طرف في المباراة.
 #   النقاط يحسبها _tools/fans/build.py من التشكيلة الرسمية (tashkila/lineups.json).
 TPLOCK=2*3600000
@@ -165,6 +165,7 @@ def _tp(m,O=0):
     ".validate":"newData.hasChildren(['c','x','w'])",
     "c":{".validate":f"newData.isString() && newData.val() == {FCU}.child('c').val() && (newData.val() == '{m['h']}' || newData.val() == '{m['a']}')"},
     "x":{".validate":"newData.isString() && newData.val().length <= 2000 && newData.val().matches(/^[^~]+(~[^~]+){10}$/)"},
+    "f":{".validate":"newData.isString() && newData.val().matches(/^[0-9]-[0-9](-[0-9]){1,3}$/)"},   # الخطة (للعرض بس، ما تأثر على النقاط)
     "w":{".validate":"newData.val() == now"},
     "$other":{".validate":False}}}
 rules["rules"]["tp"]={m['id']:_tp(m,_op[m['wk']]) for m in _ms}
