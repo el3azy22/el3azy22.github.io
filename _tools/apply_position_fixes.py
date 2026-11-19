@@ -41,6 +41,13 @@ for mp in m['players']:
   v=fixw(mp['n'])
   if v!=mp['n']: mp['n']=v;nlog+=1
 log.append(f'   names: {nlog}')
+# مركز واحد لكل لاعب في كل المنصة: «تشكيلتي» تاخذ مركز «منو اللاعب؟» (الرابطة + إعلانات الأندية + قرارات إبراهيم)
+R2={v:k for k,v in M2.items()};ulog=0
+for c in t['clubs']:
+  for p in c['p']:
+    mp=byid.get(p[5]) if len(p)>5 and p[5] else None
+    if mp and R2.get(mp['p']) and p[2]!=R2[mp['p']]: p[2]=R2[mp['p']];ulog+=1
+log.append(f'   tashkila<-mano: {ulog}')
 json.dump(t,open(f'{R}/tashkila/squads.json','w'),ensure_ascii=False,separators=(',',':'))
 json.dump(m,open(f'{R}/mano/data.json','w'),ensure_ascii=False,separators=(',',':'))
 print('\n'.join(log));print(len([l for l in log if not l.startswith('   ')]),'fixes')
