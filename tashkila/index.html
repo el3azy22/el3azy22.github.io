@@ -668,7 +668,7 @@ async function boot(){
   if(!QA&&!(cfg.start&&day>=cfg.start))return;
   // العنوان: الصفحة صارت تسوي شيين
   document.querySelector('header h1').textContent='تشكيلتي';
-  document.querySelector('header .sub').textContent='صمّم تشكيلتك وشاركها، أو توقّع تشكيلة ناديك قبل كل مباراة';
+  document.querySelector('header .sub').textContent='صمّم تشكيلتك، أو توقّع تشكيلة ناديك';
   document.title='تشكيلتي | العازي';
   const tabs=el(`<div class="tp-tabs"><button data-m="free" class="on">صمّم تشكيلتك<small>للمتعة والمشاركة</small></button><button data-m="tp">🏆 توقّع تشكيلة ناديك<small>نقاط لك ولجمهورك</small></button></div>`);
   document.querySelector('.sadu').after(tabs);

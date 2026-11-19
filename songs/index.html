@@ -81,6 +81,7 @@ header .sub{font-size:12px;color:var(--gold);font-weight:600;line-height:1.6;mar
 .clubs button{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 4px 9px;border-radius:16px;border:1px solid rgba(255,245,229,.08);background:rgba(255,245,229,.03);font-size:11.5px;font-weight:600}
 .clubs button img{height:38px;width:auto;max-width:44px;object-fit:contain}
 .clubs button.on{border-color:var(--gold);background:rgba(215,180,101,.10);box-shadow:inset 0 0 0 1px rgba(215,180,101,.4)}
+.soonrow{margin-top:12px;text-align:center;font-size:12.5px;opacity:.75}.soonrow div{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:8px}.soonrow img{width:24px;height:24px;object-fit:contain;opacity:.5}
 .clubs button.soon{opacity:.38;cursor:default}
 .clubs button.soon::after{content:'قريباً';font-size:9px;opacity:.8;margin-top:-3px}
 .clubs button.has::after{content:'♪';position:absolute;top:4px;left:7px;color:var(--gold);font-size:13px}
@@ -172,7 +173,8 @@ function render(){
   ${s.lyrics?`<details class="card lyr"><summary>📝 الكلمات</summary><div class="txt">${esc(s.lyrics).replace(/\*(.+?)\*/g,'<b>$1</b>')}</div></details>`:''}
   ${league.length>1?`<div class="h3">🎵 أغاني الدوري</div>`+league.map(x=>`<button class="card" data-id="${x.id}" style="width:100%;text-align:right;display:flex;gap:10px;align-items:center"><img src="${cover(x)}" style="height:40px" alt=""><b>${esc(x.title)}</b></button>`).join(''):''}
   <div class="h3">🏟️ أغاني الأندية</div>
-  <div class="clubs">${ORDER.map(k=>{const x=byClub[k];return `<button class="${x?(x===cur?'on has':'has'):'soon'}" ${x?`data-id="${x.id}"`:'aria-disabled="true"'}><img src="../mano/assets/${k}.png" alt="">${CL[k]}</button>`}).join('')}</div>
+  ${ORDER.some(k=>byClub[k])?`<div class="clubs">${ORDER.filter(k=>byClub[k]).map(k=>{const x=byClub[k];return `<button class="${x===cur?'on has':'has'}" data-id="${x.id}"><img src="../mano/assets/${k}.png" alt="">${CL[k]}</button>`}).join('')}</div>`:''}
+  ${ORDER.some(k=>!byClub[k])?`<div class="soonrow"><span>أغاني باقي الأندية قريباً</span><div>${ORDER.filter(k=>!byClub[k]).map(k=>`<img src="../mano/assets/${k}.png" alt="${CL[k]}" title="${CL[k]}">`).join('')}</div></div>`:''}
   ${cur.club?`<button class="btn" id="toLeague" style="width:100%;margin-top:12px">🎵 ارجع لأغنية «دورينا»</button>`:''}`;
   bind();
 }

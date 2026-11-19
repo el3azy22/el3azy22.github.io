@@ -103,11 +103,11 @@ h2:after{content:'';flex:1;height:1px;background:linear-gradient(90deg,transpare
 .soon .badge{background:rgba(255,245,229,.15);color:var(--ivory)}
 .soon .ic{filter:saturate(.6)}
 
-.qr{position:relative;overflow:hidden;width:220px;margin:32px auto 8px;padding:22px 20px 16px;border-radius:26px;text-align:center;border:1.5px solid transparent;
+.qr{position:relative;overflow:hidden;width:204px;margin:26px auto 6px;padding:18px 16px 12px;border-radius:26px;text-align:center;border:1.5px solid transparent;
  background:radial-gradient(ellipse at 50% 0%,rgba(215,180,101,.22),transparent 65%) padding-box,linear-gradient(170deg,#173F58,#0B2434 75%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 40%,rgba(215,180,101,.3) 70%,var(--gold)) border-box;box-shadow:0 14px 34px rgba(0,0,0,.4)}
 .qr:before{content:'';position:absolute;top:0;left:0;right:0;height:10px;background:var(--sadu) center/18px 12px repeat-x;opacity:.35;transform:scaleY(-1)}
-.qr img{width:164px;height:164px;border-radius:18px;background:var(--ivory);display:block;margin:0 auto;box-shadow:0 0 0 4px rgba(255,245,229,.1),0 8px 18px rgba(0,0,0,.35)}
-.qr div{font-size:13px;color:var(--gold2);font-weight:600;margin-top:12px}
+.qr img{width:136px;height:136px;border-radius:15px;background:var(--ivory);display:block;margin:0 auto;box-shadow:0 0 0 4px rgba(255,245,229,.1),0 8px 18px rgba(0,0,0,.35)}
+.qr div{font-size:12px;color:var(--gold2);font-weight:600;margin-top:10px}
 footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:22px;line-height:1.9}
 footer .sadu{width:90px;margin:0 auto 12px;opacity:.6}
 footer a{color:var(--gold);text-decoration:none;font-weight:600}
@@ -189,7 +189,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
   <div class="more">الترتيب الكامل ‹</div>
 </a>
 
-<h2 class="in" style="animation-delay:.6s">أدوات الجماهير</h2>
+<h2 class="in" style="animation-delay:.6s">أدوات المنصة</h2>
 <a class="tool in" style="animation-delay:.62s" href="rate/">
   <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><polygon class="s" points="16.0,5.0 19.2,12.6 27.4,13.3 21.1,18.7 23.1,26.7 16.0,22.4 8.9,26.7 10.9,18.7 4.6,13.3 12.8,12.6"/></svg></div>
   <div><b>قيّم اللاعبين</b><span class="d">بعد صافرة النهاية قيّم كل لاعب من 1 لين 10، وشوف تقييم الجماهير</span><div class="timer mini" id="rateBox" hidden><span id="rateLbl"></span><time id="rateLine"></time></div></div>
@@ -220,7 +220,10 @@ const crest=(c,s)=>{const f=C[c]||[1,1];return `<img src="mano/assets/${c}.png" 
 {const one=Object.keys(C).map(c=>crest(c,30)).join('');document.getElementById('crests').innerHTML=one+one}
 const $=id=>document.getElementById(id),p2=n=>String(n).padStart(2,'0'),nf=n=>Number(n).toLocaleString('en-US');
 const LS=k=>{try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}};
-const cd=ms=>{const s=Math.max(0,Math.floor(ms/1e3)),d=Math.floor(s/86400);return (d?(d===1?'يوم':d===2?'يومين':d<=10?d+' أيام':d+' يوم')+' و':'')+`<bdi>${p2(Math.floor(s%86400/3600))}:${p2(Math.floor(s%3600/60))}:${p2(s%60)}</bdi>`};
+// أكثر من يوم: «يوم و19 ساعة» · أقل من يوم: عدّاد ساعات ودقايق وثواني
+const cd=ms=>{const s=Math.max(0,Math.floor(ms/1e3)),d=Math.floor(s/86400),h=Math.floor(s%86400/3600);
+  if(d)return (d===1?'يوم':d===2?'يومين':d<=10?d+' أيام':d+' يوم')+(h?' و'+(h===1?'ساعة':h===2?'ساعتين':h<=10?h+' ساعات':h+' ساعة'):'');
+  return `<bdi>${p2(h)}:${p2(Math.floor(s%3600/60))}:${p2(s%60)}</bdi>`};
 const myClub=()=>{const c=window.EL3FAN?EL3FAN.club():LS('el3azy_club');return c&&c!=='none'?c:null};
 const ICO={
  mano:'<svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M11 5 6 7.5 3 13l4 2 1.5-2.5V27h15V12.5L25 15l4-2-3-5.5L21 5c-1 2-2.8 3-5 3s-4-1-5-3Z"/><path d="M13.7 15.3c0-1.5 1-2.5 2.4-2.5s2.4.9 2.4 2.2c0 1.8-2.5 2-2.5 4"/><circle class="f" cx="16" cy="22.3" r="1.15"/></svg>',
@@ -284,7 +287,7 @@ function drawLg(){
 function drawRate(){
   const T=Date.now(),show=(lbl,html,on)=>{$('rateBox').hidden=false;$('rateBox').classList.toggle('on',!!on);$('rateLbl').textContent=lbl;$('rateLine').innerHTML=html};
   const open=R?R.matches.filter(m=>m.st===6&&T>=m.t+100*60e3&&T<m.t+50*3600e3):[];
-  if(open.length){const m=open[open.length-1];show('🟢 مفتوح الحين',open.length>1?open.length+' مباريات':`${CN[m.h.c]} × ${CN[m.a.c]}`,true)}
+  if(open.length){const m=open[open.length-1];show('🟢 مفتوح الحين',open.length>1?(open.length===2?'مباراتين':open.length+(open.length<=10?' مباريات':' مباراة')):`${CN[m.h.c]} × ${CN[m.a.c]}`,true)}
   else if(P){const nx=P.matches.filter(m=>m.t>T-4*3600e3&&m.st!==6).sort((a,b)=>a.t-b.t)[0];
     if(nx){const end=nx.t+105*60e3;end>T?show('يفتح بعد',cd(end-T).replace(/^([^<]+)/,'<em>$1</em>')):show('يفتح بعد شوي','<bdi>…</bdi>')}else $('rateBox').hidden=true}
 }
