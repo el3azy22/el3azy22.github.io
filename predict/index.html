@@ -194,6 +194,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .lb .r b{color:var(--gold2);direction:ltr}
 .lb .r.you{background:rgba(215,180,101,.13)}
 .lb .r small{opacity:.55;font-size:11px;margin-right:4px}
+.lb .r small.me{opacity:1;color:var(--navy);background:var(--gold);border-radius:8px;padding:0 7px;font-weight:700;font-size:10.5px;margin-right:6px}
 .lb .gap{text-align:center;opacity:.4;padding:2px 0;font-size:12px}
 .cl{display:grid;grid-template-columns:30px 30px 1fr auto;align-items:center;gap:8px;padding:9px 12px;border-bottom:1px solid rgba(255,245,229,.06);font-size:14px}
 .cl:last-child{border:0}
@@ -464,10 +465,11 @@ function shareRound(r){
 
 /* ── الترتيب ── */
 const myU=()=>{const a=PID.get(FBK);return a?a.u.slice(0,12):null};
+const PTS=n=>n===1?'نقطة':n===2?'نقطتين':(n>=3&&n<=10?n+' نقاط':nf(n)+' نقطة');
 const nmOf=(n,c)=>n?esc(n):CL[c]?'مشجع '+CL[c]:'مشجع';   // بدون اسم ولا نادي = «مشجع» (مثل دوري الجماهير)
 function lbRows(rows,unit){
   const me=myU(),i=rows.findIndex(r=>r[0]===me),N=20;
-  const row=(r,k)=>`<div class="r ${r[0]===me?'you':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i><span>${crest(r[2],24)||'<span style="opacity:.55;font-size:17px">⚽</span>'}</span><span class="nm">${nmOf(r[1],r[2])}${r[0]===me?'<small>(انت)</small>':''}</span><b>${r[3]}</b></div>`;
+  const row=(r,k)=>`<div class="r ${r[0]===me?'you':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i><span>${crest(r[2],24)||'<span style="opacity:.55;font-size:17px">⚽</span>'}</span><span class="nm">${nmOf(r[1],r[2])}${r[0]===me?'<small class="me">أنت</small>':''}</span><b>${r[3]}</b></div>`;
   let h=rows.slice(0,N).map(row).join('');
   if(i>=N)h+=`<div class="gap">⋯</div>`+row(rows[i],i);
   return h;
@@ -477,15 +479,14 @@ function renderLb(){
   let h='';
   if(!rows.length){h+=`<div class="empty">الترتيب يطلع بعد صافرة أول مباراة في ${r?rlabel(r):'الجولة'}<br><span style="font-size:12.5px;opacity:.7">ويتحدث كل شوي وقت المباريات</span></div>`}
   else{
-    if(i>=0){const R=rows[i];h+=`<div class="meb"><div class="rk"><small>ترتيبك</small>#${i+1}</div><div class="t"><b>${nmOf(R[1],R[2])}</b><small>${R[3]} نقطة في ${rlabel(r)} · من ${nf(rows.length)} متوقع</small></div>${crest(R[2],34)}</div>`}
+    if(i>=0){const R=rows[i];h+=`<div class="meb"><div class="rk"><small>ترتيبك</small>#${i+1}</div><div class="t"><b>${nmOf(R[1],R[2])}</b><small>${R[3]?PTS(R[3]):'0 نقطة'} · من ${nf(rows.length)} متوقع</small></div>${crest(R[2],34)}</div>`}
     else if(r&&r.ms.some(m=>MY[m.id]))h+=`<div class="note">ترتيبك يطلع بعد صافرة أول مباراة توقعتها</div>`;
     h+=`<div class="h3">🏆 ترتيب ${r?rlabel(r):''}</div><div class="lb">${lbRows(rows)}</div>`;
     if(i>=0)h+=`<button class="btn ghost" id="shareR">𝕏 شارك ترتيبك</button>`;
   }
-  const S=(TB&&TB.season)||[],si=S.findIndex(x=>x[0]===me),mr=(TB&&TB.min&&TB.min.rounds)||3;
-  h+=`<div class="h3">🏅 ترتيب الموسم</div>`;
-  h+=S.length?`<div class="lb">${lbRows(S)}</div>`:`<div class="note">يطلع بعد أول مباراة منتهية</div>`;
-  if(TB&&TB.updated)h+=`<div class="note" style="font-size:11px">آخر تحديث: <bdi dir="ltr">${esc(TB.updated)}</bdi></div>`;
+  const S=(TB&&TB.season)||[],done=TB?Object.values(TB.rounds||{}).filter(x=>x.some(y=>y[3]>0)).length:0;
+  if(S.length&&done>1)h+=`<div class="h3">🏅 ترتيب الموسم</div><div class="lb">${lbRows(S)}</div>`;
+  if(TB&&TB.updated){const m=TB.updated.match(/(\d+):(\d+)$/);if(m){const H=+m[1];h+=`<div class="note" style="font-size:11.5px">يتحدث خلال دقايق من نهاية كل مباراة · آخر تحديث ${(H%12)||12}:${m[2]} ${H<12?'ص':'م'}</div>`}}
   $('#app').innerHTML=h;
   $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع أنت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank')});
 }
@@ -498,12 +499,13 @@ async function renderCl(){
   const D=FDP&&FDP.v===3?FDP:null,xi=(D&&D.xi)||11,ap=(D&&D.approve)||3;
   const W=D?D.weeks.find(w=>(w.rds||[]).map(String).includes(String(CUR))):null;
   const rows=W?(((W.boards.pred||{}).clubs)||[]).filter(c=>c[2]>0):[];
-  const row=c=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][c[1]-1]||c[1]}</i>${crest(c[0],26)}<span>${CL[c[0]]}<small style="display:block;font-size:11px;opacity:.6">${c[3]>=xi?`تشكيلة كاملة · ${nf(c[4])} ${c[4]===2||(c[4]>=3&&c[4]<=10)?'مشجعين':'مشجع'}`:`تشكيلة ناقصة: ${nf(c[3])} من ${xi}`}</small></span><span class="v"><b>${nf(c[2])}</b><small>نقطة</small></span></div>`;
+  const row=c=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][c[1]-1]||c[1]}</i>${crest(c[0],26)}<span>${CL[c[0]]}<small style="display:block;font-size:11px;opacity:.6">${nf(c[4])} ${c[4]===2||(c[4]>=3&&c[4]<=10)?'مشجعين':'مشجع'} توقعوا${c[3]<xi?` · النخبة ${nf(c[3])} من ${xi}`:''}</small></span><span class="v"><b>${nf(c[2])}</b><small>نقطة</small></span></div>`;
   let h=`<div class="h3">📣 جماهير الأندية · ${r?rlabel(r):''}</div>`;
   h+=rows.length?`<div class="lb">${rows.map(row).join('')}</div>`:`<div class="empty">ترتيب الأندية يطلع بعد أول مباراة منتهية في الجولة</div>`;
-  h+=`<div class="note">كل نادي تنحسب له نقاط أفضل ${xi} مشجع عنده (التشكيلة)، من المشجعين اللي لعبوا في ${ap} أيام مختلفة أو أكثر. وإذا تساووا، الأقل أخطاء. <a href="../fans/" style="color:inherit">الترتيب الكامل في دوري الجماهير</a></div>`;
+  h+=`<div class="note">نقاط النادي = مجموع أفضل ${xi} مشجع عنده (نخبة الجمهور). <a href="../fans/" style="color:inherit">التفاصيل في دوري الجماهير</a></div>`;
   const S=D?(((D.season.pred||{}).clubs)||[]).filter(c=>c[2]>0):[];
-  if(S.length)h+=`<div class="h3">🏆 الأندية في الموسم</div><div class="lb">${S.map(c=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][c[1]-1]||c[1]}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${nf(c[2])}</b><small>نقطة</small></span></div>`).join('')}</div>`;
+  const sameAsRound=D&&D.weeks&&D.weeks.length<2&&(((D.weeks[0]||{}).rds)||[]).length<2;
+  if(S.length&&!sameAsRound)h+=`<div class="h3">🏆 الأندية في الموسم</div><div class="lb">${S.map(c=>`<div class="cl ${c[0]===mc?'mine':''}"><i>${['🥇','🥈','🥉'][c[1]-1]||c[1]}</i>${crest(c[0],26)}<span>${CL[c[0]]}</span><span class="v"><b>${nf(c[2])}</b><small>نقطة</small></span></div>`).join('')}</div>`;
   if(mc===null&&window.EL3FAN)h+=`<button class="btn" id="askClub2">اختار ناديك وساعد جمهوره</button>`;
   if(TAB!=='cl')return;
   $('#app').innerHTML=h;$('#askClub2')&&($('#askClub2').onclick=()=>EL3FAN.open());
