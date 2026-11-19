@@ -22,18 +22,33 @@ async def main():
     b=await p.chromium.launch(executable_path='/usr/bin/google-chrome',args=['--autoplay-policy=no-user-gesture-required','--mute-audio'])
     ctx=await b.new_context(viewport={'width':1080,'height':1920},device_scale_factor=1)
     # التاريخ ثابت على 17 نوفمبر 2026 (يوم انطلاق منو اللاعب؟) + ما يسأل عن النادي (صوت المتصفح نفسه مكتوم)
-    await ctx.add_init_script("""(()=>{const T=location.pathname.includes("/rate/")?%s:%s;const R=Date;class FD extends R{constructor(...a){if(a.length)super(...a);else super(T)}static now(){return T}};window.Date=FD;
+    if not TL['demo'].get('frames'): await ctx.add_init_script("""(()=>{const T=location.pathname.includes("/rate/")?%s:%s;const R=Date;class FD extends R{constructor(...a){if(a.length)super(...a);else super(T)}static now(){return T}};window.Date=FD;
       try{localStorage.setItem('el3azy_mano_club','""');localStorage.setItem('el3azy_rate_seenHow','true');localStorage.setItem('el3azy_mano_sound','true');localStorage.setItem('el3azy_pred_how','1');localStorage.setItem('el3azy_mano_pa_1',JSON.stringify('%s'))}catch(e){}})()"""%(TL['demo'].get('nowRate',TL['demo'].get('nowMs','Date.UTC(2026,10,17,17,0,0)')),TL['demo'].get('nowMs','Date.UTC(2026,10,17,17,0,0)'),TL['demo'].get('manoPro',TL['demo']['manoAnswer'])))
     async def fix(route):  # لاعب العرض بدل لاعب اليوم الحقيقي (عشان ما ينحرق أول تحدي)
       r=await route.fetch();d=await r.json();d['schedule']=[TL['demo']['manoAnswer']]*len(d['schedule'])   # كل الأيام لاعب العرض (ما ينكشف أي لاعب حقيقي)
       if d.get('schedule_pro'): d['schedule_pro']=[TL['demo'].get('manoPro',TL['demo']['manoAnswer'])]*len(d['schedule_pro'])
       d['pool']=[TL['demo'].get('manoPro',TL['demo']['manoAnswer'])]   # الخبير عشوائي من هالقائمة
       await route.fulfill(response=r,body=json.dumps(d,ensure_ascii=False),headers={**r.headers,'content-type':'application/json'})
+    if TL['demo'].get('frames'):   # فيديو رمز النقل: كل إطار تلفون مستقل (A/B) بتخزين منفصل + الوقت يمشي
+      await ctx.add_init_script("""(()=>{const F=%s,N=window.name;
+        if(N==='B'){const R=window.localStorage,P='B:';const S={getItem:k=>R.getItem(P+k),setItem:(k,v)=>R.setItem(P+k,String(v)),removeItem:k=>R.removeItem(P+k),
+          clear:()=>S._k().forEach(k=>R.removeItem(P+k)),_k:()=>{const a=[];for(let i=0;i<R.length;i++){const k=R.key(i);if(k.startsWith(P))a.push(k.slice(P.length))}return a},key:i=>S._k()[i]??null,get length(){return S._k().length}};
+          Object.defineProperty(window,'localStorage',{value:S,configurable:true})}
+        if(F[N]&&!localStorage.getItem('el3azy_vinit')){Object.entries(F[N]).forEach(([k,v])=>localStorage.setItem(k,JSON.stringify(v)));localStorage.setItem('el3azy_vinit','1')}
+        try{Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{},readText:async()=>''},configurable:true})}catch(e){}
+        const T0=%s,R=Date,p0=performance.timeOrigin;class FD extends R{constructor(...a){if(a.length)super(...a);else super(T0+(R.now()-p0))}static now(){return T0+(R.now()-p0)}};window.Date=FD})()"""%(json.dumps(TL['demo']['frames'],ensure_ascii=False),TL['demo']['nowMs']))
     await ctx.route('**/mano/data.json*',fix)
     await ctx.route('**/identitytoolkit.googleapis.com/**',lambda r:r.fulfill(status=200,content_type='application/json',body='{"idToken":"x","refreshToken":"y","localId":"demo","expiresIn":"3600"}'))
+    XS={}   # رموز النقل (x/...) تنحفظ هني بس
+    await ctx.route('**/securetoken.googleapis.com/**',lambda r:r.fulfill(status=200,content_type='application/json',body='{"id_token":"x","refresh_token":"y","user_id":"demo","expires_in":"3600"}'))
     async def fb(route):
-      u=route.request.url
-      if route.request.method in('PATCH','PUT','POST'): return await route.fulfill(status=200,content_type='application/json',body='{}')
+      u=route.request.url;pth=u.split('.app')[1].split('?')[0]
+      if '/x/' in pth:
+        if route.request.method=='PUT': XS[pth]=route.request.post_data
+        if route.request.method=='DELETE': XS.pop(pth,None)
+        return await route.fulfill(status=200,content_type='application/json',body=XS.get(pth,'null'))
+      if route.request.method in('PATCH','PUT','POST','DELETE'): return await route.fulfill(status=200,content_type='application/json',body='{}')
+      if '/f/' in pth and TL['demo'].get('fan'): return await route.fulfill(status=200,content_type='application/json',body=json.dumps(TL['demo']['fan'],ensure_ascii=False))
       if '/q/' in u: return await route.fulfill(status=200,content_type='application/json',body=json.dumps(TL['demo']['manoAnswer']))   # جواب لاعب اليوم من السيرفر
       if RD:
         for k in ('ra','rs','rn'):

@@ -1,0 +1,147 @@
+{
+ "_help": "فيديو «رمز النقل» (36 ثانية). نفس نظام timeline.json — شوف README.txt. التشغيل: TL=move-timeline.json STAGE=move-stage.html python3 record.py ...",
+ "fps": 30,
+ "duration": 36,
+ "demo": {
+  "nowMs": "Date.UTC(2026,10,19,14,0,0)",
+  "flowTime": true,
+  "manoAnswer": "soufiane-rahimi",
+  "frames": {
+   "A": {
+    "el3azy_club": "wahda",
+    "el3azy_name": "سالم",
+    "el3azy_fan_srv": {
+     "c": "wahda",
+     "n": "سالم",
+     "t": 1792000000000
+    }
+   },
+   "B": {}
+  },
+  "fan": {
+   "c": "wahda",
+   "n": "سالم",
+   "t": 1792000000000
+  }
+ },
+ "music": {
+  "lufs": -14,
+  "fadeIn": 0.3,
+  "fadeOut": 1.4,
+  "sfxGainDb": -9,
+  "segments": [
+   {
+    "file": "../mano/video/platform-theme.m4a",
+    "trackStart": 67.9,
+    "at": 0
+   }
+  ]
+ },
+ "scenes": [
+  {
+   "id": "hook",
+   "start": 0,
+   "sfx": null,
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "غيّرت تلفونك؟ أو تلعب من *X* ومن *سفاري*؟"
+    },
+    {
+     "at": 2.6,
+     "text": "انقل *بطاقة المشجع* بنقاطها في ثوانٍ"
+    }
+   ]
+  },
+  {
+   "id": "open",
+   "start": 5.0,
+   "sfx": "whoosh",
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "في التلفون الأول، اضغط *بطاقة المشجع* أعلى الصفحة"
+    },
+    {
+     "at": 2.6,
+     "text": "ثم اضغط «*انقل بطاقتك لتلفون ثاني*»"
+    }
+   ]
+  },
+  {
+   "id": "make",
+   "start": 9.0,
+   "sfx": "swish",
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "يظهر لك *رمز من 8 حروف*"
+    },
+    {
+     "at": 3.1,
+     "text": "اضغط «*انسخ الرمز*»"
+    }
+   ]
+  },
+  {
+   "id": "swap",
+   "start": 14.0,
+   "sfx": "whoosh",
+   "captions": [
+    {
+     "at": 0.1,
+     "text": "وافتح *el3azy.com* في التلفون الثاني"
+    }
+   ]
+  },
+  {
+   "id": "enter",
+   "start": 16.5,
+   "sfx": null,
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "اضغط بطاقة المشجع، ثم «*عندي رمز نقل*»"
+    },
+    {
+     "at": 3.4,
+     "text": "الصق الرمز، واضغط «*انقل البطاقة*»"
+    }
+   ]
+  },
+  {
+   "id": "done",
+   "start": 23.0,
+   "sfx": "chime",
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "وتعود إليك *بطاقتك ونقاطك* كاملة ✅"
+    }
+   ]
+  },
+  {
+   "id": "tips",
+   "start": 27.0,
+   "sfx": "swish",
+   "captions": [
+    {
+     "at": 0.1,
+     "text": "قبل النقل، *انتبه*"
+    }
+   ]
+  },
+  {
+   "id": "outro",
+   "start": 32.0,
+   "sfx": "chime",
+   "thumb": 0.6,
+   "captions": [
+    {
+     "at": 0.1,
+     "text": ""
+    }
+   ]
+  }
+ ]
+}
