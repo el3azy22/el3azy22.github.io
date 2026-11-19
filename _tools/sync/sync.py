@@ -229,11 +229,12 @@ def main():
     json.dump(tk, open(os.path.join(ROOT, 'tashkila', 'squads.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     json.dump(md, open(os.path.join(ROOT, 'mano', 'data.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     subprocess.run([sys.executable, os.path.join(ROOT, '_tools', 'apply_position_fixes.py')], check=False, capture_output=True)
+    MANO_POS = json.load(open(os.path.join(ROOT, '_tools', 'position_fixes.json'), encoding='utf8')).get('_mano', {})   # تصحيحات مقصودة
     # حارس (سالفة كارتابيا): مراكز «منو اللاعب» وأنديتهم لازم تطابق الرابطة بالضبط بعد كل التصحيحات
     md2 = json.load(open(os.path.join(ROOT, 'mano', 'data.json'), encoding='utf8'))
     by2 = {p['id']: p for p in (md2['players'] if isinstance(md2, dict) and 'players' in md2 else md2)}
     off = [f"{by2[q['slug']]['n']}: {by2[q['slug']]['p']}≠{q['pos']}" for c, lst in pl.items() for q in lst
-           if q['slug'] in by2 and q.get('pos') in POS4 and by2[q['slug']]['p'] != q['pos']]
+           if q['slug'] in by2 and q.get('pos') in POS4 and by2[q['slug']]['p'] != q['pos'] and q['slug'] not in MANO_POS]
     if off:
         pr.append('مراكز في «منو اللاعب» تختلف عن الرابطة: ' + '، '.join(off[:20]))
     return finish(rep, True)

@@ -16,6 +16,10 @@ for c in [t['national']]+t['clubs']:
     mp=byid.get(p[5]) if p[5] else None
     if not mp: mp=next((x for x in m['players'] if x['c']==mc and str(x.get('no'))==str(p[0])),None)
     # «منو اللاعب؟» والشبكة يستخدمون المركز المسجل في الرابطة (اللي يشوفه المشجع في موقعها)، فالتصحيح هني لـ«اختار تشكيلتك» بس
+# مراكز «منو اللاعب؟» اللي نخالف فيها الرابطة بقرار إبراهيم
+for pid,pos in {k:v for k,v in F.get('_mano',{}).items() if not k.startswith('_')}.items():
+  mp=byid.get(pid)
+  if mp and mp['p']!=pos: log.append(f"   mano {pid}: {mp['p']} -> {pos}");mp['p']=pos
 for pid,(nat,cc) in {k:v for k,v in F.get('_nat',{}).items() if not k.startswith('_')}.items():
   mp=byid.get(pid)
   if mp and (mp['nat'],mp['f'])!=(nat,cc): log.append(f"   mano {pid}: {mp['nat']} -> {nat}");mp['nat'],mp['f']=nat,cc
