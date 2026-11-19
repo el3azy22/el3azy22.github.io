@@ -87,7 +87,7 @@
   ]
  },
  "_mano": {
-  "_note": "مراكز «منو اللاعب؟» اللي نخالف فيها الرابطة: برمان بقرار إبراهيم، والباقين بإعلان النادي الرسمي (20 نوفمبر 2026). الحارس اليومي في sync.py يتجاهلها",
+  "_note": "مراكز «منو اللاعب؟» اللي نخالف فيها الرابطة: بإعلان النادي الرسمي أو بقرار إبراهيم (نوفمبر 2026). الحارس اليومي في sync.py يتجاهلها",
   "ahmed-barman-ali-barman-alhamoudi": "MD",
   "jobson-souza-santos": "MD",
   "lourency-do-nascimento-rodrigues": "FW",
@@ -97,6 +97,10 @@
   "serano-franklin-pedro-seymor": "DF",
   "ramiro-vaca-ponce": "MD",
   "charles-monginda-pickel": "MD",
-  "abdelkarim-mostafa-ahmed-abdelhamid": "DF"
+  "abdelkarim-mostafa-ahmed-abdelhamid": "DF",
+  "valentin-lando-lazaro": "DF",
+  "oumar-traore": "FW",
+  "kayque-soares-campos": "DF",
+  "fahad-jasim-mohamed-abdalla-yousif-al-ali": "DF"
  }
 }
