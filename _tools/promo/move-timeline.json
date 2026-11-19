@@ -1,7 +1,7 @@
 {
- "_help": "فيديو «رمز النقل» (51 ثانية). نفس نظام timeline.json — شوف README.txt. التشغيل: TL=move-timeline.json STAGE=move-stage.html python3 record.py ...",
+ "_help": "فيديو «منصة العازي على تلفونك + رمز النقل» (81 ثانية). نفس نظام timeline.json — شوف README.txt. التشغيل: TL=move-timeline.json STAGE=move-stage.html python3 record.py ...",
  "fps": 30,
- "duration": 51,
+ "duration": 81,
  "demo": {
   "nowMs": "Date.UTC(2026,10,19,14,0,0)",
   "flowTime": true,
@@ -32,14 +32,20 @@
   "segments": [
    {
     "file": "../mano/video/platform-theme.m4a",
-    "trackStart": 40.4,
+    "trackStart": 16.4,
     "at": 0,
-    "until": 13.7
+    "until": 37
+   },
+   {
+    "file": "../mano/video/platform-theme.m4a",
+    "trackStart": 57.6,
+    "at": 37,
+    "until": 44.6
    },
    {
     "file": "../mano/video/platform-theme.m4a",
     "trackStart": 67.9,
-    "at": 13.7
+    "at": 44.6
    }
   ]
  },
@@ -50,33 +56,115 @@
    "sfx": null,
    "captions": [
     {
-     "at": 0.4,
-     "text": "غيّرت تلفونك؟ أو تلعب من *X* ومن *سفاري*؟"
+     "at": 0.3,
+     "text": "تدخل المنصة كل مرة من *X* أو *سفاري*؟"
+    },
+    {
+     "at": 2.8,
+     "text": "اجعلها *أيقونة* على شاشة تلفونك"
+    }
+   ]
+  },
+  {
+   "id": "safari",
+   "start": 5.5,
+   "sfx": "whoosh",
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "افتح *el3azy.com* في *سفاري*"
+    },
+    {
+     "at": 2.8,
+     "text": "واضغط زر «*⋯*» بجانب العنوان"
+    }
+   ]
+  },
+  {
+   "id": "share",
+   "start": 11,
+   "sfx": "swish",
+   "captions": [
+    {
+     "at": 0.1,
+     "text": "ثم «*مشاركة*»"
+    }
+   ]
+  },
+  {
+   "id": "addrow",
+   "start": 15.5,
+   "sfx": null,
+   "captions": [
+    {
+     "at": 0.1,
+     "text": "اختر «*إضافة إلى الشاشة الرئيسية*»"
+    }
+   ]
+  },
+  {
+   "id": "addsheet",
+   "start": 20,
+   "sfx": "swish",
+   "captions": [
+    {
+     "at": 0.1,
+     "text": "اترك «*فتح كتطبيق ويب*» مفعّلاً"
+    },
+    {
+     "at": 2.5,
+     "text": "واضغط «*إضافة*»"
+    }
+   ]
+  },
+  {
+   "id": "home",
+   "start": 25,
+   "sfx": "chime",
+   "captions": [
+    {
+     "at": 0.3,
+     "text": "وأصبحت *منصة العازي* على شاشتك ✅"
     },
     {
      "at": 3.6,
-     "text": "انقل *بطاقة المشجع* بنقاطها في ثوانٍ"
+     "text": "افتحها من الأيقونة مباشرة"
+    }
+   ]
+  },
+  {
+   "id": "bridge",
+   "start": 30.5,
+   "sfx": "whoosh",
+   "captions": [
+    {
+     "at": 0.2,
+     "text": "أول مرة تفتحها من الأيقونة؟"
+    },
+    {
+     "at": 3.0,
+     "text": "انقل *بطاقتك ونقاطك* إليها بـ*رمز النقل*"
     }
    ]
   },
   {
    "id": "open",
-   "start": 7,
+   "start": 37,
    "sfx": "whoosh",
    "captions": [
     {
      "at": 0.3,
-     "text": "في التلفون الأول، اضغط *بطاقة المشجع* أعلى الصفحة"
+     "text": "في سفاري أو X، اضغط *بطاقة المشجع*"
     },
     {
      "at": 3.6,
-     "text": "ثم اضغط «*انقل بطاقتك لتلفون ثاني*»"
+     "text": "ثم «*انقل بطاقتك لتلفون ثاني*»"
     }
    ]
   },
   {
    "id": "make",
-   "start": 13,
+   "start": 43,
    "sfx": "swish",
    "captions": [
     {
@@ -91,18 +179,18 @@
   },
   {
    "id": "swap",
-   "start": 20,
+   "start": 50,
    "sfx": "whoosh",
    "captions": [
     {
      "at": 0.2,
-     "text": "وافتح *el3azy.com* في التلفون الثاني"
+     "text": "وافتح *المنصة من الأيقونة*"
     }
    ]
   },
   {
    "id": "enter",
-   "start": 23.5,
+   "start": 53.5,
    "sfx": null,
    "captions": [
     {
@@ -117,7 +205,7 @@
   },
   {
    "id": "done",
-   "start": 33,
+   "start": 63,
    "sfx": "chime",
    "captions": [
     {
@@ -128,7 +216,7 @@
   },
   {
    "id": "tips",
-   "start": 38,
+   "start": 68,
    "sfx": "swish",
    "captions": [
     {
@@ -139,15 +227,15 @@
   },
   {
    "id": "outro",
-   "start": 45.5,
+   "start": 75.5,
    "sfx": "chime",
-   "thumb": 0.6,
    "captions": [
     {
      "at": 0.1,
      "text": ""
     }
-   ]
+   ],
+   "thumb": 0.6
   }
  ]
 }

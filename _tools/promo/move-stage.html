@@ -189,7 +189,7 @@ body{position:relative;background:radial-gradient(ellipse at 85% -5%,rgba(215,18
 @keyframes hlp{from{box-shadow:0 0 0 3px rgba(215,180,101,.2),0 0 14px rgba(246,227,174,.4)}to{box-shadow:0 0 0 7px rgba(215,180,101,.3),0 0 28px rgba(246,227,174,.7)}}
 
 /* 1 · المقدمة: تلفونين وبطاقة تنتقل */
-#hook .duo{position:absolute;top:300px;left:0;right:0;height:430px}
+#bridge .duo{position:absolute;top:300px;left:0;right:0;height:430px}
 .mini{position:absolute;top:0;width:176px;height:340px;border-radius:30px;background:#020b12;border:2.5px solid rgba(215,180,101,.7);padding:6px;
  box-shadow:0 22px 50px rgba(0,0,0,.55),0 0 40px rgba(215,180,101,.1);opacity:0;transform:translateY(40px) scale(.9);transition:opacity .6s var(--ease),transform .9s var(--spring)}
 .mini.on{opacity:1;transform:none}
@@ -198,11 +198,11 @@ body{position:relative;background:radial-gradient(ellipse at 85% -5%,rgba(215,18
 .mini .s i.sh{width:45%}
 .mini .lb{position:absolute;bottom:-46px;left:0;right:0;text-align:center;font-size:18px;font-weight:700;color:var(--gold)}
 #mA{right:44px}#mB{left:44px}
-#hook .arr{position:absolute;top:150px;left:50%;width:84px;margin-left:-42px;opacity:0;transition:opacity .5s}
-#hook .arr.on{opacity:1}
-#hook .arr svg{width:84px;height:40px;transform:scaleX(-1)}
-#hook .arr path{stroke-dasharray:100;stroke-dashoffset:100}
-#hook .arr.on path{animation:dash 1s var(--ease) forwards}
+#bridge .arr{position:absolute;top:150px;left:50%;width:84px;margin-left:-42px;opacity:0;transition:opacity .5s}
+#bridge .arr.on{opacity:1}
+#bridge .arr svg{width:84px;height:40px;transform:scaleX(-1)}
+#bridge .arr path{stroke-dasharray:100;stroke-dashoffset:100}
+#bridge .arr.on path{animation:dash 1s var(--ease) forwards}
 @keyframes dash{to{stroke-dashoffset:0}}
 .fcard{position:absolute;top:96px;width:150px;padding:12px 8px 14px;border-radius:18px;text-align:center;z-index:3;
  border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.3),transparent 60%) padding-box,linear-gradient(170deg,#1B4A66,#0B2434) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3),var(--gold)) border-box;
@@ -213,7 +213,7 @@ body{position:relative;background:radial-gradient(ellipse at 85% -5%,rgba(215,18
 .fcard small{display:block;font-size:12.5px;color:var(--gold);margin-top:2px}
 #fc{right:57px}
 #fc.fly{transform:translateX(-276px)}
-#hook .pts{position:absolute;top:780px;left:0;right:0;display:flex;justify-content:center;gap:12px}
+#bridge .pts{position:absolute;top:780px;left:0;right:0;display:flex;justify-content:center;gap:12px}
 
 /* الرمز الطاير بين التلفونين */
 #fly{position:absolute;top:470px;left:0;right:0;display:flex;justify-content:center;z-index:25;pointer-events:none;opacity:0}
@@ -228,6 +228,63 @@ body{position:relative;background:radial-gradient(ellipse at 85% -5%,rgba(215,18
 #tips .feat .ic{width:64px;height:64px;border-radius:19px}#tips .feat .ic svg{width:36px;height:36px}
 #tips .feat b{font-size:23px}
 #tips .feat .d{font-size:15px}
+
+/* ===== إضافة المنصة للشاشة الرئيسية ===== */
+#hook .app{position:absolute;top:300px;left:0;right:0;text-align:center}
+#hook .app .halo{width:200px;height:200px}
+#hook .app .halo img{width:200px;height:200px;border-radius:46px;object-fit:cover;box-shadow:0 22px 50px rgba(0,0,0,.55)}
+#hook .app .nm{font-size:30px;font-weight:700;margin-top:26px;opacity:0;transform:translateY(12px);transition:opacity .6s var(--ease) .4s,transform .8s var(--ease) .4s}
+#hook .go .nm{opacity:1;transform:none}
+#hook .via{position:absolute;top:700px;left:0;right:0;display:flex;justify-content:center;gap:14px}
+.ios{position:absolute;inset:0;z-index:6;pointer-events:none;font-family:'Readex Pro',sans-serif;direction:rtl;color:#fff}
+.ios>*{transition:opacity .35s ease,transform .5s var(--ease)}
+#sbar{position:absolute;left:10px;right:10px;bottom:14px;height:58px;display:flex;align-items:center;gap:8px;opacity:0;transform:translateY(20px)}
+#sbar.on{opacity:1;transform:none}
+.gl{background:rgba(44,44,48,.78);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.12);box-shadow:0 8px 24px rgba(0,0,0,.45)}
+#sbar .cb{width:52px;height:52px;border-radius:50%;display:grid;place-items:center;flex-shrink:0;font-size:22px;font-weight:700}
+#sbar .ad{flex:1;height:52px;border-radius:26px;display:flex;align-items:center;justify-content:center;gap:6px;font-size:16px;direction:ltr}
+#sbar .ad svg{width:13px;height:13px}
+#smenu{position:absolute;right:12px;bottom:84px;width:228px;border-radius:22px;padding:6px 0;opacity:0;transform:scale(.85);transform-origin:88% 100%}
+#smenu.on{opacity:1;transform:none}
+#smenu div,.srow{display:flex;align-items:center;justify-content:space-between;padding:11px 16px;font-size:15.5px}
+#smenu div+div{border-top:1px solid rgba(255,255,255,.08)}
+.ios svg.i{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex-shrink:0}
+#ssheet{position:absolute;left:0;right:0;bottom:0;height:430px;border-radius:26px 26px 0 0;background:#1C1C1E;padding:16px 14px;transform:translateY(105%);opacity:1}
+#ssheet.on{transform:none}
+.shd{display:flex;align-items:center;gap:12px;padding-bottom:14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.shd img{width:46px;height:46px;border-radius:11px}
+.shd b{display:block;font-size:16px}.shd small{display:block;font-size:12.5px;color:#9a9aa0;direction:ltr;text-align:right}
+.sppl{display:flex;justify-content:space-around;padding:14px 0}
+.sppl i{width:54px;height:54px;border-radius:50%;background:linear-gradient(160deg,#4a4a52,#2c2c30)}
+.sgrp{background:#2C2C2E;border-radius:13px;overflow:hidden}
+.srow{border-top:1px solid rgba(255,255,255,.08)}.srow:first-child{border-top:0}
+#sadd{position:absolute;inset:0;background:#000;padding:58px 16px 0;transform:translateY(100%)}
+#sadd.on{transform:none}
+#sadd .nav{display:flex;justify-content:space-between;align-items:center;font-size:16px;margin-bottom:22px}
+#sadd .nav b{font-size:15px}#sadd .bl{color:#0A84FF}#sadd .bl.b{font-weight:700}
+#sadd .card{background:#1C1C1E;border-radius:13px;padding:14px;display:flex;gap:14px;align-items:center}
+#sadd .card img{width:62px;height:62px;border-radius:14px}
+#sadd .card .f{flex:1}#sadd .card .f div{font-size:17px;padding-bottom:8px;border-bottom:1px solid rgba(255,255,255,.12)}#sadd .card .f small{display:block;font-size:12.5px;color:#9a9aa0;direction:ltr;text-align:right;margin-top:8px}
+#sadd .tg{background:#1C1C1E;border-radius:13px;padding:13px 14px;margin-top:18px;display:flex;justify-content:space-between;align-items:center;font-size:16px}
+.sw{width:52px;height:31px;border-radius:16px;background:#34C759;position:relative}.sw:after{content:'';position:absolute;top:2px;left:2px;width:27px;height:27px;border-radius:50%;background:#fff}
+#sadd .nt{font-size:12.5px;color:#9a9aa0;margin:8px 6px 0;line-height:1.6}
+#shome{position:absolute;inset:0;background:radial-gradient(ellipse at 30% 0%,#3a5f7a,transparent 60%),radial-gradient(ellipse at 90% 100%,#5a3f2a,transparent 55%),linear-gradient(170deg,#1b3448,#0a1620);opacity:0;padding:70px 22px 0}
+#shome.on{opacity:1}
+#shome .gr{display:grid;grid-template-columns:repeat(4,1fr);gap:22px 16px;direction:rtl}
+#shome .gr i{display:block;width:66px;height:66px;margin:0 auto;border-radius:16px;background:rgba(255,255,255,.16)}
+#shome .gr span{display:block;width:44px;height:7px;border-radius:4px;background:rgba(255,255,255,.18);margin:8px auto 0}
+#shome .me{text-align:center}
+#shome .me img{width:66px;height:66px;border-radius:16px;display:block;margin:0 auto;opacity:0;transform:scale(.3);transition:opacity .4s,transform .8s var(--spring);box-shadow:0 6px 16px rgba(0,0,0,.5)}
+#shome .me b{display:block;font-size:11.5px;font-weight:500;margin-top:6px;opacity:0;transition:opacity .4s .3s}
+#shome .me.on img{opacity:1;transform:none}#shome .me.on b{opacity:1}
+#shome .dock{position:absolute;left:14px;right:14px;bottom:16px;height:92px;border-radius:32px;background:rgba(255,255,255,.14);display:flex;justify-content:space-around;align-items:center}
+#shome .dock i{width:62px;height:62px;border-radius:15px;background:rgba(255,255,255,.2)}
+#splash{position:absolute;inset:0;background:#071D2B;display:grid;place-items:center;opacity:0;transform:scale(.2)}
+#splash img{width:120px;height:120px;border-radius:28px}
+#splash.on{opacity:1;transform:none;transition:opacity .25s,transform .45s var(--ease)}
+#andr{position:absolute;top:918px;left:0;right:0;text-align:center;z-index:13;opacity:0;transform:translateY(10px);transition:opacity .5s,transform .6s var(--ease)}
+#andr.on{opacity:1;transform:none}
+#andr span{display:inline-block;font-size:15px;font-weight:600;padding:5px 16px 7px;border-radius:20px;background:rgba(7,29,43,.85);border:1px solid rgba(215,180,101,.5)}
 #outro .box{top:206px}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><linearGradient id="gg" x1="0" y1="0" x2="0" y2="32" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#F6E3AE"/><stop offset=".55" stop-color="#D7B465"/><stop offset="1" stop-color="#B08A3E"/></linearGradient></defs></svg>
@@ -236,9 +293,14 @@ body{position:relative;background:radial-gradient(ellipse at 85% -5%,rgba(215,18
 <div class="band t"></div><div class="band b"></div>
 
 <div class="scene" id="hook">
+  <div class="app"><div class="halo"><img src="../../assets/icon/icon-512.png" alt=""></div><div class="nm">منصة العازي</div></div>
+  <div class="via"><div class="chip">بدون متجر</div><div class="chip">مجاناً</div><div class="chip">بضغطة واحدة</div></div>
+</div>
+
+<div class="scene" id="bridge">
   <div class="duo">
-    <div class="mini" id="mA"><div class="s"><i></i><i class="sh"></i><i></i><i></i><i class="sh"></i></div><div class="lb">التلفون الأول</div></div>
-    <div class="mini" id="mB"><div class="s"><i></i><i class="sh"></i><i></i><i></i><i class="sh"></i></div><div class="lb">التلفون الثاني</div></div>
+    <div class="mini" id="mA"><div class="s"><i></i><i class="sh"></i><i></i><i></i><i class="sh"></i></div><div class="lb">سفاري أو X</div></div>
+    <div class="mini" id="mB"><div class="s"><i></i><i class="sh"></i><i></i><i></i><i class="sh"></i></div><div class="lb">أيقونة المنصة</div></div>
     <div class="arr"><svg viewBox="0 0 84 40"><path d="M4 20h72m-14-13 14 13-14 13" fill="none" stroke="#D7B465" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
     <div class="fcard" id="fc"><div id="fcz"></div><b>سالم</b><small>جمهور الوحدة</small></div>
   </div>
@@ -248,8 +310,26 @@ body{position:relative;background:radial-gradient(ellipse at 85% -5%,rgba(215,18
 <div id="phone"><div class="scr">
   <iframe id="fA" name="A" src="../../index.html"></iframe>
   <iframe id="fB" name="B" src="../../index.html"></iframe>
+
+  <div class="ios">
+    <div id="sbar"><div class="cb gl" id="bDots">⋯</div><div class="ad gl"><svg viewBox="0 0 12 14" fill="#fff"><rect x="1" y="6" width="10" height="8" rx="2"/><path d="M3 6V4a3 3 0 0 1 6 0v2" fill="none" stroke="#fff" stroke-width="1.6"/></svg>el3azy.com</div><div class="cb gl">‹</div></div>
+    <div id="smenu" class="gl"><div id="mShare">مشاركة <svg class="i" viewBox="0 0 24 24"><path d="M12 15V3m0 0L8 7m4-4 4 4"/><path d="M7 10H5v11h14V10h-2"/></svg></div><div>إضافة إشارة مرجعية <svg class="i" viewBox="0 0 24 24"><path d="M6 3h12v18l-6-4-6 4z"/></svg></div><div>علامات التبويب <svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3"/></svg></div></div>
+    <div id="ssheet"><div class="shd"><img src="../../assets/icon/icon-192.png" alt=""><div><b>منصة العازي</b><small>el3azy.com</small></div></div>
+      <div class="sppl"><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="sgrp"><div class="srow">نسخ <svg class="i" viewBox="0 0 24 24"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/></svg></div>
+        <div class="srow">إضافة إلى قائمة القراءة <svg class="i" viewBox="0 0 24 24"><circle cx="7" cy="12" r="4"/><circle cx="17" cy="12" r="4"/></svg></div>
+        <div class="srow" id="rHome">إضافة إلى الشاشة الرئيسية <svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="4"/><path d="M12 8v8M8 12h8"/></svg></div>
+        <div class="srow">إضافة إلى المفضلة <svg class="i" viewBox="0 0 24 24"><path d="m12 4 2.5 5 5.5.8-4 3.9.9 5.5-4.9-2.6-4.9 2.6.9-5.5-4-3.9 5.5-.8z"/></svg></div></div></div>
+    <div id="sadd"><div class="nav"><span class="bl">إلغاء</span><b>إضافة إلى الشاشة الرئيسية</b><span class="bl b" id="bAdd">إضافة</span></div>
+      <div class="card"><img src="../../assets/icon/apple-touch-icon.png" alt=""><div class="f"><div>منصة العازي</div><small>https://el3azy.com/</small></div></div>
+      <div class="tg" id="tWeb">فتح كتطبيق ويب <div class="sw"></div></div>
+      <p class="nt">ستُضاف أيقونة إلى الشاشة الرئيسية لتتمكن من الوصول إلى هذا الموقع بسرعة.</p></div>
+    <div id="shome"><div class="gr"><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div><i></i><span></span></div><div class="me" id="meIc"><img src="../../assets/icon/apple-touch-icon.png" alt=""><b>منصة العازي</b></div></div><div class="dock"><i></i><i></i><i></i><i></i></div></div>
+    <div id="splash"><img src="../../assets/icon/icon-512.png" alt=""></div>
+  </div>
 </div></div>
 <div id="tag"><div class="pill"><span id="tagTxt"></span><div class="ic" id="tagIc"></div></div></div>
+<div id="andr"><span>أندرويد: ⋮ ثم «إضافة إلى الشاشة الرئيسية»</span></div>
 <div id="tap"></div><div id="hl"></div>
 <div id="fly"><div id="flyT"></div></div>
 
@@ -257,13 +337,13 @@ body{position:relative;background:radial-gradient(ellipse at 85% -5%,rgba(215,18
   <div class="feat"><div class="ic" data-ic="clock"></div><div><b>صالح 10 دقائق</b><div class="d">بعدها ينتهي، ويمكنك إنشاء رمز جديد متى شئت</div></div></div>
   <div class="feat"><div class="ic" data-ic="once"></div><div><b>يُستخدم مرة واحدة</b><div class="d">وبعد النقل يمكنك اللعب من التلفونين</div></div></div>
   <div class="feat"><div class="ic" data-ic="lock"></div><div><b>لا ترسله لأحد</b><div class="d">من يملك الرمز يأخذ بطاقتك ونقاطك</div></div></div>
-  <div class="feat"><div class="ic" data-ic="link"></div><div><b>من X إلى سفاري؟</b><div class="d">اضغط «انسخ رابط النقل» والصقه في سفاري، فيظهر الرمز جاهزاً</div></div></div>
+  <div class="feat"><div class="ic" data-ic="phone2"></div><div><b>غيّرت تلفونك؟</b><div class="d">الطريقة نفسها تنقل بطاقتك ونقاطك إلى التلفون الجديد</div></div></div>
 </div></div>
 
 <div class="scene" id="outro"><div class="box">
   <div class="halo"><img src="../../mano/assets/logo.png" alt=""></div>
-  <h1 class="l l1"><span class="gt">رمز النقل</span></h1>
-  <div class="kick l l1">بطاقة المشجع في كل تلفون · منصة العازي</div>
+  <h1 class="l l1"><span class="gt">منصة العازي</span></h1>
+  <div class="kick l l1">على شاشة تلفونك · وبطاقتك معك بـ«رمز النقل»</div>
   <div class="qr"><img src="../../assets/qr/portal.png" alt=""></div>
   <div class="l l2"><div class="url">el3azy.com</div></div>
   <div class="hd l l3">@el3azy22</div>
@@ -301,13 +381,27 @@ function hl(sel,pad=6){const h=$('#hl');if(!sel){h.classList.remove('on');return
   Object.assign(h.style,{left:(r.x-pad)+'px',top:(r.y-pad)+'px',width:(r.w+pad*2)+'px',height:(r.h+pad*2)+'px'});h.classList.add('on')}
 function shBottom(){const s=Q('.fz-sh');if(s)s.scrollTop=s.scrollHeight}
 function showFrame(id){CUR=id;$$('#phone iframe').forEach(f=>f.classList.toggle('on',f.id===id));const p=$('#phone');p.classList.remove('shine');void p.offsetWidth;p.classList.add('shine')}
+
+/* عناصر واجهة الآيفون (داخل شاشة التلفون) */
+const offIn=e=>{let x=0,y=0;const scr=$('#phone .scr');while(e&&e!==scr){x+=e.offsetLeft;y+=e.offsetTop;e=e.offsetParent}return{x:OX+x,y:OY+y}};
+function tapS(sel){const e=$(sel);if(!e)return;const p=offIn(e),t=$('#tap');t.style.left=(p.x+e.offsetWidth/2)+'px';t.style.top=(p.y+e.offsetHeight/2)+'px';t.classList.remove('go');void t.offsetWidth;t.classList.add('go')}
+function hlS(sel,pad=4){const h=$('#hl'),e=$(sel);if(!e){h.classList.remove('on');return}const p=offIn(e);Object.assign(h.style,{left:(p.x-pad)+'px',top:(p.y-pad)+'px',width:(e.offsetWidth+pad*2)+'px',height:(e.offsetHeight+pad*2)+'px'});h.classList.add('on')}
+const on=(sel,v=true)=>$(sel).classList.toggle('on',v);
+function iosOff(){['#sbar','#smenu','#ssheet','#sadd','#shome','#splash'].forEach(x=>on(x,false))}
 let CODE='';
+const FR0=()=>{try{W().scrollTo(0,0)}catch(e){}};
 const SC={
- hook(b){$('#fcz').innerHTML=crest('wahda',52);
+ hook(b){b(.05,()=>$('#hook .app').classList.add('go'));$$('#hook .chip').forEach((e,i)=>b(.45+i*.08,()=>e.classList.add('on')))},
+ safari(b){showFrame('fA');FR0();$('#phone').classList.add('on');tag('سفاري','phone');b(.12,()=>on('#sbar'));b(.62,()=>hlS('#bDots',3))},
+ share(b){b(.02,()=>{hl('');tapS('#bDots')});b(.1,()=>on('#smenu'));b(.32,()=>hlS('#mShare',0));b(.55,()=>{hl('');tapS('#mShare')});b(.66,()=>{on('#smenu',false);on('#ssheet')})},
+ addrow(b){b(.2,()=>hlS('#rHome',0));b(.68,()=>{hl('');tapS('#rHome')});b(.8,()=>on('#sadd'))},
+ addsheet(b){b(.15,()=>hlS('#tWeb',2));b(.55,()=>hlS('#bAdd',6));b(.78,()=>{hl('');tapS('#bAdd')})},
+ home(b){b(.0,()=>{on('#shome');on('#sadd',false);on('#ssheet',false);on('#sbar',false);tag('')});b(.12,()=>on('#meIc'));b(.3,()=>on('#andr'));b(.68,()=>hlS('#meIc img',5));b(.82,()=>{hl('');tapS('#meIc img')});b(.9,()=>{on('#andr',false);on('#splash')})},
+ bridge(b){$('#phone').classList.remove('on');tag('');$('#fcz').innerHTML=crest('wahda',52);
   b(.02,()=>$('#mA').classList.add('on'));b(.08,()=>$('#mB').classList.add('on'));b(.16,()=>$('#fc').classList.add('on'));
-  b(.34,()=>$('#hook .arr').classList.add('on'));b(.42,()=>$('#fc').classList.add('fly'));
-  $$('#hook .chip').forEach((e,i)=>b(.7+i*.06,()=>e.classList.add('on')))},
- open(b){showFrame('fA');$('#phone').classList.add('on');tag('التلفون الأول','phone');
+  b(.34,()=>$('#bridge .arr').classList.add('on'));b(.42,()=>$('#fc').classList.add('fly'));
+  $$('#bridge .chip').forEach((e,i)=>b(.7+i*.06,()=>e.classList.add('on')))},
+ open(b){iosOff();showFrame('fA');$('#phone').classList.add('on');tag('في سفاري أو X','phone');
   b(.42,()=>tap('.fz-chip'));
   b(.72,()=>{shBottom();hl('.fz-mk',4)})},
  make(b){b(.04,()=>{hl('');tap('.fz-mk')});
@@ -315,7 +409,7 @@ const SC={
   b(.68,()=>{hl('');tap('.fz-cc')})},
  swap(b){hl('');const p=$('#phone');b(.0,()=>{p.classList.add('out');tag('')});
   b(.08,()=>{$('#flyT').textContent=CODE;const f=$('#fly');f.classList.remove('go');void f.offsetWidth;f.classList.add('go')});
-  b(.62,()=>{p.classList.remove('out');p.classList.add('pre');showFrame('fB');void p.offsetWidth;p.classList.remove('pre');tag('التلفون الثاني','phone')})},
+  b(.62,()=>{p.classList.remove('out');p.classList.add('pre');showFrame('fB');void p.offsetWidth;p.classList.remove('pre');tag('من أيقونة المنصة','phone')})},
  enter(b){b(.06,()=>tap('.fz-card'));
   b(.26,()=>{shBottom();hl('.fz-gt',4)});
   b(.36,()=>{hl('');tap('.fz-gt')});
