@@ -58,8 +58,8 @@ async def main():
              'el3azy_pred': {'84540': {'h': 2, 'a': 1}}, 'el3azy_tp_84540': ['k1', 'k2'], 'el3azy_mano_g_2_easy': {'done': True, 'win': True}}
         ca, pa, ea = await device(b, 'mvA', 'rt-mvA', A)
         await pa.click('.fz-chip'); await pa.wait_for_timeout(400)
-        chk(await pa.locator('.fz-mk').count() == 1, 'زر «انقل بطاقتك» في البطاقة')
-        await pa.click('.fz-mk'); await pa.wait_for_timeout(1500)
+        chk(await pa.locator('.pf-mk').is_visible(), 'زر «انقل بطاقتك» في ملف المشجع')
+        await pa.click('.pf-mk'); await pa.wait_for_timeout(1500)
         code = (await pa.text_content('.fz-code') or '').strip()
         chk(len(code) == 9 and code[4] == '-', f'الرمز {code}')
         await ca.grant_permissions(['clipboard-read', 'clipboard-write'])
@@ -101,7 +101,7 @@ async def main():
         chk('غلط' in (await pc.text_content('.fz-err') or ''), 'الرمز ينستخدم مرة وحدة')
         # رابط النقل يفتح الرمز جاهز
         _, pa2, _ = await device(b, 'mvA', 'rt-mvA', A)
-        await pa2.click('.fz-chip'); await pa2.wait_for_timeout(300); await pa2.click('.fz-mk'); await pa2.wait_for_timeout(1500)
+        await pa2.click('.fz-chip'); await pa2.wait_for_timeout(600); await pa2.click('.pf-mk'); await pa2.wait_for_timeout(1500)
         code2 = (await pa2.text_content('.fz-code') or '').strip()
         _, pd, _ = await device(b, 'mvD', 'rt-mvD', url=f'http://localhost:8765/#nql={code2.replace("-", "")}')
         chk((await pd.input_value('.fz-in')) == code2, 'الرابط يعبّي الرمز')

@@ -128,6 +128,27 @@ const css=`
 .fz-sh h2:before,.fz-sh h2:after{display:none!important}
 .fz-sh .fz-why{font-size:13px;opacity:.8;line-height:1.8;margin-bottom:12px}
 .fz-sh .fz-why b{color:#D7B465;font-weight:600}
+.fz-sh [hidden]{display:none!important}
+.pf{text-align:center}
+.pf-head{display:flex;align-items:center;gap:12px;text-align:right;margin:2px 0 14px}
+.pf-cz{flex:none;width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,rgba(255,245,229,.12),rgba(7,29,43,.6));border:1.5px solid rgba(215,180,101,.55)}
+.pf-nm{flex:1;min-width:0}.pf-nm b{display:block;font-size:19px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pf-nm span{font-size:12.5px;color:#D7B465}
+.pf-rk{flex:none;text-align:center;border-radius:14px;padding:6px 10px;background:linear-gradient(180deg,#F6E3AE,#B08A3E);color:#071D2B;line-height:1.25}
+.pf-rk b{display:block;font-size:18px;direction:ltr}.pf-rk small{font-size:10.5px;font-weight:600}
+.pf-seg{display:flex;background:rgba(7,29,43,.7);border:1px solid rgba(215,180,101,.25);border-radius:12px;padding:3px;margin-bottom:12px}
+.pf-seg button{flex:1;border:0;background:none;color:#FFF5E5;opacity:.7;font:600 13px 'Readex Pro';padding:7px;border-radius:9px;cursor:pointer}
+.pf-seg button.on{background:rgba(215,180,101,.2);color:#F6E3AE;opacity:1}
+.pf-big b{display:block;font-size:54px;font-weight:700;line-height:1.1;background:linear-gradient(180deg,#FFFBF2 25%,#F1DDAE 70%,#D7B465);-webkit-background-clip:text;background-clip:text;color:transparent}
+.pf-big span{font-size:13px;opacity:.75}
+.pf-xi{margin:10px 0 12px;font-size:12.5px;line-height:1.7;background:rgba(7,29,43,.6);border:1px solid rgba(215,180,101,.28);border-radius:12px;padding:8px 10px}
+.pf-xi b{color:#F6E3AE}
+.pf-tiles{display:flex;gap:7px;margin-bottom:14px}
+.pf-t{flex:1;min-width:0;background:rgba(7,29,43,.7);border:1px solid rgba(215,180,101,.2);border-radius:14px;padding:9px 6px 8px}
+.pf-t i{display:block;font-style:normal;font-size:18px}.pf-t span{display:block;font-size:11px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pf-t b{display:block;font-size:20px;margin:2px 0 6px}
+.pf-t u{display:block;height:4px;border-radius:2px;background:rgba(255,245,229,.1);overflow:hidden;text-decoration:none}.pf-t u i{display:block;height:100%;background:linear-gradient(90deg,#B08A3E,#F6E3AE)}
+.pf-em{font-size:13px;opacity:.8;line-height:1.8;margin:6px 0 14px}
+.pf .fz-ok{text-decoration:none;margin-bottom:4px}
 .fz-grid{display:flex;flex-wrap:wrap;justify-content:center;gap:7px;margin-bottom:12px}
 .fz-grid button{position:relative;width:calc(25% - 6px);height:76px;background:rgba(7,29,43,.75);border:1.5px solid rgba(215,180,101,.18);border-radius:14px;display:grid;justify-items:center;align-content:center;gap:5px;color:#FFF5E5;font:500 11px 'Readex Pro';cursor:pointer;transition:.15s}
 .fz-grid button.on{border-color:#D7B465;background:rgba(215,180,101,.14);transform:translateY(-2px);box-shadow:0 6px 18px rgba(215,180,101,.2)}
@@ -147,6 +168,41 @@ const css=`
 .fz-err{font-size:12.5px;color:#ef8f86;min-height:20px;margin:2px 0 8px}
 .fz-link{background:none;border:0;color:#D7B465;font:400 12.5px 'Readex Pro';text-decoration:underline;padding:6px;cursor:pointer}
 `;
+/* «ملف المشجع»: أول ما يفتح بطاقته يشوف نقاطه (هالأسبوع/الموسم) ومكانه في نخبة جمهور ناديه. تعديل البطاقة تحت */
+const PTN={mano:['🕵️','منو اللاعب؟'],pred:['🔮','التوقعات'],tp:['🧩','التشكيلة'],grid:['🔢','الشبكة'],bus:['🚌','الباص']};
+async function profile(bg,close){const box=bg.querySelector('#pf');if(!box)return;
+  const nf=n=>Number(n||0).toLocaleString('en-US'),sh=bg.querySelector('.fz-sh'),ed=bg.querySelector('.fz-ed');
+  const top=[sh.querySelector('.fz-tile'),sh.querySelector('h2')];top.forEach(e=>e&&(e.hidden=true));
+  const toEdit=()=>{box.hidden=true;ed.hidden=false;top.forEach(e=>e&&(e.hidden=false));sh.scrollTop=0};
+  let R=null,D=null;
+  try{[R,D]=await Promise.all(['ranks','data'].map(f=>fetch(ROOT+'fans/'+f+'.json?v='+Math.floor(Date.now()/6e4)).then(r=>r.ok?r.json():null).catch(()=>null)))}catch(e){}
+  const a=PID.get('fb'),u=a&&a.u?a.u.slice(0,12):null,c=club(),n=(name()||'').trim();
+  let T='week';
+  const draw=()=>{
+    const M=(R&&u&&R[T]&&R[T][u])||{},all=M.all,ks=Object.keys(PTN).filter(k=>(D&&D.challenges||[]).some(x=>x.id===k)||M[k]);
+    let xi='';
+    if(T==='week'&&D&&c&&c!=='none'&&all){const W=(D.weeks||[]).find(w=>w.live)||(D.weeks||[])[D.weeks.length-1],B=W&&W.boards&&W.boards.all,L=((B&&B.xi)||{})[c]||[],X=D.xi||11,k=L.findIndex(x=>x[2]===u),ac=M.act;
+      if(k>=0)xi=`⚽ أنت رقم <b>${nf(L[k][3]||k+1)}</b> في نخبة جمهور <b>${CL[c]}</b>`;
+      else if(ac&&ac[0]<ac[1])xi=`⏳ نقاطك تدخل نخبة جمهور <b>${CL[c]}</b> لما تلعب في <b>${ac[1]}</b> أيام مختلفة (لعبت ${ac[0]===1?'يوم واحد':ac[0]===2?'يومين':ac[0]+' أيام'})`;
+      else if(L.length>=X){const need=L[X-1][1]-all[1]+1;xi=`تحتاج <b>${need===1?'نقطة وحدة':need===2?'نقطتين':nf(need)+(need<=10?' نقاط':' نقطة')}</b> وتدخل نخبة جمهور <b>${CL[c]}</b> (أفضل ${X} مشجع)`}}
+    if(!c||c==='none')xi='اختار ناديك عشان نقاطك تنحسب لجمهوره';
+    const sum=all?all[1]:0;
+    box.innerHTML=`<div class="pf-head"><div class="pf-cz">${c&&c!=='none'?crest(c,44):'<span style="font-size:28px">⚽</span>'}</div>
+      <div class="pf-nm"><b>${n?esc(n):'مشجع'}</b><span>${c&&c!=='none'?'جمهور '+CL[c]:'ما يشجع نادي معيّن'}</span></div>
+      ${all?`<div class="pf-rk"><b>#${nf(all[0])}</b><small>من ${nf(all[2])}</small></div>`:''}</div>
+     <div class="pf-seg"><button type="button" data-t="week" class="${T==='week'?'on':''}">هالأسبوع</button><button type="button" data-t="season" class="${T==='season'?'on':''}">الموسم</button></div>
+     ${all?`<div class="pf-big"><b>${nf(sum)}</b><span>${sum===1?'نقطة':sum===2?'نقطتين':'نقطة'} ${T==='week'?'هالأسبوع':'في الموسم'}</span></div>
+       ${xi?`<div class="pf-xi">${xi}</div>`:'<div style="height:10px"></div>'}
+       <div class="pf-tiles">${ks.map(k=>{const v=M[k]?M[k][1]:0;return `<div class="pf-t"><i>${PTN[k][0]}</i><span>${PTN[k][1]}</span><b>${nf(v)}</b><u><i style="width:${sum?Math.round(v/sum*100):0}%"></i></u></div>`}).join('')}</div>`
+      :`<div class="pf-em">ما عندك نقاط ${T==='week'?'هالأسبوع':'في الموسم'} لين الحين.<br>العب أي تحدي، ونقاطك تطلع هني خلال 15 دقيقة تقريباً.</div>`}
+     <a class="fz-ok" href="${ROOT}fans/">🏆 الترتيب كامل</a>
+     <div class="fz-row"><button class="fz-link pf-ed" type="button">✏️ تعديل البطاقة</button><button class="fz-link pf-x" type="button" style="opacity:.7">إغلاق</button></div>
+     <div class="fz-mv"><button class="fz-link pf-mk" type="button">📲 انقل بطاقتك لتلفون ثاني</button></div>`;
+    box.querySelectorAll('.pf-seg button').forEach(b=>b.onclick=()=>{T=b.dataset.t;draw()});
+    box.querySelector('.pf-ed').onclick=toEdit;box.querySelector('.pf-x').onclick=close;box.querySelector('.pf-mk').onclick=()=>moveOut(bg);
+  };
+  draw();
+}
 function addCss(){if(document.getElementById('fz-css'))return;const s=document.createElement('style');s.id='fz-css';s.textContent=css;document.head.appendChild(s)}
 
 function open(){
@@ -161,6 +217,7 @@ function open(){
   bg.innerHTML=`<div class="fz-sh" role="dialog" aria-modal="true">
     <div class="fz-tile"><svg viewBox="2.6 2.6 26.8 26.8" fill="none" stroke="#D7B465" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M5.5 5.6q5.3-1.9 10.5 0t10.5 0v4.6q-5.3 1.9-10.5 0t-10.5 0z" fill="rgba(215,180,101,.25)"/><path d="M10.8 4.7v4.5M16 5.6v4.6M21.2 6.6v4.5" stroke-width="1.3"/><path d="M5.5 6.6H3.4M5.5 9.2H3.4M26.5 6.6h2.1M26.5 9.2h2.1" stroke-width="1.2"/><circle cx="16" cy="16.3" r="2.7"/><path d="M11.6 21.2 7.6 10.6M20.4 21.2l4-10.6"/><path d="M10.6 28v-3.2a5.4 5.4 0 0 1 10.8 0V28"/></svg></div>
     <h2>${edit?'بطاقة المشجع':'تشجع أي نادي أنت؟'}</h2>
+    ${edit?'<div class="pf" id="pf"><div class="pf-em">لحظة...</div></div>':''}<div class="fz-ed"${edit?' hidden':''}>
     <p class="fz-why">نتيجتك في كل أقسام المنصة تنحسب لـ<b>جمهور ناديك</b>،<br>وكل ما لعبت تساعده يتصدر منافسة الجماهير.</p>
     <div class="fz-grid">${ORDER.map(k=>`<button type="button" data-c="${k}" class="${k===pick?'on':''}"${locked&&k!==cur?' disabled':''}>${crest(k,34)}<span>${CL[k]}</span></button>`).join('')}</div>
     <p class="fz-lock">${note}</p>
@@ -168,7 +225,7 @@ function open(){
     <p class="fz-hint">اكتب اسمك عشان يطلع في <b>نخبة جمهور ناديك</b> وفي <b>أعلى المشجعين</b>. مب تسجيل، وإذا خليته فاضي يطلع «مشجع».</p>
     <button class="fz-ok" type="button"></button>
     <div class="fz-row"><button class="fz-link fz-none" type="button"${locked||cur===''?' style="visibility:hidden"':''}>ما أشجع نادي معيّن</button><button class="fz-link fz-close" type="button" style="opacity:.7">${edit?'إغلاق':'بعدين'}</button></div>
-    <div class="fz-mv">${edit?'<button class="fz-link fz-mk" type="button">📲 انقل بطاقتك لتلفون ثاني</button>':''}<button class="fz-link fz-gt" type="button">${edit?'عندي رمز نقل':'📲 عندي رمز نقل من تلفون ثاني'}</button></div></div>`;
+    <div class="fz-mv">${edit?'<button class="fz-link fz-mk" type="button">📲 انقل بطاقتك لتلفون ثاني</button>':''}<button class="fz-link fz-gt" type="button">${edit?'عندي رمز نقل':'📲 عندي رمز نقل من تلفون ثاني'}</button></div></div></div>`;
   document.body.appendChild(bg);
   const ok=bg.querySelector('.fz-ok');
   const upd=()=>{ok.disabled=!pick;ok.textContent=pick?(edit&&pick===cur?'حفظ':'أنا مع جمهور '+CL[pick]+' 💪'):'اختار ناديك'};upd();
@@ -180,6 +237,7 @@ function open(){
   ok.onclick=()=>{if(!pick)return;set(pick,bg.querySelector('.fz-name').value);close()};
   const mk=bg.querySelector('.fz-mk');if(mk)mk.onclick=()=>moveOut(bg);
   bg.querySelector('.fz-gt').onclick=()=>moveIn(bg);
+  if(edit)profile(bg,close);
 }
 const TILE='<div class="fz-tile"><svg viewBox="0 0 32 32" fill="none" stroke="#D7B465" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="5" width="11" height="20" rx="2.5" fill="rgba(215,180,101,.25)"/><rect x="17" y="7" width="11" height="20" rx="2.5"/><path d="M12 15h8m-2.5-2.5L20 15l-2.5 2.5"/></svg></div>';
 async function moveOut(bg){
