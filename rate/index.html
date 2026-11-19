@@ -71,8 +71,9 @@ header .sub{line-height:1.5;font-size:12px;color:var(--gold);font-weight:600}
 .pr .top{display:flex;align-items:center;gap:10px}
 .pr .nm{flex:1;min-width:0}
 .pr .nm b{display:block;font-size:15px;line-height:1.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:-2px 0 -3px}
-.pr .nm small{display:flex;flex-wrap:wrap;gap:6px;font-size:11px;opacity:.65;margin-top:2px;align-items:center}
-.pr .nm small i{font-style:normal;direction:ltr;unicode-bidi:isolate}
+.pr .nm small{display:flex;flex-wrap:wrap;gap:2px 5px;font-size:11px;opacity:.65;margin-top:2px;align-items:center}
+.pr .nm small i{font-style:normal;unicode-bidi:isolate}
+.mt:not(:last-child):after{content:' ·';opacity:.7}
 .val{width:44px;height:44px;border-radius:13px;display:grid;place-items:center;font-size:20px;font-weight:700;background:rgba(255,245,229,.05);border:1px dashed rgba(255,245,229,.18);color:rgba(255,245,229,.35);flex-shrink:0}
 .val.v{border:0;color:var(--navy)}
 .star{width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.3);background:none;font-size:19px;filter:grayscale(1);opacity:.45;flex-shrink:0;transition:.2s}
@@ -289,17 +290,17 @@ function openMatch(m){
   $('#app').innerHTML=header(m)+body;
   $('#back').onclick=()=>go();
 }
-function meta(p){
+function meta(p){   // تحت اسم اللاعب بكلام واضح: رقم القميص، المركز، الكابتن، التبديل، الأهداف والكروت
   const x=[];
-  if(p.no!=null)x.push(`<i>#${p.no}</i>`);
+  if(p.no!=null)x.push(`رقم ${p.no}`);
   x.push(POS[p.p]||'');
-  if(p.cap)x.push('©');
-  if(p.in!=null)x.push(`<i style="color:#8fe3b5">↑ ${p.in}'</i>`);
-  if(p.out!=null)x.push(`<i style="color:#e79a93">↓ ${p.out}'</i>`);
-  if(p.g)x.push('⚽'.repeat(Math.min(p.g,4)));
+  if(p.cap)x.push('الكابتن');
+  if(p.in!=null)x.push(`<i style="color:#8fe3b5">🔁 نزل <bdi>${p.in}′</bdi></i>`);
+  if(p.out!=null)x.push(`<i style="color:#e79a93">🔁 طلع <bdi>${p.out}′</bdi></i>`);
+  if(p.g)x.push(p.g===1?'⚽ هدف':p.g===2?'⚽⚽ هدفين':'⚽'.repeat(Math.min(p.g,4))+' '+p.g+' أهداف');
   if(p.og)x.push('⚽ عكسي');
-  if(p.cd)x.push(p.cd.includes('r')?'🟥':'🟨');
-  return x.join(' · ').replace(/ · (⚽|🟥|🟨)/g,' $1');
+  if(p.cd)x.push(p.cd.includes('r')?'🟥 طرد':'🟨 إنذار');
+  return x.filter(Boolean).map(t=>`<span class="mt">${t}</span>`).join(' ');
 }
 function lineRow(p){return `<div class="rr">${ph(p,36)}<div class="nm"><b>${esc(p.n)}</b><small>${meta(p)}</small></div></div>`}
 
