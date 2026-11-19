@@ -183,6 +183,9 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .rulesn{font-size:11.5px;opacity:.72;text-align:center;line-height:1.9;margin:10px 0 4px}
 .rulesn b{color:var(--gold2)}
 .meb{display:flex;align-items:center;gap:12px;border:1.5px solid transparent;background:radial-gradient(ellipse at 100% 0%,rgba(215,180,101,.25),transparent 60%) padding-box,linear-gradient(170deg,#173F58,#0B2434 70%) padding-box,linear-gradient(135deg,var(--gold2),var(--gold3) 40%,rgba(215,180,101,.25)) border-box;border-radius:18px;padding:12px 14px;margin-bottom:12px}
+.nudge{display:flex;align-items:center;gap:10px;margin:-4px 0 14px;padding:11px 12px;border-radius:16px;background:linear-gradient(180deg,rgba(215,180,101,.2),rgba(215,180,101,.06));border:1.5px solid rgba(215,180,101,.55);font-size:13px;line-height:1.7}
+.nudge span{flex:1}.nudge b{color:var(--gold2)}
+.nudge button{flex:none;border:0;border-radius:12px;padding:9px 12px;font:700 13px inherit;font-family:inherit;background:linear-gradient(180deg,#F6E3AE,#B08A3E);color:var(--navy);cursor:pointer}
 .meb .rk{font-size:30px;font-weight:700;color:var(--gold2);min-width:56px;text-align:center;direction:ltr;line-height:1.15}
 .meb .rk small{display:block;direction:rtl;font-size:11.5px;font-weight:600;color:var(--gold);opacity:.9}
 .meb .t{flex:1;min-width:0}.meb .t b{font-size:16px;display:block}.meb .t small{font-size:12px;opacity:.7}
@@ -481,6 +484,10 @@ function renderLb(){
   else{
     if(i>=0){const R=rows[i];h+=`<div class="meb"><div class="rk"><small>ترتيبك</small>#${i+1}</div><div class="t"><b>${nmOf(R[1],R[2])}</b><small>${R[3]?PTS(R[3]):'0 نقطة'} · من ${nf(rows.length)} متوقع</small></div>${crest(R[2],34)}</div>`}
     else if(r&&r.ms.some(m=>MY[m.id]))h+=`<div class="note">ترتيبك يطلع بعد صافرة أول مباراة توقعتها</div>`;
+    // تنبيه: بدون نادي نقاطك ما تنفع أي جمهور · بدون اسم يطلع «مشجع» (قرار إبراهيم 19 نوفمبر)
+    if(i>=0&&window.EL3FAN){const fc=EL3FAN.club(),fn=(EL3FAN.name()||'').trim();
+      if(fc===null)h+=`<div class="nudge"><span>🔥 أنت <b><bdi dir="ltr">#${i+1}</bdi></b>، بس نقاطك ما تنحسب لأي جمهور.<br>اختار ناديك عشان توقعاتك الياية تنفعه.</span><button id="nudgeB">اختار ناديك</button></div>`;
+      else if(!fn)h+=`<div class="nudge"><span>✍️ في الترتيب تطلع «${fc&&CL[fc]?'مشجع '+CL[fc]:'مشجع'}».<br>اكتب اسمك عشان يطلع.</span><button id="nudgeB">اكتب اسمك</button></div>`;}
     h+=`<div class="h3">🏆 ترتيب ${r?rlabel(r):''}</div><div class="lb">${lbRows(rows)}</div>`;
     if(i>=0)h+=`<button class="btn ghost" id="shareR">𝕏 شارك ترتيبك</button>`;
   }
@@ -488,6 +495,7 @@ function renderLb(){
   if(S.length&&done>1)h+=`<div class="h3">🏅 ترتيب الموسم</div><div class="lb">${lbRows(S)}</div>`;
   if(TB&&TB.updated){const m=TB.updated.match(/(\d+):(\d+)$/);if(m){const H=+m[1];h+=`<div class="note" style="font-size:11.5px">يتحدث خلال دقايق من نهاية كل مباراة · آخر تحديث ${(H%12)||12}:${m[2]} ${H<12?'ص':'م'}</div>`}}
   $('#app').innerHTML=h;
+  $('#nudgeB')&&($('#nudgeB').onclick=()=>{gc('predict-nudge');EL3FAN.open()});
   $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع أنت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank')});
 }
 /* الأندية: من «دوري الجماهير» (لوحة التوقعات) عشان يكون في المنصة ترتيب واحد بنفس القوانين:
