@@ -463,10 +463,10 @@ function shareRound(r){
 
 /* ── الترتيب ── */
 const myU=()=>{const a=PID.get(FBK);return a?a.u.slice(0,12):null};
-const nmOf=(n,c)=>n?esc(n):'مشجع '+(CL[c]||'محايد');
+const nmOf=(n,c)=>n?esc(n):CL[c]?'مشجع '+CL[c]:'مشجع';   // بدون اسم ولا نادي = «مشجع» (مثل دوري الجماهير)
 function lbRows(rows,unit){
   const me=myU(),i=rows.findIndex(r=>r[0]===me),N=20;
-  const row=(r,k)=>`<div class="r ${r[0]===me?'you':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i><span>${crest(r[2],24)}</span><span class="nm">${nmOf(r[1],r[2])}${r[0]===me?'<small>(انت)</small>':''}</span><b>${r[3]}</b></div>`;
+  const row=(r,k)=>`<div class="r ${r[0]===me?'you':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i><span>${crest(r[2],24)||'<span style="opacity:.55;font-size:17px">⚽</span>'}</span><span class="nm">${nmOf(r[1],r[2])}${r[0]===me?'<small>(انت)</small>':''}</span><b>${r[3]}</b></div>`;
   let h=rows.slice(0,N).map(row).join('');
   if(i>=N)h+=`<div class="gap">⋯</div>`+row(rows[i],i);
   return h;
