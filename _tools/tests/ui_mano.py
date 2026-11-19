@@ -33,7 +33,7 @@ def to_emu(lose_patch=False):
     return h
 
 
-async def play(b, uid, club, easy, pro=None, lose=False, extra=None, act=None, look=None):
+async def play(b, uid, club, easy, pro=None, lose=False, extra=None, act=None):
     seed = {f'g_{day}_easy': easy, 'seenHow': True, 'mode': 'pro' if pro else 'easy', **(extra or {})}
     if pro:
         seed[f'g_{day}_pro'] = pro
@@ -49,8 +49,6 @@ async def play(b, uid, club, easy, pro=None, lose=False, extra=None, act=None, l
     await pg.goto('http://localhost:8765/mano/'); await pg.wait_for_timeout(3000)
     if act:      # يكتب اسم لاعب في خانة البحث ويختار أول اقتراح
         await pg.fill('#gIn', NM[act]); await pg.wait_for_timeout(300); await pg.press('#gIn', 'Enter'); await pg.wait_for_timeout(2500)
-    if look:
-        await look(pg)
     st = await pg.evaluate(f"[localStorage.getItem('el3azy_mano_sub_{day}_easy'),localStorage.getItem('el3azy_mano_sub_{day}_pro')]")
     await ctx.close()
     return [json.loads(x) if x else None for x in st]
@@ -82,18 +80,6 @@ async def main():
         t0 = 1794859200000 + (day - 1) * 86400000 + 3600000
         st = await play(b, 'ua5', 'kalba', win2, extra={f'st_{day}_easy': t0, f'fin_{day}_easy': t0 + 83000})
         T.check('وقت الحل ينرسل (83 ثانية) والسيرفر يقبله', (st[0], T.get(f'p/{day}/easy/ua5').json().get('sec')), ({'g': 2, 'c': 'kalba'}, 83))
-        # الجواب مخفي بعد النهاية (ضد السكرين شوت)، و«اكشف الاسم» يبينه مع علامة مائية باسم المشجع
-        nm = NM[E[day - 1]]
-        async def look(pg):
-            app = await pg.inner_text('#app')
-            T.check('بعد النهاية: اسم اللاعب مخفي في الصفحة', nm in app.split('جواب أمس')[0], False)
-            T.check('بعد النهاية: زر «اكشف الاسم» موجود', await pg.locator('#showBtn').count(), 1)
-            await pg.click('#showBtn'); await pg.wait_for_timeout(500)
-            T.check('بعد الكشف: الاسم يطلع مع العلامة المائية', (nm in await pg.inner_text('#app'), await pg.locator('.wm').count() > 0), (True, True))
-            await pg.evaluate("Object.defineProperty(document,'hidden',{value:true,configurable:true});document.dispatchEvent(new Event('visibilitychange'))")
-            await pg.wait_for_timeout(300)
-            T.check('لما يطلع من الصفحة: الاسم يرجع ينخفي', await pg.locator('#showBtn').count(), 1)
-        await play(b, 'ua8', 'wahda', {'guesses': [E[5], E[day - 1]], 'done': True, 'win': True}, look=look)
         # سجل نهاية اللعبة الخاص (رصد الكشّاف): ينكتب لحظة ما تخلص اللعبة، حتى بدون نادي
         five = {'guesses': [E[3], E[4], E[6], E[7], E[8]], 'done': False, 'win': False}
         await play(b, 'ua6', '', five, act=E[9])

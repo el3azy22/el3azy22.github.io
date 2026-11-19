@@ -96,13 +96,6 @@ header .day{font-size:12px;color:var(--gold);font-weight:600}
 .result{text-align:center;animation:pop .5s}
 .result .emo{font-size:44px}
 .result h2{font-size:25px;color:var(--gold);margin:4px 0 10px}
-.hidden-ans{background:rgba(7,29,43,.75);border:1.5px dashed rgba(215,180,101,.55);border-radius:16px;padding:14px 12px;margin-bottom:12px}
-.hidden-ans b{display:block;font-size:16px;margin-bottom:4px}.hidden-ans small{display:block;font-size:12.5px;opacity:.7;margin-bottom:10px}
-.hidden-ans .btn{margin:0}
-.mask{letter-spacing:2px;opacity:.75}
-.wmw{position:relative;overflow:hidden}
-.wm{position:absolute;inset:-40%;display:flex;flex-wrap:wrap;gap:22px 34px;align-content:center;justify-content:center;transform:rotate(-22deg);pointer-events:none;z-index:2}
-.wm span{font-size:15px;font-weight:700;color:#fff;opacity:.16;white-space:nowrap;text-shadow:0 1px 2px rgba(0,0,0,.6)}
 .ans{display:flex;align-items:center;gap:12px;background:rgba(7,29,43,.75);border-radius:16px;padding:12px;text-align:right;margin-bottom:12px}
 .ans .nm{font-size:18px;font-weight:700}
 .ans .en{font-size:12px;opacity:.6;direction:ltr;text-align:right}
@@ -340,12 +333,6 @@ function dubaiDayIndex(startISO){
 function msToDubaiMidnight(){const now=Date.now()+4*3600e3;return 864e5-(now%864e5)}
 
 let D,BY,ANS,YEST,DAY,cardBlob=null,cardUrl=null,mode=store.get('mode','easy'),S,timer;
-// الجواب مخفي بعد نهاية اللعبة (عشان السكرين شوت ما يكشفه). «اكشف الاسم» يبينه مع علامة مائية باسم المشجع، ويرجع ينخفي لو طلع من الصفحة
-let SHOW=false;const HID=()=>S&&S.done&&!SHOW;
-document.addEventListener('visibilitychange',()=>{if(document.hidden&&SHOW){SHOW=false;try{render()}catch(e){}}});
-function wmText(){let n='',c='';try{n=(window.EL3FAN&&EL3FAN.name())||'';c=(window.EL3FAN&&EL3FAN.club())||''}catch(e){}
-  return (n||(c&&c!=='none'&&D.clubs[c]?'مشجع '+D.clubs[c]:'زائر'))+' · el3azy.com'}
-const WM=()=>`<div class="wm" aria-hidden="true">${Array(14).fill(`<span>${wmText()}</span>`).join('')}</div>`;
 const MAX=6;
 Promise.all([fetch('data.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.json()),fetch('aliases.json?v='+Date.now().toString().slice(0,-5)).then(r=>r.ok?r.json():{}).catch(()=>({}))]).then(([d,al])=>{ALIAS=al||{};return init(d)}).catch(()=>{$('#app').innerHTML='<div class="card loading">ما قدرنا نحمّل اللعبة. حدّث الصفحة 🔄</div>'});
 
@@ -389,7 +376,7 @@ function proFor(d,easyId){
 const ansFor=(m,i)=>m==='pro'?proFor(i+1):BY[store.get('qa_'+(i+1),null)]||null;   // للأيام اللي انقرت قبل
 const easyDone=()=>!!(store.get('g_'+DAY+'_easy',null)||{}).done;
 const MODEN={easy:'لاعب اليوم',pro:'تحدي الخبير'};
-function setMode(m){SHOW=false;mode=m;store.set('mode',m);load();scrollTo({top:0,behavior:'smooth'})}
+function setMode(m){mode=m;store.set('mode',m);load();scrollTo({top:0,behavior:'smooth'})}
 function paintSeg(){const ok=easyDone();document.querySelectorAll('#modeSeg button').forEach(b=>{b.classList.toggle('on',b.dataset.m===mode);if(b.dataset.m==='pro')b.classList.toggle('lock',!ok)});
   const ps=$('#proSub');if(ps){const pd=(store.get('g_'+DAY+'_pro',null)||{}).done;ps.textContent=!ok?'🔒 ينفتح بعد لاعب اليوم':pd?'✓ خلّصته':'🔓 انفتح لك · لاعب ثاني';const pb=ps.closest('button');if(pb)pb.classList.toggle('glow',ok&&!pd&&mode!=='pro')}}
 async function load(){
@@ -427,12 +414,11 @@ function render(){
   if(D&&DAY&&S&&!S.done&&!store.get('st_'+DAY+'_'+mode,null))store.set('st_'+DAY+'_'+mode,Date.now());
   const used=S.guesses.length;
   const tries=Array.from({length:MAX},(_,i)=>`<span class="${i<used?(S.win&&i===used-1?'win':'used'):''}"></span>`).join('');
-  const hid=HID();
-  let h=`<div class="card${S.done&&!hid?' wmw':''}">${S.done&&!hid?WM():''}
+  let h=`<div class="card">
    <div class="hero">
-     ${S.done&&!hid?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">${hid?'🔒':'؟'}</span></span></span>`}
-     <div style="flex:1"><b>${hid?'الجواب مخفي 🔒':S.done?ANS.n:(mode==='easy'?'لاعب اليوم السري':'لاعب الخبير السري')}</b>
-       <div class="sub">${hid?(S.win?'عرفته من '+AR(S.guesses.length)+(S.guesses.length===1?' محاولة':' محاولات')+' ✅':'ما عرفته هالمرة')+' · الاسم تحت':S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'لاعبك السري هني خاص فيك، غير لاعب ربعك · كل تخمين يقارن لاعبك باللاعب السري')}</div>
+     ${S.done?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">؟</span></span></span>`}
+     <div style="flex:1"><b>${S.done?ANS.n:(mode==='easy'?'لاعب اليوم السري':'لاعب الخبير السري')}</b>
+       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'لاعبك السري هني خاص فيك، غير لاعب ربعك · كل تخمين يقارن لاعبك باللاعب السري')}</div>
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
    </div>`;
   if(mode==='easy'){
@@ -440,7 +426,7 @@ function render(){
     const NAT=['الجنسية',()=>`<span style="font-size:22px">${flag(ANS.f)}</span>${ANS.nat}`],POSC=['المركز',()=>POS[ANS.p]];
     const CL=[...(DAY>=2?[POSC,NAT]:[NAT,POSC]),['العمر',()=>AR(ANS.a)+' سنة'],['النادي',()=>crest(ANS.c,24)+D.clubs[ANS.c]],['رقم القميص',()=>AR(ANS.no)],['أول حرف من اسمه',()=>`«${ANS.n.trim()[0]}»`]];
     const shown=S.done?6:Math.min(used+1,6);
-    if(!hid)h+=`<div class="clues">${CL.map((c,i)=>i<shown?`<div class="clue open"><span>تلميح ${AR(i+1)} · ${c[0]}</span><b>${c[1]()}</b></div>`:`<div class="clue"><span>تلميح ${AR(i+1)}</span><b>🔒 ينفتح لو غلطت</b></div>`).join('')}</div>`;
+    h+=`<div class="clues">${CL.map((c,i)=>i<shown?`<div class="clue open"><span>تلميح ${AR(i+1)} · ${c[0]}</span><b>${c[1]()}</b></div>`:`<div class="clue"><span>تلميح ${AR(i+1)}</span><b>🔒 ينفتح لو غلطت</b></div>`).join('')}</div>`;
   }else{
     // من اليوم 2: بعد 3 محاولات غلط ينكشف نادي لاعبك السري
     if(DAY>=2&&!S.done&&S.guesses.length>=3)h+=`<div class="clubhint">${crest(ANS.c,30)}<div><small>🔓 تلميح بعد 3 محاولات</small><b>لاعبك السري من ${D.clubs[ANS.c]}</b></div></div>`;
@@ -449,10 +435,10 @@ function render(){
   }
   if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب بالعربي أو بالإنجليزي..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
   if(mode==='easy'){
-    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],w=id===ANS.id;return `<div class="eg ${w?'w':''}">${w&&hid?`<span style="width:34px;height:34px;flex:none;border-radius:50%;display:grid;place-items:center;background:rgba(7,29,43,.8);border:1.5px solid var(--gold);font-size:15px">🔒</span>`:ph(p,34)}<span${w&&hid?' class="mask"':''}>${w&&hid?'••••••':p.n}</span><b>${w?'✅ صح!':'❌ مب هو'}</b></div>`}).join('');
+    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],w=id===ANS.id;return `<div class="eg ${w?'w':''}">${ph(p,34)}<span>${p.n}</span><b>${w?'✅ صح!':'❌ مب هو'}</b></div>`}).join('');
   }else if(used){
     h+=`<div class="heads"><div>تخمينك</div><div>النادي</div><div>المركز</div><div>الجنسية</div><div>العمر</div><div>رقم القميص</div></div>`;
-    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],r=cmp(p),hw=hid&&id===ANS.id;return `<div class="row"><div${hw?' class="mask"':''}>${hw?'••••••':p.n}</div><div class="${r.c}">${crest(p.c,28)}</div><div class="${r.p}">${POSS[p.p]}</div><div class="${r.n}"><span class="fl">${flag(p.f)}</span></div><div class="${r.a}">${p.a!=null?AR(p.a):'—'}${arrow(p.a,ANS.a)}</div><div class="${r.no}">${p.no!=null?AR(p.no):'—'}${arrow(p.no,ANS.no)}</div></div>`}).join('');
+    h+=S.guesses.slice().reverse().map(id=>{const p=BY[id],r=cmp(p);return `<div class="row"><div>${p.n}</div><div class="${r.c}">${crest(p.c,28)}</div><div class="${r.p}">${POSS[p.p]}</div><div class="${r.n}"><span class="fl">${flag(p.f)}</span></div><div class="${r.a}">${p.a!=null?AR(p.a):'—'}${arrow(p.a,ANS.a)}</div><div class="${r.no}">${p.no!=null?AR(p.no):'—'}${arrow(p.no,ANS.no)}</div></div>`}).join('');
   }
   h+=`</div>`;
   if(S.done)h+=resultHTML()+(CROWD?'<div id="crowd"></div><div id="clubs"></div>':'');
@@ -532,8 +518,8 @@ function resultHTML(){
   return `<div class="card result">
    <div class="emo">${S.win?'🎉':'😅'}</div>
    <h2>${S.win?(S.guesses.length===1?'من أول محاولة! مينوون معلومات 🔥':'كفووو! عرفته'):'هالمرة ما ضبطت'}</h2>
-   ${HID()?`<div class="hidden-ans"><b>🔒 اسم اللاعب مخفي</b><small>عشان محد ينشر الجواب ويخرّب التحدي على غيره</small><button class="btn" id="showBtn">👁 اكشف الاسم</button></div>`:`<div class="ans wmw">${WM()}${ph(ANS,70)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
-     <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>`}
+   <div class="ans">${ph(ANS,70)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
+     <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
    <div class="gotp">${S.win?`🏆 <b>${'\u2066+'+(7-S.guesses.length)+'\u2069'}</b> نقاط لك${(()=>{const se=mode==='pro'?store.get('sub_'+DAY+'_easy',null):null,cc=se?se.c:myClub();return cc?' ولجمهور '+D.clubs[cc]:''})()}`:`ما جبت نقاط هالمرة${mode==='easy'?'، عوّضها في تحدي الخبير':''}`}</div>
    ${st.streak>1&&S.win?`<div style="font-size:14px;margin-bottom:6px">سلسلتك: <b style="color:var(--gold)">${AR(st.streak)} أيام 🔥</b></div>`:''}
    ${mode==='easy'&&!(store.get('g_'+DAY+'_pro',null)||{}).done?`<div class="nextpro"><div class="t">🧠 الحين دورك في تحدي الخبير</div><div class="d">لاعب سري <b>ثاني غير لاعب اليوم</b> وأصعب منه، ونقاطه <b>تنضاف فوق نقاطك</b> (لين 6 زيادة) لك ولناديك</div><button class="btn pro" id="otherBtn">ابدا تحدي الخبير ‹</button></div>`:''}
@@ -548,7 +534,6 @@ function bindResult(){
   const t=shareText();
   buildCard().then(b=>{cardBlob=b;if(cardUrl)URL.revokeObjectURL(cardUrl);cardUrl=URL.createObjectURL(b);const im=$('#cardImg');if(im)im.src=cardUrl}).catch(()=>{const im=$('#cardImg');if(im)im.remove()});
   $('#imgBtn').onclick=shareImage;
-  const sb=$('#showBtn');if(sb)sb.onclick=()=>{SHOW=true;const y=scrollY;render();scrollTo(0,y)};
   const o=$('#otherBtn');if(o)o.onclick=()=>setMode(mode==='easy'?'pro':'easy');
   clearInterval(timer);const f=x=>String(x).padStart(2,'0');
   const tick=()=>{const s=Math.floor(msToDubaiMidnight()/1000);const e=$('#cd');if(!e)return;e.textContent=`${f(s/3600|0)}:${f(s%3600/60|0)}:${f(s%60)}`;if(s<=1)setTimeout(()=>location.reload(),1500)};
