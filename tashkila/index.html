@@ -722,14 +722,17 @@ async function renderTP(){
   const prevXi=(saved&&saved.mid===M.id)?saved.xi:null;
   pickClub(sq,btn);
   document.body.classList.toggle('tplock',ST!=='pick');
-  let keys=null;
-  try{const a=await F.tok();const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`).then(r=>r.ok?r.json():null);if(r&&r.x)keys=r.x.split('~')}catch(e){}
-  if(!keys){try{keys=JSON.parse(localStorage.getItem('el3azy_tp_'+M.id)||'null')}catch(e){}}
+  let keys=null,sf=null;
+  try{const a=await F.tok();const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`).then(r=>r.ok?r.json():null);if(r&&r.x){keys=r.x.split('~');sf=r.f||null}}catch(e){}
+  if(!keys){try{const v=JSON.parse(localStorage.getItem('el3azy_tp_'+M.id)||'null');if(Array.isArray(v))keys=v;else if(v&&v.k){keys=v.k;sf=v.f}}catch(e){}}
   MINE=keys;
-  if(keys){const by={};sq.p.forEach(p=>by[tk(p)]=p);const L=keys.map(k=>by[k]).filter(Boolean);
-    // نرتب حسب المراكز في الخطة الحالية
-    const used=new Set();FMS[fm].forEach(([x,y,r],i)=>{const p=L.find(p=>!used.has(tk(p))&&p[2]===r);if(p){xi[i]=p;used.add(tk(p))}});
-    FMS[fm].forEach((_,i)=>{if(!xi[i]){const p=L.find(p=>!used.has(tk(p)));if(p){xi[i]=p;used.add(tk(p))}}})}
+  if(keys){const by={};sq.p.forEach(p=>by[tk(p)]=p);
+    // المفاتيح محفوظة بترتيب الخانات: نرجّع نفس الخطة ونفس مكان كل لاعب.
+    // التوقعات القديمة (قبل حفظ الخطة): نختار الخطة اللي تطابق مراكز اللاعبين بترتيبهم
+    if(!FMS[sf]){let best=-1;for(const f in FMS){const n=FMS[f].reduce((a,[x,y,r],i)=>a+((by[keys[i]]||[])[2]===r?1:0),0);if(n>best){best=n;sf=f}}}
+    fm=sf;document.querySelectorAll('.fm').forEach(x=>x.setAttribute('aria-pressed',x.textContent===fm));
+    xi=Array(11).fill(null);keys.forEach((k,i)=>{if(i<11&&by[k])xi[i]=by[k]});
+    const L=keys.map(k=>by[k]).filter(p=>p&&!xi.includes(p));xi=xi.map(p=>p||L.shift()||null)}
   else if(prevXi)xi=prevXi;
   renderPitch();
   const pitch=q('pitch');
@@ -777,11 +780,11 @@ function decorate(){
 }
 function upd(){const g=q('tpGo');if(g){const n=xi.filter(Boolean).length;g.disabled=n<11;g.textContent=n<11?`اختار ${11-n} ${11-n===1?'لاعب':'لاعبين'} بعد`:'✅ اعتمد توقعي'}}
 async function save(){
-  const k=xi.filter(Boolean).map(tk);if(k.length<11||new Set(k).size<11)return;
+  if(xi.some(p=>!p))return;const k=xi.map(tk);if(k.length<11||new Set(k).size<11)return;
   const g=q('tpGo');g.disabled=true;g.textContent='يحفظ...';
-  try{localStorage.setItem('el3azy_tp_'+M.id,JSON.stringify(k))}catch(e){}
+  try{localStorage.setItem('el3azy_tp_'+M.id,JSON.stringify({k,f:fm}))}catch(e){}
   try{const F=EL3FAN;try{await F.sync()}catch(e){}const a=await F.tok();
-    const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`,{method:'PUT',body:JSON.stringify({c:F.club(),x:k.join('~'),w:{'.sv':'timestamp'}})});
+    const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`,{method:'PUT',body:JSON.stringify({c:F.club(),x:k.join('~'),f:fm,w:{'.sv':'timestamp'}})});
     if(!r.ok)throw 0;MINE=k;q('tpSub').textContent='توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل';toast('✅ انحفظ توقعك');try{window.el3stat&&el3stat('tashkila','tp')}catch(e){}
   }catch(e){toast(Date.now()>=M.t-LOCK?'انقفل التوقع':'ما انحفظ، تأكد من الإنترنت وجرب مرة ثانية')}
   upd();

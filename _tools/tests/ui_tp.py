@@ -69,7 +69,7 @@ async def run(b, state, w, saved):
             puts.append((r.url, r.post_data))
             return await route.fulfill(status=200, body='{}')
         if '/tp/' in r.url:
-            body = json.dumps({'c': CLUB, 'x': '~'.join(mine), 'w': 1}) if saved else 'null'
+            body = json.dumps(saved if isinstance(saved, dict) else {'c': CLUB, 'x': '~'.join(mine), 'w': 1}) if saved else 'null'
             return await route.fulfill(status=200, body=body, content_type='application/json')
         await route.continue_()
     await pg.route('**/*firebasedatabase.app/**', fb)
@@ -119,7 +119,9 @@ async def main():
             chk(await pg.locator('#tpGo').is_disabled(), 'الاعتماد مفعّل بدون 11')
             chk('يقفل بعد' in await pg.text_content('.tp-card'), 'العد التنازلي')
             await pg.screenshot(path=f'{OUT}/tp_pick-empty_{w}.png', full_page=True)
-            # نعبي 11 من القائمة
+            # نختار خطة غير الافتراضية، ونعبي 11 من القائمة
+            await pg.click('.fm:text-is("4-4-2")')
+            await pg.wait_for_timeout(200)
             for i in range(11):
                 await pg.locator('#slots .slot').nth(i).click()
                 await pg.wait_for_timeout(250)
@@ -137,6 +139,8 @@ async def main():
                 chk(d['c'] == CLUB and len(d['x'].split('~')) == 11 and d['w'] == {'.sv': 'timestamp'}, f'شكل الحفظ {d}')
                 chk(len(set(d['x'].split('~'))) == 11, 'لاعب مكرر')
             chk('محفوظ' in await pg.text_content('#tpSub'), 'رسالة الحفظ')
+            chk(tp and d.get('f') == '4-4-2', 'الخطة ما انحفظت')
+            before = await pg.locator('#slots .slot').all_text_contents()
             await pg.screenshot(path=f'{OUT}/tp_pick-saved_{w}.png', full_page=True)
             # الرجوع لصمّم تشكيلتك
             await pg.click('.tp-tabs button[data-m=free]')
@@ -146,6 +150,15 @@ async def main():
 
             pg, _ = await run(b, 'pick', w, True)
             chk(await pg.locator('#slots .slot:not(.empty)').count() == 11, 'ما رجع التوقع المحفوظ')
+            await pg.close()
+            # بلاغ: «أحفظ التشكيلة وأطلع وأرجع، تتغير» — لازم ترجع نفس الخطة وكل لاعب في مكانه
+            pg, _ = await run(b, 'pick', w, d)
+            chk(await pg.locator('.fm[aria-pressed=true]').text_content() == '4-4-2', 'الخطة ما رجعت')
+            chk(await pg.locator('#slots .slot').all_text_contents() == before, 'اللاعبين ما رجعوا لنفس أماكنهم')
+            await pg.close()
+            # توقع قديم بدون خطة محفوظة: نستنتج الخطة من مراكز اللاعبين بترتيبهم
+            pg, _ = await run(b, 'pick', w, {k: v for k, v in d.items() if k != 'f'})
+            chk(await pg.locator('#slots .slot').all_text_contents() == before, 'التوقع القديم ما رجع بنفس الترتيب')
             await pg.close()
 
             pg, _ = await run(b, 'locked', w, True)
