@@ -410,7 +410,7 @@ function draw(){
   if(!tabs.some(t=>t[0]===T))T='week';if(!BN()[B])B='all';
   $('#tabs').innerHTML=tabs.map(t=>`<button class="${t[0]===T?'on':''}" data-t="${t[0]}">${t[1]}</button>`).join('');$('#tabs').style.display='';
   const [V,when,W]=view();const TOPS=(V.all.clubs||[]).filter(r=>r[1]===1&&r[2]>0),top=TOPS[0];
-  let h=(MY()===null?stepsH():'')+askH()+myH(V,when);
+  let h=askH()+myH(V,when);
   h+=`<div class="hero"><div class="k">🏆 ${T==='season'?(TOPS.length>1?'متصدرين الموسم':'متصدر الموسم'):T==='last'?(TOPS.length>1?'أبطال الأسبوع ':'بطل الأسبوع ')+W.w:(TOPS.length>1?'متصدرين الأسبوع ':'متصدر الأسبوع ')+W.w+' لين الحين'}${W?` · ${W.from} – ${W.to}`:''}</div>
     ${top?(TOPS.length===1?`<div class="lead"><div class="cw">${crest(top[0],52)}</div><div><b>جمهور ${CL[top[0]]}</b><span>${nf(top[2])} نقطة من كل التحديات</span></div></div>`:`<div class="lead"><div class="cw2">${TOPS.slice(0,4).map(r=>crest(r[0],40)).join('')}</div><div><b>${TOPS.map(r=>CL[r[0]]).join(' و')}</b><span>متعادلين · ${nf(top[2])} نقطة لكل نادي</span></div></div>`):`<div class="lead"><div class="cw" style="font-size:40px">🏆</div><div><b>ما في نقاط لين الحين</b><span>العب «منو اللاعب؟» وخلّ ناديك أول نادي في الجدول</span></div></div>`}
     ${D.story&&T==='last'?`<div class="story">🚀 ${esc(D.story)}</div>`:''}

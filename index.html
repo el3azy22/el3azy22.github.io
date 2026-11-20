@@ -243,8 +243,8 @@ function challenges(){
   if(P){
     // دوري التوقعات
     const MY=LS('el3azy_pred')||{},op=m=>(OPEN[m.wk]||0)<=T,up=P.matches.filter(m=>m.t>T).sort((a,b)=>a.t-b.t),on=up.filter(op);
-    if(on.length){const left=on.filter(m=>!MY[m.id]),wk=on[0].wk,n=on.length;
-      if(left.length)L.push({k:'pred',href:'predict/',s:'todo',dl:left[0].t,t:'دوري التوقعات',st:`الجولة ${wk} · توقعت ${n-left.length} من ${n}`,tm:['أقرب قفل بعد',left[0].t-T],a:'توقّع'});
+    if(on.length){const MM=k=>k===1?'مباراة':k===2?'مباراتين':k<=10?k+' مباريات':k+' مباراة',left=on.filter(m=>!MY[m.id]),wk=on[0].wk,n=on.length;
+      if(left.length)L.push({k:'pred',href:'predict/',s:'todo',dl:left[0].t,t:'دوري التوقعات',st:`الجولة ${wk} · ${n-left.length?`توقعت ${n-left.length} · `:''}باقي ${MM(left.length)}`,tm:['أقرب قفل بعد',left[0].t-T],a:'توقّع'});
       else L.push({k:'pred',href:'predict/',s:'done',t:'دوري التوقعات',st:`<span class="st ok">✓ توقعت كل مباريات الجولة ${wk}</span>`,tm:['تقدر تعدّل لين صافرة كل مباراة',null]})}
     else if(up.length){const m=up[0];L.push({k:'pred',href:'predict/',s:'wait',t:'دوري التوقعات',st:`الجولة ${m.wk}`,tm:['تنطلق بعد',(OPEN[m.wk]||m.t)-T],a:'شوف'})}
     // توقّع تشكيلة ناديك
@@ -287,7 +287,6 @@ function drawLg(){
     $('lgRows').innerHTML=top.map(row).join('')+(mine?`<div class="r gap">• • •</div>`+row(mine):'');$('lgRows').hidden=false}
   const a=LS('el3azy_fb')||LS('el3azy_mano_fb'),u=a&&a.u?a.u.slice(0,12):null,me=RK&&u&&RK.week&&RK.week[u]&&RK.week[u].all;
   if(me){$('lgYou').innerHTML=`⭐ أنت في <b>المركز ${nf(me[0])}</b> من ${nf(me[2])} مشجع · <b>${nf(me[1])}</b> نقطة`;$('lgYou').hidden=false}
-  else if(!c){$('lgYou').textContent='اختار ناديك، والعب، ونقاطك تنحسب لجمهوره';$('lgYou').hidden=false}
   else $('lgYou').hidden=true;
 }
 
