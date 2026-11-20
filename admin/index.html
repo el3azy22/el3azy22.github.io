@@ -188,7 +188,7 @@ function render(){
   const shT=ev['share-tashkila']||0,shP=ev['share-tp']||0,shR=ev['share-rate']||0,shS=SONGS.reduce((x,o)=>x+(ev['share-'+o.id]||0),0),subs=sumEv(/^submit-/),opens=sumEv(/^open-/),shares=shM+shT+shP+shR+shS;
   const pre=Date.now()<LAUNCH-OFF;
   const useV=a>=VSTART,V=vsum(a,b);
-  let h=segHTML();
+  let h='<div id="cxTop"></div>'+segHTML();   // «تشكيلة الجمهور» أول شي في اللوحة لما تكون فيه مباراة قفل توقعها
   // plain-language summary
   const per=RNAME[range];
   h+=`<div class="card sum"><b>${per}:</b> انفتحت صفحات المنصة <b>${nf(useV?V.t:visits)}</b> مرة${useV?` وزارها <b>${nf(V.u)}</b> تلفون`:''}، ونشر الناس نتايجهم وتشكيلاتهم <b>${nf(shares)}</b> مرة${starts?`، ولعب «منو اللاعب؟» <b>${nf(starts)}</b> شخص`:''}${subs?`، وانرسل <b>${nf(subs)}</b> تقييم`:''}.</div>`;
@@ -278,14 +278,14 @@ async function loadTP(){ // fans/tp.json: أعداد مجمعة لكل مبار�
   const XS=M.filter(m=>Object.keys(m).some(k=>k.startsWith('x_'))&&T<m.t+3*3600e3).sort((x,y)=>((x.t<=T)-(y.t<=T))||x.t-y.t);   // اللي ما بدت أول
   if(XS.length){if(!SQ)SQ=await fetch('../tashkila/squads.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
     const P={};((SQ&&SQ.clubs)||[]).forEach(c=>(c.p||[]).forEach(p=>{P[p[5]||`${p[0]==null?'':p[0]}|${p[1]}`]=[p[6]||p[1],p[2]]}));
-    h+=`<div class="lbl" style="margin-top:14px">👥 تشكيلة الجمهور</div><p class="cap">اللاعبين اللي اختارهم أكثر الجمهور، والنسبة من اللي توقعوا. تطلع بعد القفل (قبل المباراة بساعتين)، فتقدر تنشرها قبل البداية.</p>`;
+    let cx=`<div class="lbl">👥 تشكيلة الجمهور · انشرها قبل المباراة</div><p class="cap">اللاعبين اللي اختارهم أكثر الجمهور، والنسبة من اللي توقعوا. تطلع بعد القفل (قبل المباراة بساعتين)، فتقدر تنشرها قبل البداية.</p>`;
     XS.forEach(m=>[m.h,m.a].forEach(c=>{const X=m['x_'+c];if(!X||(m[c]||0)<5)return;const n=m[c];   // أقل من 5 توقعات النسب ما لها معنى
       const L=Object.entries(X).filter(([k])=>P[k]).map(([k,v])=>({nm:P[k][0],ps:P[k][1],v}));
       const gk=L.filter(x=>x.ps==='GK').slice(0,1),out=L.filter(x=>x.ps!=='GK').slice(0,10),xi=[...gk,...out];if(xi.length<11)return;
       const row=ps=>xi.filter(x=>x.ps===ps).map(x=>`<div class="cx-p"><b>${x.nm}</b><span>${Math.round(x.v/n*100)}%</span></div>`).join('');
       const live=T>=m.t;
-      h+=`<div class="cx"><div class="cx-h"><img src="../mano/assets/${c}.png" alt=""><div><b>تشكيلة جمهور ${CLUBS[c]}</b><small>${CLUBS[m.h]} × ${CLUBS[m.a]} · ${nf(n)} ${n<=10&&n>2?'مشجعين':'مشجع'} توقعوا${live?' · بدت المباراة':''}</small></div></div>
-        <div class="cx-f">${['FWD','MID','DEF','GK'].map(ps=>`<div class="cx-r">${row(ps)}</div>`).join('')}</div><div class="cx-ft">el3azy.com</div></div>`}));}
+      cx+=`<div class="cx"><div class="cx-h"><img src="../mano/assets/${c}.png" alt=""><div><b>تشكيلة جمهور ${CLUBS[c]}</b><small>${CLUBS[m.h]} × ${CLUBS[m.a]} · ${nf(n)} ${n<=10&&n>2?'مشجعين':'مشجع'} توقعوا${live?' · بدت المباراة':''}</small></div></div>
+        <div class="cx-f">${['FWD','MID','DEF','GK'].map(ps=>`<div class="cx-r">${row(ps)}</div>`).join('')}</div><div class="cx-ft">el3azy.com</div></div>`}));const top=$('#cxTop');if(top)top.innerHTML=cx.includes('class="cx"')?cx:''}
   const nx=M.find(m=>m.t>T);if(nx)h+=`<div class="mini">⏳ أقرب قفل: ${CLUBS[nx.h]} × ${CLUBS[nx.a]}، ${AR[new Date(nx.t+4*3600e3).getUTCDay()]} قبل المباراة بساعتين</div>`;
   el.innerHTML=h;
 }
