@@ -747,7 +747,7 @@ async function renderTP(){
   const sq=CLUBS.find(x=>x.id===(TCLUB[c]||c));
   if(!M||!sq){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">ما في مباراة جاية لناديك في الجدول لين الحين.<br>ارجع لما تنزل مواعيد الجولة الجاية.</div>`));return}
   const op=OPEN[M.wk]||0,lock=M.t-LOCK;
-  SCON=QA||op>=K5L;   // «منو بيسجل؟» في الجولات اللي تنفتح من الإطلاق بس (khamsa/config.json)
+  SCON=QA||op>=K5L;   // «منو بيسجل؟» في الجولات اللي تنطلق من الإطلاق بس (khamsa/config.json)
   ST=LU[M.id]&&now>=M.t?'reveal':now>=lock?'locked':now<op?'soon':'pick';
   const other=M.h===c?M.a:M.h,oc=CLUBS.find(x=>x.id===(TCLUB[other]||other));
   const nm=x=>(CLUBS.find(y=>y.id===(TCLUB[x]||x))||{}).name||x;
@@ -755,8 +755,8 @@ async function renderTP(){
   const card=el(`<div class="tp-card"><div class="k">الجولة ${M.wk} · ${ST==='reveal'?'التشكيلة الأساسية نزلت':ST==='locked'?'انقفل التوقع':'توقّع تشكيلة ناديك'}</div>
    <div class="tp-vs"><div><img src="${crest(M.h)}" alt="">${nm(M.h)}</div><b>×</b><div><img src="${crest(M.a)}" alt="">${nm(M.a)}</div></div>
    <div class="t">${when(M.t)}</div>
-   ${ST==='pick'?`<div class="tp-lock">🔒 يقفل بعد <b id="tpCd"></b></div><div class="tp-rule">اختار الـ11 اللي تتوقع المدرب ينزلهم أساسيين. كل لاعب توقعته صح = <b>نقطة</b> لك ولجمهور ${nm(c)}${SCON?`، و⚽ <b>منو بيسجل؟</b> تحت الملعب يجيب نقاط زيادة`:''}. يقفل قبل المباراة بساعتين.</div>`:''}
-   ${ST==='soon'?`<div class="tp-lock">⏳ التوقع ينفتح بعد <b id="tpCd"></b></div>`:''}
+   ${ST==='pick'?`<div class="tp-lock">🔒 يقفل بعد <b id="tpCd"></b></div><div class="tp-rule">اختار الـ11 اللي تتوقع المدرب ينزلهم أساسيين. كل لاعب توقعته صح = <b>نقطة</b> لك ولجمهور ${nm(c)}${SCON?`، و⚽ <b>منو بيسجل؟</b> تحت الملعب يحقق لك نقاط زيادة`:''}. يقفل قبل المباراة بساعتين.</div>`:''}
+   ${ST==='soon'?`<div class="tp-lock">⏳ التوقع ينطلق بعد <b id="tpCd"></b></div>`:''}
    ${ST==='locked'?`<div class="tp-lock">🔒 انقفل التوقع · التشكيلة الأساسية تنكشف مع بداية المباراة</div>`:''}</div>`);
   anchor.after(card);
   const target=ST==='pick'?lock:ST==='soon'?op:0;
@@ -790,7 +790,7 @@ async function renderTP(){
     if(keys){pitch.after(el(`<button class="tp-go tp-sh" id="tpSh" type="button">𝕏 شارك توقعي</button>`));q('tpSh').onclick=()=>shareTP(null)}}
   if(ST==='reveal'){
     const L=LU[M.id],real=new Set(M.h===c?L.hs:L.as);
-    if(!keys){pitch.before(el(`<div class="tp-msg">ما توقعت تشكيلة هالمباراة.<br>التشكيلة الجاية تنفتح مع الجولة الجاية.</div>`));}
+    if(!keys){pitch.before(el(`<div class="tp-msg">ما توقعت تشكيلة هالمباراة.<br>توقع التشكيلة الجاي ينطلق مع الجولة الجاية.</div>`));}
     else{const hits=keys.filter(k=>real.has(k)).length,sr=scRes(L,c,SC),tot=hits+(sr?sr.pts:0),sp=scP();
       if(!sp)pitch.before(el(`<div class="tp-res"><div class="big">${hits} <small>من 11</small></div><div class="l">توقعت ${hits} صح من التشكيلة الأساسية ${hits?'✅':''} وجبت <b>${hits} ${NQT(hits)}</b> لك ولجمهور ${nm(c)}</div></div>`));
       else{const n=sp[6]||sp[1],jk=!keys.includes(SC)?' · من خارج تشكيلتك':'';

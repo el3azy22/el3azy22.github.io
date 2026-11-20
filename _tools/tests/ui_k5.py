@@ -86,7 +86,7 @@ async def main():
         b = await p.chromium.launch(executable_path='/usr/bin/google-chrome', args=['--no-sandbox'])
         for w in (360, 390):
             pg, _ = await run(b, OP - 3600e3, w, None)
-            chk('ينفتح بعد' in await pg.text_content('.card'), 'قبل الفتح')
+            chk('ينطلق بعد' in await pg.text_content('.card'), 'قبل الفتح')
             chk(await pg.locator('.slot').count() == 0, 'الخانات قبل الفتح')
             await pg.screenshot(path=f'{OUT}/k5_soon_{w}.png', full_page=True)
             await pg.close()

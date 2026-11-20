@@ -238,7 +238,7 @@ async def main():
 
             if OPEN.get(str(M['wk'])):
                 pg, _ = await run(b, 'soon', w, False)
-                chk('ينفتح' in await pg.text_content('.tp-card'), 'حالة قبل الفتح')
+                chk('ينطلق' in await pg.text_content('.tp-card'), 'حالة قبل الفتح')
                 await pg.close()
         await b.close()
     print(f'النتيجة: {ok} نجح · {fail} فشل  (نادي {CLUB}، مباراة {M["id"]})')
