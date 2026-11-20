@@ -123,7 +123,7 @@ try:
     OPENS = {int(k): int(v) for k, v in json.load(open(os.path.join(ROOT, 'predict', 'open.json'), encoding='utf8')).items()}
 except Exception:
     OPENS = {}
-if K5_START and day_of(int(os.environ.get('NOW') or time.time() * 1000)) >= K5_START:
+if K5_START and int(os.environ.get('NOW') or time.time() * 1000) >= max(LAUNCH5 if LAUNCH5 < 10 ** 15 else 0, START + (K5_START - 1) * DAYMS):   # اللوحة تطلع من الإطلاق (الإثنين 8 المسا)
     CHALLENGES.append({'id': 'k5', 'name': 'خماسي الجولة', 'icon': '🖐️'})
 K5_POS = ['GK', 'DEF', 'MID', 'FWD', None]     # الخانات: حارس · مدافع · وسط · مهاجم · حر (أي مركز غير الحارس)
 GRID_THR, GRID_RARE = 30, 10   # النسب بعد 30 حل للخانة · النادر أقل من 10% (v3.2)

@@ -201,6 +201,7 @@ async function boot(){
   const nc={cache:'no-cache'};
   let sq;[CFG,PD,OPEN,sq,ST]=await Promise.all([fetch('config.json',nc).then(r=>r.json()).catch(()=>({})),fetch('../predict/data.json',nc).then(r=>r.json()).catch(()=>({matches:[]})),
     fetch('../predict/open.json',nc).then(r=>r.json()).catch(()=>({})),fetch('../tashkila/squads.json',nc).then(r=>r.json()),fetch('stats.json',nc).then(r=>r.ok?r.json():{}).catch(()=>({}))]);
+  if(!QA&&Date.now()<(CFG.launch||1795449600000)){location.replace('../');return}   // مخفي لين الإطلاق (قرار إبراهيم)
   (sq.clubs||[]).forEach(c=>{const id=FIXC[c.id]||c.id;CL[id]=c;c.p.forEach(p=>BYK[key(p)]={p,c:id})});
   const L=CFG.launch||1795449600000,now=Date.now(),by={};
   PD.matches.forEach(m=>(by[m.wk]=by[m.wk]||[]).push(m));
