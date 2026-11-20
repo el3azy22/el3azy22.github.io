@@ -275,11 +275,11 @@ async function loadTP(){ // fans/tp.json: أعداد مجمعة لكل مبار�
   M.filter(m=>m.d).forEach(m=>{const n=m.d.reduce((x,v)=>x+v,0),avg=m.d.reduce((x,v,i)=>x+v*i,0)/n,best=m.d.reduce((x,v,i)=>v?i:x,0);
     h+=`<div class="mini"><b>${CLUBS[m.h]} × ${CLUBS[m.a]}:</b> متوسط الصح ${avg.toFixed(1)} من 11 · أعلى نتيجة ${best} من 11${m.d[11]?` · ${nf(m.d[11])} صابوا الـ11 كلهم`:''}</div>`});
   // «تشكيلة الجمهور»: بعد القفل (قبل المباراة بساعتين) محد يقدر يغيّر، فتطلع هني تنشرها قبل المباراة وتحمّس الناس يشاركون
-  const XS=M.filter(m=>Object.keys(m).some(k=>k.startsWith('x_'))&&T<m.t+3*3600e3);
+  const XS=M.filter(m=>Object.keys(m).some(k=>k.startsWith('x_'))&&T<m.t+3*3600e3).sort((x,y)=>((x.t<=T)-(y.t<=T))||x.t-y.t);   // اللي ما بدت أول
   if(XS.length){if(!SQ)SQ=await fetch('../tashkila/squads.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
     const P={};((SQ&&SQ.clubs)||[]).forEach(c=>(c.p||[]).forEach(p=>{P[p[5]||`${p[0]==null?'':p[0]}|${p[1]}`]=[p[6]||p[1],p[2]]}));
     h+=`<div class="lbl" style="margin-top:14px">👥 تشكيلة الجمهور</div><p class="cap">اللاعبين اللي اختارهم أكثر الجمهور، والنسبة من اللي توقعوا. تطلع بعد القفل (قبل المباراة بساعتين)، فتقدر تنشرها قبل البداية.</p>`;
-    XS.forEach(m=>[m.h,m.a].forEach(c=>{const X=m['x_'+c];if(!X)return;const n=m[c]||1;
+    XS.forEach(m=>[m.h,m.a].forEach(c=>{const X=m['x_'+c];if(!X||(m[c]||0)<5)return;const n=m[c];   // أقل من 5 توقعات النسب ما لها معنى
       const L=Object.entries(X).filter(([k])=>P[k]).map(([k,v])=>({nm:P[k][0],ps:P[k][1],v}));
       const gk=L.filter(x=>x.ps==='GK').slice(0,1),out=L.filter(x=>x.ps!=='GK').slice(0,10),xi=[...gk,...out];if(xi.length<11)return;
       const row=ps=>xi.filter(x=>x.ps===ps).map(x=>`<div class="cx-p"><b>${x.nm}</b><span>${Math.round(x.v/n*100)}%</span></div>`).join('');
