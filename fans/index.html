@@ -365,7 +365,7 @@ function bsegH(){return `<div class="bseg">${Object.entries(BN()).map(([k,v])=>`
 function clubsH(V,W){const rows=V[B].clubs||[],my=MY(),any=rows.some(r=>r[2]>0),xi=D.xi||11;
   if(!any)return `<div class="card how" style="text-align:center">ما في نقاط ${B==='pred'?'من دوري التوقعات ':''}لين الحين${B==='pred'&&W&&W.live&&!W.pred?' · هالأسبوع ما فيه جولة دوري':''}</div>`;
   return `<div class="tbl v2"><div class="th"><span>#</span><span></span><span>النادي</span><span>النقاط</span></div>${rows.filter(r=>r[2]>0).map(r=>{
-    const sub=T==='season'?`جاب نقاط في ${r[3]===1?'أسبوع واحد':r[3]===2?'أسبوعين':nf(r[3])+(r[3]>10?' أسبوع':' أسابيع')}`:(r[3]>=xi?`النخبة كاملة · لعب ${nf(r[4])} ${MSH(r[4])}`:`النخبة ناقصة: ${nf(r[3])} من ${xi}`);
+    const sub=T==='season'?`جاب نقاط في ${r[3]===1?'أسبوع واحد':r[3]===2?'أسبوعين':nf(r[3])+(r[3]>10?' أسبوع':' أسابيع')}`:(()=>{const pn=((V[B]||{}).pend||{})[r[0]]||0,tot=r[4]+pn,n=r[4],ap=`${nf(n)} ${n===2?'معتمدَين':n>2&&n<=10?'معتمدين':'معتمد'}`;return r[3]>=xi?(pn?`النخبة كاملة · ${ap} من ${nf(tot)}`:`النخبة كاملة · لعب ${nf(n)} ${MSH(n)}`):`النخبة ${nf(r[3])} من ${xi}${tot?` · لعب ${nf(tot)} ${MSH(tot)}`:''}`})();
     return `<div class="tr ${r[0]===my?'mine':''} ${r[1]<=3?'p'+r[1]:''} ${OPEN===r[0]?'open':''}" data-c="${r[0]}"><i>${r[1]}</i><span class="cw">${crest(r[0],26)}</span><span class="nm">${CL[r[0]]}<small>${sub}</small></span><span class="tot">${nf(r[2])}</span></div>${OPEN===r[0]?xiH(V,r):''}`}).join('')}
    ${rows.filter(r=>!r[2]).length?`<div class="sep">ما جابوا نقاط لين الحين: ${rows.filter(r=>!r[2]).map(r=>CL[r[0]]).join('، ')}</div>`:''}</div>`}
 /* المشجعين: أول 10 مراكز بالترتيب. اللي ما كتب اسمه يطلع «مشجع» */
