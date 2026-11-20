@@ -32,7 +32,9 @@ rules={"rules":{
    # t (اختياري): وقت السيرفر لحظة الحل، لفك التعادل في «نجوم الأسبوع» (الأسبق)
    "d":{".validate":True},"g":{".validate":True},"c":{".validate":True},"t":{".validate":"newData.val() == now"},
    # sec (اختياري): كم ثانية أخذ من فتح التحدي لين خلّص — لكسر التعادل الأخير (الأسرع). ينقاس في التلفون
-   "sec":{".validate":"newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 86400"},"$other":{".validate":False}}}}},
+   "sec":{".validate":"newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 86400"},
+   # h (اختياري): تخميناته بالترتيب، عشان لو التلفون ضيّع حفظ اللعبة (سكّر التطبيق بسرعة) ترجع له نفس اللعبة من السيرفر، وما يلعبها مرة ثانية
+   "h":{"$i":{".validate":"$i.matches(/^[0-5]$/) && newData.isString() && newData.val().length <= 80"}},"$other":{".validate":False}}}}},
  "s":{".read":True,"$d":{"$m":{"$f":{
    ".write":fresh(s_after),
    ".validate":f"newData.isNumber() && {inc} && ($f == 'n' || ($f == 'w' && {g(s_after)} > 0) || $f == 'g' + {g(s_after)})"}}}},
