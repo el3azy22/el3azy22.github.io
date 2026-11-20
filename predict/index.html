@@ -180,6 +180,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .res .mine .ms{color:var(--gold2);font-size:13px}.res .mine.no{opacity:.45}
 .ptc{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:3px 12px 3px 10px;font-size:12px;font-weight:600;background:rgba(255,245,229,.06);border:1px solid rgba(255,245,229,.12);color:rgba(255,245,229,.6);white-space:nowrap}
 .ptc b{font-size:14px;font-weight:700}
+.ptc .x2{font-style:normal;font-weight:700;font-size:12.5px;opacity:.85}
 .ptc.b10{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);border-color:transparent}
 .ptc.b6{background:rgba(46,158,102,.22);border-color:rgba(46,158,102,.55);color:#9ff0c4}
 .ptc.b4{background:rgba(155,196,106,.14);border-color:rgba(155,196,106,.45);color:#cfe9a8}
@@ -365,7 +366,7 @@ function card(m){
     const myS=p?`<div class="mine">توقعك <b class="ms">${SC(p.h,p.a)}</b>${p.x?' ⭐':''}</div>`:'<div class="mine no">ما توقعت</div>';
     if(fin){const base=p?points(p.h,p.a,m.sh,m.sa):0,pt=base*(p&&p.x?2:1),why={10:'النتيجة بالضبط',6:'الفائز مع الفارق',4:'الفائز صح',0:'ما صحّت'}[base];
       mid=`<div class="res"><div class="fin">${SC(m.sh,m.sa,' ')}</div><div class="ft">انتهت</div>${myS}</div>`;
-      foot=p?`<span class="ptc b${base}"><b dir="ltr">+${pt}</b>${why}</span>`:'<span></span>';
+      foot=p?`<span class="ptc b${base}"><b dir="ltr">+${pt}</b>${why}${p.x&&base?' <i class="x2" dir="ltr">×2</i>':''}</span>`:'<span></span>';
     }else{
       mid=`<div class="res"><div class="kt">🔒 انقفل</div>${myS}</div>`;
       foot=`<span class="when">${T<m.t?fmtDT(m.t):m.t+2.2*3600e3>T?'المباراة شغالة':'بانتظار النتيجة الرسمية'}</span>`;
