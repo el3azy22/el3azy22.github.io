@@ -47,6 +47,12 @@ header a svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1
   </header>
   <p class="note">كل صورة تطلع جاهزة مع نص التغريدة. على الآيفون اضغط «شارك الصورة» وبعدين X أو «حفظ الصورة»، وعقبها «انسخ النص».</p>
 
+  <section class="card" id="cE">
+    <h2>👥 تشكيلة الجمهور <small>قبل المباراة</small></h2>
+    <p class="when">تطلع بعد قفل «توقّع تشكيلة ناديك» (قبل المباراة بساعتين). انشرها قبل البداية.</p>
+    <div id="bE"><div class="empty">لحظة...</div></div>
+  </section>
+
   <section class="card" id="cA">
     <h2>🕵️ تحدي اليوم بدا <small>بدون كشف اللاعب</small></h2>
     <p class="when">انشرها 12 بالليل. تقدر تجهز صور الأيام الياية من الحين وتجدولها في X.</p>
@@ -233,6 +239,56 @@ async function cardC(wk){
   return {cv,text,empty:!rows.length};
 }
 
+/* E: تشكيلة الجمهور — أكثر حارس وأكثر 10 لاعبين اختارهم جمهور النادي (fans/tp.json → x_<النادي>، بعد القفل بس) */
+const URL_T='https://el3azy.com/tashkila/';
+async function crowdList(){
+  const [S,SQ]=await Promise.all(['../../fans/tp.json','../../tashkila/squads.json'].map(u=>fetch(u+'?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)));
+  if(!S||!SQ)return [];
+  const P={};(SQ.clubs||[]).forEach(c=>(c.p||[]).forEach(p=>{P[p[5]||`${p[0]==null?'':p[0]}|${p[1]}`]=[p[6]||p[1],p[2]]}));
+  const T=Date.now(),out=[];
+  Object.values(S).filter(m=>T<m.t+3*3600e3).sort((x,y)=>((x.t<=T)-(y.t<=T))||x.t-y.t).forEach(m=>[m.h,m.a].forEach(c=>{
+    const X=m['x_'+c],n=m[c]||0;if(!X||n<5)return;
+    const L=Object.entries(X).filter(([k])=>P[k]).map(([k,v])=>({nm:P[k][0],ps:P[k][1],pc:Math.round(v/n*100)}));
+    const xi=[...L.filter(x=>x.ps==='GK').slice(0,1),...L.filter(x=>x.ps!=='GK').slice(0,10)];
+    if(xi.length===11)out.push({m,c,n,xi,opp:c===m.h?m.a:m.h,live:T>=m.t})}));
+  return out;
+}
+function cardE(o){
+  const cl=D.clubs,{cv,x,W}=frame(`${cl[o.m.h]} × ${cl[o.m.a]}`,'منصة العازي','تشكيلة الجمهور');
+  crestAt(x,CR[o.c],o.c,W/2,370,70);
+  x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 46px ${F}`;x.fillText('جمهور '+cl[o.c],W/2,450);
+  segs(x,W/2,500,[[o.n.toLocaleString('en-US'),`600 26px ${F}`,'#D7B465'],[' مشجع توقعوا · النسبة من اللي اختاروا كل لاعب',`500 26px ${F}`,'rgba(255,245,229,.6)']]);
+  const X0=70,X1=W-70,Y0=540,Y1=1205;
+  const g=x.createLinearGradient(0,Y0,0,Y1);g.addColorStop(0,'#103F2C');g.addColorStop(1,'#0B2E20');rr(x,X0,Y0,X1-X0,Y1-Y0,30);x.fillStyle=g;x.fill();
+  x.save();rr(x,X0,Y0,X1-X0,Y1-Y0,30);x.clip();for(let i=0;i<8;i++){if(i%2){x.fillStyle='rgba(255,255,255,.025)';x.fillRect(X0,Y0+i*(Y1-Y0)/8,X1-X0,(Y1-Y0)/8)}}x.restore();
+  x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(x,X0,Y0,X1-X0,Y1-Y0,30);x.stroke();
+  const my=(Y0+Y1)/2;x.beginPath();x.moveTo(X0,my);x.lineTo(X1,my);x.stroke();x.beginPath();x.arc(W/2,my,70,0,Math.PI*2);x.stroke();
+  x.beginPath();x.moveTo(W/2-150,Y1);x.lineTo(W/2-150,Y1-90);x.lineTo(W/2+150,Y1-90);x.lineTo(W/2+150,Y1);x.stroke();
+  const rows=['FWD','MID','DEF','GK'].map(ps=>o.xi.filter(p=>p.ps===ps)).filter(r=>r.length);
+  const rh=(Y1-Y0)/rows.length;
+  rows.forEach((r,i)=>{const cy=Y0+rh*(i+.5)-(i===rows.length-1?12:0),cw=Math.min(210,((X1-X0)-40-(r.length-1)*14)/r.length),tot=r.length*cw+(r.length-1)*14;
+    r.forEach((p,j)=>{const bx=W/2+tot/2-(j+1)*cw-j*14,by=cy-58;
+      rr(x,bx,by,cw,116,20);x.fillStyle='rgba(7,29,43,.92)';x.fill();x.strokeStyle=p.pc>=80?'rgba(215,180,101,.85)':'rgba(215,180,101,.4)';x.lineWidth=2;x.stroke();
+      let fs=30;x.font=`700 ${fs}px ${F}`;while(x.measureText(p.nm).width>cw-20&&fs>20){fs--;x.font=`700 ${fs}px ${F}`}
+      let nm=p.nm;while(x.measureText(nm).width>cw-20&&nm.length>3)nm=nm.slice(0,-2)+'…';
+      x.textAlign='center';x.direction='rtl';x.fillStyle='#FFF5E5';x.fillText(nm,bx+cw/2,by+40);
+      x.direction='ltr';x.fillStyle='#D7B465';x.font=`700 32px ${F}`;x.fillText(p.pc+'%',bx+cw/2,by+84);x.direction='rtl'})});
+  footer(x,W,'توقّع تشكيلة ناديك','el3azy.com/tashkila');
+  const text=`👥 تشكيلة جمهور ${cl[o.c]} ${o.live?'في':'قبل'} مباراة ${cl[o.opp]}\n${o.n.toLocaleString('en-US')} مشجع توقعوا، وهذي التشكيلة اللي اختارها أكثرهم.\n\nتتفق معهم؟ توقّع تشكيلة ناديك في المباراة الياية 👇\n${URL_T}`;
+  return {cv,text};
+}
+let LE=[],iE=0;
+async function rE(){
+  const box=$('#bE');if(!LE.length){box.innerHTML='<div class="empty">ما في مباراة قفل توقعها الحين.<br>التشكيلة تطلع هني بعد القفل (قبل كل مباراة بساعتين).</div>';OUT.E=null;return}
+  const o=LE[iE],r=cardE(o),blob=await blobOf(r.cv);
+  if(OUT.E&&OUT.E.url)URL.revokeObjectURL(OUT.E.url);
+  OUT.E={blob,text:r.text,url:URL.createObjectURL(blob),name:`el3azy-crowd-${o.m.h}-${o.m.a}-${o.c}.png`};
+  box.innerHTML=`${LE.length>1?`<div class="step"><button data-e="-1">›</button><b>${D.clubs[o.c]} · ${iE+1} من ${LE.length}</b><button data-e="1">‹</button></div>`:''}<img class="prev" id="iE" alt=""><div class="tw" id="tE"></div>
+    <div class="btns"><button class="btn" data-share="E">شارك الصورة</button><button class="btn g" data-copy="E">انسخ النص</button></div>`;
+  $('#iE').src=OUT.E.url;$('#tE').textContent=r.text;bindBtns();
+  box.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{iE=(iE+ +b.dataset.e+LE.length)%LE.length;rE()});
+}
+
 /* واجهة */
 const OUT={};
 async function show(k,fn,arg,label,emptyMsg){
@@ -270,6 +326,7 @@ async function init(){
   document.querySelectorAll('#cA [data-d]').forEach(b=>b.onclick=()=>{dA=Math.max(1,Math.min(Math.max(1,TODAY),dA+ +b.dataset.d));rA()});
   document.querySelectorAll('#cB [data-d]').forEach(b=>b.onclick=()=>{dB=Math.max(1,Math.min(Math.max(1,TODAY-1),dB+ +b.dataset.d));rB()});
   document.querySelectorAll('#cC [data-d]').forEach(b=>b.onclick=()=>{wC=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wC+ +b.dataset.d));rC()});
+  LE=await crowdList();await rE();
   await rA();
   if(TODAY<2&&!DEMO){$('#bB').innerHTML='<div class="empty">أول صورة «جواب أمس» تطلع صباح الأربعاء 18 نوفمبر.</div>';$('#dB').textContent='—'}else await rB();
   if(TODAY<1&&!DEMO){$('#bC').innerHTML='<div class="empty">دوري الجماهير يبدا مع أول تحدي الثلاثاء 17 نوفمبر.</div>';$('#dC').textContent='—'}else await rC();
