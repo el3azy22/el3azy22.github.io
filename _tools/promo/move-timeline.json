@@ -1,7 +1,7 @@
 {
  "_help": "فيديو «منصة العازي على تلفونك + رمز النقل» (81 ثانية). نفس نظام timeline.json — شوف README.txt. التشغيل: TL=move-timeline.json STAGE=move-stage.html python3 record.py ...",
  "fps": 30,
- "duration": 81,
+ "duration": 82.1,
  "demo": {
   "nowMs": "Date.UTC(2026,10,19,14,0,0)",
   "flowTime": true,
@@ -85,18 +85,18 @@
     "file": "../mano/video/platform-theme.m4a",
     "trackStart": 16.4,
     "at": 0,
-    "until": 37
+    "until": 39.9
    },
    {
     "file": "../mano/video/platform-theme.m4a",
     "trackStart": 57.6,
-    "at": 37,
-    "until": 44.6
+    "at": 39.9,
+    "until": 48.75
    },
    {
     "file": "../mano/video/platform-theme.m4a",
     "trackStart": 67.9,
-    "at": 44.6
+    "at": 48.75
    }
   ]
  },
@@ -111,14 +111,14 @@
      "text": "تدخل المنصة كل مرة من *X* أو *سفاري*؟"
     },
     {
-     "at": 2.8,
+     "at": 3.0,
      "text": "اجعلها *أيقونة* على شاشة تلفونك"
     }
    ]
   },
   {
    "id": "safari",
-   "start": 5.5,
+   "start": 7.2,
    "sfx": "whoosh",
    "captions": [
     {
@@ -126,14 +126,14 @@
      "text": "افتح *el3azy.com* في *سفاري*"
     },
     {
-     "at": 2.8,
+     "at": 2.65,
      "text": "واضغط زر «*⋯*» بجانب العنوان"
     }
    ]
   },
   {
    "id": "share",
-   "start": 11,
+   "start": 13.65,
    "sfx": "swish",
    "captions": [
     {
@@ -144,7 +144,7 @@
   },
   {
    "id": "addrow",
-   "start": 15.5,
+   "start": 18.15,
    "sfx": null,
    "captions": [
     {
@@ -155,7 +155,7 @@
   },
   {
    "id": "addsheet",
-   "start": 20,
+   "start": 22.65,
    "sfx": "swish",
    "captions": [
     {
@@ -163,14 +163,14 @@
      "text": "اترك «*فتح كتطبيق ويب*» مفعّلاً"
     },
     {
-     "at": 2.5,
+     "at": 2.3,
      "text": "واضغط «*إضافة*»"
     }
    ]
   },
   {
    "id": "home",
-   "start": 25,
+   "start": 27.65,
    "sfx": "chime",
    "captions": [
     {
@@ -178,14 +178,14 @@
      "text": "وأصبحت *منصة العازي* على شاشتك ✅"
     },
     {
-     "at": 3.6,
+     "at": 2.8,
      "text": "افتحها من الأيقونة مباشرة"
     }
    ]
   },
   {
    "id": "bridge",
-   "start": 30.5,
+   "start": 33.4,
    "sfx": "whoosh",
    "captions": [
     {
@@ -193,14 +193,14 @@
      "text": "أول مرة تفتحها من الأيقونة؟"
     },
     {
-     "at": 3.0,
+     "at": 2.35,
      "text": "انقل *بطاقتك ونقاطك* إليها بـ*رمز النقل*"
     }
    ]
   },
   {
    "id": "open",
-   "start": 37,
+   "start": 39.9,
    "sfx": "whoosh",
    "captions": [
     {
@@ -208,14 +208,14 @@
      "text": "في سفاري أو X، اضغط *بطاقة المشجع*"
     },
     {
-     "at": 2.9,
+     "at": 1.8,
      "text": "ومن *ملف المشجع* اضغط «*انقل بطاقتك لتلفون ثاني*»"
     }
    ]
   },
   {
    "id": "make",
-   "start": 43,
+   "start": 47.15,
    "sfx": "swish",
    "captions": [
     {
@@ -223,14 +223,14 @@
      "text": "يظهر لك *رمز من 8 حروف*"
     },
     {
-     "at": 4.3,
+     "at": 1.9,
      "text": "اضغط «*انسخ الرمز*»"
     }
    ]
   },
   {
    "id": "swap",
-   "start": 50,
+   "start": 52.35,
    "sfx": "whoosh",
    "captions": [
     {
@@ -241,7 +241,7 @@
   },
   {
    "id": "enter",
-   "start": 53.5,
+   "start": 55.85,
    "sfx": null,
    "captions": [
     {
@@ -249,14 +249,14 @@
      "text": "اضغط بطاقة المشجع، ثم «*عندي رمز نقل*»"
     },
     {
-     "at": 5.0,
+     "at": 4.4,
      "text": "الصق الرمز، واضغط «*انقل البطاقة*»"
     }
    ]
   },
   {
    "id": "done",
-   "start": 63,
+   "start": 63.85,
    "sfx": "chime",
    "captions": [
     {
@@ -267,7 +267,7 @@
   },
   {
    "id": "tips",
-   "start": 68,
+   "start": 68.85,
    "sfx": "swish",
    "captions": [
     {
@@ -278,7 +278,7 @@
   },
   {
    "id": "outro",
-   "start": 75.5,
+   "start": 76.6,
    "sfx": "chime",
    "captions": [
     {
