@@ -224,7 +224,9 @@ if __name__ == '__main__':
     T.check('الملخص: عدد التوقعات ولكل جمهور (اللي مب طرف ما ينعد)', (sm['501']['n'], sm['501']['ain'], sm['501']['wasl']), (3, 2, 1))
     T.check('الملخص: توزيع الصح بعد التشكيلة', (sm['501']['d'][8], sm['501']['d'][11], sm['501']['d'][1]), (1, 1, 1))
     T.check('الملخص: مباراة ياية بدون توزيع', (sm['502']['n'], 'd' in sm['502']), (1, False))
-    T.check('الملخص ما فيه توقعات أحد', '"x"' in json.dumps(sm) or 'q' in json.dumps(sm), False)
+    T.check('الملخص ما فيه توقعات أحد (بس أعداد لكل لاعب)', '"x"' in json.dumps(sm) or 'tA' in json.dumps(sm), False)
+    T.check('تشكيلة الجمهور بعد القفل: كم واحد اختار كل لاعب', (sm['501'].get('x_ain', {}).get('a0'), len(sm['501'].get('x_wasl', {})) > 0), (2, True))
+    T.check('تشكيلة الجمهور ما تطلع قبل القفل', any(k.startswith('x_') for k in sm['502']), False)
     os.environ.pop('TP_START', None)
     # داخل الإمارات أو برا (fans/geo.json): أرقام مجمعة بس
     gf = {'u1': {'c': 'ain', 'n': 'سالم'}, 'u2': {'c': 'ain', 'n': ''}, 'u3': {'c': 'wasl', 'n': 'x'}, 'u4': {'c': 'none', 'n': ''}, 'u5': {'c': 'wasl'}, 'u6': {'n': 'بدون نادي'}}

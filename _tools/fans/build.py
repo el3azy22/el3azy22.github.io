@@ -501,16 +501,26 @@ def tp_summary(pred_d, lineups, tp_all, now, H, read=None):
         row = {'t': t, 'wk': m['wk'], 'h': m['h'], 'a': m['a'], 'n': 0, m['h']: 0, m['a']: 0}
         L = (lineups or {}).get(mid)
         dist = [0] * 12
+        locked = now >= t - 2 * 3600000   # بعد القفل (قبل المباراة بساعتين) محد يقدر يغيّر، فنطلّع «تشكيلة الجمهور» (كم واحد اختار كل لاعب)
+        pick = {m['h']: defaultdict(int), m['a']: defaultdict(int)}
         for x in v.values():
             c = (x or {}).get('c')
             if c not in (m['h'], m['a']):
                 continue
             row['n'] += 1; row[c] += 1
+            if locked:
+                for k in dict.fromkeys(((x or {}).get('x') or '').split('~')):
+                    if k:
+                        pick[c][k] += 1
             if L and t <= now:
                 real = set(L['hs'] if c == L['h'] else L['as'])
                 dist[sum(1 for k in dict.fromkeys(((x or {}).get('x') or '').split('~')) if k in real)] += 1
         if L and t <= now and row['n']:
             row['d'] = dist
+        if locked:
+            for c in (m['h'], m['a']):
+                if row[c]:
+                    row['x_' + c] = dict(sorted(pick[c].items(), key=lambda kv: -kv[1])[:24])
         out[mid] = row
     return out
 
