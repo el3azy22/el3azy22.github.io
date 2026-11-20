@@ -147,6 +147,14 @@ def _pr(T,O=0):
     "w":{".validate":"newData.val() == now"},
     "$other":{".validate":False}}}
 _op=_opens(_ms)
+# فتح جولة بموعد يحدده إبراهيم بدال الحساب الآلي (قرار 20 نوفمبر: الجولة 7 المؤجلة تنفتح الإثنين 23 نوفمبر 8 المسا ويا «منو بيسجل؟» و«خماسي الجولة»)
+OPEN_FIX={7:1795449600000}
+for _w,_t in OPEN_FIX.items():
+  if _w in _op: _op[_w]=_t
+# «منو بيسجل؟» و«خماسي الجولة»: يشتغلون في كل جولة ينفتح توقعها من هالموعد وطالع (محد ينظلم في جولة بدت)
+try: LAUNCH5=int(json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','khamsa','config.json'),encoding='utf8')).get('launch') or 0) or 1795449600000
+except Exception: LAUNCH5=1795449600000
+LAUNCH5=int(os.environ.get('LAUNCH5') or LAUNCH5)
 rules["rules"]["pr"]={m['id']:_pr(m['t'],_op[m['wk']]) for m in _ms}
 # نسخة من مواعيد القفل اللي في القواعد: الصفحة تقفل على الأبكر، ولوحة التحكم تنبّه لو المواعيد تغيرت
 if _ms:json.dump({m['id']:m['t'] for m in _ms},open(os.path.join(os.path.dirname(_pd),'lock.json'),'w'),separators=(',',':'))
@@ -166,9 +174,44 @@ def _tp(m,O=0):
     "c":{".validate":f"newData.isString() && newData.val() == {FCU}.child('c').val() && (newData.val() == '{m['h']}' || newData.val() == '{m['a']}')"},
     "x":{".validate":"newData.isString() && newData.val().length <= 2000 && newData.val().matches(/^[^~]+(~[^~]+){10}$/)"},
     "f":{".validate":"newData.isString() && newData.val().matches(/^[0-9]-[0-9](-[0-9]){1,3}$/)"},   # الخطة (للعرض بس، ما تأثر على النقاط)
+    **({"s":{".validate":"newData.isString() && newData.val().matches(/^[^~]{1,200}$/)"}} if O>=LAUNCH5 else {}),   # «منو بيسجل؟»: مفتاح اللاعب (اختياري، توقع مستقل) من الإطلاق
     "w":{".validate":"newData.val() == now"},
     "$other":{".validate":False}}}
 rules["rules"]["tp"]={m['id']:_tp(m,_op[m['wk']]) for m in _ms}
+
+# ── «خماسي الجولة» (قرار إبراهيم 20 نوفمبر): k5/<جولة>/<uid> = {c: نادي البطاقة، p: {0..4: {c: نادي اللاعب، k: مفتاح اللاعب}}، cap: 0-4، w}
+# الخانات: 0 حارس · 1 مدافع · 2 وسط · 3 مهاجم · 4 حر. كل لاعب يقفل مع بداية مباراة ناديه في الجولة (ما يتبدل ولا ينشال)،
+# والقائد ما يتغير لو القائد القديم أو اليديد بدت مباراته. المراكز و«2 بالكثير من نفس النادي» ونادي اللاعب الحقيقي: يتأكد منها الحساب.
+def _k5(ms,O):
+  T={}
+  for m in ms:
+    for c in (m['h'],m['a']): T[c]=min(T.get(c,m['t']),m['t'])
+  K=lambda x:"("+" : ".join(f"{x} == '{c}' ? {t}" for c,t in sorted(T.items()))+" : 0)"
+  END=max(T.values())
+  same="newData.child('c').val() == data.child('c').val() && newData.child('k').val() == data.child('k').val()"
+  oc="data.parent().parent().child('p').child(data.val() + '').child('c').val()"
+  nc="newData.parent().child('p').child(newData.val() + '').child('c').val()"
+  return {"$u":{
+    ".read":"auth != null && auth.uid == $u",
+    ".write":f"auth != null && auth.uid == $u && newData.exists() && now >= {O} && now < {END}",
+    ".validate":"newData.hasChildren(['c','p','cap','w'])",
+    "c":{".validate":f"newData.val() == ({FCU}.child('c').exists() ? {FCU}.child('c').val() : 'none')"},
+    "p":{".validate":"newData.hasChildren(['0','1','2','3','4'])",
+      "$i":{".validate":("$i.matches(/^[0-4]$/) && newData.hasChildren(['c','k'])"
+        f" && (({same}) || (now < {K(chr(110)+'ewData.child(\'c\').val()')} && (!data.exists() || now < {K('data.child(\'c\').val()')})))"),
+        "c":{".validate":f"newData.isString() && newData.val().matches(/^({CL})$/)"},
+        "k":{".validate":"newData.isString() && newData.val().matches(/^[^~|]{1,200}$/)"},
+        "$other":{".validate":False}}},
+    "cap":{".validate":("newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 4"
+      f" && (!data.exists() || newData.val() == data.val() || (now < {K(oc.replace('data.parent().parent()','data.parent()'))} && now < {K(nc)}))")},
+    "w":{".validate":"newData.val() == now"},
+    "$other":{".validate":False}}}
+_rd={}
+for m in _ms: _rd.setdefault(m['wk'],[]).append(m)
+import time as _time
+_now=int(os.environ.get('NOW') or _time.time()*1000)
+# حجم القواعد: الجولات المفتوحة واللي تنفتح خلال 30 يوم بس (القواعد تنعاد وتنتشر يومياً مع sync و rate)
+rules["rules"]["k5"]={str(w):_k5(v,_op[w]) for w,v in _rd.items() if _op.get(w,0)>=LAUNCH5 and _op[w]<=_now+30*DAYMS and max(m['t'] for m in v)>_now-2*DAYMS}
 
 # ── «رمز النقل» (قرار إبراهيم 18 نوفمبر): ينقل بطاقة المشجع لتلفون أو متصفح ثاني بدون تسجيل ──
 # x/<sha256(الرمز)> = {u: صاحب البطاقة، c: البيانات مشفّرة بالرمز (AES-GCM)، i: IV، e: ينتهي (10 دقايق، 15 بالكثير)}
@@ -186,7 +229,7 @@ rules["rules"]["x"]={"$h":{
 # ── عداد الإحصائيات الخاص (موافقة إبراهيم 16 نوفمبر) ── v/<يوم>/{t,u,r,p/<قسم>,s/<أغنية>/<حدث>}
 # زيادة +1 بس لكل طلب. القراءة مفتوحة مثل s و c (أرقام مجمعة بدون أي بيانات شخصية، واللوحة ما فيها تسجيل دخول Firebase).
 VINC=f"newData.isNumber() && {inc}"
-SECS="home|mano|predict|fans|rate|songs|tashkila|grid"
+SECS="home|mano|predict|fans|rate|songs|tashkila|grid|khamsa"
 rules["rules"]["v"]={".read":True,"$d":{
   ".validate":"$d.matches(/^[1-9][0-9]{0,2}$/)",
   "t":{".write":True,".validate":VINC},"u":{".write":True,".validate":VINC},"r":{".write":True,".validate":VINC},

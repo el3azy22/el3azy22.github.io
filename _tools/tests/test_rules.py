@@ -10,6 +10,7 @@ B = os.environ.get('EMU', 'http://localhost:9000'); NS = 'demo-el3'
 OWNER = {'Authorization': 'Bearer owner'}
 DAY = 86400000
 ok = fail = 0
+os.environ['LAUNCH5'] = '0'      # «منو بيسجل؟» و«الخماسي» شغالين في كل الجولات بالاختبار (الإطلاق الحقيقي في khamsa/config.json)
 
 
 def tok(u):
@@ -249,6 +250,9 @@ def tp_tests():
     check('بعد القفل (ساعتين قبل البداية) يرفض', put('p1', 'tp/9102/p1', rec), 401)
     check('الجولة اللي ما انفتحت ترفض', put('p1', 'tp/9103/p1', rec), 401)
     check('الخطة تنحفظ ويا التوقع', put('p1', 'tp/9101/p1', {**rec, 'f': '4-4-2'}), 200)
+    check('الهداف ينحفظ ويا التوقع', put('p1', 'tp/9101/p1', {**rec, 's': 'k3'}), 200)
+    check('هداف فيه ~ يرفض', put('p1', 'tp/9101/p1', {**rec, 's': 'a~b'}), 401)
+    check('هداف فاضي يرفض', put('p1', 'tp/9101/p1', {**rec, 's': ''}), 401)
     check('خطة بشكل غلط ترفض', put('p1', 'tp/9101/p1', {**rec, 'f': '<b>'}), 401)
     check('10 لاعبين بس يرفض', put('p1', 'tp/9101/p1', {**rec, 'x': '~'.join(f'k{i}' for i in range(10))}), 401)
     check('نادي غير نادي البطاقة يرفض', put('p1', 'tp/9101/p1', {**rec, 'c': 'wahda'}), 401)
@@ -299,11 +303,61 @@ def r_tests():
     check('تحدي الخبير يتسجل', put('p3', 'r/2/pro/p3', {**rec, 'g': 3}), 200)
 
 
+def k5_tests():
+    now = int(time.time() * 1000)
+    ms = [{'id': '9201', 'wk': 1, 't': now + 3 * 3600000, 'h': 'ain', 'a': 'wahda', 'st': 1},
+          {'id': '9202', 'wk': 1, 't': now - 3600000, 'h': 'wasl', 'a': 'nasr', 'st': 1},      # بدت قبل ساعة
+          {'id': '9203', 'wk': 2, 't': now + 9 * DAY, 'h': 'ain', 'a': 'nasr', 'st': 1}]       # الجولة الجاية: ما انفتحت
+    load_rules(now - DAY, ms)
+    reset({'f': {'p1': {'c': 'ain', 't': 1}, 'p2': {'t': 1}, 'p9': {'c': 'ain', 't': 1}},
+           'k5': {'1': {'p9': {'c': 'ain', 'cap': 2, 'w': 1, 'p': {'0': {'c': 'ain', 'k': 'g1'}, '1': {'c': 'ain', 'k': 'd1'},
+                  '2': {'c': 'wasl', 'k': 'm1'}, '3': {'c': 'wahda', 'k': 'f1'}, '4': {'c': 'wahda', 'k': 'x1'}}}}}})
+    print('\n— خماسي الجولة —')
+    P = lambda *a: {str(i): {'c': c, 'k': k} for i, (c, k) in enumerate(a)}
+    rec = {'c': 'ain', 'cap': 0, 'w': TS, 'p': P(('ain', 'g1'), ('ain', 'd1'), ('wahda', 'm1'), ('wahda', 'f1'), ('ain', 'x1'))}
+    check('خماسي كامل قبل مباريات أنديته ينقبل', put('p1', 'k5/1/p1', rec), 200)
+    check('تبديل لاعب ما بدت مباراته ينقبل', put('p1', 'k5/1/p1', {**rec, 'p': P(('ain', 'g1'), ('ain', 'd1'), ('wahda', 'm2'), ('wahda', 'f1'), ('ain', 'x1'))}), 200)
+    check('لاعب من نادي بدت مباراته يرفض', put('p1', 'k5/1/p1', {**rec, 'p': P(('ain', 'g1'), ('ain', 'd1'), ('wasl', 'm1'), ('wahda', 'f1'), ('ain', 'x1'))}), 401)
+    check('نادي مب في الجولة يرفض', put('p1', 'k5/1/p1', {**rec, 'p': P(('ain', 'g1'), ('ain', 'd1'), ('hatta', 'm1'), ('wahda', 'f1'), ('ain', 'x1'))}), 401)
+    check('4 لاعبين بس يرفض', put('p1', 'k5/1/p1', {**rec, 'p': {k: v for k, v in rec['p'].items() if k != '4'}}), 401)
+    check('القائد برا 0-4 يرفض', put('p1', 'k5/1/p1', {**rec, 'cap': 5}), 401)
+    check('نادي غير نادي البطاقة يرفض', put('p1', 'k5/1/p1', {**rec, 'c': 'wahda'}), 401)
+    check('اللي ما اختار نادي يلعب بدون نادي', put('p2', 'k5/1/p2', {**rec, 'c': 'none'}), 200)
+    check('المسح يرفض', requests.delete(url('k5/1/p1', 'p1')).status_code, 401)
+    check('الجولة اللي ما انفتحت ترفض', put('p1', 'k5/2/p1', rec), 401)
+    check('ما يقرا خماسي غيره', requests.get(url('k5/1/p1', 'p2')).status_code, 401)
+    # p9 عنده لاعب الوصل (بدت مباراته) في الخانة 2 وهو القائد
+    old = get('k5/1/p9').json()
+    old['p'] = {str(i): v for i, v in enumerate(old['p'])} if isinstance(old['p'], list) else old['p']
+    keep = {**old, 'w': TS, 'p': {**old['p'], '3': {'c': 'wahda', 'k': 'f2'}}}
+    check('تبديل خانة ثانية والمقفول على حاله ينقبل', put('p9', 'k5/1/p9', keep), 200)
+    check('تبديل لاعب مباراته بدت يرفض', put('p9', 'k5/1/p9', {**keep, 'p': {**keep['p'], '2': {'c': 'wahda', 'k': 'm9'}}}), 401)
+    check('تغيير القائد من لاعب بدت مباراته يرفض', put('p9', 'k5/1/p9', {**keep, 'cap': 0}), 401)
+    k2 = {**keep, 'cap': 0}
+    requests.patch(url('k5/1/p9'), data=json.dumps({'cap': 0}), headers=OWNER)
+    check('القائد لاعب مباراته بدت يرفض', put('p9', 'k5/1/p9', {**k2, 'w': TS, 'cap': 2}), 401)
+    check('تغيير القائد بين لاعبين ما بدوا ينقبل', put('p9', 'k5/1/p9', {**k2, 'w': TS, 'cap': 1}), 200)
+
+
+def launch_tests():
+    now = int(time.time() * 1000)
+    ms = [{'id': '9301', 'wk': 1, 't': now + 3 * 3600000, 'h': 'ain', 'a': 'wahda', 'st': 1}]
+    os.environ['LAUNCH5'] = str(now + DAY)      # الإطلاق بعدين: الجولة المفتوحة الحين بدونهم
+    load_rules(now - DAY, ms); reset({'f': {'p1': {'c': 'ain', 't': 1}}})
+    os.environ['LAUNCH5'] = '0'
+    print('\n— قبل الإطلاق —')
+    rec = {'c': 'ain', 'x': '~'.join(f'k{i}' for i in range(11)), 'w': TS}
+    check('التشكيلة بدون هداف تنقبل', put('p1', 'tp/9301/p1', rec), 200)
+    check('الهداف في جولة انفتحت قبل الإطلاق يرفض', put('p1', 'tp/9301/p1', {**rec, 's': 'k1'}), 401)
+    P = lambda *a: {str(i): {'c': c, 'k': k} for i, (c, k) in enumerate(a)}
+    check('الخماسي في جولة انفتحت قبل الإطلاق يرفض', put('p1', 'k5/1/p1', {'c': 'ain', 'cap': 0, 'w': TS, 'p': P(*[('ain', f'k{i}') for i in range(5)])}), 401)
+
+
 if __name__ == '__main__':
     try:
         requests.get(f'{B}/.json?ns={NS}', timeout=3)
     except Exception:
         sys.exit('المحاكي مب شغال على ' + B)
-    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests(); tp_tests(); x_tests(); r_tests()
+    mano_tests(); predict_tests(); rate_tests(); fan_tests(); grid_tests(); tp_tests(); k5_tests(); launch_tests(); x_tests(); r_tests()
     print(f'\nالنتيجة: {ok} نجح · {fail} فشل')
     sys.exit(1 if fail else 0)
