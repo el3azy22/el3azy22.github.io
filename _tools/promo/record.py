@@ -38,6 +38,15 @@ async def main():
         try{Object.defineProperty(navigator,'clipboard',{value:{writeText:async()=>{},readText:async()=>''},configurable:true})}catch(e){}
         const T0=%s,R=Date,p0=performance.timeOrigin;class FD extends R{constructor(...a){if(a.length)super(...a);else super(T0+(R.now()-p0))}static now(){return T0+(R.now()-p0)}};window.Date=FD})()"""%(json.dumps(TL['demo']['frames'],ensure_ascii=False),TL['demo']['nowMs']))
     await ctx.route('**/mano/data.json*',fix)
+    if TL['demo'].get('ranks'):   # «ملف المشجع»: نقاط عرض للمشجع (هالأسبوع/الموسم) ومكانه في نخبة جمهور ناديه
+      await ctx.route('**/fans/ranks.json*',lambda r:r.fulfill(status=200,content_type='application/json',body=json.dumps(TL['demo']['ranks'])))
+      async def fdata(route):
+        r=await route.fetch();d=await r.json();c=TL['demo']['fan']['c'];wk=next((w for w in d.get('weeks',[]) if w.get('live')),(d.get('weeks') or [None])[-1])
+        if wk:
+          L=wk['boards']['all'].setdefault('xi',{}).setdefault(c,[]);pos=TL['demo'].get('xiPos',4)
+          L.insert(pos-1,[TL['demo']['fan']['n'],TL['demo']['ranks']['week']['demo']['all'][1],'demo',pos,0])
+        await route.fulfill(response=r,body=json.dumps(d,ensure_ascii=False),headers={**r.headers,'content-type':'application/json'})
+      await ctx.route('**/fans/data.json*',fdata)
     await ctx.route('**/identitytoolkit.googleapis.com/**',lambda r:r.fulfill(status=200,content_type='application/json',body='{"idToken":"x","refreshToken":"y","localId":"demo","expiresIn":"3600"}'))
     XS={}   # رموز النقل (x/...) تنحفظ هني بس
     await ctx.route('**/securetoken.googleapis.com/**',lambda r:r.fulfill(status=200,content_type='application/json',body='{"id_token":"x","refresh_token":"y","user_id":"demo","expires_in":"3600"}'))

@@ -402,9 +402,10 @@ const SC={
   b(.34,()=>$('#bridge .arr').classList.add('on'));b(.42,()=>$('#fc').classList.add('fly'));
   $$('#bridge .chip').forEach((e,i)=>b(.7+i*.06,()=>e.classList.add('on')))},
  open(b){iosOff();showFrame('fA');$('#phone').classList.add('on');tag('في سفاري أو X','phone');
-  b(.42,()=>tap('.fz-chip'));
-  b(.72,()=>{shBottom();hl('.fz-mk',4)})},
- make(b){b(.04,()=>{hl('');tap('.fz-mk')});
+  b(.2,()=>hl('.fz-chip',5));b(.3,()=>{hl('');tap('.fz-chip')});      // بطاقة المشجع ← «ملف المشجع» (19 نوفمبر)
+  b(.52,()=>hl('.pf-big',6));
+  b(.76,()=>{shBottom();hl('.pf-mk',4)})},
+ make(b){b(.04,()=>{hl('');tap('.pf-mk')});
   b(.3,()=>{const c=Q('.fz-code');CODE=c?c.textContent.trim():'';hl('.fz-code',4)});
   b(.68,()=>{hl('');tap('.fz-cc')})},
  swap(b){hl('');const p=$('#phone');b(.0,()=>{p.classList.add('out');tag('')});
@@ -415,7 +416,7 @@ const SC={
   b(.36,()=>{hl('');tap('.fz-gt')});
   b(.56,()=>{const i=Q('.fz-in');if(i){i.value=CODE;i.dispatchEvent(new Event('input',{bubbles:true}))}hl('.fz-in',4)});
   b(.8,()=>{hl('');tap('.fz-go')})},
- done(b){b(.6,()=>tapAt(Q('.fz-chip')));b(.78,()=>tapAt(Q('.fz-chip')))},
+ done(b){b(.12,()=>tap('.fz-chip'));b(.42,()=>hl('.pf-big',6));b(.7,()=>hl('.pf-tiles',6))},
  tips(b){hl('');$('#phone').classList.remove('on');tag('');$$('#tips .feat').forEach((e,i)=>b(.03+i*.12,()=>e.classList.add('on')))},
  outro(b){$('#glow').classList.add('on');b(.03,()=>$('#outro .box').classList.add('go'));b(.3,()=>sweep())}
 };
