@@ -25,7 +25,11 @@ for pid,(nat,cc) in {k:v for k,v in F.get('_nat',{}).items() if not k.startswith
   if mp and (mp['nat'],mp['f'])!=(nat,cc): log.append(f"   mano {pid}: {mp['nat']} -> {nat}");mp['nat'],mp['f']=nat,cc
 # توحيد إملاء الأسماء (_tools/name_fixes.json): كلمة كاملة بكلمة، في الاسم الكامل والاسم القصير
 NF=json.load(open(f'{R}/_tools/name_fixes.json'));W=NF['words'];SKIP=set(NF.get('_skip',[]))
-fixw=lambda s:' '.join(W.get(w,w) for w in s.split(' ')) if isinstance(s,str) else s
+PH=NF.get('phrases',{})
+def fixw(s):
+  if not isinstance(s,str): return s
+  for a,b in PH.items(): s=s.replace(a,b)   # عبارة كاملة (مثلاً «عبد الله» ← «عبدالله») قبل الكلمات
+  return ' '.join(W.get(w,w) for w in s.split(' '))
 skip_ids=set();nlog=0
 for c in [t['national']]+t['clubs']:
   for p in c['p']:

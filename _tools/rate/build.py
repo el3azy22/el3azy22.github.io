@@ -378,6 +378,20 @@ def main():
         out.append(m)
     save_lineups(out)
     save_stats(out, now.timestamp() * 1000)
+    # توحيد إملاء الأسماء (_tools/name_fixes.json) حتى في المباريات القديمة، نفس «منو اللاعب؟» و«تشكيلتي»
+    NF = json.load(open(os.path.join(ROOT, '_tools', 'name_fixes.json'), encoding='utf8'))
+    def fixw(s):
+        if not isinstance(s, str):
+            return s
+        for a, b in NF.get('phrases', {}).items():
+            s = s.replace(a, b)
+        return ' '.join(NF['words'].get(w, w) for w in s.split(' '))
+    for m in out:
+        for side in ('h', 'a'):
+            for pl in (m.get(side) or {}).get('pl') or []:
+                for k in ('n', 'f'):
+                    if k in pl:
+                        pl[k] = fixw(pl[k])
     data = {'updated': now.strftime('%Y-%m-%d %H:%M'), 'matches': out}
     # ما نكتب الملف لو ما تغيّر شي غير وقت التحديث (عشان ما تنعمل commits فاضية)
     if os.path.exists(OUT):
