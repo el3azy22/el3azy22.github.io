@@ -46,6 +46,7 @@ git push -q || (git fetch -q origin main && git rebase -q origin/main && git pus
 | `rate/` | ⭐ قيّم اللاعبين · `_tools/rate/build.py` |
 | `fans/` | 🏆 دوري الجماهير · `_tools/fans/build.py` + `render.py` |
 | `songs/` · `tashkila/` | الأغاني · تشكيلتي |
+| `khamsa/` | 🖐️ خماسي الجولة · البيانات `save_stats` في `_tools/rate/build.py` + `_tools/khamsa/` · الحساب `_tools/fans/build.py` |
 | `admin/` · `admin/studio/` | لوحة الإحصائيات · استوديو الصور |
 | `bus/` | 🚌 باص الفريق (مب منشور) |
 

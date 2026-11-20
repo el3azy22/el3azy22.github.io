@@ -50,9 +50,13 @@ LU[M['id']][side] = real
 # توقع المشجع: 8 صح + 3 غلط
 others = [K(p) for p in squad if K(p) not in real and p[2] != 'GK']
 mine = real[:8] + others[:3]
+# «منو بيسجل؟»: هداف المشجع من تشكيلته (مب الحارس) سجّل هدفين ومنهم أول هدف = 3+1+2
+SCK = mine[1]
+LU[M['id']]['hg' if side == 'hs' else 'ag'] = {SCK: 2}
+LU[M['id']].update({'fg': SCK, 'fin': 1})
 
 
-async def run(b, state, w, saved):
+async def run(b, state, w, saved, lu=None):
     T = {'soon': (OPEN.get(str(M['wk'])) or M['t'] - 5 * 864e5) - 3600e3, 'pick': M['t'] - 30 * 3600e3,
          'locked': M['t'] - 3600e3, 'reveal': M['t'] + 3 * 3600e3}[state]
     pg = await b.new_page(viewport={'width': w, 'height': 800}, device_scale_factor=2)
@@ -69,14 +73,14 @@ async def run(b, state, w, saved):
             puts.append((r.url, r.post_data))
             return await route.fulfill(status=200, body='{}')
         if '/tp/' in r.url:
-            body = json.dumps(saved if isinstance(saved, dict) else {'c': CLUB, 'x': '~'.join(mine), 'w': 1}) if saved else 'null'
+            body = json.dumps(saved if isinstance(saved, dict) else {'c': CLUB, 'x': '~'.join(mine), 's': SCK, 'w': 1}) if saved else 'null'
             return await route.fulfill(status=200, body=body, content_type='application/json')
         await route.continue_()
     await pg.route('**/*firebasedatabase.app/**', fb)
     await pg.route('**/*googleapis.com/**', lambda r: r.abort())
     await pg.route('**/gc.zgo.at/**', lambda r: r.abort())
     if state == 'reveal':
-        await pg.route('**/tashkila/lineups.json*', lambda r: r.fulfill(status=200, body=json.dumps(LU), content_type='application/json'))
+        await pg.route('**/tashkila/lineups.json*', lambda r: r.fulfill(status=200, body=json.dumps(lu or LU), content_type='application/json'))
     await pg.add_init_script("addEventListener('DOMContentLoaded',()=>{const s=document.createElement('style');s.textContent='#addDlg,#sheet:not(.on),#veil:not(.on){display:none!important}';document.head.appendChild(s)})")
     await pg.goto(BASE + '/tashkila/?tpqa=tp')
     await pg.wait_for_timeout(1800)
@@ -129,6 +133,32 @@ async def main():
                 await pg.locator('#list .pl:not([disabled])').first.click()
                 await pg.wait_for_timeout(200)
             chk(await pg.locator('#tpSh').count() == 0, 'زر المشاركة قبل القفل')
+            # ⚽ منو بيسجل؟ — لاعبين التشكيلة (بدون الحارس) والمهاجمين أول، وتحتهم الجوكر
+            chips = await pg.locator('#tpSc .row .ch').evaluate_all('a=>a.map(b=>b.dataset.k)')
+            chk(len(chips) == 10, f'لاعبين التشكيلة في الهداف {len(chips)}')
+            pos = {K(p): p[2] for p in squad}
+            od = [{'FWD': 0, 'MID': 1, 'DEF': 2}.get(pos.get(k), 3) for k in chips]
+            chk(od == sorted(od), f'ترتيب الهداف (المهاجمين أول) {od}')
+            chk('ما اخترت هداف' in await pg.text_content('#tpSc .sel'), 'بدون هداف')
+            await pg.locator('#tpSc .ch').first.click()
+            await pg.wait_for_timeout(200)
+            chk(await pg.locator('#slots .ballb').count() == 1, '⚽ على الملعب')
+            chk('هدافك' in await pg.text_content('#tpSc .sel'), 'سطر الهداف')
+            await pg.click('#tpSc .seg button[data-t=rest]')
+            await pg.wait_for_timeout(200)
+            rk = await pg.locator('#tpSc .row .ch').evaluate_all('a=>a.map(b=>b.dataset.k)')
+            chk(rk and not set(rk) & set(chips), 'باقي اللاعبين فيهم لاعبين من التشكيلة')
+            await pg.locator('#tpSc .row .ch').first.click()
+            await pg.wait_for_timeout(200)
+            chk(await pg.locator('#slots .ballb').count() == 0 and 'من خارج تشكيلتك' in await pg.text_content('#tpSc .sel'), 'لاعب من خارج التشكيلة')
+            jk = await pg.locator('#tpSc .ch[aria-pressed=true]').get_attribute('data-k')
+            await pg.locator('#tpSc').scroll_into_view_if_needed()
+            await pg.screenshot(path=f'{OUT}/tp_pick-joker_{w}.png', full_page=True)
+            await pg.click('#tpSc .seg button[data-t=xi]')
+            await pg.wait_for_timeout(200)
+            await pg.locator('#tpSc .row .ch').first.click()
+            await pg.wait_for_timeout(200)
+            sck = chips[0]
             chk(not await pg.locator('#tpGo').is_disabled(), 'الاعتماد ما تفعّل بعد 11')
             await pg.click('#tpGo')
             await pg.wait_for_timeout(800)
@@ -140,6 +170,15 @@ async def main():
                 chk(len(set(d['x'].split('~'))) == 11, 'لاعب مكرر')
             chk('محفوظ' in await pg.text_content('#tpSub'), 'رسالة الحفظ')
             chk(tp and d.get('f') == '4-4-2', 'الخطة ما انحفظت')
+            chk(tp and d.get('s') == sck, f'الهداف ما انحفظ {d.get("s")}')
+            chk(jk not in d['x'].split('~'), 'الجوكر من التشكيلة')
+            # تعديل بعد الحفظ: الزر يقول «اعتمد التعديل»
+            await pg.locator('#tpSc .row').first.locator('.ch').nth(1).click()
+            await pg.wait_for_timeout(200)
+            chk('التعديل' in await pg.text_content('#tpGo') and 'اعتمد التعديل' in await pg.text_content('#tpSub'), 'تنبيه التعديل')
+            await pg.locator('#tpSc .row').first.locator('.ch').nth(0).click()
+            await pg.wait_for_timeout(200)
+            chk('محفوظ' in await pg.text_content('#tpSub'), 'رجع لنفس المحفوظ')
             before = await pg.locator('#slots .slot').all_text_contents()
             await pg.screenshot(path=f'{OUT}/tp_pick-saved_{w}.png', full_page=True)
             # الرجوع لصمّم تشكيلتك
@@ -155,6 +194,7 @@ async def main():
             pg, _ = await run(b, 'pick', w, d)
             chk(await pg.locator('.fm[aria-pressed=true]').text_content() == '4-4-2', 'الخطة ما رجعت')
             chk(await pg.locator('#slots .slot').all_text_contents() == before, 'اللاعبين ما رجعوا لنفس أماكنهم')
+            chk(await pg.locator('#tpSc .ch[aria-pressed=true]').get_attribute('data-k') == sck and await pg.locator('#slots .ballb').count() == 1, 'الهداف ما رجع')
             await pg.close()
             # توقع قديم بدون خطة محفوظة: نستنتج الخطة من مراكز اللاعبين بترتيبهم
             pg, _ = await run(b, 'pick', w, {k: v for k, v in d.items() if k != 'f'})
@@ -167,20 +207,33 @@ async def main():
             await pg.wait_for_timeout(300)
             chk(not await pg.locator('#sheet.on').count(), 'القائمة تنفتح بعد القفل')
             chk(await pg.locator('#tpSh').count() == 1 and 'توقعي' in await pg.text_content('#tpSh'), 'زر مشاركة التوقع بعد القفل')
+            chk(await pg.locator('.tp-sc.ro').count() == 1 and await pg.locator('#tpSc').count() == 0, 'الهداف بعد القفل للعرض بس')
             await pg.screenshot(path=f'{OUT}/tp_locked_{w}.png', full_page=True)
             if w == 390:
                 await share_img(pg, f'{OUT}/tp_share_locked.jpg')
             await pg.close()
 
             pg, _ = await run(b, 'reveal', w, True)
-            chk('8' in await pg.text_content('.tp-res .big'), 'النتيجة')
+            chk('8 من 11' in await pg.text_content('.tp-res'), 'النتيجة')
+            chk('14 نقطة' in await pg.text_content('.tp-res'), f"المجموع مع الهداف {await pg.text_content('.tp-res')}")
+            chk('+6' in await pg.text_content('.tp-scr i') and 'أول هدف' in await pg.text_content('.tp-scr'), 'نتيجة الهداف')
+            chk(await pg.locator('#slots .ballb').count() == 1, '⚽ على الملعب في النتيجة')
             chk(await pg.locator('.slot.tp-ok').count() == 8 and await pg.locator('.slot.tp-no').count() == 3, 'علامات ✓ ✕')
             chk(await pg.locator('.tp-miss').count() == 1, 'قائمة الأساسيين اللي ما توقعهم')
             chk('نتيجتي' in await pg.text_content('#tpSh'), 'زر مشاركة النتيجة')
             await pg.screenshot(path=f'{OUT}/tp_reveal_{w}.png', full_page=True)
             if w == 390:
                 t = await share_img(pg, f'{OUT}/tp_share_reveal.jpg')
-                chk('صبت 8 من 11' in (t or ''), f'نص المشاركة {t}')
+                chk('توقعت 8 من 11 صح' in (t or '') and '(+6)' in (t or ''), f'نص المشاركة {t}')
+            await pg.close()
+            # قبل نهاية المباراة: نقاط الهداف ما تنحسب لين تخلص
+            pg, _ = await run(b, 'reveal', w, True, {M['id']: {k: v for k, v in LU[M['id']].items() if k != 'fin'}})
+            chk('8 نقاط' in await pg.text_content('.tp-res') and 'بعد نهاية المباراة' in await pg.text_content('.tp-scr'), 'الهداف قبل النهاية')
+            await pg.close()
+            # ما سجّل
+            pg, _ = await run(b, 'reveal', w, True, {M['id']: {**{k: v for k, v in LU[M['id']].items() if k not in ('hg', 'ag', 'fg')}}})
+            chk('ما سجّل' in await pg.text_content('.tp-scr') and '8 نقاط' in await pg.text_content('.tp-res'), 'الهداف ما سجّل')
+            await pg.screenshot(path=f'{OUT}/tp_reveal-nogoal_{w}.png', full_page=True)
             await pg.close()
 
             if OPEN.get(str(M['wk'])):

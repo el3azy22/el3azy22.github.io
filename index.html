@@ -228,8 +228,9 @@ const myClub=()=>{const c=window.EL3FAN?EL3FAN.club():LS('el3azy_club');return c
 const ICO={
  mano:'<svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M11 5 6 7.5 3 13l4 2 1.5-2.5V27h15V12.5L25 15l4-2-3-5.5L21 5c-1 2-2.8 3-5 3s-4-1-5-3Z"/><path d="M13.7 15.3c0-1.5 1-2.5 2.4-2.5s2.4.9 2.4 2.2c0 1.8-2.5 2-2.5 4"/><circle class="f" cx="16" cy="22.3" r="1.15"/></svg>',
  pred:'<svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg>',
+ k5:'<svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M10 28V15.5c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5V8.3c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5v6.9-5.1c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5V20c0 4.6-3.2 8-7.6 8Z"/><path d="M10 18.5 7.6 15c-.8-1.1-2.3-1.3-3.3-.5s-1.1 2.2-.3 3.2L10 26"/></svg>',
  tp:'<svg viewBox="0 0 32 32" aria-hidden="true"><rect class="s" x="5" y="3" width="22" height="26" rx="3"/><path d="M5 16h22M11.5 3v4.2h9V3M11.5 29v-4.2h9V29"/><circle cx="16" cy="16" r="3.2"/><circle class="f" cx="10" cy="10.5" r="1.5"/><circle class="f" cx="22" cy="10.5" r="1.5"/><circle class="f" cx="10.5" cy="21.5" r="1.5"/><circle class="f" cx="21.5" cy="21.5" r="1.5"/></svg>'};
-let P=null,OPEN={},FD=null,RK=null,R=null;
+let P=null,OPEN={},FD=null,RK=null,R=null,K5={};
 
 /* تحديات اليوم: كل تحدي وحالته لك (باقي عليك / خلّصته / ينفتح بعدين)، اللي يقفل أول فوق */
 function challenges(){
@@ -254,6 +255,13 @@ function challenges(){
         if(!op(m))L.push({k:'tp',href:'tashkila/?tp',s:'wait',t:'توقّع تشكيلة ناديك',st:vs,tm:['ينفتح بعد',(OPEN[m.wk]||0)-T],a:'شوف'});
         else if(LS('el3azy_tp_'+m.id))L.push({k:'tp',href:'tashkila/?tp',s:'done',t:'توقّع تشكيلة ناديك',st:`<span class="st ok">✓ توقعت تشكيلة ${CN[c]}</span>`,tm:['يقفل بعد',m.t-LOCK-T]});
         else L.push({k:'tp',href:'tashkila/?tp',s:'todo',dl:m.t-LOCK,t:'توقّع تشكيلة ناديك',st:vs,tm:['يقفل بعد',m.t-LOCK-T],a:'توقّع'})}}
+    // خماسي الجولة (khamsa/config.json → launch): أقرب جولة ما خلصت
+    if(K5.launch&&T>=K5.launch){const by={};P.matches.forEach(m=>(by[m.wk]=by[m.wk]||[]).push(m.t));
+      const rs=Object.keys(by).filter(w=>(OPEN[w]||0)>=K5.launch&&Math.max(...by[w])>T).sort((a,b)=>(OPEN[a]||0)-(OPEN[b]||0)),w=rs[0];
+      if(w){const nx=by[w].filter(t=>t>T).sort((a,b)=>a-b)[0],o=OPEN[w]||0,href='khamsa/?w='+w;
+        if(o>T)L.push({k:'k5',href,s:'wait',t:'خماسي الجولة',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['ينفتح بعد',o-T],a:'شوف'});
+        else if(LS('el3azy_k5_'+w))L.push({k:'k5',href,s:'done',t:'خماسي الجولة',st:`<span class="st ok">✓ اخترت خماسيك للجولة ${w}</span>`,tm:['أقرب قفل بعد',nx-T]});
+        else L.push({k:'k5',href,s:'todo',dl:nx,t:'خماسي الجولة',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['أول قفل بعد',nx-T],a:'اختار'})}}
   }
   const o={todo:0,wait:1,done:2};L.sort((a,b)=>o[a.s]-o[b.s]||(a.dl||9e15)-(b.dl||9e15));
   return L;
@@ -294,7 +302,7 @@ function drawRate(){
 
 drawCh();
 const v=Math.floor(Date.now()/12e4),J=u=>fetch(u+'?v='+v).then(r=>r.ok?r.json():null).catch(()=>null);
-Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json')]).then(([p,o,r,f])=>{P=p;OPEN=o||{};R=r;FD=f;drawCh();drawLg();drawRate();
+Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json')]).then(([p,o,r,f,k])=>{P=p;OPEN=o||{};R=r;FD=f;K5=k||{};drawCh();drawLg();drawRate();
   J('fans/ranks.json').then(k=>{RK=k;drawLg()})});
 setInterval(()=>{drawCh();drawRate()},1000);
 addEventListener('el3fan',()=>{lastSig='';drawCh();drawLg()});

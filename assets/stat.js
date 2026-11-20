@@ -10,7 +10,7 @@
   window.el3stat=(id,ev)=>{if(/^[a-z0-9-]{1,20}$/.test(id)&&/^(play|dl|share)$/.test(ev))inc(`s/${id}/${ev}`)};
   if(!on)return;
   const seg=(location.pathname.split('/').filter(Boolean)[0]||'home').toLowerCase();
-  const sec=['mano','predict','fans','rate','songs','tashkila','grid'].includes(seg)?seg:(seg==='home'||seg==='index.html'?'home':null);
+  const sec=['mano','predict','fans','rate','songs','tashkila','grid','khamsa'].includes(seg)?seg:(seg==='home'||seg==='index.html'?'home':null);
   if(!sec)return;
   let ls=null;try{ls=window.localStorage}catch(e){}
   const get=k=>{try{return ls?ls.getItem(k):null}catch(e){return null}},put=(k,v)=>{try{ls&&ls.setItem(k,v)}catch(e){}};

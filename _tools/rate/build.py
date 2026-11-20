@@ -5,6 +5,7 @@
 """
 import io, json, os, re, sys, time, urllib.request
 from datetime import datetime, timedelta, timezone
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'khamsa'))   # صناعة الأهداف («خماسي الجولة»)
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 OUT = os.path.join(ROOT, 'rate', 'data.json')
@@ -17,6 +18,7 @@ CLUB = {'4': 'nasr', '12': 'kalba', '8': 'wahda', '21': 'ajman', '31': 'dhafra',
         '464': 'united', '11': 'khorfakkan', '6': 'shababahli', '20': 'hatta', '9': 'jazira', '5': 'baniyas', '1': 'ain'}
 SQ_ID = {'shababahli': 'shabab'}  # اسم النادي في squads.json لو يختلف
 POS = {'GK': 'GK', 'D': 'D', 'M': 'M', 'A': 'F'}
+OG = ('3', '4')   # نوع الهدف في أحداث المباراة: 1 عادي · 2 جزاء · 4 عكسي (تأكدنا من النتايج: 5-1 = 4 + عكسي) · 3 احتياط
 
 
 def get(path, tries=3):
@@ -130,9 +132,20 @@ def team(tm, side, ev, sq):
             known = (m[6] if m and len(m) > 6 and m[6] else None) or pa['shortname_ar'].strip()
             pid = pa['player_id']
             e = [x for x in ev if x.get('club_dir') == side]
-            g = sum(1 for x in e if x['type'] == 'goal' and x.get('player_id') == pid and x.get('goal_type') != '3')
-            og = sum(1 for x in e if x['type'] == 'goal' and x.get('player_id') == pid and x.get('goal_type') == '3')
+            g = sum(1 for x in e if x['type'] == 'goal' and x.get('player_id') == pid and x.get('goal_type') not in OG)
+            og = sum(1 for x in e if x['type'] == 'goal' and x.get('player_id') == pid and x.get('goal_type') in OG)
             cards = [x['type'][0] for x in e if x.get('player_id') == pid and x['type'] in ('ycard', 'rcard', 'y2card')]
+            # «خماسي الجولة»: الدقايق والكروت (الطرد بإنذار ثاني = طرد، وما ينحسب معه الإنذار الأول)
+            yc = sum(1 for x in e if x.get('player_id') == pid and x['type'] == 'ycard')
+            y2 = [int(x.get('time') or 0) for x in e if x.get('player_id') == pid and x['type'] == 'y2card']
+            rd = [int(x.get('time') or 0) for x in e if x.get('player_id') == pid and x['type'] == 'rcard'] + y2
+            yc = max(0, yc - len(y2))
+            end = sub_out if sub_out is not None else (min(rd) if rd else 90)
+            mn = max(0, max(end, 0) - (0 if starter else (sub_in or 0)))
+            st0 = 0 if starter else (sub_in or 0)
+            stop = sub_out if sub_out is not None else (min(rd) if rd else 999)
+            gc = sum(1 for x in ev if x['type'] == 'goal' and ((x.get('club_dir') != side) != (x.get('goal_type') in OG))
+                     and st0 <= goal_min(x)[0] < stop)      # الأهداف اللي دخلت على فريقه وهو في الملعب
             players.append({k: v for k, v in {
                 'i': pid, 'n': fix_ya(re.sub(r'\s+', ' ', known).strip()), 'f': fix_ya(re.sub(r'\s+', ' ', pa['shortname_ar']).strip()),
                 'no': int(pa['j_no']) if (pa.get('j_no') or '').isdigit() else None,
@@ -140,17 +153,144 @@ def team(tm, side, ev, sq):
                 's': 1 if starter else 0, 'in': sub_in, 'out': sub_out,
                 'cap': 1 if pa.get('captain') == '1' else None,
                 'g': g or None, 'og': og or None, 'cd': cards or None,
+                'mn': mn, 'gc': gc or None, 'yc': yc or None, 'rc': len(rd) or None, 'en': (pa.get('name_en') or '').strip() or None,
                 'ph': photo(pid, m[5] if m and len(m) > 5 else ''),
                 'k': (m[5] or f'{m[0] if m[0] is not None else ""}|{m[1]}') if m else None,   # مفتاح اللاعب في tashkila/squads.json («توقّع تشكيلة ناديك»)
             }.items() if v is not None})
     coach = next((o for o in tm.get('official') or [] if o.get('title_name_en') == 'Coach'), None)
     form = (a.get('formation') or '').split(':')[-1].strip()
-    return {'c': slug, 'cid': a['id'], 'name': a['name_ar'], 'sc': int(a['score']) if (a.get('score') or '').isdigit() else None,
+    pg = sum(1 for x in ev if x['type'] == 'goal' and x.get('club_dir') == side and x.get('goal_type') == '2')
+    return {'pg': pg or None, 'c': slug, 'cid': a['id'], 'name': a['name_ar'], 'sc': int(a['score']) if (a.get('score') or '').isdigit() else None,
             'fm': form, 'coach': {'i': 'c' + coach['person_id'], 'n': fix_ya(coach['shortname_ar'].strip())} if coach else None,
             'pl': players}
 
 
 LINEUPS = os.path.join(ROOT, 'tashkila', 'lineups.json')
+
+
+STATS = os.path.join(ROOT, 'khamsa', 'stats.json')
+
+
+def save_stats(matches, now_ms):
+    """«خماسي الجولة»: إحصائيات كل لاعب في كل مباراة خلصت (ملف يتجمع طول الموسم، القوانين v3.4).
+    {مباراة: {t, wk, h, a, sc: [أهداف الأرض، الضيف]، pg: [جزاءات انسجلت لكل فريق],
+              ast: 1 انحسبت الصناعة · 0 ما لقيناها في 48 ساعة · ما في = ننتظر،  fm: نفسها للتصديات والجزاءات والتقييم،
+              p: {مفتاح اللاعب: {s: H/A، m: دقايق، g: أهداف، a: صناعة، og: عكسي، y: إنذار، r: طرد، gc: أهداف دخلت وهو في الملعب،
+                                  sv: تصديات، pw: جزاء كسبه وانسجل، pm: جزاء ضيّعه، ps: جزاء صدّه، b: نجم المباراة 3/2/1}}}}"""
+    S = json.load(open(STATS, encoding='utf8')) if os.path.exists(STATS) else {}
+    late = lambda m: now_ms > m['t'] + 48 * 3600000
+    ch = False
+    for m in matches:
+        hp, ap = m['h'].get('pl'), m['a'].get('pl')
+        if m['st'] != 6 or not hp or not ap:
+            continue
+        o = S.get(m['id']) or {}
+        x = {'t': m['t'], 'wk': m['wk'], 'h': m['h']['c'], 'a': m['a']['c'], 'sc': [m['h'].get('sc'), m['a'].get('sc')],
+             'pg': [m['h'].get('pg') or 0, m['a'].get('pg') or 0], 'p': {}}
+        side_pl = {'H': hp, 'A': ap}
+        for sd, pl in side_pl.items():
+            for p in pl:
+                if p.get('k'):
+                    x['p'][p['k']] = {k: v for k, v in {'s': sd, 'm': p.get('mn') or 0, 'g': p.get('g'), 'og': p.get('og'), 'y': p.get('yc'),
+                                                         'r': p.get('rc'), 'gc': p.get('gc')}.items() if v or k in ('s', 'm')}
+        old = o.get('p') or {}
+        # ── الصناعة (الرابطة) ──
+        sig = ','.join(f"{k}:{v.get('g', 0)}" for k, v in sorted(x['p'].items()) if v.get('g'))     # لو تغيّرت الأهداف نرجع نسحبها
+        if not sig and not any(v.get('og') for v in x['p'].values()):
+            x['ast'] = 1                      # ما في أهداف: ما في صناعة
+        elif 'ast' in o and o.get('gs') == sig:
+            x['ast'] = o['ast']
+            for k, v in old.items():
+                if k in x['p'] and isinstance(v, dict) and v.get('a'):
+                    x['p'][k]['a'] = v['a']
+        else:
+            r = None
+            try:
+                import assists as AS
+                cand = lambda pl: [{'k': p.get('k'), 'en': p.get('en')} for p in pl]
+                r = AS.assists(m['wk'], m['h']['c'], m['a']['c'], cand(hp), cand(ap))
+            except Exception as e:
+                print('assists fail', m['id'], e, file=sys.stderr)
+            if r is not None:
+                x['ast'] = 1
+                for sd in ('H', 'A'):
+                    for k, n in r[sd].items():
+                        if k in x['p'] and x['p'][k]['s'] == sd:
+                            x['p'][k]['a'] = n
+                if r.get('miss'):
+                    print('assists unmatched', m['id'], r['miss'], file=sys.stderr)
+            elif late(m):
+                x['ast'] = 0
+        x['gs'] = sig
+        # ── التصديات والجزاءات والتقييم (FotMob) ──
+        FK = ('sv', 'pw', 'pm', 'ps', 'b')
+        if 'fm' in o:
+            x['fm'] = o['fm']
+            for k, v in old.items():
+                if k in x['p'] and isinstance(v, dict):
+                    x['p'][k].update({f: v[f] for f in FK if v.get(f)})
+        else:
+            r = None
+            try:
+                import fotmob as FM
+                r = FM.match_stats(m['h']['c'], m['a']['c'])
+            except Exception as e:
+                print('fotmob fail', m['id'], e, file=sys.stderr)
+            if r is not None:
+                x['fm'] = 1
+                import assists as AS
+                rts = []
+                for sd, pl in side_pl.items():
+                    for no, f in r[sd].items():
+                        p = next((q for q in pl if str(q.get('no')) == no and q.get('k')), None)
+                        if not p:      # الرقم مب مطابق: بالاسم
+                            k = AS.match_player(f['name'], '', [{'k': q.get('k'), 'en': q.get('en')} for q in pl])
+                            p = next((q for q in pl if q.get('k') == k), None) if k else None
+                        if not p:
+                            continue
+                        d = x['p'][p['k']]
+                        if f['sv']: d['sv'] = f['sv']
+                        if f['pm']: d['pm'] = f['pm']
+                        if f['ps']: d['ps'] = f['ps']
+                        if f['pw']: d['pw'] = f['pw']
+                        if f['rt']: rts.append((f['rt'], p['k']))
+                # الجزاء اللي كسبه ينحسب صناعة لو انسجل (بعدد جزاءات فريقه اللي انسجلت)
+                for sd, i in (('H', 0), ('A', 1)):
+                    left = x['pg'][i]
+                    for k, d in x['p'].items():
+                        if d['s'] == sd and d.get('pw'):
+                            n = min(d['pw'], left); left -= n
+                            if n: d['pw'] = n
+                            else: d.pop('pw')
+                # نجم المباراة: أعلى 3 تقييمات (المتساوين ياخذون نفس النقاط)
+                for rt, k in rts:
+                    above = sum(1 for r2, _ in rts if r2 > rt)
+                    if above < 3:
+                        x['p'][k]['b'] = 3 - above
+            elif late(m):
+                x['fm'] = 0
+        if o != x:
+            S[m['id']] = x; ch = True
+    if ch:
+        os.makedirs(os.path.dirname(STATS), exist_ok=True)
+        json.dump(S, open(STATS, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'), sort_keys=True)
+
+
+def goal_min(x):
+    """«45+3» ⇒ (45, 3): وقت بدل الضايع في الشوط الأول ييي قبل الدقيقة 46"""
+    a, _, b = str(x.get('fulltime') or x.get('time') or '0').partition('+')
+    return (int(a) if a.isdigit() else 999, int(b) if b.isdigit() else 0)
+
+
+def mark_first_goal(m, ev):
+    """«منو بيسجل؟»: علامة fg=1 على صاحب أول هدف في المباراة (لأي فريق). لو أول هدف عكسي: محد ياخذها."""
+    goals = sorted((x for x in ev if x.get('type') == 'goal'), key=goal_min)
+    if not goals or goals[0].get('goal_type') in OG:
+        return
+    side = {'H': m['h'], 'A': m['a']}.get(goals[0].get('club_dir'))
+    for p in (side or {}).get('pl') or []:
+        if p.get('i') == goals[0].get('player_id'):
+            p['fg'] = 1
 
 
 def save_lineups(matches):
@@ -165,6 +305,16 @@ def save_lineups(matches):
         x = {'t': m['t'], 'wk': m['wk'], 'h': m['h']['c'], 'a': m['a']['c'],
              'hs': [p['k'] for p in hp if p.get('s') and p.get('k')], 'as': [p['k'] for p in ap if p.get('s') and p.get('k')],
              'hn': sum(1 for p in hp if p.get('s')), 'an': sum(1 for p in ap if p.get('s'))}
+        # «منو بيسجل؟»: أهداف كل لاعب (أساسي أو بديل، بدون العكسية) + صاحب أول هدف + خلصت المباراة؟
+        for sd, pl in (('hg', hp), ('ag', ap)):
+            g = {p['k']: p['g'] for p in pl if p.get('g') and p.get('k')}
+            if g:
+                x[sd] = g
+        fg = next((p['k'] for p in hp + ap if p.get('fg') and p.get('k')), None)
+        if fg:
+            x['fg'] = fg
+        if m['st'] == 6:
+            x['fin'] = 1
         if L.get(m['id']) != x:
             L[m['id']] = x; ch = True
     if ch:
@@ -191,6 +341,8 @@ def main():
         o = old.get(mid)
         # نسحب التشكيلة من ساعة قبل البداية، ونوقف التحديث بعد ما تخلص المباراة وتثبت البيانات بـ 3 ساعات
         need = now.timestamp() * 1000 >= k - 75 * 60000 and not (o and o.get('st') == 6 and o.get('h', {}).get('pl') and now.timestamp() * 1000 > k + 5 * 3600000)
+        if o and o.get('h', {}).get('pl') and 'mn' not in o['h']['pl'][0]:
+            need = True      # بيانات قديمة قبل «خماسي الجولة» (بدون الدقايق): نسحبها مرة وحدة
         if need:
             try:
                 rep = get('match_report?match_id=' + mid)['match_report']
@@ -203,6 +355,7 @@ def main():
                     m['h'] = team(rep['team1'], 'H', ev, sq)
                     m['a'] = team(rep['team2'], 'A', ev, sq)
                     m['st'] = int(rep['attributes'].get('status_id') or m['st'])
+                    mark_first_goal(m, ev)
             except Exception as e:
                 print('report fail', mid, e, file=sys.stderr)
                 if o:
@@ -216,12 +369,15 @@ def main():
                     m['st'] = 6
             except Exception as e:
                 print('status fail', mid, e, file=sys.stderr)
+        if o and o.get('st') == 6 and m['st'] != 6 and m['h'].get('pl'):
+            m['st'] = 6      # خلصت قبل: ما نرجعها (التقرير أحياناً يرجع حالة 5 بعد ما خلصت)
         if m['st'] == 6 and not m['h'].get('pl'):
             m['st'] = 5  # خلصت بس التشكيلة مب جاهزة: لا تفتح التقييم
         if it.get('team1_score', '') != '' and m['h'].get('sc') is None:
             m['h']['sc'], m['a']['sc'] = int(it['team1_score'] or 0), int(it['team2_score'] or 0)
         out.append(m)
     save_lineups(out)
+    save_stats(out, now.timestamp() * 1000)
     data = {'updated': now.strftime('%Y-%m-%d %H:%M'), 'matches': out}
     # ما نكتب الملف لو ما تغيّر شي غير وقت التحديث (عشان ما تنعمل commits فاضية)
     if os.path.exists(OUT):

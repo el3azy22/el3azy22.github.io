@@ -648,6 +648,45 @@ fetch('squads.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw new Error(r.stat
 .tp-res .l{font-size:13px;margin-top:4px;line-height:1.7}
 .tp-miss{margin-top:10px;text-align:start;font-size:12.5px;line-height:1.9;padding:10px 12px;border-radius:14px;background:rgba(4,16,24,.45)}
 .tp-miss b{color:#F6E3AE}
+/* ⚽ منو بيسجل؟ (توقع مستقل عن الـ11) — نفس لغة بطاقة المباراة */
+.tp-sc{margin:12px 0 4px;border-radius:22px;padding:14px 12px 12px;background:linear-gradient(180deg,rgba(215,180,101,.14),rgba(215,180,101,.04));border:1.5px solid rgba(215,180,101,.5)}
+.tp-sc .hd{display:flex;align-items:center;gap:10px}
+.tp-sc .ic{flex:none;width:38px;height:38px;border-radius:50%;display:grid;place-items:center;font-size:20px;background:rgba(4,16,24,.55);box-shadow:inset 0 0 0 1.5px rgba(215,180,101,.6)}
+.tp-sc h3{margin:0;font-size:17px;font-weight:700;color:#F6E3AE;line-height:1.3}
+.tp-sc .hd p{margin:1px 0 0;font-size:12px;opacity:.8;line-height:1.5}
+.tp-sc .opt{margin-inline-start:auto;flex:none;font-size:11px;font-weight:600;color:#D7B465;padding:3px 9px;border-radius:10px;border:1px solid rgba(215,180,101,.45)}
+.tp-sc .seg{display:flex;gap:4px;margin:12px 0 4px;padding:4px;border-radius:14px;background:rgba(4,16,24,.5)}
+.tp-sc .seg button{flex:1;font:inherit;font-size:13px;font-weight:600;border:0;border-radius:10px;padding:8px 4px;color:#FFF5E5;background:none;opacity:.7;cursor:pointer}
+.tp-sc .seg button[aria-pressed="true"]{opacity:1;color:#F6E3AE;background:linear-gradient(180deg,#1d4a62,#12364b);box-shadow:inset 0 0 0 1.5px rgba(215,180,101,.6)}
+.tp-sc .seg small{font-weight:400;opacity:.7;font-size:11px}
+.tp-sc .row{display:flex;gap:7px;overflow-x:auto;padding:6px 2px 6px;scrollbar-width:none;touch-action:pan-x pan-y}
+.tp-sc .row::-webkit-scrollbar{display:none}
+.tp-sc .ch{flex:none;width:70px;border-radius:14px;padding:8px 3px 7px;text-align:center;background:rgba(4,16,24,.45);border:1px solid rgba(215,180,101,.18);position:relative;color:#FFF5E5;font:inherit;cursor:pointer}
+.tp-sc .ch .pic{width:42px;height:42px;margin:0 auto;display:block;border-width:2.5px}
+.tp-sc .ch .pic i{min-width:18px;height:18px;font-size:10.5px;line-height:18px;bottom:-4px;left:-5px}
+.tp-sc .ch .nm{font-size:11.5px;font-weight:700;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-sc .ch[aria-pressed="true"]{border-color:#D7B465;background:rgba(215,180,101,.22);box-shadow:0 0 0 1px #D7B465 inset}
+.tp-sc .ch[aria-pressed="true"]::after{content:'⚽';position:absolute;top:3px;left:4px;font-size:14px}
+.tp-sc .hint{font-size:11.5px;opacity:.7;text-align:center;margin:0 0 2px}
+.tp-sc .none{font-size:12.5px;opacity:.65;text-align:center;padding:14px 4px}
+.tp-sc .sel{display:flex;align-items:center;gap:10px;margin-top:8px;padding:10px 12px;border-radius:16px;background:rgba(4,16,24,.5);min-height:62px}
+.tp-sc .sel .pic{width:42px;height:42px;flex:none;border-width:2.5px}
+.tp-sc .sel .who{flex:1;min-width:0;line-height:1.45}.tp-sc .sel .who span{display:block;font-size:11.5px;color:#D7B465}.tp-sc .sel .who b{font-size:15px;color:#F6E3AE}
+.tp-sc .sel .who em{font-style:normal;font-size:11.5px;opacity:.7;margin-inline-start:6px}
+.tp-sc .sel.empty{justify-content:center;font-size:12.5px;opacity:.7}
+.tp-sc .rules{display:flex;gap:6px;margin-top:8px}
+.tp-sc .rules span{flex:1;text-align:center;padding:6px 3px;border-radius:11px;border:1px solid rgba(215,180,101,.25);font-size:11px;line-height:1.4;opacity:.92}
+.tp-sc .rules b{display:block;font-size:15px;color:#F6E3AE;direction:ltr}
+.tp-sc.ro{display:flex;align-items:center;gap:10px;padding:10px 12px;margin-top:10px}.tp-sc.ro .pic{width:42px;height:42px;flex:none;border-width:2.5px}
+.tp-sc.ro .who{flex:1;line-height:1.45}.tp-sc.ro .who span{display:block;font-size:11.5px;color:#D7B465}.tp-sc.ro .who b{font-size:15px;color:#F6E3AE}
+/* النتيجة: بطاقة وحدة فيها التشكيلة والهداف والمجموع */
+.tp-res .k{font-size:12px;color:#8fe3b5;font-weight:600}
+.tp-split{display:flex;gap:8px;margin-top:10px}
+.tp-split>div{flex:1;min-width:0;border-radius:16px;padding:10px 8px;background:rgba(4,16,24,.45);display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1.45}
+.tp-split span{font-size:11.5px;opacity:.8}.tp-split b{font-size:15px;color:#F6E3AE;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-split em{font-style:normal;font-size:11.5px;opacity:.8}
+.tp-split i{font-style:normal;font-weight:700;font-size:17px;color:#8fe3b5;direction:ltr;margin-top:2px}.tp-split i.z{color:rgba(255,245,229,.55)}
+.pic .ballb{position:absolute;top:-7px;left:-7px;font-size:16px;line-height:1;filter:drop-shadow(0 1px 2px rgba(0,0,0,.8));z-index:3}
 body.tpm #natl,body.tpm #clubs,body.tpm .tp-hide,body.tpm .actions,body.tpm #xShare,body.tpm #addPlayer,body.tpm #sheetAdd,body.tpm #hero,body.tpm #note,body.tpm #plab{display:none!important}
 body.tpm.tplock #fms,body.tpm.tplock .fmlbl,body.tpm.tplock #count{display:none!important}
 </style>
@@ -659,7 +698,11 @@ const TCLUB={shababahli:'shabab'};   // رمز النادي في squads.json ل�
 const AR=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],MO=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const when=t=>{const d=new Date(t+4*3600e3),h=d.getUTCHours(),m=d.getUTCMinutes();return `${AR[d.getUTCDay()]} ${d.getUTCDate()} ${MO[d.getUTCMonth()]} · ${(h%12)||12}:${String(m).padStart(2,'0')} ${h<12?'الصبح':h<16?'الظهر':'المسا'}`};
 const tk=p=>p[5]||((p[0]??'')+'|'+p[1]);
-let PD=null,OPEN={},LU={},M=null,ST='',MINE=null,mode='free',saved=null,tick=0;
+let K5L=1795449600000,SCON=false,PD=null,OPEN={},LU={},M=null,ST='',MINE=null,mode='free',saved=null,tick=0,SC=null,MINES=null,scTab='xi';
+const NQT=n=>n===1?'نقطة':n===2?'نقطتين':n>=3&&n<=10?'نقاط':'نقطة';
+const POSO={FWD:0,MID:1,DEF:2};
+/* «منو بيسجل؟»: سجّل (أساسي أو بديل) = 3 · كل هدف زيادة +1 · أول هدف في المباراة +2 · نفس _tools/fans/build.py scorer_pts */
+function scRes(L,c,s){if(!s||!L||!L.fin)return null;const g=+(((c===L.h?L.hg:L.ag)||{})[s]||0),f=g>0&&L.fg===s;return {g,f,pts:g>0?3+(g-1)+(f?2:0):0}}
 const el=(h)=>{const d=document.createElement('div');d.innerHTML=h.trim();return d.firstChild};
 function q(id){return document.getElementById(id)}
 async function boot(){
@@ -683,16 +726,17 @@ function setMode(m){
   if(m===mode)return;mode=m;document.querySelectorAll('.tp-tabs button').forEach(b=>b.classList.toggle('on',b.dataset.m===m));
   document.body.classList.toggle('tpm',m==='tp');
   if(m==='tp'){freeState={club,xi:xi.slice(),fm,extra};extra={};renderTP()}
-  else{document.body.classList.remove('tplock');document.querySelectorAll('.tp-card,.tp-msg,.tp-res,.tp-miss,.tp-go,.tp-sub').forEach(e=>e.remove());clearInterval(tick);
+  else{document.body.classList.remove('tplock');document.querySelectorAll('.tp-card,.tp-msg,.tp-res,.tp-miss,.tp-go,.tp-sub,.tp-sc').forEach(e=>e.remove());clearInterval(tick);
     extra=freeState?freeState.extra:extra;
     if(freeState&&freeState.club){const btn=[...document.querySelectorAll('.club')].find(b=>b.getAttribute('aria-pressed')==='true');fm=freeState.fm;pickClub(freeState.club,btn);xi=freeState.xi;renderPitch()}
     else{club=null;q('builder').hidden=true}}
 }
 async function loadData(){
   if(PD)return;const nc={cache:'no-cache'};
+  try{const k=await fetch('../khamsa/config.json',nc).then(r=>r.json());if(k.launch)K5L=k.launch}catch(e){}
   [PD,OPEN,LU]=await Promise.all([fetch('../predict/data.json',nc).then(r=>r.json()).catch(()=>({matches:[]})),fetch('../predict/open.json',nc).then(r=>r.json()).catch(()=>({})),fetch('lineups.json',nc).then(r=>r.json()).catch(()=>({}))]);
 }
-function clear(){document.querySelectorAll('.tp-card,.tp-msg,.tp-res,.tp-miss,.tp-go,.tp-sub').forEach(e=>e.remove());clearInterval(tick)}
+function clear(){document.querySelectorAll('.tp-card,.tp-msg,.tp-res,.tp-miss,.tp-go,.tp-sub,.tp-sc').forEach(e=>e.remove());clearInterval(tick)}
 async function renderTP(){
   clear();const F=window.EL3FAN;let c=F&&F.club();if(c==='none')c='';
   for(let i=0;i<50&&!CLUBS.length;i++)await new Promise(r=>setTimeout(r,100));const anchor=document.querySelector('.tp-tabs');
@@ -703,6 +747,7 @@ async function renderTP(){
   const sq=CLUBS.find(x=>x.id===(TCLUB[c]||c));
   if(!M||!sq){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">ما في مباراة جاية لناديك في الجدول لين الحين.<br>ارجع لما تنزل مواعيد الجولة الجاية.</div>`));return}
   const op=OPEN[M.wk]||0,lock=M.t-LOCK;
+  SCON=QA||op>=K5L;   // «منو بيسجل؟» في الجولات اللي تنفتح من الإطلاق بس (khamsa/config.json)
   ST=LU[M.id]&&now>=M.t?'reveal':now>=lock?'locked':now<op?'soon':'pick';
   const other=M.h===c?M.a:M.h,oc=CLUBS.find(x=>x.id===(TCLUB[other]||other));
   const nm=x=>(CLUBS.find(y=>y.id===(TCLUB[x]||x))||{}).name||x;
@@ -710,7 +755,7 @@ async function renderTP(){
   const card=el(`<div class="tp-card"><div class="k">الجولة ${M.wk} · ${ST==='reveal'?'التشكيلة الأساسية نزلت':ST==='locked'?'انقفل التوقع':'توقّع تشكيلة ناديك'}</div>
    <div class="tp-vs"><div><img src="${crest(M.h)}" alt="">${nm(M.h)}</div><b>×</b><div><img src="${crest(M.a)}" alt="">${nm(M.a)}</div></div>
    <div class="t">${when(M.t)}</div>
-   ${ST==='pick'?`<div class="tp-lock">🔒 يقفل بعد <b id="tpCd"></b></div><div class="tp-rule">اختار الـ11 اللي تتوقع المدرب ينزلهم أساسيين. كل لاعب تصيبه يجيب <b>نقطة</b> لك ولجمهور ${nm(c)}. التوقع يقفل قبل المباراة بساعتين.</div>`:''}
+   ${ST==='pick'?`<div class="tp-lock">🔒 يقفل بعد <b id="tpCd"></b></div><div class="tp-rule">اختار الـ11 اللي تتوقع المدرب ينزلهم أساسيين. كل لاعب توقعته صح = <b>نقطة</b> لك ولجمهور ${nm(c)}${SCON?`، و⚽ <b>منو بيسجل؟</b> تحت الملعب يجيب نقاط زيادة`:''}. يقفل قبل المباراة بساعتين.</div>`:''}
    ${ST==='soon'?`<div class="tp-lock">⏳ التوقع ينفتح بعد <b id="tpCd"></b></div>`:''}
    ${ST==='locked'?`<div class="tp-lock">🔒 انقفل التوقع · التشكيلة الأساسية تنكشف مع بداية المباراة</div>`:''}</div>`);
   anchor.after(card);
@@ -722,10 +767,10 @@ async function renderTP(){
   const prevXi=(saved&&saved.mid===M.id)?saved.xi:null;
   pickClub(sq,btn);
   document.body.classList.toggle('tplock',ST!=='pick');
-  let keys=null,sf=null;
-  try{const a=await F.tok();const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`).then(r=>r.ok?r.json():null);if(r&&r.x){keys=r.x.split('~');sf=r.f||null}}catch(e){}
-  if(!keys){try{const v=JSON.parse(localStorage.getItem('el3azy_tp_'+M.id)||'null');if(Array.isArray(v))keys=v;else if(v&&v.k){keys=v.k;sf=v.f}}catch(e){}}
-  MINE=keys;
+  let keys=null,sf=null,ss=null;
+  try{const a=await F.tok();const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`).then(r=>r.ok?r.json():null);if(r&&r.x){keys=r.x.split('~');sf=r.f||null;ss=r.s||null}}catch(e){}
+  if(!keys){try{const v=JSON.parse(localStorage.getItem('el3azy_tp_'+M.id)||'null');if(Array.isArray(v))keys=v;else if(v&&v.k){keys=v.k;sf=v.f;ss=v.s||null}}catch(e){}}
+  MINE=keys;MINES=keys&&SCON?ss:null;SC=!SCON?null:keys?ss:(saved&&saved.mid===M.id?saved.sc:null);scTab='';
   if(keys){const by={};sq.p.forEach(p=>by[tk(p)]=p);
     // المفاتيح محفوظة بترتيب الخانات: نرجّع نفس الخطة ونفس مكان كل لاعب.
     // التوقعات القديمة (قبل حفظ الخطة): نختار الخطة اللي تطابق مراكز اللاعبين بترتيبهم
@@ -737,20 +782,26 @@ async function renderTP(){
   renderPitch();
   const pitch=q('pitch');
   if(ST==='pick'){
-    pitch.after(el(`<button class="tp-go" id="tpGo">✅ اعتمد توقعي</button>`));
+    pitch.after(el(`<button class="tp-go" id="tpGo">✅ اعتمد توقعي</button>`));if(SCON){pitch.after(el(`<div class="tp-sc" id="tpSc"></div>`));renderSC()}
     q('tpGo').after(el(`<div class="tp-sub" id="tpSub">${keys?'توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل':'تقدر تعدّل لين ما يقفل · الخطة للشكل بس، والنقاط على أسماء اللاعبين'}</div>`));
     q('tpGo').onclick=save;upd();
   }
-  if(ST==='locked'){pitch.after(el(`<div class="tp-sub">${keys?'توقعك محفوظ ✅ ما تقدر تعدّله بعد القفل':'ما اعتمدت توقع لهالمباراة. توقّع المباراة الجاية قبل ما تقفل.'}</div>`));
+  if(ST==='locked'){if(keys&&SC)pitch.after(scRO());pitch.after(el(`<div class="tp-sub">${keys?'توقعك محفوظ ✅ ما تقدر تعدّله بعد القفل':'ما اعتمدت توقع لهالمباراة. توقّع المباراة الجاية قبل ما تقفل.'}</div>`));
     if(keys){pitch.after(el(`<button class="tp-go tp-sh" id="tpSh" type="button">𝕏 شارك توقعي</button>`));q('tpSh').onclick=()=>shareTP(null)}}
   if(ST==='reveal'){
     const L=LU[M.id],real=new Set(M.h===c?L.hs:L.as);
     if(!keys){pitch.before(el(`<div class="tp-msg">ما توقعت تشكيلة هالمباراة.<br>التشكيلة الجاية تنفتح مع الجولة الجاية.</div>`));}
-    else{const hits=keys.filter(k=>real.has(k)).length;
-      pitch.before(el(`<div class="tp-res"><div class="big">${hits} <small>من 11</small></div><div class="l">صبت ${hits} من التشكيلة الأساسية ${hits?'✅':''} وجبت <b>${hits} ${hits===1?'نقطة':hits===2?'نقطتين':'نقاط'}</b> لك ولجمهور ${nm(c)}</div></div>`));
+    else{const hits=keys.filter(k=>real.has(k)).length,sr=scRes(L,c,SC),tot=hits+(sr?sr.pts:0),sp=scP();
+      if(!sp)pitch.before(el(`<div class="tp-res"><div class="big">${hits} <small>من 11</small></div><div class="l">توقعت ${hits} صح من التشكيلة الأساسية ${hits?'✅':''} وجبت <b>${hits} ${NQT(hits)}</b> لك ولجمهور ${nm(c)}</div></div>`));
+      else{const n=sp[6]||sp[1],jk=!keys.includes(SC)?' · من خارج تشكيلتك':'';
+        const det=!sr?'تنحسب بعد نهاية المباراة':sr.g?`${sr.g===1?'هدف':sr.g===2?'هدفين':sr.g+' أهداف'}${sr.f?' · منها أول هدف':''}`:'ما سجّل';
+        pitch.before(el(`<div class="tp-res"><div class="k">نتيجتك</div><div class="big">${tot} <small>${NQT(tot)}${sr?'':' لين الحين'}</small></div>
+          <div class="tp-split"><div><span>🧩 التشكيلة</span><b>${hits} من 11</b><em>توقعتهم صح</em><i class="${hits?'':'z'}">+${hits}</i></div>
+          <div class="tp-scr"><span>⚽ الهداف${jk}</span><b>${n}</b><em>${det}</em><i class="${sr&&sr.pts?'':'z'}">${sr?'+'+sr.pts:'…'}</i></div></div>
+          <div class="l">لك ولجمهور ${nm(c)}</div></div>`));}
       const by={};sq.p.forEach(p=>by[tk(p)]=p);const miss=[...real].filter(k=>!keys.includes(k)).map(k=>by[k]).filter(Boolean).map(p=>p[6]||p[1]);
       if(miss.length)pitch.after(el(`<div class="tp-miss">❌ <b>أساسيين ما توقعتهم:</b> ${miss.join('، ')}</div>`));
-      pitch.after(el(`<button class="tp-go tp-sh" id="tpSh" type="button">𝕏 شارك نتيجتي</button>`));q('tpSh').onclick=()=>shareTP({real,hits});}
+      pitch.after(el(`<button class="tp-go tp-sh" id="tpSh" type="button">𝕏 شارك نتيجتي</button>`));q('tpSh').onclick=()=>shareTP({real,hits,sr});}
   }
 }
 /* المشاركة بعد القفل بس (قرار إبراهيم: محد ياخذ توقع الثاني قبل القفل) */
@@ -760,12 +811,13 @@ async function shareTP(R){
   const c=EL3FAN.club(),cn=club.name,vs=`${(CLUBS.find(y=>y.id===(TCLUB[M.h]||M.h))||{}).name||M.h} × ${(CLUBS.find(y=>y.id===(TCLUB[M.a]||M.a))||{}).name||M.a}`,U='el3azy.com/tashkila/?tp';
   gc('share-tp');try{window.el3stat&&el3stat('tp','share')}catch(e){}
   try{
-    const o=R?{title:'توقّعي',line:`الجولة ${M.wk} · ${vs}`,noFm:1,badge:['من التشكيلة الأساسية',`صبت ${R.hits} من 11`],marks:xi.map(p=>p?(R.real.has(tk(p))?'ok':'no'):null),url:U}
+    const o=R?{title:'توقّعي',line:`الجولة ${M.wk} · ${vs}`,noFm:1,badge:['توقعتهم صح',`${R.hits} من 11`],marks:xi.map(p=>p?(R.real.has(tk(p))?'ok':'no'):null),url:U}
              :{title:'توقّعي',line:`الجولة ${M.wk} · ${vs}`,noFm:1,badge:['🔒 توقعي قبل المباراة',kick()],url:U};
     const cv=await drawCard(o),blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.93));
     const file=new File([blob],`tawaqqu-${c}-${M.id}.jpg`,{type:'image/jpeg'});
-    const text=R?`صبت ${R.hits} من 11 في تشكيلة ${cn} ✅\n${vs}\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`
-                :`توقعي لتشكيلة ${cn} 🔒\n${vs}\nنشوف كم بصيب منها 👀\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`;
+    const sp=scP(),sl=sp?(R?(R.sr?(R.sr.pts?`\n⚽ هدافي ${sp[6]||sp[1]} سجّل (+${R.sr.pts})`:`\n⚽ هدافي ${sp[6]||sp[1]} ما سجّل`):''):`\n⚽ هدافي: ${sp[6]||sp[1]}`):'';
+    const text=R?`توقعت ${R.hits} من 11 صح في تشكيلة ${cn} ✅${sl}\n${vs}\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`
+                :`توقعي لتشكيلة ${cn} 🔒${sl}\n${vs}\nنشوف كم بصيب منها 👀\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`;
     if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text});return}catch(e){if(e&&e.name==='AbortError')return}}
     const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=file.name;document.body.appendChild(a);a.click();a.remove();
     window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank');toast('نزّلت الصورة، ارفقها في التغريدة');
@@ -776,16 +828,44 @@ function decorate(){
   if(ST==='reveal'&&M&&LU[M.id]&&MINE){const c=EL3FAN.club(),L=LU[M.id],real=new Set(M.h===c?L.hs:L.as);
     document.querySelectorAll('#slots .slot').forEach((b,i)=>{const p=xi[i];if(p)b.classList.add(real.has(tk(p))?'tp-ok':'tp-no')})}
   if(ST!=='pick')document.querySelectorAll('#slots .slot').forEach(b=>b.onclick=null);
+  if(SC&&(ST==='pick'||MINE))document.querySelectorAll('#slots .slot').forEach((b,i)=>{const p=xi[i];if(p&&tk(p)===SC){const pc=b.querySelector('.pic');pc&&pc.insertAdjacentHTML('beforeend','<span class="ballb" aria-hidden="true">⚽</span>');b.setAttribute('aria-label',b.getAttribute('aria-label')+' · تتوقعه يسجل')}});
+  if(ST==='pick')renderSC();
   upd();
 }
-function upd(){const g=q('tpGo');if(g){const n=xi.filter(Boolean).length;g.disabled=n<11;g.textContent=n<11?`اختار ${11-n} ${11-n===1?'لاعب':'لاعبين'} بعد`:'✅ اعتمد توقعي'}}
+function upd(){const g=q('tpGo');if(g){const n=xi.filter(Boolean).length,dirty=MINE&&(xi.map(p=>p?tk(p):'').join('~')!==MINE.join('~')||(SC||null)!==(MINES||null));g.disabled=n<11;g.textContent=n<11?`اختار ${11-n} ${11-n===1?'لاعب':'لاعبين'} بعد`:dirty?'✅ اعتمد التعديل':'✅ اعتمد توقعي';
+  const sb=q('tpSub');if(sb&&MINE)sb.textContent=dirty?'عدّلت توقعك · اضغط «اعتمد التعديل» عشان ينحفظ':'توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل'}
+  if(mode==='tp'&&M&&ST==='pick')saved={mid:M.id,xi:xi.slice(),sc:SC}}
+/* ⚽ منو بيسجل؟ — تبويبين: «من تشكيلتك» (المهاجمين أول) و«باقي اللاعبين» (لو دخل بديل وسجّل ينحسب) */
+function scP(){if(!SC||!club)return null;return club.p.find(p=>tk(p)===SC)||null}
+function chip(p){const k=kit(p[2]==='GK'?'GK':'X');return `<button type="button" class="ch" data-k="${tk(p).replace(/"/g,'&quot;')}" aria-pressed="${tk(p)===SC}" aria-label="${(p[6]||p[1]).replace(/"/g,'')}"><span class="pic" style="--rb:${k.body}">${picHTML(p,k).replace(' loading="lazy"','')}</span><div class="nm">${p[6]||p[1]}</div></button>`}
+function scPic(p){const k=kit('X');return `<span class="pic" style="--rb:${k.body}">${picHTML(p,k)}</span>`}
+function renderSC(){
+  const box=q('tpSc');if(!box||!club)return;const keep=(box.querySelector('.row')||{}).scrollLeft||0,was=scTab;
+  const inXi=new Set(xi.filter(Boolean).map(tk)),srt=a=>a.slice().sort((x,y)=>(POSO[x[2]]??3)-(POSO[y[2]]??3));
+  const mine=srt(xi.filter(p=>p&&p[2]!=='GK')),rest=srt(club.p.filter(p=>!inXi.has(tk(p))&&p[2]!=='GK'));
+  const sp=scP(),out=sp&&!inXi.has(SC);if(!scTab)scTab=out?'rest':'xi';
+  const L=scTab==='xi'?mine:rest;
+  box.innerHTML=`<div class="hd"><span class="ic">⚽</span><div><h3>منو بيسجل؟</h3><p>توقّع لاعب من ${club.name} يسجل في المباراة</p></div><span class="opt">اختياري</span></div>
+   <div class="seg" role="group"><button type="button" data-t="xi" aria-pressed="${scTab==='xi'}">من تشكيلتك <small>(${mine.length})</small></button><button type="button" data-t="rest" aria-pressed="${scTab==='rest'}">باقي اللاعبين <small>(${rest.length})</small></button></div>
+   ${L.length?`<div class="row">${L.map(chip).join('')}</div>`:`<div class="none">اختار تشكيلتك في الملعب، ولاعبينها يطلعون هني</div>`}
+   ${scTab==='rest'?'<div class="hint">لو دخل بديل وسجّل، ينحسب لك</div>':''}
+   ${sp?`<div class="sel">${scPic(sp)}<div class="who"><span>⚽ هدافك</span><b>${sp[6]||sp[1]}</b>${out?'<em>من خارج تشكيلتك</em>':''}</div></div>`:'<div class="sel empty">ما اخترت هداف · اضغط على لاعب</div>'}
+   <div class="rules"><span><b>+3</b>إذا سجّل</span><span><b>+1</b>كل هدف زيادة</span><span><b>+2</b>أول هدف في المباراة</span></div>`;
+  const r=box.querySelector('.row');if(r&&was===scTab)r.scrollLeft=keep;
+  box.querySelectorAll('.ch').forEach(b=>b.onclick=()=>{SC=SC===b.dataset.k?null:b.dataset.k;renderPitch()});
+  box.querySelectorAll('.seg button').forEach(b=>b.onclick=()=>{scTab=b.dataset.t;renderSC()});
+}
+/* بعد القفل: الهداف للعرض بس */
+function scRO(){const p=scP();if(!p)return el('<div></div>');const out=!xi.some(x=>x&&tk(x)===SC);
+  return el(`<div class="tp-sc ro">${scPic(p)}<div class="who"><span>⚽ هدافك</span><b>${p[6]||p[1]}</b></div>${out?'<span class="opt">من خارج تشكيلتك</span>':''}</div>`)}
 async function save(){
   if(xi.some(p=>!p))return;const k=xi.map(tk);if(k.length<11||new Set(k).size<11)return;
   const g=q('tpGo');g.disabled=true;g.textContent='يحفظ...';
-  try{localStorage.setItem('el3azy_tp_'+M.id,JSON.stringify({k,f:fm}))}catch(e){}
+  const sc=SC&&club.p.some(p=>tk(p)===SC)?SC:null;
+  try{localStorage.setItem('el3azy_tp_'+M.id,JSON.stringify(sc?{k,f:fm,s:sc}:{k,f:fm}))}catch(e){}
   try{const F=EL3FAN;try{await F.sync()}catch(e){}const a=await F.tok();
-    const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`,{method:'PUT',body:JSON.stringify({c:F.club(),x:k.join('~'),f:fm,w:{'.sv':'timestamp'}})});
-    if(!r.ok)throw 0;MINE=k;q('tpSub').textContent='توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل';toast('✅ انحفظ توقعك');try{window.el3stat&&el3stat('tashkila','tp')}catch(e){}
+    const r=await fetch(`${DB}/tp/${M.id}/${a.u}.json?auth=${a.t}`,{method:'PUT',body:JSON.stringify({c:F.club(),x:k.join('~'),f:fm,...(sc?{s:sc}:{}),w:{'.sv':'timestamp'}})});
+    if(!r.ok)throw 0;MINE=k;MINES=sc;q('tpSub').textContent='توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل';toast('✅ انحفظ توقعك');try{window.el3stat&&el3stat('tashkila','tp')}catch(e){}
   }catch(e){toast(Date.now()>=M.t-LOCK?'انقفل التوقع':'ما انحفظ، تأكد من الإنترنت وجرب مرة ثانية')}
   upd();
 }

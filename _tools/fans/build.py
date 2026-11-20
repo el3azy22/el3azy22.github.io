@@ -112,6 +112,20 @@ except Exception:
 TP_START = int(os.environ.get('TP_START') or TP_START)
 if TP_START:
     CHALLENGES.append({'id': 'tp', 'name': 'توقّع تشكيلة ناديك', 'icon': '🧩'})
+# «خماسي الجولة» و«منو بيسجل؟» (قرار إبراهيم 20 نوفمبر): khamsa/config.json → start (يوم دخول الخماسي الدوري) و launch (يشتغلون في الجولات اللي تنفتح منه)
+try:
+    _K5 = json.load(open(os.path.join(ROOT, 'khamsa', 'config.json'), encoding='utf8'))
+except Exception:
+    _K5 = {}
+K5_START = int(os.environ.get('K5_START') or _K5.get('start') or 0)
+LAUNCH5 = int(os.environ.get('LAUNCH5') or _K5.get('launch') or 0) if (os.environ.get('LAUNCH5') or _K5.get('launch')) else 10 ** 15
+try:
+    OPENS = {int(k): int(v) for k, v in json.load(open(os.path.join(ROOT, 'predict', 'open.json'), encoding='utf8')).items()}
+except Exception:
+    OPENS = {}
+if K5_START and day_of(int(os.environ.get('NOW') or time.time() * 1000)) >= K5_START:
+    CHALLENGES.append({'id': 'k5', 'name': 'خماسي الجولة', 'icon': '🖐️'})
+K5_POS = ['GK', 'DEF', 'MID', 'FWD', None]     # الخانات: حارس · مدافع · وسط · مهاجم · حر (أي مركز غير الحارس)
 GRID_THR, GRID_RARE = 30, 10   # النسب بعد 30 حل للخانة · النادر أقل من 10% (v3.2)
 BOARDS = ['all'] + [c['id'] for c in CHALLENGES]
 FAIL_MIS = 6  # منو اللاعب: ما عرفه = 6 أخطاء
@@ -268,6 +282,113 @@ def collect_bus(bv_all, d0, d1, act=None):
     return users
 
 
+def scorer_pts(x, L, c):
+    """«منو بيسجل؟» (توقع مستقل عن الـ11): بعد ما تخلص المباراة بس.
+    سجّل (أساسي أو بديل، الجزاء ينحسب، العكسي لا) = 3 · كل هدف زيادة +1 · صاحب أول هدف في المباراة +2 · ما سجّل = 0."""
+    s = (x or {}).get('s')
+    if not s or not L.get('fin') or OPENS.get(int(L.get('wk') or 0), 0) < LAUNCH5:
+        return 0
+    g = int(((L.get('hg') if c == L['h'] else L.get('ag')) or {}).get(s) or 0)
+    return 3 + (g - 1) + (2 if L.get('fg') == s else 0) if g > 0 else 0
+
+
+K5_GOAL = {'GK': 6, 'DEF': 6, 'MID': 5, 'FWD': 4}
+K5_CS = {'GK': 4, 'DEF': 4, 'MID': 1, 'FWD': 0}
+
+
+def k5_points(d, pos):
+    """نقاط لاعب في مباراة (v3.4، على طريقة فانتازي الدوري الإنجليزي). d من khamsa/stats.json:
+    لعب +1 (60 دقيقة أو أكثر +2) · هدف: حارس/مدافع +6، وسط +5، مهاجم +4 · صناعة +3 (ومنها جزاء كسبه وانسجل)
+    · شباك نظيفة (60 دقيقة وما دخل هدف وهو في الملعب): حارس/مدافع +4، وسط +1 · الحارس: كل 3 تصديات +1، صد جزاء +5
+    · حارس/مدافع: كل هدفين دخلوا وهو في الملعب −1 · جزاء ضايع −2 · إنذار −1 · طرد −3 · عكسي −2 · نجم المباراة +3/+2/+1"""
+    g = lambda k: int(d.get(k) or 0)
+    m = g('m')
+    p = 2 if m >= 60 else 1
+    p += K5_GOAL.get(pos, 4) * g('g') + 3 * (g('a') + g('pw'))
+    if m >= 60 and g('gc') == 0:
+        p += K5_CS.get(pos, 0)
+    if pos == 'GK':
+        p += g('sv') // 3 + 5 * g('ps')
+    if pos in ('GK', 'DEF'):
+        p -= g('gc') // 2
+    p -= 2 * g('pm') + g('y') + 3 * g('r') + 2 * g('og')
+    return p + g('b')
+
+
+def squad_index():
+    """مفتاح اللاعب ← (ناديه، مركزه) من tashkila/squads.json (المراكز موحدة مع «منو اللاعب؟»)"""
+    try:
+        sq = json.load(open(os.path.join(ROOT, 'tashkila', 'squads.json'), encoding='utf8'))
+    except Exception:
+        return {}
+    fix = {'shabab': 'shababahli'}
+    return {(p[5] or f"{'' if p[0] is None else p[0]}|{p[1]}"): (fix.get(c['id'], c['id']), p[2]) for c in sq.get('clubs', []) for p in c.get('p', [])}
+
+
+def k5_entry(x, stats_by_club, sqi):
+    """خماسي مشجع واحد في جولة ⇒ [(يوم المباراة، نقاط الخانة)] للخانات اللي خلصت مبارياتها.
+    الخانة ما تنحسب (صفر) لو: المركز غلط، نادي اللاعب مب ناديه الحقيقي، اللاعب مكرر، أو ثالث لاعب من نفس النادي."""
+    p = (x or {}).get('p') or {}
+    if isinstance(p, list):
+        p = {str(i): v for i, v in enumerate(p) if v}
+    cap = (x or {}).get('cap')
+    seen, per_club, out = set(), defaultdict(int), []
+    for i in range(5):
+        sl = p.get(str(i)) or {}
+        k, c = sl.get('k'), sl.get('c')
+        real = sqi.get(k)
+        if not k or not real or real[0] != c or k in seen:
+            continue
+        seen.add(k); per_club[c] += 1
+        if per_club[c] > 2:
+            continue
+        pos = real[1]
+        if (K5_POS[i] and pos != K5_POS[i]) or (K5_POS[i] is None and pos == 'GK'):
+            continue
+        m = stats_by_club.get(c)
+        if not m:
+            continue                     # مباراته ما خلصت لين الحين
+        st = m['p'].get(k)
+        if not isinstance(st, dict):
+            out.append((m['d'], 0, i)); continue   # ما لعب
+        pts = k5_points(st, pos)
+        out.append((m['d'], pts * (2 if cap == i else 1), i))
+    return out
+
+
+def collect_k5(k5_all, stats, d0, d1, act=None, sqi=None):
+    """k5_all = {جولة: {uid: {c, p, cap, w}}} · stats = khamsa/stats.json.
+    النقاط تنحسب في يوم مباراة كل لاعب (الجولة المؤجلة تتوزع على أسابيعها). اللعب = 1 في أسبوع أول مباراة خلصت للجولة."""
+    sqi = sqi if sqi is not None else squad_index()
+    users = defaultdict(stat)
+    for wk, entries in (k5_all or {}).items():
+        byc = {}
+        for mid, m in (stats or {}).items():
+            if str(m.get('wk')) == str(wk):      # الصناعة تنضاف أول ما تنزل (عادة مع نهاية المباراة)
+                d = (int(m['t']) - START) // DAYMS + 1
+                for c in (m['h'], m['a']):
+                    byc[c] = {**m, 'd': d}
+        if not byc:
+            continue
+        first = min(v['d'] for v in byc.values())
+        for u, x in (entries or {}).items():
+            got = k5_entry(x, byc, sqi)
+            s = users[u[:12]]
+            pts = sum(p for d, p, i in got if d0 <= d <= d1)
+            if d0 <= first <= d1:
+                s['plays'] += 1
+                if act is not None:
+                    act.setdefault(u[:12], set()).add(first)
+            s['pts'] += pts
+            c = (x or {}).get('c')
+            t = int((x or {}).get('w') or 0)
+            if c and c != 'none' and t >= s['ct']:
+                s['c'], s['ct'] = c, t
+        for u in [u for u, s in users.items() if not s['plays'] and not s['pts']]:
+            users.pop(u)
+    return users
+
+
 def collect_tp(tp_all, lineups, d0, d1, act=None):
     """tp_all = {مباراة: {uid: {c, x, w}}} · lineups = tashkila/lineups.json.
     النقاط = كم لاعب من الـ11 اللي توقعهم بدا أساسي مع ناديه · الأخطاء = الباقي · اللعب = 1 لكل مباراة."""
@@ -289,7 +410,7 @@ def collect_tp(tp_all, lineups, d0, d1, act=None):
             s = users[u[:12]]
             if act is not None:
                 act.setdefault(u[:12], set()).add(d)
-            s['plays'] += 1; s['pts'] += hits; s['mis'] += 11 - hits
+            s['plays'] += 1; s['pts'] += hits + scorer_pts(x, L, c); s['mis'] += 11 - hits
             t = int(x.get('w') or 0)
             if t >= s['ct']:
                 s['c'], s['ct'] = c, t
@@ -488,6 +609,15 @@ def main():
                 if v:
                     tp_all[mid] = v
     tp_sum = tp_summary(pred_d, lineups, tp_all, now, H) if TP_START and H else None
+    k5_all, k5_stats = {}, {}
+    if any(c['id'] == 'k5' for c in CHALLENGES) and H and cur:
+        sp = os.path.join(ROOT, 'khamsa', 'stats.json')
+        k5_stats = json.load(open(sp, encoding='utf8')) if os.path.exists(sp) else {}
+        for w, t in OPENS.items():
+            if t >= LAUNCH5 and t <= now:
+                v = fb(f'k5/{w}', None, H)
+                if v:
+                    k5_all[str(w)] = v
     names = (fb('f', None, H) or {}) if H else {}
     geo = geo_summary(names, fb('g', None, H) or {}, now) if H else None
     names = {u[:12]: v for u, v in names.items() if isinstance(v, dict)}
@@ -508,6 +638,8 @@ def main():
             per['bus'] = collect_bus(bv_all, d0, d1, act)
         if TP_START:
             per['tp'] = collect_tp(tp_all, lineups, d0, d1, act)
+        if any(c['id'] == 'k5' for c in CHALLENGES):
+            per['k5'] = collect_k5(k5_all, k5_stats, d0, d1, act)
         final = now >= final_at(w) and w < cur
         as_of = d1 if final else min(today, d1)
         bd, ranks = boards(per, names, hide, approved(act, as_of))
