@@ -228,6 +228,18 @@ rules["rules"]["x"]={"$h":{
   "e":{".validate":"newData.isNumber() && newData.val() > now && newData.val() <= now + 900000"},
   "$other":{".validate":False}}}
 
+# ── «رمز الاسترجاع» (20 نوفمبر، موافقة إبراهيم) ── rk/<sha256(الرمز)> = {u, c, i}
+# رمز ثابت لكل بطاقة (مب مثل رمز النقل اللي ينتهي بعد 10 دقايق): لو ضاعت البطاقة من التلفون يكتبه وترجع.
+# المحتوى مشفّر بالرمز نفسه. ما ينقرا إلا اللي يعرف الرمز، وما يكتب أو يمسح إلا صاحب البطاقة.
+rules["rules"]["rk"]={"$h":{
+  ".read":True,
+  ".write":"auth != null && (data.exists() ? data.child('u').val() == auth.uid : newData.child('u').val() == auth.uid)",
+  ".validate":"$h.matches(/^[a-f0-9]{64}$/) && newData.hasChildren(['u','c','i'])",
+  "u":{".validate":"newData.val() == auth.uid"},
+  "c":{".validate":"newData.isString() && newData.val().length <= 4000"},
+  "i":{".validate":"newData.isString() && newData.val().length <= 40"},
+  "$other":{".validate":False}}}
+
 # ── عداد الإحصائيات الخاص (موافقة إبراهيم 16 نوفمبر) ── v/<يوم>/{t,u,r,p/<قسم>,s/<أغنية>/<حدث>}
 # زيادة +1 بس لكل طلب. القراءة مفتوحة مثل s و c (أرقام مجمعة بدون أي بيانات شخصية، واللوحة ما فيها تسجيل دخول Firebase).
 VINC=f"newData.isNumber() && {inc}"
