@@ -95,8 +95,9 @@ async function makeCode(){
 }
 async function useCode(input){
   const code=normCode(input);if(code.length!==8)throw new Error('bad');
-  const {h,k}=await kd(code);
-  const d=await fetch(`${FB.db}/x/${h}.json`).then(r=>r.ok?r.json():null).catch(()=>null);
+  let {h,k}=await kd(code);
+  let d=await fetch(`${FB.db}/x/${h}.json`).then(r=>r.ok?r.json():null).catch(()=>null),rk=false;
+  if(!d||!d.c){({h,k}=await kdR(code));d=await fetch(`${FB.db}/rk/${h}.json`).then(r=>r.ok?r.json():null).catch(()=>null);rk=true}   // رمز الاسترجاع الثابت
   if(!d||!d.c)throw new Error('bad');
   const p=JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({name:'AES-GCM',iv:ub64(d.i)},k,ub64(d.c))));
   const r=await fetch('https://securetoken.googleapis.com/v1/token?key='+FB.key,{method:'POST',headers:{'content-type':'application/x-www-form-urlencoded'},body:'grant_type=refresh_token&refresh_token='+encodeURIComponent(p.r)}).then(x=>x.ok?x.json():null).catch(()=>null);
@@ -104,12 +105,25 @@ async function useCode(input){
   const a={t:r.id_token,r:r.refresh_token,u:r.user_id,exp:Date.now()+r.expires_in*1e3};
   try{const old=[];for(let i=0;i<localStorage.length;i++){const k=localStorage.key(i);if(MOVE(k)||/^el3azy_(mano_fb|rate_fb)$/.test(k))old.push(k)}old.forEach(k=>localStorage.removeItem(k));
     Object.entries(p.ls||{}).forEach(([k,v])=>{if(MOVE(k))localStorage.setItem(k,v)})}catch(e){}
-  PID.set('fb',a);
+  PID.set('fb',a);if(rk)PID.set('rk',code);
   const f=await fetch(`${FB.db}/f/${a.u}.json?auth=${a.t}`).then(x=>x.ok?x.json():null).catch(()=>null);
   if(f&&f.c){PID.set('fan_srv',f);PID.set('club',f.c==='none'?'':f.c);PID.set('name',f.n||'')}
-  fetch(`${FB.db}/x/${h}.json?auth=${a.t}`,{method:'DELETE'}).catch(()=>{});
-  gc('move-use');return f;
+  if(!rk)fetch(`${FB.db}/x/${h}.json?auth=${a.t}`,{method:'DELETE'}).catch(()=>{});
+  gc(rk?'rk-use':'move-use');return f;
 }
+/* ---------- «رمز الاسترجاع» (قرار إبراهيم 20 نوفمبر): رمز ثابت لكل بطاقة، لو ضاعت من التلفون (مثلاً متصفح X مسحها) يكتبه في «عندي رمز نقل» وترجع.
+   فيه الحساب المجهول بس (مشفّر بالرمز) في rk/<sha256>. النقاط والنادي والاسم يرجعون من السيرفر. ما ينتهي، وصاحبه يقدر يغيّره */
+async function kdR(code){const h=hex(await crypto.subtle.digest('SHA-256',TE.encode('el3azy-rk|'+code)));
+  const k=await crypto.subtle.importKey('raw',await crypto.subtle.digest('SHA-256',TE.encode('el3azy-rkk|'+code)),'AES-GCM',false,['encrypt','decrypt']);return{h,k}}
+async function newRk(){
+  const a=await tok(),code=Array.from(crypto.getRandomValues(new Uint8Array(8)),v=>AB[v%AB.length]).join('');
+  const {h,k}=await kdR(code),iv=crypto.getRandomValues(new Uint8Array(12));
+  const ct=await crypto.subtle.encrypt({name:'AES-GCM',iv},k,TE.encode(JSON.stringify({r:a.r,u:a.u})));
+  const r=await fetch(`${FB.db}/rk/${h}.json?auth=${a.t}`,{method:'PUT',body:JSON.stringify({u:a.u,c:b64(ct),i:b64(iv)})});
+  if(!r.ok)throw new Error('save');return code}
+async function myRk(){const c=PID.get('rk');if(c)return c;const n=await newRk();PID.set('rk',n);gc('rk-make');return n}
+async function swapRk(){const old=PID.get('rk'),n=await newRk();PID.set('rk',n);
+  if(old){const a=await tok(),{h}=await kdR(old);fetch(`${FB.db}/rk/${h}.json?auth=${a.t}`,{method:'DELETE'}).catch(()=>{})}gc('rk-swap');return n}
 /* ---------- الواجهة ---------- */
 const css=`
 .fz-chip{display:inline-flex!important;align-items:center;gap:7px;width:auto!important;height:38px!important;padding:0 11px 0 9px!important;border:1px solid rgba(215,180,101,.45)!important;border-radius:12px!important;background:rgba(215,180,101,.07)!important;color:#F6E3AE!important;font:600 13px 'Readex Pro',system-ui,sans-serif!important;white-space:nowrap;cursor:pointer;text-decoration:none;max-width:62vw;min-width:0;flex:0 1 auto;overflow:hidden;-webkit-tap-highlight-color:transparent}
@@ -130,6 +144,11 @@ const css=`
 .fz-sh .fz-why b{color:#D7B465;font-weight:600}
 .fz-sh [hidden]{display:none!important}
 .pf{text-align:center}
+.pf-rkc{margin:6px 0 2px;padding:9px 12px;border-radius:12px;background:#071D2B;border:1px solid rgba(215,180,101,.3);text-align:right}
+.rk-l{display:flex;align-items:center;gap:8px}.rk-l span{font-size:12.5px;color:#F1DDAE;white-space:nowrap}
+.rk-l b{flex:1;text-align:center;font-size:16px;letter-spacing:1.5px;color:#F6E3AE;white-space:nowrap;user-select:all;-webkit-user-select:all}
+.rk-l .fz-link{font-weight:700;padding:2px;text-decoration:underline}
+.pf-rkc small{display:block;font-size:11px;opacity:.65;margin-top:3px}.pf-rkc small .fz-link{font-size:11px;padding:0}
 .pf-head{display:flex;align-items:center;gap:12px;text-align:right;margin:2px 0 14px}
 .pf-cz{flex:none;width:66px;height:66px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 50% 35%,rgba(255,245,229,.12),rgba(7,29,43,.6));border:1.5px solid rgba(215,180,101,.55)}
 .pf-nm{flex:1;min-width:0}.pf-nm b{display:block;font-size:19px;line-height:1.4;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.pf-nm span{font-size:12.5px;color:#D7B465}
@@ -197,12 +216,20 @@ async function profile(bg,close){const box=bg.querySelector('#pf');if(!box)retur
       :`<div class="pf-em">ما عندك نقاط ${T==='week'?'هالأسبوع':'في الموسم'} لين الحين.<br>العب أي تحدي، ونقاطك تطلع هني خلال 15 دقيقة تقريباً.</div>`}
      <a class="fz-ok" href="${ROOT}fans/">🏆 الترتيب كامل</a>
      <div class="fz-row"><button class="fz-link pf-ed" type="button">✏️ تعديل البطاقة</button><button class="fz-link pf-x" type="button" style="opacity:.7">إغلاق</button></div>
+     <div class="pf-rkc" hidden></div>
      <div class="fz-mv"><button class="fz-link pf-mk" type="button">📲 انقل بطاقتك لتلفون ثاني</button></div>`;
+    rkRow(box.querySelector('.pf-rkc'));
     box.querySelectorAll('.pf-seg button').forEach(b=>b.onclick=()=>{T=b.dataset.t;draw()});
     box.querySelector('.pf-ed').onclick=toEdit;box.querySelector('.pf-x').onclick=close;box.querySelector('.pf-mk').onclick=()=>moveOut(bg);
   };
   draw();
 }
+function rkRow(el){if(!el||!crypto.subtle)return;
+  const paint=c=>{el.hidden=false;el.innerHTML=`<div class="rk-l"><span>🔐 رمز الاسترجاع</span><b dir="ltr">${fmtCode(c)}</b><button class="fz-link rk-cp" type="button">انسخ</button></div>
+    <small>صوّره واحفظه، يرجّع بطاقتك لو ضاعت · <button class="fz-link rk-sw" type="button">غيّره</button></small>`;
+    el.querySelector('.rk-cp').onclick=async e=>{try{await navigator.clipboard.writeText(fmtCode(c));e.target.textContent='✓ انسخ'}catch(_){prompt('انسخ:',fmtCode(c))}};
+    el.querySelector('.rk-sw').onclick=async e=>{if(!confirm('نسوي لك رمز يديد، والقديم ما يشتغل بعدها. أكيد؟'))return;e.target.textContent='...';try{paint(await swapRk())}catch(_){e.target.textContent='غيّره'}}};
+  const c=PID.get('rk');if(c)return paint(c);myRk().then(paint).catch(()=>{})}
 function addCss(){if(document.getElementById('fz-css'))return;const s=document.createElement('style');s.id='fz-css';s.textContent=css;document.head.appendChild(s)}
 
 function open(){
@@ -284,7 +311,7 @@ function chipHTML(){const c=club(),n=name();
   if(c===null)return '';
   return (c?crest(c,24)+`<span>${CL[c]}</span>`:`<span class="fz-ball">⚽</span><span>محايد</span>`)+(n?`<small>· ${esc(n)}</small>`:'')}
 function render(){
-  addCss();const c=club();
+  addCss();const c=club();try{banner()}catch(e){}
   // الشعار فوق: في شريط الأقسام، أو أعلى الصفحة الرئيسية
   document.querySelectorAll('.fz-chip').forEach(e=>e.remove());document.querySelectorAll('.fz-top').forEach(e=>e.remove());
   if(c!==null){
@@ -301,6 +328,37 @@ function render(){
       card.onclick=e=>{e.preventDefault();open()};feat.parentNode.insertBefore(card,feat)}}
   else if(card)card.remove();
 }
+/* ---------- تنبيه المكان (قرار إبراهيم 20 نوفمبر) ----------
+   داخل متصفح X وغيره: البطاقة ممكن تنمسح لما يسكّر التطبيق → «داخل X ممكن تضيع بطاقتك» (يختفي لين باجر لو سكّره).
+   سفاري الآيفون: يمسح بيانات الموقع لو ما انفتح 7 أيام → «حط المنصة على شاشتك» (يختفي شهر). من الأيقونة ما يطلع شي */
+const UA=navigator.userAgent||'';
+const INAPP=[[/Twitter/i,'X'],[/Instagram/,'انستقرام'],[/Snapchat/,'سناب'],[/musical_ly|TikTok|BytedanceWebview/,'تيك توك'],[/FBAN|FBAV|FB_IAB/,'فيسبوك']].find(([r])=>r.test(UA));
+const IOSSAF=!INAPP&&/iP(hone|ad|od)/.test(UA)&&/Safari\//.test(UA)&&!/CriOS|FxiOS|EdgiOS|OPiOS|GSA\//.test(UA)&&!navigator.standalone&&!(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
+const wbCss=`.fz-wb{margin:8px 0 2px;padding:7px 12px;border-radius:12px;border:1px solid rgba(215,180,101,.4);background:rgba(11,34,50,.85);display:flex;gap:8px;align-items:center;font:400 12.5px 'Readex Pro',system-ui,sans-serif;color:#FFF5E5;white-space:nowrap;direction:rtl}
+.fz-wb>span{flex:1;overflow:hidden;text-overflow:ellipsis}.fz-wb .fz-link{font-weight:700;padding:2px 4px;font-size:12.5px}.fz-wb .wb-x{background:none;border:0;color:#FFF5E5;opacity:.45;font-size:16px;padding:0 2px;cursor:pointer}
+.fz-steps{text-align:right;font-size:13.5px;line-height:1.8;margin:4px 0 12px;padding:0;list-style:none;counter-reset:s}
+.fz-steps li{counter-increment:s;display:flex;gap:10px;align-items:flex-start;padding:7px 0;border-bottom:1px solid rgba(215,180,101,.12)}
+.fz-steps li:before{content:counter(s);flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:#D7B465;color:#0B2232;font-weight:700;font-size:13px;margin-top:2px}`;
+function wbHow(){addCss();const bg=document.createElement('div');bg.className='fz-bg';const has=club()!==null;
+  const op=`اضغط <b>⋯</b> أو <b>🧭</b> فوق، واختار <b>«فتح في المتصفح»</b>`,st=INAPP?(has?[`اضغط <b>«انقل بطاقتك»</b> تحت، وانسخ الرمز`,op,`في سفاري: <b>بطاقة المشجع</b> ← <b>«عندي رمز نقل»</b> والصق الرمز`]:[op,`في سفاري: <b>مشاركة</b> ← <b>«إضافة إلى الشاشة الرئيسية»</b>`])
+    :[`اضغط <b>مشاركة</b> تحت`,`اختار <b>«إضافة إلى الشاشة الرئيسية»</b> ← <b>إضافة</b>`,has?`افتح المنصة من الأيقونة، وانقل بطاقتك لها برمز النقل`:`افتح المنصة من الأيقونة`];
+  bg.innerHTML=`<div class="fz-sh" role="dialog" aria-modal="true"><h2>${INAPP?'افتحها برا '+INAPP[1]:'حط المنصة على شاشتك'}</h2>
+    <p class="fz-why">${INAPP?'المتصفح اللي داخل التطبيق ممكن يمسح بطاقتك ونقاطك لما تسكّره':'تفتحها بضغطة وحدة، وبطاقتك تظل محفوظة'}</p>
+    <ol class="fz-steps">${st.map(x=>`<li><span>${x}</span></li>`).join('')}</ol>
+    ${has?'<button class="fz-ok wb-mv" type="button">📲 انقل بطاقتك</button>':''}<div class="fz-row" style="justify-content:center"><button class="fz-link fz-close" type="button">تم</button></div></div>`;
+  document.body.appendChild(bg);bg.onclick=e=>{if(e.target===bg)bg.remove()};bg.querySelector('.fz-close').onclick=()=>bg.remove();
+  const mv=bg.querySelector('.wb-mv');if(mv)mv.onclick=()=>moveOut(bg);gc(INAPP?'wb-how-app':'wb-how-saf')}
+function banner(){
+  if(!(INAPP||IOSSAF)||/\/(bus|admin)\//.test(location.pathname)||document.querySelector('.fz-wb'))return;
+  const K=INAPP?'wb_app':'wb_saf',v=PID.get(K);if(v&&Date.now()<v)return;
+  if(!document.getElementById('fz-wbcss')){const c=document.createElement('style');c.id='fz-wbcss';c.textContent=wbCss;document.head.appendChild(c)}
+  const b=document.createElement('div');b.className='fz-wb';b.setAttribute('role','note');
+  b.innerHTML=`<span>${INAPP?`🔐 داخل <bdi>${INAPP[1]}</bdi> ممكن تضيع بطاقتك`:'📲 حط المنصة على شاشتك'}</span><button class="fz-link wb-how" type="button">كيف؟</button><button class="wb-x" type="button" aria-label="إغلاق">×</button>`;
+  b.querySelector('.wb-how').onclick=wbHow;
+  b.querySelector('.wb-x').onclick=()=>{const t=new Date(Date.now()+4*36e5);PID.set(K,INAPP?Date.UTC(t.getUTCFullYear(),t.getUTCMonth(),t.getUTCDate()+1)-4*36e5:Date.now()+30*864e5);b.remove();gc(INAPP?'wb-x-app':'wb-x-saf')};
+  const slot=document.getElementById('fanSlot'),nav=document.querySelector('.wrap>.topnav');
+  if(slot)slot.parentNode.insertBefore(b,slot);else if(nav)nav.after(b);else return;
+  gc(INAPP?'wb-show-app':'wb-show-saf')}
 window.EL3FAN={club,name,set,open,render,sync,tok,lock};
 const go=()=>{render();sync();
   const m=location.hash.match(/nql=([A-Za-z0-9-]{8,9})/);if(m){history.replaceState(null,'',location.pathname+location.search);moveIn(null,m[1])}};
