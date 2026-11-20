@@ -112,7 +112,7 @@ except Exception:
 TP_START = int(os.environ.get('TP_START') or TP_START)
 if TP_START:
     CHALLENGES.append({'id': 'tp', 'name': 'توقّع تشكيلة ناديك', 'icon': '🧩'})
-# «خماسي الجولة» و«منو بيسجل؟» (قرار إبراهيم 20 نوفمبر): khamsa/config.json → start (يوم دخول الخماسي الدوري) و launch (يشتغلون في الجولات اللي تنفتح منه)
+# «خماسي الفانتازي» و«منو بيسجل؟» (قرار إبراهيم 20 نوفمبر): khamsa/config.json → start (يوم دخول الخماسي الدوري) و launch (يشتغلون في الجولات اللي تنفتح منه)
 try:
     _K5 = json.load(open(os.path.join(ROOT, 'khamsa', 'config.json'), encoding='utf8'))
 except Exception:
@@ -124,7 +124,7 @@ try:
 except Exception:
     OPENS = {}
 if K5_START and int(os.environ.get('NOW') or time.time() * 1000) >= max(LAUNCH5 if LAUNCH5 < 10 ** 15 else 0, START + (K5_START - 1) * DAYMS):   # اللوحة تطلع من الإطلاق (الإثنين 8 المسا)
-    CHALLENGES.append({'id': 'k5', 'name': 'خماسي الجولة', 'icon': '🖐️'})
+    CHALLENGES.append({'id': 'k5', 'name': 'خماسي الفانتازي', 'icon': '🖐️'})
 K5_POS = ['GK', 'DEF', 'MID', 'FWD', None]     # الخانات: حارس · مدافع · وسط · مهاجم · حر (أي مركز غير الحارس)
 GRID_THR, GRID_RARE = 30, 10   # النسب بعد 30 حل للخانة · النادر أقل من 10% (v3.2)
 BOARDS = ['all'] + [c['id'] for c in CHALLENGES]

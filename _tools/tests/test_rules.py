@@ -312,7 +312,7 @@ def k5_tests():
     reset({'f': {'p1': {'c': 'ain', 't': 1}, 'p2': {'t': 1}, 'p9': {'c': 'ain', 't': 1}},
            'k5': {'1': {'p9': {'c': 'ain', 'cap': 2, 'w': 1, 'p': {'0': {'c': 'ain', 'k': 'g1'}, '1': {'c': 'ain', 'k': 'd1'},
                   '2': {'c': 'wasl', 'k': 'm1'}, '3': {'c': 'wahda', 'k': 'f1'}, '4': {'c': 'wahda', 'k': 'x1'}}}}}})
-    print('\n— خماسي الجولة —')
+    print('\n— خماسي الفانتازي —')
     P = lambda *a: {str(i): {'c': c, 'k': k} for i, (c, k) in enumerate(a)}
     rec = {'c': 'ain', 'cap': 0, 'w': TS, 'p': P(('ain', 'g1'), ('ain', 'd1'), ('wahda', 'm1'), ('wahda', 'f1'), ('ain', 'x1'))}
     check('خماسي كامل قبل مباريات أنديته ينقبل', put('p1', 'k5/1/p1', rec), 200)

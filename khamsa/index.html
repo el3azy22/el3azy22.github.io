@@ -6,13 +6,13 @@
 <script src="/assets/stat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no">
 <meta name="theme-color" content="#071D2B">
-<meta name="description" content="خماسي الجولة: اختار 5 لاعبين من دوري أدنوك كل جولة، ونقاطهم من أدائهم تنحسب لك ولجمهور ناديك — منصة العازي">
-<meta property="og:title" content="خماسي الجولة — منصة العازي">
+<meta name="description" content="خماسي الفانتازي: اختار 5 لاعبين من دوري أدنوك كل جولة، ونقاطهم من أدائهم تنحسب لك ولجمهور ناديك — منصة العازي">
+<meta property="og:title" content="خماسي الفانتازي — منصة العازي">
 <meta property="og:description" content="اختار 5 لاعبين من الدوري كل جولة، وخل أداءهم يحقق لك النقاط.">
 <meta property="og:image" content="https://el3azy.com/assets/og-platform-v3.jpg">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:site" content="@el3azy22">
-<title>خماسي الجولة | العازي</title>
+<title>خماسي الفانتازي | العازي</title>
 <style>
 :root{--navy:#071D2B;--navy3:#14384F;--gold:#D7B465;--gold2:#F6E3AE;--gold3:#B08A3E;--ivory:#FFF5E5;--soft:rgba(255,245,229,.72);--ok:#3FB27F;--bad:#E07A6E;
  --sadu:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='12'%3E%3Cpath d='M0 11 9 2.5 18 11' fill='none' stroke='%23D7B465' stroke-width='1.3'/%3E%3Cpath d='M9 6.6 11.2 8.8 9 11 6.8 8.8Z' fill='%23D7B465'/%3E%3C/svg%3E")}
@@ -129,7 +129,7 @@ footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:30px;line-height
   </nav>
   <header>
     <a class="home" href="../" aria-label="منصة العازي"><img src="../tashkila/assets/el3azy.png" alt="العازي"></a>
-    <div><h1>خماسي الجولة</h1><p class="sub">اختار 5 لاعبين من الدوري، وأداءهم يحقق لك النقاط</p></div>
+    <div><h1>خماسي الفانتازي</h1><p class="sub">اختار 5 لاعبين كل جولة، وأداءهم يحقق لك النقاط</p></div>
   </header>
   <div class="sadu" aria-hidden="true"></div>
   <div id="app"><div class="msg">لحظة...</div></div>
@@ -219,13 +219,13 @@ async function boot(){
 function fanClub(){const F=window.EL3FAN;const c=F&&F.club();return c&&c!=='none'?c:'none'}
 async function render(){
   clearInterval(tick);const app=$('app');app.innerHTML='';
-  if(!RD){app.append(el(`<div class="msg">الخماسي يبدا مع الجولة الياية.<br>تابع المنصة 👀</div>`));return}
+  if(!RD){app.append(el(`<div class="msg">خماسي الفانتازي ينطلق مع الجولة الياية.<br>تابع المنصة 👀</div>`));return}
   if(RDS.length>1){const t=el(`<div class="rds">${RDS.map(r=>`<button type="button" data-w="${r.wk}" aria-pressed="${r===RD}">الجولة ${r.wk}<small>${r.def?'المؤجلة · ':''}${dm(r.first)===dm(r.last)?dm(r.first):dm(r.first)+' – '+dm(r.last)}</small></button>`).join('')}</div>`);
     t.querySelectorAll('button').forEach(b=>b.onclick=()=>{RD=RDS.find(r=>r.wk==b.dataset.w);xi=[null,null,null,null,null];cap=null;MINE=null;render()});app.append(t)}
   T={};RD.ms.forEach(m=>{T[m.h]=m.t;T[m.a]=m.t});
   const now=Date.now(),st=RD.op>now?'soon':now>=RD.last?'done':'open';
-  const card=el(`<div class="card"><div class="k">الجولة ${RD.wk}${RD.def?' المؤجلة':''} · ${st==='soon'?'تنطلق قريب':st==='done'?'خلصت مباريات الجولة':'اختار خماسيك'}</div>
-    <div class="t">${st==='soon'?`الخماسي ينطلق ${when(RD.op)}`:RD.first===RD.last?`المباريات ${when(RD.first)}`:`المباريات من ${day(RD.first)} لين ${day(RD.last)}`}</div>
+  const card=el(`<div class="card"><div class="k">الجولة ${RD.wk}${RD.def?' المؤجلة':''} · ${st==='soon'?'تنطلق قريب':st==='done'?'خلصت مباريات الجولة':'اختار لاعبينك'}</div>
+    <div class="t">${st==='soon'?`ينطلق ${when(RD.op)}`:RD.first===RD.last?`المباريات ${when(RD.first)}`:`المباريات من ${day(RD.first)} لين ${day(RD.last)}`}</div>
     ${st==='soon'?`<div class="lock">⏳ ينطلق بعد <b id="cd"></b></div>`:st==='open'?`<div class="t">كل لاعب يقفل مع بداية مباراة ناديه 🔒</div>`:''}</div>`);
   app.append(card);
   if(st==='soon'){const cd=()=>{const t=Math.max(0,Math.floor((RD.op-Date.now())/1000)),f=x=>String(x).padStart(2,'0'),D=Math.floor(t/86400),e=$('cd');if(e)e.textContent=D?`${D===1?'يوم':D===2?'يومين':D+' أيام'} و${f(Math.floor(t%86400/3600))}:${f(Math.floor(t%3600/60))}`:`${f(Math.floor(t/3600))}:${f(Math.floor(t%3600/60))}:${f(t%60)}`;if(t<=0){clearInterval(tick);render()}};cd();tick=setInterval(cd,1000);return}
@@ -239,8 +239,8 @@ async function render(){
   const res=score();
   if(res.any)pitch.before(el(`<div class="res"><div class="k">نقاطك في الجولة ${RD.wk}${res.pend?' لين الحين':''}</div><div class="big">${res.tot} <small>${NQ(Math.abs(res.tot))}</small></div><div class="l">${res.pend?`باقي ${res.pend} ${res.pend===1?'لاعب':'لاعبين'} ما لعبوا لين الحين`:'لك ولجمهور ناديك في دوري الجماهير'}</div></div>`));
   drawSlots(res);
-  if(st==='open'){app.append(el(`<button class="go" id="go" type="button">✅ اعتمد خماسيي</button>`));app.append(el(`<div class="subt" id="subt"></div>`));$('go').onclick=save;upd()}
-  else if(!MINE)app.append(el(`<div class="subt">ما اخترت خماسي لهالجولة.</div>`));
+  if(st==='open'){app.append(el(`<button class="go" id="go" type="button">✅ اعتمد اختياري</button>`));app.append(el(`<div class="subt" id="subt"></div>`));$('go').onclick=save;upd()}
+  else if(!MINE)app.append(el(`<div class="subt">ما اخترت لاعبينك لهالجولة.</div>`));
 }
 function locked(c){return !!(c&&T[c]&&Date.now()>=T[c])}
 function slotClub(k){return k&&BYK[k]?BYK[k].c:null}
@@ -270,8 +270,8 @@ function drawSlots(res){
     pt.append(b)});
 }
 function upd(){const g=$('go');if(!g)return;const n=xi.filter(Boolean).length,dirty=!MINE||xi.join('|')!==MINE.k.join('|')||cap!==MINE.cap;
-  g.disabled=n<5||cap===null||!dirty&&!!MINE;g.textContent=n<5?`اختار ${5-n} ${5-n===1?'لاعب':5-n===2?'لاعبين':'لاعبين'} بعد`:cap===null?'👑 اختار القائد (اضغط على لاعب)':MINE&&dirty?'✅ اعتمد التعديل':MINE?'✅ تم الحفظ':'✅ اعتمد خماسيي';
-  $('subt').textContent=MINE?(dirty?'عدّلت خماسيك · اضغط «اعتمد التعديل» عشان ينحفظ':'تقدر تبدّل اللاعبين اللي ما بدت مبارياتهم'):'لاعبين اثنين بالكثير من نفس النادي · القائد نقاطه تتضاعف'}
+  g.disabled=n<5||cap===null||!dirty&&!!MINE;g.textContent=n<5?`اختار ${5-n} ${5-n===1?'لاعب':5-n===2?'لاعبين':'لاعبين'} بعد`:cap===null?'👑 اختار القائد (اضغط على لاعب)':MINE&&dirty?'✅ اعتمد التعديل':MINE?'✅ تم الحفظ':'✅ اعتمد اختياري';
+  $('subt').textContent=MINE?(dirty?'عدّلت اختيارك · اضغط «اعتمد التعديل» عشان ينحفظ':'تقدر تبدّل اللاعبين اللي ما بدت مبارياتهم'):'لاعبين اثنين بالكثير من نفس النادي · القائد نقاطه تتضاعف'}
 /* القائمة */
 function openSheet(i){act=i;const S=SLOTS[i];$('shTitle').textContent=xi[i]?`${S.n}: بدّل أو خلّه القائد`:'اختار '+S.n;$('q').value='';cfil='';
   $('acts').hidden=!xi[i];const cb=$('capB');cb.setAttribute('aria-pressed',cap===i);cb.textContent=cap===i?'👑 هو القائد':'👑 خلّه القائد';
@@ -294,7 +294,7 @@ function renderList(){
     if(!ps.length)return;n+=ps.length;
     h+=`<div class="grp"><img src="${crest(c)}" alt="">${CL[c].name}<small>${lk?'🔒 بدت مباراته':full?'عندك لاعبين منه':when(T[c])}</small></div>`;
     ps.forEach(p=>{const k=key(p),dis=lk||full||used.has(k);const lab=window.EL3P?EL3P.label(p[5],p[1]):p[1];
-      h+=`<button type="button" class="pl" data-k="${k.replace(/"/g,'&quot;')}"${dis?' disabled':''}>${pic(p,c,'',0)}<span>${lab}</span><span class="tag">${used.has(k)?'في خماسيك':S.r?'':POSN[p[2]]||''}</span></button>`})});
+      h+=`<button type="button" class="pl" data-k="${k.replace(/"/g,'&quot;')}"${dis?' disabled':''}>${pic(p,c,'',0)}<span>${lab}</span><span class="tag">${used.has(k)?'اخترته':S.r?'':POSN[p[2]]||''}</span></button>`})});
   L.innerHTML=n?h:'<div class="empty-list">ما لقيت لاعب بهالاسم.</div>';
   L.querySelectorAll('.pl:not([disabled])').forEach(b=>b.onclick=()=>{xi[act]=b.dataset.k;if(cap===null)cap=act;closeSheet();rerender()});
 }

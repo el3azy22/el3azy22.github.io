@@ -5,7 +5,7 @@
 """
 import io, json, os, re, sys, time, urllib.request
 from datetime import datetime, timedelta, timezone
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'khamsa'))   # صناعة الأهداف («خماسي الجولة»)
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', 'khamsa'))   # صناعة الأهداف («خماسي الفانتازي»)
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..'))
 OUT = os.path.join(ROOT, 'rate', 'data.json')
@@ -135,7 +135,7 @@ def team(tm, side, ev, sq):
             g = sum(1 for x in e if x['type'] == 'goal' and x.get('player_id') == pid and x.get('goal_type') not in OG)
             og = sum(1 for x in e if x['type'] == 'goal' and x.get('player_id') == pid and x.get('goal_type') in OG)
             cards = [x['type'][0] for x in e if x.get('player_id') == pid and x['type'] in ('ycard', 'rcard', 'y2card')]
-            # «خماسي الجولة»: الدقايق والكروت (الطرد بإنذار ثاني = طرد، وما ينحسب معه الإنذار الأول)
+            # «خماسي الفانتازي»: الدقايق والكروت (الطرد بإنذار ثاني = طرد، وما ينحسب معه الإنذار الأول)
             yc = sum(1 for x in e if x.get('player_id') == pid and x['type'] == 'ycard')
             y2 = [int(x.get('time') or 0) for x in e if x.get('player_id') == pid and x['type'] == 'y2card']
             rd = [int(x.get('time') or 0) for x in e if x.get('player_id') == pid and x['type'] == 'rcard'] + y2
@@ -172,7 +172,7 @@ STATS = os.path.join(ROOT, 'khamsa', 'stats.json')
 
 
 def save_stats(matches, now_ms):
-    """«خماسي الجولة»: إحصائيات كل لاعب في كل مباراة خلصت (ملف يتجمع طول الموسم، القوانين v3.4).
+    """«خماسي الفانتازي»: إحصائيات كل لاعب في كل مباراة خلصت (ملف يتجمع طول الموسم، القوانين v3.4).
     {مباراة: {t, wk, h, a, sc: [أهداف الأرض، الضيف]، pg: [جزاءات انسجلت لكل فريق],
               ast: 1 انحسبت الصناعة · 0 ما لقيناها في 48 ساعة · ما في = ننتظر،  fm: نفسها للتصديات والجزاءات والتقييم،
               p: {مفتاح اللاعب: {s: H/A، m: دقايق، g: أهداف، a: صناعة، og: عكسي، y: إنذار، r: طرد، gc: أهداف دخلت وهو في الملعب،
@@ -342,7 +342,7 @@ def main():
         # نسحب التشكيلة من ساعة قبل البداية، ونوقف التحديث بعد ما تخلص المباراة وتثبت البيانات بـ 3 ساعات
         need = now.timestamp() * 1000 >= k - 75 * 60000 and not (o and o.get('st') == 6 and o.get('h', {}).get('pl') and now.timestamp() * 1000 > k + 5 * 3600000)
         if o and o.get('h', {}).get('pl') and 'mn' not in o['h']['pl'][0]:
-            need = True      # بيانات قديمة قبل «خماسي الجولة» (بدون الدقايق): نسحبها مرة وحدة
+            need = True      # بيانات قديمة قبل «خماسي الفانتازي» (بدون الدقايق): نسحبها مرة وحدة
         if need:
             try:
                 rep = get('match_report?match_id=' + mid)['match_report']

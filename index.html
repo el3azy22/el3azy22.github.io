@@ -255,13 +255,13 @@ function challenges(){
         if(!op(m))L.push({k:'tp',href:'tashkila/?tp',s:'wait',t:'توقّع تشكيلة ناديك',st:vs,tm:['ينطلق بعد',(OPEN[m.wk]||0)-T],a:'شوف'});
         else if(LS('el3azy_tp_'+m.id))L.push({k:'tp',href:'tashkila/?tp',s:'done',t:'توقّع تشكيلة ناديك',st:`<span class="st ok">✓ توقعت تشكيلة ${CN[c]}</span>`,tm:['يقفل بعد',m.t-LOCK-T]});
         else L.push({k:'tp',href:'tashkila/?tp',s:'todo',dl:m.t-LOCK,t:'توقّع تشكيلة ناديك',st:vs,tm:['يقفل بعد',m.t-LOCK-T],a:'توقّع'})}}
-    // خماسي الجولة (khamsa/config.json → launch): أقرب جولة ما خلصت
+    // خماسي الفانتازي (khamsa/config.json → launch): أقرب جولة ما خلصت
     if(K5.launch&&T>=K5.launch){const by={};P.matches.forEach(m=>(by[m.wk]=by[m.wk]||[]).push(m.t));
       const rs=Object.keys(by).filter(w=>(OPEN[w]||0)>=K5.launch&&Math.max(...by[w])>T).sort((a,b)=>(OPEN[a]||0)-(OPEN[b]||0)),w=rs[0];
       if(w){const nx=by[w].filter(t=>t>T).sort((a,b)=>a-b)[0],o=OPEN[w]||0,href='khamsa/?w='+w;
-        if(o>T)L.push({k:'k5',href,s:'wait',t:'خماسي الجولة',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['ينطلق بعد',o-T],a:'شوف'});
-        else if(LS('el3azy_k5_'+w))L.push({k:'k5',href,s:'done',t:'خماسي الجولة',st:`<span class="st ok">✓ اخترت خماسيك للجولة ${w}</span>`,tm:['أقرب قفل بعد',nx-T]});
-        else L.push({k:'k5',href,s:'todo',dl:nx,t:'خماسي الجولة',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['أول قفل بعد',nx-T],a:'اختار'})}}
+        if(o>T)L.push({k:'k5',href,s:'wait',t:'خماسي الفانتازي',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['ينطلق بعد',o-T],a:'شوف'});
+        else if(LS('el3azy_k5_'+w))L.push({k:'k5',href,s:'done',t:'خماسي الفانتازي',st:`<span class="st ok">✓ اخترت لاعبينك للجولة ${w}</span>`,tm:['أقرب قفل بعد',nx-T]});
+        else L.push({k:'k5',href,s:'todo',dl:nx,t:'خماسي الفانتازي',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['أول قفل بعد',nx-T],a:'اختار'})}}
   }
   const o={todo:0,wait:1,done:2};L.sort((a,b)=>o[a.s]-o[b.s]||(a.dl||9e15)-(b.dl||9e15));
   return L;

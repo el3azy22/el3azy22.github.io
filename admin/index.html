@@ -205,7 +205,7 @@ function render(){
     for(let t=first;t<b;t+=DAYMS)pts.push([String(new Date(t).getUTCDate()),dd[t]||0])}
   h+=`<div class="lbl">${single?'الزوار في كل ساعة':'الزوار في كل يوم'}</div><div class="card"><p class="cap">${single?'كل عمود = ساعة من اليوم (بتوقيت الإمارات)، والرقم = كم شخص زار المنصة فيها.':'كل عمود = يوم، والرقم تحته = تاريخ اليوم في الشهر، وفوقه أعلى يوم.'}</p>${cols(pts)}</div>`;
   // sections
-  const SEC=[['/','home','الصفحة الرئيسية'],['/tashkila','tashkila','تشكيلتي'],['/mano','mano','منو اللاعب؟'],['/rate','rate','قيّم اللاعبين'],['/predict','predict','دوري التوقعات'],['/fans','fans','دوري الجماهير'],['/songs','songs','أغاني دورينا وأنديتنا'],['/khamsa','khamsa','خماسي الجولة']];
+  const SEC=[['/','home','الصفحة الرئيسية'],['/tashkila','tashkila','تشكيلتي'],['/mano','mano','منو اللاعب؟'],['/rate','rate','قيّم اللاعبين'],['/predict','predict','دوري التوقعات'],['/fans','fans','دوري الجماهير'],['/songs','songs','أغاني دورينا وأنديتنا'],['/khamsa','khamsa','خماسي الفانتازي']];
   h+=`<div class="lbl">أي قسم يدخلونه أكثر</div><div class="card"><p class="cap">كم زيارة لكل قسم في الفترة${useV?' (عدادنا)':''}.</p>${bars(SEC.map(([x,y,t])=>[t,useV?(V.p[y]||0):(pg[x]||0)]))}</div>`;
   // referrers (async, cached)
   h+=`<div class="lbl">من وين يجون الزوار</div><div class="card"><p class="cap">من أي مكان ضغطوا على رابط المنصة.</p><div id="refs"><div class="empty">لحظة...</div></div></div>`;
