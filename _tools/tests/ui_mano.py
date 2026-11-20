@@ -54,6 +54,21 @@ async def play(b, uid, club, easy, pro=None, lose=False, extra=None, act=None):
     return [json.loads(x) if x else None for x in st]
 
 
+async def restore(b, uid, club):
+    js = (f"localStorage.setItem('el3azy_mano_seenHow','true');localStorage.setItem('el3azy_club',JSON.stringify('{club}'));"
+          f"localStorage.setItem('el3azy_fb',JSON.stringify({{t:{json.dumps(T.tok(uid))},r:'r',u:'{uid}',exp:Date.now()+3e6}}))")
+    ctx = await b.new_context(viewport={'width': 390, 'height': 800})
+    await ctx.add_init_script(js)
+    pg = await ctx.new_page()
+    await pg.route('**/identitytoolkit.googleapis.com/**', fake_signup(uid + 'x'))
+    await pg.route('**/securetoken.googleapis.com/**', lambda r: r.abort())
+    await pg.route(PROD + '/**', to_emu())
+    await pg.goto('http://localhost:8765/mano/'); await pg.wait_for_timeout(3500)
+    r = await pg.evaluate(f"[localStorage.getItem('el3azy_mano_g_{day}_easy'),localStorage.getItem('el3azy_mano_sub_{day}_easy'),!!document.querySelector('#gIn')]")
+    await ctx.close()
+    return [json.loads(r[0]) if r[0] else None, json.loads(r[1]) if r[1] else None, r[2]]
+
+
 async def main():
     T.load_rules(1794859200000, []); T.reset()
     if E:
@@ -64,8 +79,12 @@ async def main():
         win2 = {'guesses': [E[5], E[day - 1]], 'done': True, 'win': True}
         st = await play(b, 'ua1', 'wahda', win2)
         T.check('لاعب اليوم من محاولتين: الجهاز يسجل إنه انحفظ', st[0], {'g': 2, 'c': 'wahda'})
-        T.check('السيرفر: سجل المشجع', {k: v for k, v in T.get(f'p/{day}/easy/ua1').json().items() if k != 't'}, {'c': 'wahda', 'd': day, 'g': 2})
+        T.check('السيرفر: سجل المشجع', {k: v for k, v in T.get(f'p/{day}/easy/ua1').json().items() if k != 't'}, {'c': 'wahda', 'd': day, 'g': 2, 'h': win2['guesses']})
         T.check('السيرفر: نقاط الوحدة = 5', T.get(f'c/{day}/easy/wahda').json(), {'n': 1, 't': 5})
+        # التلفون ضيّع حفظ اللعبة (سكّر التطبيق بسرعة) بس البطاقة نفسها: اللعبة ترجع من السيرفر وما يقدر يعيدها
+        rs = await restore(b, 'ua1', 'wahda')
+        T.check('ضاع الحفظ: اللعبة ترجع من السيرفر (خلصانة بنفس التخمينات)', rs[0], {'guesses': win2['guesses'], 'done': True, 'win': True})
+        T.check('ضاع الحفظ: نفس النتيجة المحسوبة وما يقدر يكتب', (rs[1], rs[2]), ({'g': 2, 'c': 'wahda'}, False))
         prof = {'guesses': [E[3]] * 5 + [P[0]], 'done': True, 'win': True}
         st = await play(b, 'ua2', 'ain', win2, prof)
         T.check('لاعب اليوم + الخبير من 6 محاولات', st, [{'g': 2, 'c': 'ain'}, {'g': 6, 'c': 'ain'}])

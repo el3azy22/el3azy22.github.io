@@ -389,8 +389,17 @@ async function load(){
   const saved=store.get(k,null);
   S={k,guesses:[],done:false,win:false};
   if(saved&&Array.isArray(saved.guesses)){S.guesses=saved.guesses.filter(id=>BY[id]);S.done=saved.done;S.win=saved.win}
+  if(!S.done){const sv=await srvGame(DAY,mode);if(sv&&S.k==='g_'+DAY+'_'+mode&&!S.done){S.guesses=sv.h;S.done=true;S.win=sv.g>0;save();if(sv.c!=null)store.set('sub_'+DAY+'_'+mode,{g:sv.g,c:sv.c})}}
   render();
 }
+/* لو التلفون ضيّع حفظ اللعبة (مثلاً سكّر التطبيق بالسحب بعد الحل على طول، والآيفون ما لحق يكتب)، نرجعها من السيرفر: النتيجة اللي انحسبت هي اللي تطلع، وما يقدر يعيد اللعبة */
+async function srvGame(d,m){try{const a=PID.get('fb','el3azy_mano_fb');if(!a||!a.u)return null;const t=await fbTok();
+  const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),3000);
+  const x=await fetch(FB.db+`/p/${d}/${m}/${t.u}.json?auth=`+t.t,{signal:ctl.signal}).then(r=>r.ok?r.json():null);clearTimeout(to);
+  if(!x||x.d!==d||!Array.isArray(x.h))return null;const h=x.h.filter(id=>BY[id]);
+  if(h.length!==x.h.length||(x.g>0?h.length!==x.g:h.length!==6))return null;
+  if(x.g>0&&h[h.length-1]!==ANS.id){if(m!=='pro')return null;ANS=BY[h[h.length-1]];store.set('pa_'+d,ANS.id)}else if(!x.g&&h.includes(ANS.id))return null;
+  return{g:x.g,c:x.c,h}}catch(e){return null}}
 function save(){store.set(S.k,{guesses:S.guesses,done:S.done,win:S.win})}
 
 /* ---------- compare ---------- */
@@ -590,7 +599,7 @@ async function submitMode(m){
   const se=m==='pro'?store.get('sub_'+DAY+'_easy',null):null,c=se?se.c:myClub();if(c===null)return;
   const g=st.win?st.guesses.length:0,d=DAY,a=await fbTok(),inc=n=>({'.sv':{increment:n}});
   const t0=store.get('st_'+d+'_'+m,null),t1=store.get('fin_'+d+'_'+m,null),sec=t0&&t1&&t1>=t0?Math.min(86400,Math.round((t1-t0)/1000)):null;
-  const b={[`p/${d}/${m}/${a.u}`]:{d,g,c,t:{".sv":"timestamp"},...(sec!=null?{sec}:{})},[`s/${d}/${m}/n`]:inc(1)};
+  const b={[`p/${d}/${m}/${a.u}`]:{d,g,c,t:{".sv":"timestamp"},...(sec!=null?{sec}:{}),h:st.guesses.slice(0,6)},[`s/${d}/${m}/n`]:inc(1)};
   if(g){b[`s/${d}/${m}/w`]=inc(1);b[`s/${d}/${m}/g${g}`]=inc(1)}
   if(c){b[`c/${d}/${m}/${c}/n`]=inc(1);if(g)b[`c/${d}/${m}/${c}/t`]=inc(7-g)}
   const r=await fetch(FB.db+'/.json?auth='+a.t,{method:'PATCH',body:JSON.stringify(b)});
