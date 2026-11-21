@@ -86,7 +86,7 @@ td:last-child,th:last-child{text-align:left;font-variant-numeric:tabular-nums}
 </header>
 <div class="sadu"></div>
 <!-- «جاهز للنشر»: صور اليوم من الاستوديو (مباريات اليوم، توقّع التشكيلة، تشكيلة الجمهور) أول شي في اللوحة، تشاركها على طول -->
-<div id="pub" hidden><div class="lbl" style="margin:12px 0 2px">📣 جاهز للنشر اليوم</div><iframe id="pubF" title="جاهز للنشر" allow="web-share; clipboard-write" style="width:100%;border:0;display:block;height:0"></iframe></div>
+<details id="pub" hidden style="margin:12px 0 4px;border:1px solid rgba(215,180,101,.45);border-radius:16px;padding:12px 14px;background:rgba(12,38,56,.6)"><summary style="cursor:pointer;color:#F1DDAE;font-weight:700;font-size:15px;list-style:none;display:flex;justify-content:space-between;align-items:center">📣 جاهز للنشر اليوم <span style="font-size:12px;color:#D7B465;font-weight:500">افتح ▾</span></summary><iframe id="pubF" title="جاهز للنشر" allow="web-share; clipboard-write" style="width:100%;border:0;display:block;height:0;margin-top:6px"></iframe></details>
 <div id="app"></div>
 <footer id="foot"></footer>
 </div>
@@ -119,7 +119,8 @@ const iso=dub=>new Date(dub-OFF).toISOString().slice(0,19)+'Z';
 const sleep=ms=>new Promise(r=>setTimeout(r,ms));
 async function gc(path,params){
   const u=new URL(GC+path);Object.entries(params||{}).forEach(([k,v])=>u.searchParams.set(k,v));
-  for(let i=0;i<3;i++){const r=await fetch(u,{headers:{Authorization:'Bearer '+KEY()}});
+  for(let i=0;i<3;i++){const ctl=new AbortController(),to=setTimeout(()=>ctl.abort(),12000);   // GoatCounter أحياناً يعلّق: ما ننتظره للأبد
+    const r=await fetch(u,{headers:{Authorization:'Bearer '+KEY()},signal:ctl.signal}).finally(()=>clearTimeout(to));
     if(r.status===429){await sleep(1100);continue}
     if(r.status===401||r.status===403)throw new Error('auth');
     if(!r.ok)throw new Error('gc '+r.status);return r.json()}
@@ -127,10 +128,12 @@ async function gc(path,params){
 }
 const fb=p=>fetch(FB+p).then(r=>r.ok?r.json():null).catch(()=>null);
 // one fetch for everything; each range is computed locally => switching is instant
-let DATA=null,REFS={},FBS={},FBC={},FBF={},FBV={},FD=null,MD=null;
+let GCDOWN=false,DATA=null,REFS={},FBS={},FBC={},FBF={},FBV={},FD=null,MD=null;
 async function fetchAll(){
   const a=SITE_START,b=dubaiToday()+DAYMS;
-  const [hits,tot,s,c,fcn,vv,fd]=await Promise.all([gc('/stats/hits',{start:iso(a),end:iso(b),limit:100,daily:true}),sleep(300).then(()=>gc('/stats/total',{start:iso(a),end:iso(b)})),fb('/s.json'),fb('/c.json'),fb('/fc.json'),fb('/v.json'),fetch('../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]);
+  // أرقامنا (Firebase) هي الأساس؛ GoatCounter إضافي: لو علّق أو طاح، اللوحة تطلع بدونه (إلا لو المفتاح غلط)
+  const soft=p=>p.catch(e=>{if(e.message==='auth')throw e;GCDOWN=true;return {}});GCDOWN=false;
+  const [hits,tot,s,c,fcn,vv,fd]=await Promise.all([soft(gc('/stats/hits',{start:iso(a),end:iso(b),limit:100,daily:true})),soft(sleep(300).then(()=>gc('/stats/total',{start:iso(a),end:iso(b)}))),fb('/s.json'),fb('/c.json'),fb('/fc.json'),fb('/v.json'),fetch('../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)]);
   DATA={hits:hits.hits||[],tot:tot.stats||[]};FBS=s||{};FBC=c||{};FBF=fcn||{};FBV=vv||{};FD=fd;REFS={};
   const D=Math.floor((dubaiToday()-LAUNCH)/DAYMS)+1;
   if(D>=1&&!MD)MD=await fetch('../mano/data.json').then(r=>r.json()).catch(()=>null);
@@ -167,7 +170,7 @@ async function boot(){
   try{await fetchAll()}catch(e){btn.classList.remove('spin');
     if(e.message==='auth'){try{localStorage.removeItem('el3azy_gc_key')}catch(_){}history.replaceState(null,'',location.pathname);login('المفتاح ما اشتغل، تأكد منه.');return}
     $('#app').innerHTML=segHTML()+`<div class="err">ما قدرنا نجيب الأرقام الحين. جرّب التحديث بعد شوي.</div>`;bindSeg();return}
-  btn.classList.remove('spin');render();
+  btn.classList.remove('spin');render();if(GCDOWN)$('#app').insertAdjacentHTML('afterbegin','<div class="mini" style="color:#e8c07a">⚠️ GoatCounter ما رد الحين، فأرقامه (ومصادر الزوار) ناقصة. أرقام المنصة نفسها كاملة.</div>');
   $('#foot').textContent='آخر تحديث: '+new Date().toLocaleTimeString('ar-AE',{hour:'2-digit',minute:'2-digit'})+' · الزيارات والزوار من عدادنا (من ١٧ نوفمبر)، ومصادر الزوار من GoatCounter';
 }
 function bindSeg(){document.querySelectorAll('.seg button').forEach(x=>x.onclick=()=>{range=x.dataset.r;try{localStorage.setItem('el3azy_adm_range',range)}catch(e){}render()})}
