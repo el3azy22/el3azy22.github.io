@@ -72,9 +72,22 @@ def load_squads():
     return out
 
 
+_NF = json.load(open(os.path.join(ROOT, '_tools', 'name_fixes.json'), encoding='utf8'))
+
+
+def NFIX(s):
+    if not isinstance(s, str):
+        return s
+    for x, y in _NF.get('phrases', {}).items():
+        s = s.replace(x, y)
+    return ' '.join(_NF['words'].get(w, w) for w in s.split(' '))
+
+
 def match_squad(sq, a):
     """نفس الرقم + كلمة مشتركة في الاسم، وإلا تطابق الاسم بس."""
-    full = set(norm(a['name_ar']).split()) | set(norm(a['shortname_ar']).split())
+    # الأسماء في squads.json متصححة (_tools/name_fixes.json)، فنصحح اسم الاتحاد بنفس الطريقة قبل المقارنة
+    # (بدونها «نيمانجا ديكوفيك» ما يطابق «نيمانيا ديكوفيتش» وينحذف من التشكيلة الرسمية)
+    full = set(norm(NFIX(a['name_ar'])).split()) | set(norm(NFIX(a['shortname_ar'])).split())
     no = int(a['j_no']) if (a.get('j_no') or '').isdigit() else None
     best = None
     for p in sq:
