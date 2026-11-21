@@ -364,7 +364,7 @@ function card(m){
     const fin=m.st===FIN&&m.sh!=null;
     // شريط «توقعك» بعرض البطاقة: توقعك يمين، ونقاطك وسببها يسار (بلون النتيجة)
     const myS=p?`<div class="mine">توقعك <b class="ms">${SC(p.h,p.a)}</b>${p.x?' ⭐':''}</div>`:'<div class="mine no">ما توقعت</div>';
-    if(fin){const base=p?points(p.h,p.a,m.sh,m.sa):0,pt=base*(p&&p.x?2:1),why={10:'النتيجة بالضبط',6:'الفائز مع الفارق',4:'الفائز صح',0:'ما صحّت'}[base];
+    if(fin){const base=p?points(p.h,p.a,m.sh,m.sa):0,pt=base*(p&&p.x?2:1),why={10:'النتيجة بالضبط',6:'الفائز مع الفارق',4:'الفائز صح',0:'ما توقعت صح'}[base];
       mid=`<div class="res"><div class="fin">${SC(m.sh,m.sa,' ')}</div><div class="ft">انتهت</div>${myS}</div>`;
       foot=p?`<span class="ptc b${base}"><b dir="ltr">+${pt}</b>${why}${p.x&&base?' <i class="x2" dir="ltr">×2</i>':''}</span>`:'<span></span>';
     }else{
