@@ -31,6 +31,8 @@ picks = {'A': {'u1': pk(2, 1, T0 - 5, x=True), 'u2': pk(1, 0, T0 - 9), 'u3': pk(
          'C': {'u1': pk(1, 0, T0 - 5)},
          'D': {'u1': pk(0, 2, T0 - 5)}}
 cr, tb = P.compute(ms, picks, T0 + 9 * 86400e3)
+PK = tb.pop('_picks', {})
+check('«شوف توقعاته»: توقعات كل مشجع بالجولة (h-a، والمضاعفة بنجمة)', bool(PK) and all(isinstance(v, dict) for d in PK.values() for v in d.values()), True)
 r5 = {row[0]: row for row in tb['rounds']['5']}
 # u1: A بالضبط 10 ×2 (أول مضاعفة بالموعد) = 20 · B تعادل بنتيجة ثانية 6 (المضاعفة الثانية ما تنحسب) · C ما خلصت = 0 ⇒ 26، بالضبط 1، مباريات محسوبة 2
 check('u1: 26 نقطة، 1 بالضبط، 2 مباريات', r5['u1'][3:6], [26, 1, 2])

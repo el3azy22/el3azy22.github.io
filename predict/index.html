@@ -180,6 +180,15 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 .res .mine .ms{color:var(--gold2);font-size:13px}.res .mine.no{opacity:.45}
 .ptc{display:inline-flex;align-items:center;gap:6px;border-radius:20px;padding:3px 12px 3px 10px;font-size:12px;font-weight:600;background:rgba(255,245,229,.06);border:1px solid rgba(255,245,229,.12);color:rgba(255,245,229,.6);white-space:nowrap}
 .ptc b{font-size:14px;font-weight:700}
+.lb .r[data-u]{cursor:pointer}
+.pkbg{position:fixed;inset:0;background:rgba(3,12,20,.72);z-index:60;display:flex;align-items:flex-end;justify-content:center}
+.pksh{width:100%;max-width:520px;max-height:82vh;overflow:auto;background:#0E2A3E;border:1px solid rgba(215,180,101,.4);border-radius:22px 22px 0 0;padding:16px 16px calc(18px + env(safe-area-inset-bottom))}
+.pk-h{display:flex;align-items:center;gap:10px;margin-bottom:10px}.pk-h>div{flex:1}.pk-h b{display:block;font-size:16px;color:var(--gold2)}.pk-h small{font-size:12px;opacity:.7}
+.pk-x{background:none;border:0;color:var(--ivory);font-size:18px;opacity:.6;padding:4px 8px}
+.pk{padding:10px 2px;border-top:1px solid rgba(215,180,101,.14)}
+.pk-m{display:flex;align-items:center;gap:6px;font-size:13px}.pk-m b{flex:1;font-weight:600}.pk-m b:last-of-type{text-align:left}
+.pk-s{font-weight:700;font-size:16px;color:var(--ivory);min-width:54px;text-align:center}
+.pk-y{display:flex;justify-content:space-between;align-items:center;margin-top:6px;font-size:12.5px;opacity:.95}.pk-y b{color:var(--gold2)}
 .ptc .x2{font-style:normal;font-weight:700;font-size:12.5px;opacity:.85}
 .ptc.b10{background:linear-gradient(180deg,var(--gold2),var(--gold) 55%,var(--gold3));color:var(--navy);border-color:transparent}
 .ptc.b6{background:rgba(46,158,102,.22);border-color:rgba(46,158,102,.55);color:#9ff0c4}
@@ -519,6 +528,21 @@ async function shareResult(r,btn){
     else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();window.open('https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(SITE),'_blank')}
   }finally{btn.textContent=old}
 }
+/* «شوف توقعاته»: توقعات أي مشجع في الترتيب، للمباريات اللي بدت بس (predict/picks/<الجولة>.json يطلع بعد الصافرة) */
+const PK={};
+async function showPicks(r,R,i){
+  if(!PK[r.wk])PK[r.wk]=await fetch(`picks/${r.wk}.json?v=`+Date.now()).then(x=>x.ok?x.json():{}).catch(()=>({}));
+  const P=PK[r.wk][R[0]]||{},T=Date.now();
+  const ms=r.ms.filter(m=>T>=m.t&&P[m.id]).sort((a,b)=>a.t-b.t);
+  const li=ms.map(m=>{const v=P[m.id],x=v.endsWith('*'),[ph,pa]=v.replace('*','').split('-').map(Number),fin=m.st===FIN&&m.sh!=null;
+    const b=fin?points(ph,pa,m.sh,m.sa):null,pt=b==null?null:b*(x?2:1);
+    return `<div class="pk"><div class="pk-m">${crest(m.h,22)}<b>${CL[m.h]}</b><span class="pk-s">${fin?SC(m.sh,m.sa,' '):'—'}</span><b>${CL[m.a]}</b>${crest(m.a,22)}</div>
+      <div class="pk-y"><span>توقعه <b>${SC(ph,pa)}</b>${x?' ⭐':''}</span>${pt==null?'<span class="when">المباراة شغالة</span>':`<span class="ptc b${b}"><b dir="ltr">+${pt}</b>${WHY[b]}${x&&b?' <i class="x2" dir="ltr">×2</i>':''}</span>`}</div></div>`}).join('');
+  const bg=document.createElement('div');bg.className='pkbg';
+  bg.innerHTML=`<div class="pksh" role="dialog" aria-modal="true"><div class="pk-h">${crest(R[2],34)}<div><b>${nmOf(R[1],R[2])}</b><small>#${i+1} · ${R[3]?PTS(R[3]):'0 نقطة'} · ${rlabel(r)}</small></div><button class="pk-x" aria-label="إغلاق">✕</button></div>
+    ${li||'<div class="empty" style="padding:18px 0">توقعاته تطلع هني بعد صافرة كل مباراة</div>'}</div>`;
+  document.body.appendChild(bg);const close=()=>bg.remove();bg.onclick=e=>{if(e.target===bg)close()};bg.querySelector('.pk-x').onclick=close;gc('predict-see-picks');
+}
 function shareRound(r){
   const L=r.ms.filter(m=>MY[m.id]).map(m=>`${CL[m.h]} ${SC(MY[m.id].h,MY[m.id].a)} ${CL[m.a]}${MY[m.id].x?' ⭐':''}`);
   const t=`توقعاتي في ${rlabel(r)} 🔮\n\n${L.join('\n')}\n\nتوقع أنت ونافسني 👇`;
@@ -531,7 +555,7 @@ const PTS=n=>n===1?'نقطة':n===2?'نقطتين':(n>=3&&n<=10?n+' نقاط':nf
 const nmOf=(n,c)=>n?esc(n):CL[c]?'مشجع '+CL[c]:'مشجع';   // بدون اسم ولا نادي = «مشجع» (مثل دوري الجماهير)
 function lbRows(rows,unit){
   const me=myU(),i=rows.findIndex(r=>r[0]===me),N=20;
-  const row=(r,k)=>`<div class="r ${r[0]===me?'you':''}"><i>${['🥇','🥈','🥉'][k]||k+1}</i><span>${crest(r[2],24)||'<span style="opacity:.55;font-size:17px">⚽</span>'}</span><span class="nm">${nmOf(r[1],r[2])}${r[0]===me?'<small class="me">أنت</small>':''}</span><b>${r[3]}</b></div>`;
+  const row=(r,k)=>`<div class="r ${r[0]===me?'you':''}" ${unit==='rd'?`data-u="${r[0]}" role="button" tabindex="0"`:''}><i>${['🥇','🥈','🥉'][k]||k+1}</i><span>${crest(r[2],24)||'<span style="opacity:.55;font-size:17px">⚽</span>'}</span><span class="nm">${nmOf(r[1],r[2])}${r[0]===me?'<small class="me">أنت</small>':''}</span><b>${r[3]}</b></div>`;
   let h=rows.slice(0,N).map(row).join('');
   if(i>=N)h+=`<div class="gap">⋯</div>`+row(rows[i],i);
   return h;
@@ -547,7 +571,7 @@ function renderLb(){
     if(i>=0&&window.EL3FAN){const fc=EL3FAN.club(),fn=(EL3FAN.name()||'').trim();
       if(fc===null)h+=`<div class="nudge"><span>🔥 أنت <b><bdi dir="ltr">#${i+1}</bdi></b>، بس نقاطك ما تنحسب لأي جمهور.<br>اختار ناديك عشان توقعاتك الياية تنفعه.</span><button id="nudgeB">اختار ناديك</button></div>`;
       else if(!fn)h+=`<div class="nudge"><span>✍️ في الترتيب تطلع «${fc&&CL[fc]?'مشجع '+CL[fc]:'مشجع'}».<br>اكتب اسمك عشان يطلع.</span><button id="nudgeB">اكتب اسمك</button></div>`;}
-    h+=`<div class="h3">🏆 ترتيب ${r?rlabel(r):''}</div><div class="lb">${lbRows(rows)}</div>`;
+    h+=`<div class="h3">🏆 ترتيب ${r?rlabel(r):''}</div><div class="note" style="margin:-4px 0 8px;font-size:12px">اضغط أي اسم وشوف توقعاته في المباريات اللي بدت</div><div class="lb">${lbRows(rows,'rd')}</div>`;
     if(i>=0)h+=`<button class="btn ghost" id="shareR">𝕏 شارك ترتيبك</button>`;
   }
   const S=(TB&&TB.season)||[],done=TB?Object.values(TB.rounds||{}).filter(x=>x.some(y=>y[3]>0)).length:0;
@@ -555,6 +579,7 @@ function renderLb(){
   if(TB&&TB.updated){const m=TB.updated.match(/(\d+):(\d+)$/);if(m){const H=+m[1];h+=`<div class="note" style="font-size:11.5px">يتحدث خلال دقايق من نهاية كل مباراة · آخر تحديث ${(H%12)||12}:${m[2]} ${H<12?'ص':'م'}</div>`}}
   $('#app').innerHTML=h;
   $('#nudgeB')&&($('#nudgeB').onclick=()=>{gc('predict-nudge');EL3FAN.open()});
+  document.querySelectorAll('.lb .r[data-u]').forEach(el=>el.onclick=()=>{const R=rows.find(x=>x[0]===el.dataset.u);if(R&&r)showPicks(r,R,rows.indexOf(R))});
   $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع أنت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank')});
 }
 /* الأندية: من «دوري الجماهير» (لوحة التوقعات) عشان يكون في المنصة ترتيب واحد بنفس القوانين:

@@ -204,6 +204,14 @@ def compute(ms, picks_by_match, now_ms):
     table['season'] = [[U(u), s['nm'], s['c'], s['p'], s['e'], s['r']] for u, s in srows]
     table['clubs_season'] = sorted(([c, v['s'], v['r'], v['z']] for c, v in club_season.items()), key=lambda x: (-x[1], x[3]))
     table['min'] = {'rounds': MIN_ROUNDS, 'fans': MIN_FANS}
+    # «شوف توقعاته»: توقعات كل مشجع في المباريات اللي بدت (بعد الصافرة ما تتغير، فنشرها ما يضر أحد)
+    # {الجولة: {u12: {المباراة: "h-a" أو "h-a*" للمضاعفة}}} → predict/picks/<الجولة>.json
+    pk = defaultdict(dict)
+    for m in ms:
+        for u, p in (picks_by_match.get(m['id']) or {}).items():
+            if valid_pick(p, m):
+                pk[m['wk']].setdefault(U(u), {})[m['id']] = f"{p['h']}-{p['a']}" + ('*' if dbl.get((m['wk'], u)) == m['id'] else '')
+    table['_picks'] = pk
     return crowd_out, table
 
 
@@ -231,6 +239,10 @@ def main():
     upd = datetime.now(UAE).strftime('%Y-%m-%d %H:%M')
     json.dump({'updated': upd, 'matches': ms}, open(os.path.join(OUT_DIR, 'data.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     table['updated'] = upd
+    pk = table.pop('_picks', {})
+    os.makedirs(os.path.join(OUT_DIR, 'picks'), exist_ok=True)
+    for wk, d in pk.items():
+        json.dump(d, open(os.path.join(OUT_DIR, 'picks', f'{wk}.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'), sort_keys=True)
     json.dump(table, open(os.path.join(OUT_DIR, 'table.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     print('matches', len(ms), 'read', len(picks), 'rounds', len(table['rounds']))
 
