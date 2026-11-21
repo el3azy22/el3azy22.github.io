@@ -83,6 +83,46 @@ def NFIX(s):
     return ' '.join(_NF['words'].get(w, w) for w in s.split(' '))
 
 
+ADDED = []   # لاعبين انضافوا لقوائم «تشكيلتي» من التشكيلة الرسمية (ما كانوا في قائمة الرابطة)
+POS4L = {'GK': 'GK', 'G': 'GK', 'D': 'DEF', 'M': 'MID', 'F': 'FWD'}
+
+
+def auto_add(club, squad, pa):
+    """لاعب في التشكيلة الرسمية (أساسي أو نزل) ومب في قائمتنا (غالباً مسجل في الاتحاد بس، مثل محمد ناصر عجمان #12):
+    نضيفه لقائمة ناديه في tashkila/squads.json وفي _tools/sync/uaefa_only.json عشان المزامنة ما تشيله."""
+    en = (pa.get('name_en') or '').strip()
+    sl = re.sub(r'[^a-z0-9]+', '-', en.lower()).strip('-')
+    if not club or not sl:
+        return None
+    no = int(pa['j_no']) if (pa.get('j_no') or '').isdigit() else None
+    nm = fix_ya(re.sub(r'\s+', ' ', NFIX(pa.get('shortname_ar') or pa.get('name_ar') or '')).strip())
+    e = [no, nm, POS4L.get(POS.get(pa.get('position'), 'M'), 'MID'), '', 0, sl, nm.split(' ')[0] if ' ' in nm else nm]
+    squad.append(e)
+    ADDED.append((club, e))
+    return e
+
+
+def save_added():
+    if not ADDED:
+        return
+    f = os.path.join(ROOT, 'tashkila', 'squads.json')
+    tk = json.load(open(f, encoding='utf8'))
+    byc = {c['id']: c for c in tk['clubs']}
+    fo = os.path.join(ROOT, '_tools', 'sync', 'uaefa_only.json')
+    only = json.load(open(fo, encoding='utf8')) if os.path.exists(fo) else []
+    for club, e in ADDED:
+        c = byc.get(club)
+        if not c or any(x[5] == e[5] for x in c['p']):
+            continue
+        c['p'].append(e)
+        c['p'].sort(key=lambda x: (['GK', 'DEF', 'MID', 'FWD'].index(x[2]) if x[2] in ('GK', 'DEF', 'MID', 'FWD') else 9, x[0] if x[0] is not None else 99))
+        if e[5] not in only:
+            only.append(e[5])
+        print('انضاف لقائمة %s: %s #%s' % (club, e[1], e[0]))
+    json.dump(tk, open(f, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
+    json.dump(sorted(only), open(fo, 'w', encoding='utf8'), ensure_ascii=False)
+
+
 def match_squad(sq, a):
     """نفس الرقم + كلمة مشتركة في الاسم، وإلا تطابق الاسم بس."""
     # الأسماء في squads.json متصححة (_tools/name_fixes.json)، فنصحح اسم الاتحاد بنفس الطريقة قبل المقارنة
@@ -142,6 +182,8 @@ def team(tm, side, ev, sq):
             if not starter and sub_in is None:
                 continue  # ما نزل
             m = match_squad(squad, pa)
+            if m is None and (starter or sub_in is not None):
+                m = auto_add(SQ_ID.get(slug, slug), squad, pa)   # لاعب لعب وما عندنا في القائمة: نضيفه على طول (مسجل في الاتحاد بس)
             known = (m[6] if m and len(m) > 6 and m[6] else None) or pa['shortname_ar'].strip()
             pid = pa['player_id']
             e = [x for x in ev if x.get('club_dir') == side]
@@ -389,6 +431,18 @@ def main():
         if it.get('team1_score', '') != '' and m['h'].get('sc') is None:
             m['h']['sc'], m['a']['sc'] = int(it['team1_score'] or 0), int(it['team2_score'] or 0)
         out.append(m)
+    # مباريات محفوظة من قبل (ما انسحبت من يديد): أي لاعب لعب وما له مفتاح، نضيفه بنفس الطريقة
+    for m in out:
+        for side in ('h', 'a'):
+            club = SQ_ID.get(m[side]['c'], m[side]['c'])
+            for p in m[side].get('pl') or []:
+                if p.get('k') or not (p.get('s') or p.get('in') is not None) or not p.get('en'):
+                    continue
+                e = auto_add(club, sq.setdefault(club, []), {'name_en': p['en'], 'j_no': str(p.get('no') or ''), 'shortname_ar': p.get('f') or p['n'],
+                                                             'position': next((k for k, v in POS.items() if v == p.get('p')), None)})
+                if e:
+                    p['k'] = e[5]
+    save_added()
     save_lineups(out)
     save_stats(out, now.timestamp() * 1000)
     # توحيد إملاء الأسماء (_tools/name_fixes.json) حتى في المباريات القديمة، نفس «منو اللاعب؟» و«تشكيلتي»

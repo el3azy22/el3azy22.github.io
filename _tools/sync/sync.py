@@ -168,7 +168,12 @@ def main():
         if club not in fa_names:
             try:
                 d = json.loads(fetch(f'https://www.uaefa.ae/api/players?club_id={FA_CLUB[club]}&lang=ar'))
-                fa_names[club] = {nk(p.get('shortname') or '') for p in d.get('players', [])}
+                # أسماءنا متصححة (_tools/name_fixes.json)، فنصحح أسماء الاتحاد بنفس الطريقة قبل المقارنة (وإلا ينحذف اللاعب)
+                NF = json.load(open(os.path.join(ROOT, '_tools', 'name_fixes.json'), encoding='utf8'))
+                def fx(x):
+                    for a_, b_ in NF.get('phrases', {}).items(): x = x.replace(a_, b_)
+                    return ' '.join(NF['words'].get(w, w) for w in x.split(' '))
+                fa_names[club] = {nk(fx(p.get('shortname') or '')) for p in d.get('players', [])}
             except Exception:
                 fa_names[club] = None
         return None if fa_names[club] is None else nk(name) in fa_names[club]
