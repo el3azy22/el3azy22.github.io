@@ -98,6 +98,12 @@ html.emb body{padding:0;background:transparent}html.emb header,html.emb .note,ht
     <div id="bK"><img class="prev" id="iK" alt=""><div class="tw" id="tK"></div>
     <div class="btns"><button class="btn" data-share="K">شارك الصورة</button><button class="btn g" data-copy="K">انسخ النص</button></div></div>
   </section>
+  <section class="card" id="cL">
+    <h2>📊 جدول ترتيب الجماهير <small>الموسم · مجموع كل الأسابيع</small></h2>
+    <p class="when">جدول الدوري كامل للـ14 نادي، يتحدث مع كل نقطة. انشره بعد إعلان بطل الأسبوع أو نص الأسبوع.</p>
+    <div id="bL"><img class="prev" id="iL" alt=""><div class="tw" id="tL"></div>
+    <div class="btns"><button class="btn" data-share="L">شارك الصورة</button><button class="btn g" data-copy="L">انسخ النص</button></div></div>
+  </section>
   <section class="card" id="cC">
     <h2>🏆 ترتيب الأندية <small>دوري الجماهير · الأسبوع الحالي</small></h2>
     <p class="when">انشرها نص الأسبوع عشان تشعل المنافسة، وفي آخر يوم من الأسبوع عشان تعلن البطل.</p>
@@ -378,6 +384,31 @@ async function rE(){
   box.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{iE=(iE+ +b.dataset.e+LE.length)%LE.length;rE()});
 }
 
+/* L: جدول ترتيب الجماهير — الموسم (fans/data.json → season.all.clubs) + كم أسبوع فاز فيه كل نادي */
+async function cardL(){
+  if(!FANS||!DEMO)FANS=await fetch('../../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
+  const S=FANS&&FANS.season&&FANS.season.all;if(!S)return {cv:frame('','','').cv,text:'',empty:true};
+  const won={};(FANS.weeks||[]).filter(w=>w.final).forEach(w=>w.boards.all.clubs.filter(r=>r[1]===1&&r[2]>0).forEach(r=>won[r[0]]=(won[r[0]]||0)+1));
+  const fw=(FANS.weeks||[]).filter(w=>w.final).length;
+  const rows=S.clubs.map(r=>({k:r[0],rk:r[1],pts:r[2],w:won[r[0]]||0}));
+  const {cv,x,W}=frame(fw?`بعد ${fw===1?'أسبوع واحد':fw===2?'أسبوعين':fw+' أسابيع'}`:'الأسبوع الأول · لين الحين','دوري الجماهير','جدول الترتيب');
+  const y0=372,rh=58,cl=D.clubs;
+  x.font=`500 22px ${F}`;x.fillStyle='rgba(255,245,229,.5)';x.textAlign='center';x.fillText('النقاط',150,y0-4);x.fillText('بطل الأسبوع',300,y0-4);
+  x.textAlign='right';x.fillText('النادي',W-170,y0-4);
+  rows.slice(0,14).forEach((o,i)=>{const y=y0+18+i*rh,cy=y+rh/2-3,lead=o.rk===1;
+    rr(x,60,y,W-120,rh-8,14);x.fillStyle=lead?'rgba(215,180,101,.18)':i%2?'rgba(12,38,56,.55)':'rgba(20,56,79,.55)';x.fill();
+    if(lead){x.strokeStyle='rgba(215,180,101,.7)';x.lineWidth=2;x.stroke()}
+    x.textAlign='center';x.direction='ltr';x.fillStyle=lead?'#D7B465':'rgba(255,245,229,.6)';x.font=`700 26px ${F}`;x.fillText(String(o.rk),W-100,cy);
+    crestAt(x,CR[o.k],o.k,W-160,cy,36);
+    x.direction='rtl';x.textAlign='right';x.fillStyle=o.pts?'#FFF5E5':'rgba(255,245,229,.45)';x.font=`${lead?700:500} 28px ${F}`;x.fillText(cl[o.k],W-196,cy);
+    x.textAlign='center';x.direction='ltr';x.fillStyle=o.w?'#F0D99A':'rgba(255,245,229,.3)';x.font=`600 26px ${F}`;x.fillText(o.w?String(o.w):'—',300,cy);
+    x.fillStyle=lead?'#D7B465':o.pts?'#FFF5E5':'rgba(255,245,229,.45)';x.font=`700 28px ${F}`;x.fillText(o.pts.toLocaleString('en-US'),150,cy);x.direction='rtl'});
+  footer(x,W,'العب وارفع ترتيب ناديك','el3azy.com/fans');
+  const top=rows.filter(r=>r.pts>0).slice(0,3),M=['🥇','🥈','🥉'];
+  const text=top.length?`📊 جدول ترتيب الجماهير · ${fw?'الموسم بعد '+(fw===1?'أسبوع واحد':fw===2?'أسبوعين':fw+' أسابيع'):'لين الحين'}\n${top.map(o=>`${M[Math.min(2,o.rk-1)]} ${cl[o.k]} · ${o.pts.toLocaleString('en-US')} نقطة`).join('\n')}\n\nوين ناديك؟ 👀\n${URL_F}`:'';
+  return {cv,text,empty:!top.length};
+}
+
 /* K: الجمهور المتصدر — النادي الأول في «الكل» ونخبة جمهوره (أفضل 11) */
 async function cardK(wk){
   if(!FANS||!DEMO)FANS=await fetch('../../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
@@ -520,6 +551,7 @@ let dA,dB,wC,wH,wK;
 const rA=()=>show('A',cardA,dA,(dA===1?'التحدي الأول':'تحدي #'+dA)+(dA===Math.max(1,TODAY)?' · اليوم':dA===TODAY+1?' · باجر':''));
 const rB=()=>show('B',cardB,dB,'جواب تحدي #'+dB+(dB===TODAY-1?' · أمس':''),'ما في أرقام لهاليوم بعد.<br>الصورة تطلع عقب أول يوم من التحدي.');
 const rC=()=>show('C',cardC,wC,'الأسبوع '+wC,'ما في نقاط للأندية في هالأسبوع بعد.<br>ارجع عقب ما الجماهير تلعب.');
+const rL=()=>show('L',cardL,'season','');
 const rK=()=>show('K',cardK,wK,'الأسبوع '+wK,'ما في نقاط للأندية في هالأسبوع بعد.');
 const rH=()=>show('H',cardH,wH,'الأسبوع '+wH,'ما في نقاط للمشجعين في هالأسبوع بعد.');
 const rI=()=>show('I',cardI,'launch','');
@@ -559,7 +591,7 @@ async function init(){
   await rA();
   if(TODAY<2&&!DEMO){$('#bB').innerHTML='<div class="empty">أول صورة «جواب أمس» تطلع صباح الأربعاء 18 نوفمبر.</div>';$('#dB').textContent='—'}else await rB();
   if(TODAY<1&&!DEMO){$('#bC').innerHTML='<div class="empty">دوري الجماهير يبدا مع أول تحدي الثلاثاء 17 نوفمبر.</div>';$('#dC').textContent='—'}else await rC();
-  if(TODAY>=1||DEMO){await rK();await rH()}
+  if(TODAY>=1||DEMO){await rK();await rL();await rH()}
 }
 /* داخل لوحة الإحصائيات (?embed=FE): الأقسام المطلوبة بس، واللي فاضي يختفي، والطول يروح للوحة */
 function embFit(){if(!EMB)return;document.querySelectorAll('section.card').forEach(c=>{const k=c.id.slice(1);c.classList.toggle('sec-off',!EMB.includes(k)||!!c.querySelector('.empty'))});
