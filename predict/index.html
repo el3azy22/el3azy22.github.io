@@ -390,11 +390,15 @@ function renderMe(){
   h+=r.ms.map(card).join('');
   const myPts=r.ms.reduce((s,m)=>{const p=MY[m.id];return s+(p&&m.st===FIN&&m.sh!=null&&m.t>0&&T>=m.t?points(p.h,p.a,m.sh,m.sa)*(p.x?2:1):0)},0);
   if(r.ms.some(m=>m.st===FIN))h+=`<div class="note">نقاطك في ${rlabel(r)}: <b style="color:var(--gold2)">${myPts}</b></div>`;
-  if(done)h+=`<button class="btn ghost" id="shareP">𝕏 شارك توقعاتك (${done} من ${r.ms.length})</button>`;
+  // بعد نهاية الجولة (كل مبارياتها خلصت): صورة «نتيجتي في الجولة» فيها كل توقع صح ولا غلط ونقاطه
+  const over=r.ms.length&&r.ms.every(m=>m.st===FIN&&m.sh!=null),mine=r.ms.filter(m=>MY[m.id]);
+  if(over&&mine.length)h+=`<button class="btn" id="shareRes">𝕏 شارك نتيجتك في ${rlabel(r)}</button>`;
+  else if(done)h+=`<button class="btn ghost" id="shareP">𝕏 شارك توقعاتك (${done} من ${r.ms.length})</button>`;
   h+=`<p class="rulesn">النتيجة بالضبط <b>10</b> · الفائز مع الفارق <b>6</b> · الفائز بس <b>4</b><br>⭐ مباراة وحدة في كل جولة تنضاعف نقاطها</p>`;
   $('#app').innerHTML=h;
   $('#askClub')&&($('#askClub').onclick=()=>EL3FAN.open());
   $('#shareP')&&($('#shareP').onclick=()=>shareRound(r));
+  $('#shareRes')&&($('#shareRes').onclick=e=>shareResult(r,e.currentTarget));
   document.querySelectorAll('.nb button').forEach(b=>b.onclick=()=>step(b.dataset.m,b.dataset.s,+b.dataset.d));
   document.querySelectorAll('.dbtn').forEach(b=>b.onclick=()=>toggleDouble(b.dataset.x));
 }
@@ -468,6 +472,52 @@ async function pullRound(r){
     else if(v===null&&MY[m.id]&&LT(m)>now()){delete MY[m.id];ch=true}
   }).catch(()=>{})));
   if(ch){saveLocal();if(TAB==='me')render()}
+}
+/* «نتيجتي في الجولة»: صورة 1080×1350 فيها كل مباراة توقعتها: النتيجة، توقعك، ونقاطك (صح/غلط) */
+const WHY={10:'النتيجة بالضبط',6:'الفائز مع الفارق',4:'الفائز صح',0:'ما توقعت صح'};
+function ldImg(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})}
+async function resultCard(r){
+  await document.fonts.ready.catch(()=>{});
+  const ms=r.ms.filter(m=>MY[m.id]).sort((a,b)=>a.t-b.t),W=1080,H=1350,cv=document.createElement('canvas');cv.width=W;cv.height=H;const x=cv.getContext('2d');
+  const F='Readex,system-ui,sans-serif',G='#D7B465',G2='#F1DDAE',IV='#FFF5E5';
+  const bg=x.createLinearGradient(0,0,0,H);bg.addColorStop(0,'#143552');bg.addColorStop(1,'#071D2B');x.fillStyle=bg;x.fillRect(0,0,W,H);
+  const rr=(X,Y,w,h,R)=>{x.beginPath();x.moveTo(X+R,Y);x.arcTo(X+w,Y,X+w,Y+h,R);x.arcTo(X+w,Y+h,X,Y+h,R);x.arcTo(X,Y+h,X,Y,R);x.arcTo(X,Y,X+w,Y,R);x.closePath()};
+  x.strokeStyle='rgba(215,180,101,.55)';x.lineWidth=3;rr(30,30,W-60,H-60,40);x.stroke();
+  const logo=await ldImg('../mano/assets/logo.png');if(logo)x.drawImage(logo,W-200,70,120,120*logo.height/logo.width);
+  x.direction='rtl';x.textAlign='right';x.fillStyle=G;x.font=`600 34px ${F}`;x.fillText('دوري التوقعات · '+rlabel(r),W-230,108);
+  x.fillStyle=IV;x.font=`700 76px ${F}`;x.fillText('نتيجتي في الجولة',W-230,195);
+  let tot=0,ok=0;const rows=ms.map(m=>{const p=MY[m.id],b=points(p.h,p.a,m.sh,m.sa),pt=b*(p.x?2:1);tot+=pt;if(b)ok++;return{m,p,b,pt}});
+  x.textAlign='center';x.fillStyle=G2;x.font=`700 64px ${F}`;x.direction='ltr';x.fillText(String(tot),W/2,300);x.direction='rtl';
+  x.fillStyle='rgba(255,245,229,.7)';x.font=`500 30px ${F}`;x.fillText(`نقطة · توقعت ${ok} من ${ms.length} صح`,W/2,345);
+  const top=390,bot=1200,gap=14,rh=Math.min(150,(bot-top-(rows.length-1)*gap)/rows.length);let y=top+((bot-top)-(rows.length*rh+(rows.length-1)*gap))/2;
+  const cr={};await Promise.all([...new Set(rows.flatMap(o=>[o.m.h,o.m.a]))].map(async c=>{cr[c]=await ldImg(A+c+'.png')}));
+  const col={10:['rgba(215,180,101,.9)','#0B2232',G],6:['rgba(46,158,102,.35)','#9ff0c4','rgba(46,158,102,.7)'],4:['rgba(155,196,106,.22)','#cfe9a8','rgba(155,196,106,.55)'],0:['rgba(255,245,229,.06)','rgba(255,245,229,.55)','rgba(255,245,229,.15)']};
+  rows.forEach(o=>{const {m,p,b,pt}=o,c=col[b]||col[0];
+    rr(60,y,W-120,rh,26);x.fillStyle='rgba(12,38,56,.85)';x.fill();x.strokeStyle=b?c[2]:'rgba(215,180,101,.25)';x.lineWidth=2;x.stroke();
+    const cy=y+rh*.5,cs=Math.min(60,rh*.5),SX=640;
+    if(cr[m.h])x.drawImage(cr[m.h],W-90-cs,cy-cs/2,cs,cs*cr[m.h].height/cr[m.h].width);
+    x.direction='rtl';x.textAlign='right';x.fillStyle=IV;x.font=`700 28px ${F}`;x.fillText(CL[m.h],W-102-cs,cy+10);
+    if(cr[m.a])x.drawImage(cr[m.a],270,cy-cs/2,cs,cs*cr[m.a].height/cr[m.a].width);
+    x.textAlign='left';x.fillText(CL[m.a],282+cs,cy+10);
+    x.textAlign='center';x.direction='ltr';x.fillStyle=IV;x.font=`700 42px ${F}`;x.fillText(`${m.sa} - ${m.sh}`,SX,cy+4);
+    x.font=`600 22px ${F}`;x.fillStyle='rgba(255,245,229,.6)';x.direction='rtl';x.fillText(`توقعي ${p.h}-${p.a}`.replace(`${p.h}-${p.a}`,'\u2066'+p.a+'-'+p.h+'\u2069')+(p.x?' ⭐':''),SX,cy+40);
+    const pw=170,ph=50,px=80,py=cy-ph/2;
+    rr(px,py,pw,ph,25);x.fillStyle=c[0];x.fill();
+    x.textAlign='center';x.fillStyle=c[1];x.font=`700 30px ${F}`;x.direction='ltr';x.fillText(`+${pt}${p.x&&b?' ×2':''}`,px+pw/2,py+36);x.direction='rtl';
+    y+=rh+gap});
+  x.strokeStyle='rgba(215,180,101,.3)';x.beginPath();x.moveTo(120,1225);x.lineTo(W-120,1225);x.stroke();
+  x.textAlign='right';x.fillStyle=IV;x.font=`600 30px ${F}`;x.fillText('توقع أنت ونافسني',W-120,1280);
+  x.textAlign='left';x.fillStyle=G;x.direction='ltr';x.fillText('el3azy.com/predict',120,1280);
+  const text=`نتيجتي في ${rlabel(r)} · دوري التوقعات 🔮\n${tot} نقطة، توقعت ${ok} من ${ms.length} صح\n\n${rows.map(o=>`${o.b?'✅':'❌'} ${CL[o.m.h]} ${SC(o.m.sh,o.m.sa)} ${CL[o.m.a]} (توقعي ${SC(o.p.h,o.p.a)}${o.p.x?' ⭐':''}) +${o.pt}`).join('\n')}\n\nتوقع أنت ونافسني 👇`;
+  return {cv,text};
+}
+async function shareResult(r,btn){
+  const old=btn.textContent;btn.textContent='لحظة...';
+  try{const {cv,text}=await resultCard(r),blob=await new Promise(z=>cv.toBlob(z,'image/png')),file=new File([blob],'el3azy-predict-'+r.wk+'.png',{type:'image/png'});
+    gc('share-predict-result');
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+'\n'+SITE}).catch(()=>{})}
+    else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();window.open('https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(SITE),'_blank')}
+  }finally{btn.textContent=old}
 }
 function shareRound(r){
   const L=r.ms.filter(m=>MY[m.id]).map(m=>`${CL[m.h]} ${SC(MY[m.id].h,MY[m.id].a)} ${CL[m.a]}${MY[m.id].x?' ⭐':''}`);
