@@ -442,19 +442,19 @@ const BUSF={ain:'al_ain',wahda:'al_wahda',jazira:'al_jazira',nasr:'al_nasr',wasl
 async function cardJ(){
   const ims=await Promise.all(ORDER.map(c=>imgOK('../../bus/buses/'+(BUSF[c]||c)+'.webp')));
   const {cv,x,W}=frame('لعبة يديدة','منصة العازي','باص الفريق');
-  x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 50px ${F}`;x.fillText('ودّ باص ناديك لملعب المباراة',W/2,372);
+  x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 50px ${F}`;x.fillText('وصّل باص ناديك لملعب المباراة',W/2,372);
   const ry=600;
   const bw=124,bh=bw*509/472,cols=7,gx=(W-140-cols*bw)/(cols-1);
   ORDER.forEach((c,i)=>{const im=ims[i];if(!im)return;const r=i/cols|0,k=i%cols;const X=W-70-bw-k*(bw+gx),Y=ry-170+r*(bh+30);
     x.save();x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=14;x.shadowOffsetY=6;x.drawImage(im,X,Y,bw,bh);x.restore()});
   const pts=[['🎮','العبها الحين','لعب حر كل يوم، تدرّب ويا أي باص'],['🏟️','يوم مباراة ناديك','محاولة وحدة توصّل باصه لملعب المباراة'],['⭐','نجومك نقاط','كل نجمة = 3 نقاط لجمهور ناديك']];
-  const y0=840,h=110;
+  const y0=800,h=118;
   pts.forEach(([ic,t,d],i)=>{const y=y0+i*(h+16);rr(x,70,y,W-140,h,24);x.fillStyle='rgba(12,38,56,.88)';x.fill();x.strokeStyle='rgba(215,180,101,.35)';x.lineWidth=2;x.stroke();
     x.textAlign='center';x.font=`44px ${F}`;x.fillText(ic,W-130,y+h/2+3);
     x.textAlign='right';x.direction='rtl';x.fillStyle='#F0D99A';x.font=`700 32px ${F}`;x.fillText(t,W-190,y+38);
     x.fillStyle='rgba(255,245,229,.8)';x.font=`500 26px ${F}`;x.fillText(d,W-190,y+80)});
   footer(x,W,'أول تحدي: الخميس 3 ديسمبر','el3azy.com/bus');
-  const text=`🚌 لعبة يديدة في منصة العازي: باص الفريق\nودّ باص ناديك لملعب المباراة.\n\n🎮 العبها الحين وتدرّب\n🏟️ من الخميس 3 ديسمبر: يوم مباراة ناديك عندك محاولة وحدة\n⭐ كل نجمة = 3 نقاط لجمهور ناديك في دوري الجماهير\n\nel3azy.com/bus`;
+  const text=`🚌 لعبة يديدة في منصة العازي: باص الفريق\nوصّل باص ناديك لملعب المباراة.\n\n🎮 العبها الحين وتدرّب\n🏟️ من الخميس 3 ديسمبر: يوم مباراة ناديك عندك محاولة وحدة\n⭐ كل نجمة = 3 نقاط لجمهور ناديك في دوري الجماهير\n\nel3azy.com/bus`;
   return {cv,text};
 }
 
