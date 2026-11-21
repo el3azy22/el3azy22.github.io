@@ -506,9 +506,9 @@ async function resultCard(r){
     x.textAlign='center';x.fillStyle=c[1];x.font=`700 30px ${F}`;x.direction='ltr';x.fillText(`+${pt}${p.x&&b?' ×2':''}`,px+pw/2,py+36);x.direction='rtl';
     y+=rh+gap});
   x.strokeStyle='rgba(215,180,101,.3)';x.beginPath();x.moveTo(120,1225);x.lineTo(W-120,1225);x.stroke();
-  x.textAlign='right';x.fillStyle=IV;x.font=`600 30px ${F}`;x.fillText('توقع أنت ونافسني',W-120,1280);
+  x.textAlign='right';x.fillStyle=IV;x.font=`600 30px ${F}`;x.fillText('خلنا نشوف توقعاتك',W-120,1280);
   x.textAlign='left';x.fillStyle=G;x.direction='ltr';x.fillText('el3azy.com/predict',120,1280);
-  const text=`نتيجتي في ${rlabel(r)} · دوري التوقعات 🔮\n${tot} نقطة، توقعت ${ok} من ${ms.length} صح\n\n${rows.map(o=>`${o.b?'✅':'❌'} ${CL[o.m.h]} ${SC(o.m.sh,o.m.sa)} ${CL[o.m.a]} (توقعي ${SC(o.p.h,o.p.a)}${o.p.x?' ⭐':''}) +${o.pt}`).join('\n')}\n\nتوقع أنت ونافسني 👇`;
+  const text=`نتيجتي في ${rlabel(r)} · دوري التوقعات 🔮\n${tot} نقطة، توقعت ${ok} من ${ms.length} صح\n\n${rows.map(o=>`${o.b?'✅':'❌'} ${CL[o.m.h]} ${SC(o.m.sh,o.m.sa)} ${CL[o.m.a]} (توقعي ${SC(o.p.h,o.p.a)}${o.p.x?' ⭐':''}) · ${o.pt?PTS(o.pt):"بدون نقاط"}`).join('\n')}\n\nخلنا نشوف توقعاتك 👇`;
   return {cv,text};
 }
 async function shareResult(r,btn){
