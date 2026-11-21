@@ -49,6 +49,19 @@ html.emb body{padding:0;background:transparent}html.emb header,html.emb .note,ht
   </header>
   <p class="note">كل صورة تطلع جاهزة مع نص التغريدة. على الآيفون اضغط «شارك الصورة» وبعدين X أو «حفظ الصورة»، وعقبها «انسخ النص».</p>
 
+  <section class="card" id="cI">
+    <h2>🚀 الإطلاق <small>الجولة 7 · منو بيسجل؟ · الخماسي</small></h2>
+    <p class="when">انشرها يوم الإثنين قبل 8 المسا، وارجع انشرها أول ما تنطلق.</p>
+    <div id="bI"><img class="prev" id="iI" alt=""><div class="tw" id="tI"></div>
+    <div class="btns"><button class="btn" data-share="I">شارك الصورة</button><button class="btn g" data-copy="I">انسخ النص</button></div></div>
+  </section>
+  <section class="card" id="cJ">
+    <h2>🚌 باص الفريق <small>لعبة يديدة</small></h2>
+    <p class="when">انشرها يوم تنزل اللعبة (الثلاثاء 24 نوفمبر)، بعيد عن منشور بطل الأسبوع بكم ساعة.</p>
+    <div id="bJ"><img class="prev" id="iJ" alt=""><div class="tw" id="tJ"></div>
+    <div class="btns"><button class="btn" data-share="J">شارك الصورة</button><button class="btn g" data-copy="J">انسخ النص</button></div></div>
+  </section>
+
   <section class="card" id="cF">
     <h2>⚽ مباريات اليوم <small>ذكّرهم يتوقعون</small></h2>
     <p class="when">انشرها الصبح يوم المباريات: موعد كل مباراة، ومتى يقفل توقع النتيجة والتشكيلة.</p>
@@ -84,6 +97,13 @@ html.emb body{padding:0;background:transparent}html.emb header,html.emb .note,ht
     <div class="step"><button data-d="-1">›</button><b id="dC">—</b><button data-d="1">‹</button></div>
     <div id="bC"><img class="prev" id="iC" alt=""><div class="tw" id="tC"></div>
     <div class="btns"><button class="btn" data-share="C">شارك الصورة</button><button class="btn g" data-copy="C">انسخ النص</button></div></div>
+  </section>
+  <section class="card" id="cH">
+    <h2>⭐ نجوم الأسبوع <small>أفضل مشجعين في دوري الجماهير</small></h2>
+    <p class="when">انشرها بعد ما ينقفل الأسبوع (الثلاثاء)، بعد صورة بطل الأسبوع بكم ساعة.</p>
+    <div class="step"><button data-d="-1">›</button><b id="dH">—</b><button data-d="1">‹</button></div>
+    <div id="bH"><img class="prev" id="iH" alt=""><div class="tw" id="tH"></div>
+    <div class="btns"><button class="btn" data-share="H">شارك الصورة</button><button class="btn g" data-copy="H">انسخ النص</button></div></div>
   </section>
   <section class="card" id="cD">
     <h2>🏆 دوري الجماهير <small>جدول الموسم بعد كل أسبوع</small></h2>
@@ -351,10 +371,97 @@ async function rE(){
   box.querySelectorAll('[data-e]').forEach(b=>b.onclick=()=>{iE=(iE+ +b.dataset.e+LE.length)%LE.length;rE()});
 }
 
+/* H: نجوم الأسبوع — أفضل المشجعين في «الكل» (fans/data.json → weeks[].boards.all.fans) */
+const MED=['🥇','🥈','🥉'];
+async function cardH(wk){
+  if(!FANS||!DEMO)FANS=await fetch('../../fans/data.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null);
+  const W1=(FANS&&FANS.weeks||[]).find(w=>w.w===wk);
+  const rows=W1?W1.boards.all.fans.filter(r=>r[2]>0).map(r=>({nm:(r[0]||'').trim().length>=2?r[0].trim():'مشجع',c:r[1],pts:r[2],rk:r[3]})):[];
+  const done=W1&&W1.final;
+  const {cv,x,W}=frame('الأسبوع '+wk+(done?'':' · لين الحين'),'دوري الجماهير','نجوم الأسبوع');
+  x.textAlign='center';x.fillStyle='rgba(255,245,229,.6)';x.font=`500 25px ${F}`;x.fillText('نقاط المشجع من كل التحديات في الأسبوع',W/2,372);
+  const fit=(t,max,sz,wt=700)=>{let f=sz;x.font=`${wt} ${f}px ${F}`;while(x.measureText(t).width>max&&f>20){f--;x.font=`${wt} ${f}px ${F}`}let n=t;while(x.measureText(n).width>max&&n.length>3)n=n.slice(0,-2)+'…';return n};
+  // المنصة: الأول في النص، الثاني يمين، الثالث يسار
+  const top=rows.slice(0,3),slot=[{X:W/2,h:400},{X:W/2+305,h:350},{X:W/2-305,h:330}],base=900,cw=280;
+  top.forEach((o,i)=>{const {X,h}=slot[i],y=base-h;
+    rr(x,X-cw/2,y,cw,h,30);const g=x.createLinearGradient(0,y,0,base);g.addColorStop(0,o.rk===1?'rgba(215,180,101,.30)':'rgba(20,56,79,.9)');g.addColorStop(1,'rgba(12,38,56,.9)');x.fillStyle=g;x.fill();
+    x.strokeStyle=o.rk===1?'rgba(215,180,101,.85)':'rgba(215,180,101,.4)';x.lineWidth=o.rk===1?3:2;x.stroke();
+    x.beginPath();x.arc(X,y,56,0,7);x.fillStyle='#071D2B';x.fill();x.strokeStyle='#D7B465';x.lineWidth=3;x.stroke();crestAt(x,CR[o.c],o.c,X,y,64);
+    x.textAlign='center';x.direction='rtl';x.fillStyle='#FFF5E5';x.fillText(fit(o.nm,cw-30,40),X,y+104);
+    x.fillStyle='rgba(255,245,229,.6)';x.font=`500 24px ${F}`;x.fillText(D.clubs[o.c]||'',X,y+150);
+    x.direction='ltr';x.fillStyle='#D7B465';x.font=`700 ${o.rk===1?66:56}px ${F}`;x.fillText(String(o.pts),X,y+h-74);x.direction='rtl';
+    x.fillStyle='rgba(255,245,229,.55)';x.font=`500 22px ${F}`;x.fillText('نقطة',X,y+h-30);
+    x.font=`600 44px ${F}`;x.fillText(MED[Math.min(2,o.rk-1)],X+cw/2-34,y+38)});
+  // الباقي (4–10)
+  const rest=rows.slice(3,9),y0=935,rh=86;
+  rest.forEach((o,i)=>{const col=i%2,row=i/2|0,cw2=(W-140-20)/2,X1=W-70-col*(cw2+20),y=y0+row*rh;
+    rr(x,X1-cw2,y,cw2,rh-14,20);x.fillStyle='rgba(12,38,56,.85)';x.fill();x.strokeStyle='rgba(215,180,101,.28)';x.lineWidth=2;x.stroke();const cy=y+(rh-14)/2;
+    x.textAlign='center';x.direction='ltr';x.fillStyle='rgba(255,245,229,.55)';x.font=`600 26px ${F}`;x.fillText(String(o.rk),X1-30,cy);
+    crestAt(x,CR[o.c],o.c,X1-76,cy,38);
+    x.direction='rtl';x.textAlign='right';x.fillStyle='#FFF5E5';x.fillText(fit(o.nm,cw2-220,28,500),X1-110,cy);
+    x.textAlign='left';x.direction='ltr';x.fillStyle='#D7B465';x.font=`700 30px ${F}`;x.fillText(String(o.pts),X1-cw2+24,cy);x.direction='rtl'});
+  footer(x,W,'العب وكون من النجوم','el3azy.com/fans');
+  const line=o=>`${MED[Math.min(2,o.rk-1)]} ${o.nm} (${D.clubs[o.c]||'بدون نادي'}) · ${o.pts} نقطة`;
+  const text=!rows.length?'':done
+    ?`⭐ نجوم دوري الجماهير · الأسبوع ${wk}\n${top.map(line).join('\n')}\n\nمبروك لهم 👏\nالأسبوع اليديد بدا، تقدر توصل لهني؟ 👇\n${URL_F}`
+    :`⭐ نجوم دوري الجماهير · الأسبوع ${wk} لين الحين\n${top.map(line).join('\n')}\n\nباقي وقت، منو بيطلع فوقهم؟ 👇\n${URL_F}`;
+  return {cv,text,empty:!rows.length};
+}
+
+/* I: الإطلاق — توقع الجولة 7 + منو بيسجل؟ + خماسي الفانتازي (khamsa/config.json → launch) */
+let K5C=null;
+async function cardI(){
+  K5C=K5C||await fetch('../../khamsa/config.json?v='+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({}));
+  const L=K5C.launch||1795449600000,T=Date.now(),live=T>=L;
+  const n=new Date(L+4*3600e3),dn=`${DAYS[n.getUTCDay()]} ${n.getUTCDate()} ${MONS[n.getUTCMonth()]}`;
+  const same=new Date(T+4*3600e3).toISOString().slice(0,10)===n.toISOString().slice(0,10);
+  const when=`${hm(L)} ${dayPart(L)}`;
+  const {cv,x,W}=frame(live?'انطلقت':same?'الليلة '+when:dn+' · '+when,'منصة العازي',live?'انطلقت!':'تحديات يديدة');
+  const items=[
+    ['🔮','توقع الجولة 7','الجولة المؤجلة: توقع نتيجة كل مباراة','el3azy.com/predict'],
+    ['⚽','منو بيسجل؟','اختار لاعب من ناديك، ولو سجّل تاخذ نقاط','el3azy.com/tashkila'],
+    ['🖐️','خماسي الفانتازي','5 لاعبين من الدوري، والقائد نقاطه دبل','el3azy.com/khamsa']];
+  const y0=380,h=220,gap=30;
+  items.forEach(([ic,t,d,u],i)=>{const y=y0+i*(h+gap);
+    rr(x,70,y,W-140,h,30);x.fillStyle='rgba(12,38,56,.88)';x.fill();x.strokeStyle='rgba(215,180,101,.45)';x.lineWidth=2;x.stroke();
+    x.beginPath();x.arc(W-170,y+h/2,64,0,7);x.fillStyle='rgba(215,180,101,.14)';x.fill();x.strokeStyle='rgba(215,180,101,.7)';x.stroke();
+    x.textAlign='center';x.font=`64px ${F}`;x.fillStyle='#fff';x.fillText(ic,W-170,y+h/2+4);
+    x.textAlign='right';x.direction='rtl';x.fillStyle='#F0D99A';x.font=`700 46px ${F}`;x.fillText(t,W-270,y+72);
+    x.fillStyle='rgba(255,245,229,.8)';x.font=`500 29px ${F}`;x.fillText(d,W-270,y+130);
+    x.direction='ltr';x.textAlign='right';x.fillStyle='rgba(215,180,101,.75)';x.font=`500 24px ${F}`;x.fillText(u,W-270,y+178);x.direction='rtl'});
+  x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText('كل نقطة تحققها تنحسب لجمهور ناديك في دوري الجماهير 🏆',W/2,1148);
+  footer(x,W,live?'العب الحين':'ينطلق '+(same?'الليلة':DAYS[n.getUTCDay()])+' '+when,'el3azy.com');
+  const text=live
+    ?`🚀 انطلقت التحديات اليديدة في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\nel3azy.com/predict\n\n⚽ منو بيسجل؟ اختار لاعب من ناديك\nel3azy.com/tashkila\n\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\nel3azy.com/khamsa\n\nكل نقطة لجمهور ناديك في دوري الجماهير 🏆`
+    :`🚀 ${same?'الليلة':DAYS[n.getUTCDay()]+' '+n.getUTCDate()+' '+MONS[n.getUTCMonth()]} الساعة ${when} تنطلق في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\n⚽ منو بيسجل؟ اختار لاعب من ناديك\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\n\nوكل نقطة لجمهور ناديك في دوري الجماهير 🏆\nel3azy.com`;
+  return {cv,text};
+}
+
+/* J: باص الفريق — باصات الأندية الـ14 (bus/buses) */
+const BUSF={ain:'al_ain',wahda:'al_wahda',jazira:'al_jazira',nasr:'al_nasr',wasl:'al_wasl',shababahli:'shabab_al_ahli',dhafra:'al_dhafra'};
+async function cardJ(){
+  const ims=await Promise.all(ORDER.map(c=>imgOK('../../bus/buses/'+(BUSF[c]||c)+'.webp')));
+  const {cv,x,W}=frame('لعبة يديدة','منصة العازي','باص الفريق');
+  x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 50px ${F}`;x.fillText('ودّ باص ناديك لملعب المباراة',W/2,372);
+  const ry=600;
+  const bw=124,bh=bw*509/472,cols=7,gx=(W-140-cols*bw)/(cols-1);
+  ORDER.forEach((c,i)=>{const im=ims[i];if(!im)return;const r=i/cols|0,k=i%cols;const X=W-70-bw-k*(bw+gx),Y=ry-170+r*(bh+30);
+    x.save();x.shadowColor='rgba(0,0,0,.45)';x.shadowBlur=14;x.shadowOffsetY=6;x.drawImage(im,X,Y,bw,bh);x.restore()});
+  const pts=[['🎮','العبها الحين','لعب حر كل يوم، تدرّب ويا أي باص'],['🏟️','يوم مباراة ناديك','محاولة وحدة توصّل باصه لملعب المباراة'],['⭐','نجومك نقاط','كل نجمة = 3 نقاط لجمهور ناديك']];
+  const y0=840,h=110;
+  pts.forEach(([ic,t,d],i)=>{const y=y0+i*(h+16);rr(x,70,y,W-140,h,24);x.fillStyle='rgba(12,38,56,.88)';x.fill();x.strokeStyle='rgba(215,180,101,.35)';x.lineWidth=2;x.stroke();
+    x.textAlign='center';x.font=`44px ${F}`;x.fillText(ic,W-130,y+h/2+3);
+    x.textAlign='right';x.direction='rtl';x.fillStyle='#F0D99A';x.font=`700 32px ${F}`;x.fillText(t,W-190,y+38);
+    x.fillStyle='rgba(255,245,229,.8)';x.font=`500 26px ${F}`;x.fillText(d,W-190,y+80)});
+  footer(x,W,'أول تحدي: الخميس 3 ديسمبر','el3azy.com/bus');
+  const text=`🚌 لعبة يديدة في منصة العازي: باص الفريق\nودّ باص ناديك لملعب المباراة.\n\n🎮 العبها الحين وتدرّب\n🏟️ من الخميس 3 ديسمبر: يوم مباراة ناديك عندك محاولة وحدة\n⭐ كل نجمة = 3 نقاط لجمهور ناديك في دوري الجماهير\n\nel3azy.com/bus`;
+  return {cv,text};
+}
+
 /* واجهة */
 const OUT={};
 async function show(k,fn,arg,label,emptyMsg){
-  $('#d'+k).textContent=label;
+  if($('#d'+k))$('#d'+k).textContent=label;
   const r=await fn(arg);const blob=await blobOf(r.cv);
   const box=$('#b'+k);
   if(r.empty){if(box){box.dataset.html=box.dataset.html||box.innerHTML;box.innerHTML=`<div class="empty">${emptyMsg}</div>`}OUT[k]=null;return}
@@ -363,10 +470,13 @@ async function show(k,fn,arg,label,emptyMsg){
   OUT[k]={blob,text:r.text,url:URL.createObjectURL(blob),name:`el3azy-${k}-${arg}.png`};
   $('#i'+k).src=OUT[k].url;$('#t'+k).textContent=r.text;
 }
-let dA,dB,wC;
+let dA,dB,wC,wH;
 const rA=()=>show('A',cardA,dA,(dA===1?'التحدي الأول':'تحدي #'+dA)+(dA===Math.max(1,TODAY)?' · اليوم':dA===TODAY+1?' · باجر':''));
 const rB=()=>show('B',cardB,dB,'جواب تحدي #'+dB+(dB===TODAY-1?' · أمس':''),'ما في أرقام لهاليوم بعد.<br>الصورة تطلع عقب أول يوم من التحدي.');
 const rC=()=>show('C',cardC,wC,'الأسبوع '+wC,'ما في نقاط للأندية في هالأسبوع بعد.<br>ارجع عقب ما الجماهير تلعب.');
+const rH=()=>show('H',cardH,wH,'الأسبوع '+wH,'ما في نقاط للمشجعين في هالأسبوع بعد.');
+const rI=()=>show('I',cardI,'launch','');
+const rJ=()=>show('J',cardJ,'bus','');
 function bindBtns(){
   document.querySelectorAll('[data-share]').forEach(b=>b.onclick=async()=>{const o=OUT[b.dataset.share];if(!o)return;
     const file=new File([o.blob],o.name,{type:'image/png'});
@@ -383,17 +493,25 @@ async function init(){
   try{await Promise.all([700,600,500].map(w=>document.fonts.load(`${w} 40px 'Readex Pro'`,'منو اللاعب؟ 0123')))}catch(e){}
   [LOGO,SADUI]=await Promise.all([imgOK(A+'assets/logo.png'),imgOK(SADU)]);
   const cs=await Promise.all(ORDER.map(c=>imgOK(A+'assets/'+c+'.png')));ORDER.forEach((c,i)=>CR[c]=cs[i]);
-  dA=Math.max(1,TODAY);dB=Math.max(1,TODAY-1);wC=wkOf(Math.max(1,TODAY));
+  dA=Math.max(1,TODAY);dB=Math.max(1,TODAY-1);wC=wkOf(Math.max(1,TODAY));wH=wC;
+  // نجوم الأسبوع: بعد ما يخلص الأسبوع يفتح على الأسبوع اللي خلص
+  try{const FD0=await fetch('../../fans/data.json?v='+Date.now()).then(r=>r.json());const last=(FD0.weeks||[]).filter(w=>w.final).pop();if(last)wH=last.w}catch(e){}
   bindBtns();
   document.querySelectorAll('#cA [data-d]').forEach(b=>b.onclick=()=>{dA=Math.max(1,Math.min(Math.max(1,TODAY),dA+ +b.dataset.d));rA()});
   document.querySelectorAll('#cB [data-d]').forEach(b=>b.onclick=()=>{dB=Math.max(1,Math.min(Math.max(1,TODAY-1),dB+ +b.dataset.d));rB()});
+  document.querySelectorAll('#cH [data-d]').forEach(b=>b.onclick=()=>{wH=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wH+ +b.dataset.d));rH()});
   document.querySelectorAll('#cC [data-d]').forEach(b=>b.onclick=()=>{wC=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wC+ +b.dataset.d));rC()});
+  // الإطلاق يظهر لين 3 أيام بعد موعده، والباص لين أول تحدي (3 ديسمبر)
+  K5C=await fetch('../../khamsa/config.json?v='+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({}));
+  if(Date.now()<(K5C.launch||0)+3*864e5)await rI();else $('#cI').remove();
+  if(Date.now()<Date.UTC(2026,11,4,20))await rJ();else $('#cJ').remove();
   await rF();
   LE=await crowdList();await rE();
   if(EMB)return;   // داخل لوحة الإحصائيات: صور اليوم بس (الصور الثقيلة الباقية تطيّح صفحة الآيفون)
   await rA();
   if(TODAY<2&&!DEMO){$('#bB').innerHTML='<div class="empty">أول صورة «جواب أمس» تطلع صباح الأربعاء 18 نوفمبر.</div>';$('#dB').textContent='—'}else await rB();
   if(TODAY<1&&!DEMO){$('#bC').innerHTML='<div class="empty">دوري الجماهير يبدا مع أول تحدي الثلاثاء 17 نوفمبر.</div>';$('#dC').textContent='—'}else await rC();
+  if(TODAY>=1||DEMO)await rH();
 }
 /* داخل لوحة الإحصائيات (?embed=FE): الأقسام المطلوبة بس، واللي فاضي يختفي، والطول يروح للوحة */
 function embFit(){if(!EMB)return;document.querySelectorAll('section.card').forEach(c=>{const k=c.id.slice(1);c.classList.toggle('sec-off',!EMB.includes(k)||!!c.querySelector('.empty'))});
