@@ -237,7 +237,7 @@ function endCard(){const C=cells(),n=Object.keys(C).length,mis=S.att.filter(x=>!
    <button class="shr" id="shB">𝕏 شارك نتيجتك</button>
    ${canX?'<button class="xtb" id="xB">⏱️ الوقت الإضافي: كمّل الشبكة<small>نتيجتك ثابتة، والأجوبة الزايدة ما تنحسب</small></button>':''}</div>
    <div class="insight" id="ins"><h3>🔎 اختيارات الجماهير</h3><div style="font-size:12px;opacity:.75">اضغط على أي خانة فيها لاعب، وتشوف أكثر اللاعبين اختياراً فيها وأندرهم.</div></div>`;
-  $('#shB').onclick=()=>{const t=`شبكة الدوري #${G.n} · ${points()} ${points()===2?'نقطتين':'نقطة'}\n${share()}\nel3azy.com/grid`;
+  $('#shB').onclick=()=>{const t=`شبكة الدوري #${G.n} · ${points()} ${points()===2?'نقطتين':'نقطة'}\n${share()}\nel3azy.com/grid\n\n#منصة_العازي`;
     if(navigator.share)navigator.share({text:t}).catch(()=>{});else{try{navigator.clipboard.writeText(t).then(()=>toast('✅ انقسخت'))}catch(e){}}
     try{window.el3stat&&el3stat('grid','share')}catch(e){}};
   const xb=$('#xB');xb&&(xb.onclick=()=>{S.xon=1;save();draw();scrollTo({top:250,behavior:'smooth'})});

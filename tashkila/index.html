@@ -591,7 +591,7 @@ $('save').onclick=async()=>{
 /* مشاركة في X: صورة + تغريدة جاهزة */
 const SITE='https://el3azy.com/tashkila/';
 const gc=n=>{try{window.goatcounter&&window.goatcounter.count&&window.goatcounter.count({path:n,title:n,event:true})}catch(e){}};
-function tweetText(){return `تشكيلتي ⚽ ${club.name} · ${fm}\nعطني رايك 👇\n\nسوّ تشكيلتك من منصة العازي @el3azy22\n${SITE}`}
+function tweetText(){return `تشكيلتي ⚽ ${club.name} · ${fm}\nعطني رايك 👇\n\nسوّ تشكيلتك من منصة العازي @el3azy22\n${SITE}\n\n#منصة_العازي`}
 $('xShare').onclick=async()=>{
   if(!club){toast('اختار النادي أول');return}
   if(xi.filter(Boolean).length<11){toast('كمّل 11 لاعب أول');return}
@@ -816,8 +816,8 @@ async function shareTP(R){
     const cv=await drawCard(o),blob=await new Promise(r=>cv.toBlob(r,'image/jpeg',.93));
     const file=new File([blob],`tawaqqu-${c}-${M.id}.jpg`,{type:'image/jpeg'});
     const sp=scP(),sl=sp?(R?(R.sr?(R.sr.pts?`\n⚽ هدافي ${sp[6]||sp[1]} سجّل (+${R.sr.pts})`:`\n⚽ هدافي ${sp[6]||sp[1]} ما سجّل`):''):`\n⚽ هدافي: ${sp[6]||sp[1]}`):'';
-    const text=R?`توقعت ${R.hits} من 11 صح في تشكيلة ${cn} ✅${sl}\n${vs}\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`
-                :`توقعي لتشكيلة ${cn} 🔒${sl}\n${vs}\nنشوف كم بصيب منها 👀\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}`;
+    const text=R?`توقعت ${R.hits} من 11 صح في تشكيلة ${cn} ✅${sl}\n${vs}\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}\n\n#منصة_العازي`
+                :`توقعي لتشكيلة ${cn} 🔒${sl}\n${vs}\nنشوف كم واحد بيطلع صح 👀\n\nتوقّع تشكيلة ناديك من منصة العازي @el3azy22\nhttps://${U}\n\n#منصة_العازي`;
     if(navigator.canShare&&navigator.canShare({files:[file]})){try{await navigator.share({files:[file],text});return}catch(e){if(e&&e.name==='AbortError')return}}
     const u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=file.name;document.body.appendChild(a);a.click();a.remove();
     window.open('https://x.com/intent/post?text='+encodeURIComponent(text),'_blank');toast('نزّلت الصورة، ارفقها في التغريدة');

@@ -1850,7 +1850,7 @@ function shareCard(r){const c=document.createElement('canvas');c.width=1080;c.he
   txt(g,'النتيجة '+r.score+' · اللاعبين '+r.nP+'/3',540,1240,FONT(600,36),'#cdbf9f');
   txt(g,'el3azy.com · منصة العازي',540,1305,FONT(600,30),'#D7B465');return c;}
 async function doShare(r){gc('share-'+MODE);const c=shareCard(r);const blob=await new Promise(ok=>c.toBlob(ok,'image/png'));const f=new File([blob],'bus-el3azy.png',{type:'image/png'});
-  const text='وصّلت باص '+club.name+' لـ'+TH.st+' '+'★'.repeat(r.rating)+' · جرّبها على el3azy.com';
+  const text='وصّلت باص '+club.name+' لـ'+TH.st+' '+'★'.repeat(r.rating)+' · جرّبها على el3azy.com #منصة_العازي';
   try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text});return;}}catch(e){if(e&&e.name==='AbortError')return;}
   try{const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;if(dl){try{await dl.save({filename:'bus-el3azy.png',data:blob});}catch(e){if(e&&e.code!=='declined')toast('ما قدرنا نحفظ البطاقة هنا',true);}return;}}catch(e){}
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bus-el3azy.png';document.body.appendChild(a);a.click();a.remove();toast('انحفظت البطاقة في جهازك');}

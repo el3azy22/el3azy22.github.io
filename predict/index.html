@@ -524,8 +524,8 @@ async function shareResult(r,btn){
   const old=btn.textContent;btn.textContent='لحظة...';
   try{const {cv,text}=await resultCard(r),blob=await new Promise(z=>cv.toBlob(z,'image/png')),file=new File([blob],'el3azy-predict-'+r.wk+'.png',{type:'image/png'});
     gc('share-predict-result');
-    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+'\n'+SITE}).catch(()=>{})}
-    else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();window.open('https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(SITE),'_blank')}
+    if(navigator.canShare&&navigator.canShare({files:[file]})){await navigator.share({files:[file],text:text+'\n'+SITE+'\n\n#منصة_العازي'}).catch(()=>{})}
+    else{const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=file.name;a.click();window.open('https://x.com/intent/post?text='+encodeURIComponent(text)+'&url='+encodeURIComponent(SITE)+'&hashtags='+encodeURIComponent('منصة_العازي'),'_blank')}
   }finally{btn.textContent=old}
 }
 /* «شوف توقعاته»: توقعات أي مشجع في الترتيب، للمباريات اللي بدت بس (predict/picks/<الجولة>.json يطلع بعد الصافرة) */
@@ -546,7 +546,7 @@ async function showPicks(r,R,i){
 function shareRound(r){
   const L=r.ms.filter(m=>MY[m.id]).map(m=>`${CL[m.h]} ${SC(MY[m.id].h,MY[m.id].a)} ${CL[m.a]}${MY[m.id].x?' ⭐':''}`);
   const t=`توقعاتي في ${rlabel(r)} 🔮\n\n${L.join('\n')}\n\nتوقع أنت ونافسني 👇`;
-  gc('share-predict');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank');
+  gc('share-predict');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE)+'&hashtags='+encodeURIComponent('منصة_العازي'),'_blank');
 }
 
 /* ── الترتيب ── */
@@ -580,7 +580,7 @@ function renderLb(){
   $('#app').innerHTML=h;
   $('#nudgeB')&&($('#nudgeB').onclick=()=>{gc('predict-nudge');EL3FAN.open()});
   document.querySelectorAll('.lb .r[data-u]').forEach(el=>el.onclick=()=>{const R=rows.find(x=>x[0]===el.dataset.u);if(R&&r)showPicks(r,R,rows.indexOf(R))});
-  $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع أنت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE),'_blank')});
+  $('#shareR')&&($('#shareR').onclick=()=>{const R=rows[i];const t=`ترتيبي في دوري التوقعات · ${rlabel(r)}: #${i+1} من ${nf(rows.length)} 🔮\n${R[3]} نقطة${R[2]!=='none'?' لجمهور '+CL[R[2]]:''}\n\nتوقع أنت ونافسني 👇`;gc('share-predict-rank');window.open('https://x.com/intent/post?text='+encodeURIComponent(t)+'&url='+encodeURIComponent(SITE)+'&hashtags='+encodeURIComponent('منصة_العازي'),'_blank')});
 }
 /* الأندية: من «دوري الجماهير» (لوحة التوقعات) عشان يكون في المنصة ترتيب واحد بنفس القوانين:
    نقاط أفضل 11 مشجع معتمد (التشكيلة) ← الأقل أخطاء. الصف: [النادي، المركز، النقاط، التشكيلة، المشاركين، الأخطاء، الثواني] */

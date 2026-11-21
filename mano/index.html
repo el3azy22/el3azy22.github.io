@@ -520,7 +520,7 @@ function shareText(){
   let grid;
   if(mode==='easy')grid=S.guesses.map(id=>id===ANS.id?'✅':'❌').join('');
   else{const em={ok:'🟩',near:'🟨','':'⬛'};grid=S.guesses.map(id=>{const r=cmp(BY[id]);return [r.c,r.p,r.n,r.a,r.no].map(x=>em[x]).join('')}).join('\n')}
-  return `🕵️ منو اللاعب؟ تحدي ${AR(DAY)}${mode==='easy'?'':' · تحدي الخبير 🧠'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}${crowdLine()?'\n'+crowdLine():''}\n\nتقدر تعرفه أسرع؟ 👇\n${SITE}`;
+  return `🕵️ منو اللاعب؟ تحدي ${AR(DAY)}${mode==='easy'?'':' · تحدي الخبير 🧠'}\n${S.win?'عرفته من المحاولة '+AR(n)+' 🎯':'ما عرفته اليوم 😅'}${crowdLine()?'\n'+crowdLine():''}\n\nتقدر تعرفه أسرع؟ 👇\n${SITE}\n\n#منصة_العازي`;
 }
 function resultHTML(){
   const st=store.get('stats_'+mode,{streak:0});

@@ -501,8 +501,8 @@ function shareText(){
   const m=M,C=cardRows(),t=m[C.s];
   const res=`${m.h.name} ${m.h.sc}-${m.a.sc} ${m.a.name}`;
   if(C.mine){const stp=RES.mine.st?findP(RES.mine.st):null;
-    return `تقييمي للاعبين ${t.name} ⭐\n${res}${stp?`\nنجم المباراة: ${stp.n}`:''}\n\nقيّم أنت بعد من منصة العازي @el3azy22\n${SITE}?m=${m.id}`}
-  return `تقييم الجماهير للاعبين ${t.name} 📊\n${res}\n\nمن منصة العازي @el3azy22\n${SITE}?m=${m.id}`;
+    return `تقييمي للاعبين ${t.name} ⭐\n${res}${stp?`\nنجم المباراة: ${stp.n}`:''}\n\nقيّم أنت بعد من منصة العازي @el3azy22\n${SITE}?m=${m.id}\n\n#منصة_العازي`}
+  return `تقييم الجماهير للاعبين ${t.name} 📊\n${res}\n\nمن منصة العازي @el3azy22\n${SITE}?m=${m.id}\n\n#منصة_العازي`;
 }
 async function shareImage(){
   gc('share-rate');
