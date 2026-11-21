@@ -270,13 +270,33 @@ function cardF(L){
   const text=`⚽ مباريات اليوم في دوري أدنوك:\n${L.map(m=>`${cl[m.h]} × ${cl[m.a]} · ${hm(m.t)} ${dayPart(m.t)}`).join('\n')}\n\n🔮 ما توقعت نتايجها؟ توقعك يقفل مع صافرة البداية\nel3azy.com/predict\n\n🧩 ناديك يلعب اليوم؟ توقّع تشكيلته قبل لا تقفل:\n${Object.entries(byLock).map(([k,v])=>`${v.join(' و')}: ${hm(+k)} ${dayPart(+k)}`).join('\n')}\nel3azy.com/tashkila\n\nكل توقع صح يرفع ناديك في دوري الجماهير 🏆`;
   return {cv,text};
 }
+/* G: توقّع تشكيلة ناديك — الأندية اللي تلعب اليوم، متى يقفل توقع كل نادي، وكم واحد من جمهوره توقع لين الحين */
+function cardG(L,TP){
+  const n=new Date(L[0].t+4*3600e3),tag=`${DAYS[n.getUTCDay()]} ${n.getUTCDate()} ${MONS[n.getUTCMonth()]}`,cl=D.clubs;
+  const {cv,x,W}=frame(tag,'توقّع قبل القفل','تشكيلة ناديك');
+  const C=[];L.forEach(m=>[m.h,m.a].forEach(c=>C.push({c,lock:m.t-2*3600e3,n:((TP||{})[m.id]||{})[c]||0})));
+  const cols=2,rows=Math.ceil(C.length/cols),top=370,bot=1205,gap=22,cw=(W-140-gap)/cols,ch=Math.min(250,(bot-top-(rows-1)*gap)/rows);
+  let y0=top+((bot-top)-(rows*ch+(rows-1)*gap))/2;
+  C.forEach((o,i)=>{const r=Math.floor(i/cols),k=i%cols,bx=W-70-(k+1)*cw-k*gap,by=y0+r*(ch+gap);
+    rr(x,bx,by,cw,ch,28);x.fillStyle='rgba(12,38,56,.85)';x.fill();x.strokeStyle='rgba(215,180,101,.4)';x.lineWidth=2;x.stroke();
+    const cx=bx+cw/2;crestAt(x,CR[o.c],o.c,cx,by+ch*.3,Math.min(90,ch*.36));
+    x.textAlign='center';x.fillStyle='#FFF5E5';x.font=`700 36px ${F}`;x.fillText(cl[o.c],cx,by+ch*.6);
+    segs(x,cx,by+ch*.82,[['يقفل ',`500 26px ${F}`,'rgba(255,245,229,.7)'],[hm(o.lock)+' '+dayPart(o.lock),`700 27px ${F}`,'#D7B465']])});
+  footer(x,W,'11 لاعب · نقطة لكل أساسي صح','el3azy.com/tashkila');
+  const byLock={};C.forEach(o=>{(byLock[o.lock]=byLock[o.lock]||[]).push(cl[o.c])});
+  const text=`🧩 ناديك يلعب اليوم؟ توقّع تشكيلته الأساسية\n11 لاعب، وكل أساسي صح = نقطة لجمهور ناديك في دوري الجماهير\n\n${Object.entries(byLock).map(([k,v])=>`⏳ ${v.join('، ')}: يقفل ${hm(+k)} ${dayPart(+k)}`).join('\n')}\n\nمنو يعرف ناديه أكثر؟ 👇\nel3azy.com/tashkila`;
+  return {cv,text};
+}
 async function rF(){
   const box=$('#bF'),L=await todayList();
   if(!L.length){box.innerHTML='<div class="empty">ما في مباريات باقية اليوم.</div>';OUT.F=null;return}
   const r=cardF(L),blob=await blobOf(r.cv);
   OUT.F={blob,text:r.text,url:URL.createObjectURL(blob),name:'el3azy-today.png'};
-  box.innerHTML=`<img class="prev" id="iF" alt=""><div class="tw" id="tF"></div><div class="btns"><button class="btn" data-share="F">شارك الصورة</button><button class="btn g" data-copy="F">انسخ النص</button></div>`;
-  $('#iF').src=OUT.F.url;$('#tF').textContent=r.text;bindBtns();
+  const TP=await fetch('../../fans/tp.json?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null),T=Date.now(),LG=L.filter(m=>m.t-2*3600e3>T);
+  let g='';if(LG.length){const r2=cardG(LG,TP),b2=await blobOf(r2.cv);OUT.G={blob:b2,text:r2.text,url:URL.createObjectURL(b2),name:'el3azy-lineups-today.png'};
+    g=`<h3 style="margin:18px 0 8px;color:var(--gold2,#F1DDAE);font-size:15px">🧩 توقّع تشكيلة ناديك</h3><img class="prev" id="iG" alt=""><div class="tw" id="tG"></div><div class="btns"><button class="btn" data-share="G">شارك الصورة</button><button class="btn g" data-copy="G">انسخ النص</button></div>`}
+  box.innerHTML=`<img class="prev" id="iF" alt=""><div class="tw" id="tF"></div><div class="btns"><button class="btn" data-share="F">شارك الصورة</button><button class="btn g" data-copy="F">انسخ النص</button></div>${g}`;
+  $('#iF').src=OUT.F.url;$('#tF').textContent=r.text;if(g){$('#iG').src=OUT.G.url;$('#tG').textContent=OUT.G.text}bindBtns();
 }
 
 /* E: تشكيلة الجمهور — أكثر حارس وأكثر 10 لاعبين اختارهم جمهور النادي (fans/tp.json → x_<النادي>، بعد القفل بس) */
