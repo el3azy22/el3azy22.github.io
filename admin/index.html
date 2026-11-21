@@ -85,11 +85,15 @@ td:last-child,th:last-child{text-align:left;font-variant-numeric:tabular-nums}
   <a class="ib" href="../" aria-label="المنصة"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg></a>
 </header>
 <div class="sadu"></div>
+<!-- «جاهز للنشر»: صور اليوم من الاستوديو (مباريات اليوم، توقّع التشكيلة، تشكيلة الجمهور) أول شي في اللوحة، تشاركها على طول -->
+<div id="pub" hidden><div class="lbl" style="margin:12px 0 2px">📣 جاهز للنشر اليوم</div><iframe id="pubF" title="جاهز للنشر" allow="web-share; clipboard-write" style="width:100%;border:0;display:block;height:0"></iframe></div>
 <div id="app"></div>
 <footer id="foot"></footer>
 </div>
 <script>
 
+(()=>{const f=document.getElementById('pubF');f.src='studio/?embed=FE'+location.hash;
+  addEventListener('message',e=>{if(e.source!==f.contentWindow||!e.data||e.data.t!=='h')return;f.style.height=e.data.h+'px';document.getElementById('pub').hidden=!e.data.h})})();
 const GC='https://el3azy22.goatcounter.com/api/v0';
 const FB='https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app';
 const LAUNCH=Date.UTC(2026,10,17),SITE_START=Date.UTC(2026,10,1),DAYMS=864e5,OFF=4*3600e3;
