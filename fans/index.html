@@ -347,7 +347,7 @@ function xiH(V,r){const u=MYU(),xi=D.xi||11;
     if(g>=3&&x[3]!==prev)h+=`<div class="xg">🤝 ${nf(g)} ${MSH(g)} متعادلين بالكامل في المركز ${x[3]}</div>`;prev=x[3];
     h+=`<div class="xr ${u&&x[2]===u?'me':''}"><span><i>${x[3]||''}</i>${x[0]?esc(x[0]):'مشجع'}${u&&x[2]===u?' · أنت':''}${g===2?' <small style="opacity:.6">(متعادل)</small>':''}</span><b>${nf(x[1])}</b></div>`});
   return `<div class="xip"><div class="xh">نخبة جمهور ${CL[r[0]]}: أفضل ${xi} مشجع${L.length<xi?` (ناقصة ${xi-L.length})`:''}</div>${h}${ex>0?`<div class="xh" style="margin-top:6px">${ex===1?'ومشجع ثاني متعادل بالكامل مع آخر مكان وما يطلع هني':`و${nf(ex)} ${MSH(ex)} ثانيين متعادلين بالكامل مع آخر مكان وما يطلعون هني`}، لأن النخبة ${xi} بس. ${CL[r[0]]} ياخذ نفس النقاط أياً منهم انحسب.</div>`:''}<div class="xs"><span>المجموع = نقاط ${CL[r[0]]}</span><span>${nf(r[2])}</span></div>
-   ${(()=>{const n=(V[B].pend||{})[r[0]];return n?`<div class="xh" style="margin-top:6px">⏳ ${n===1?'مشجع يديد يدخل النخبة لما يلعب':`${nf(n)} ${MSH(n)} يدد يدخلون النخبة لما يلعبون`} في ${D.approve||3} أيام مختلفة.</div>`:''})()}
+   ${(()=>{const n=(V[B].pend||{})[r[0]];return n?`<div class="xh" style="margin-top:6px">⏳ ${n===1?'مشجع جديد يدخل النخبة لما يلعب':`${nf(n)} ${MSH(n)} جدد يدخلون النخبة لما يلعبون`} في ${D.approve||3} أيام مختلفة.</div>`:''})()}
    ${L.some(x=>!x[0])?`<div class="xh" style="margin-top:6px">«مشجع» = ما كتب اسمه في بطاقة المشجع.</div>`:''}</div>`}
 const MSH=n=>n===2||(n>=3&&n<=10)?'مشجعين':'مشجع';
 /* وين أنت من تشكيلة ناديك */

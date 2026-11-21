@@ -7,7 +7,7 @@
    - EL3P.known(id)        → الاسم المعروف بالعربي (أو '')
    - EL3P.label(id, name)  → «الاسم (المعروف)» للعرض، بدون تكرار لو الاسم فيه المعروف أصلاً
    id = رقم اللاعب في data.json (slug الرابطة). نفس المفتاح p[5] في tashkila/squads.json و k في rate.
-   أي تحدي يديد فيه بحث أو أسماء لاعبين: يحمّل هالملف ويستخدمه بدال ما يكتب بحث خاص فيه. */
+   أي تحدي جديد فيه بحث أو أسماء لاعبين: يحمّل هالملف ويستخدمه بدال ما يكتب بحث خاص فيه. */
 (function () {
   const base = (document.currentScript && document.currentScript.src || '').replace(/assets\/players\.js.*$/, '') || '/';
   const norm = s => String(s || '').replace(/[ً-ْـ]/g, '').replace(/[أإآ]/g, 'ا').replace(/ة/g, 'ه').replace(/ى/g, 'ي')

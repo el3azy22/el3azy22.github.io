@@ -263,7 +263,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
    <li><b>القفل:</b> كل مباراة تنقفل مع صافرتها الرسمية بتوقيت الإمارات، والسيرفر يرفض أي توقع بعدها.</li>
    <li><b>النتيجة المعتمدة:</b> النتيجة الرسمية للمباراة. النقاط تطلع بعد نهاية المباراة بدقايق.</li>
    <li><b>المضاعفة:</b> مباراة وحدة في الجولة. لو انحفظت على أكثر من وحدة، تنحسب أول وحدة بالموعد.</li>
-   <li><b>التأجيل:</b> لو تأجلت مباراة، توقعك يظل ويتعدل لين صافرتها اليديدة. ونقاطها تنحسب لما تنلعب.</li>
+   <li><b>التأجيل:</b> لو تأجلت مباراة، توقعك يظل ويتعدل لين صافرتها الجديدة. ونقاطها تنحسب لما تنلعب.</li>
    <li><b>التعادل في الترتيب:</b> يتقدم الأقل أخطاء (التوقع اللي جاب صفر = خطأ)، بعدها الأكثر توقعات، بعدها اللي خلّص توقعاته أول. والأندية: الأقل أخطاء في التشكيلة، وإذا تساووا نفس المركز.</li>
    <li><b>ترتيب الموسم:</b> مجموع نقاطك في كل الجولات. <b>ترتيب الأندية:</b> نقاط أفضل 11 مشجع لكل نادي في الجولة، والموسم مجموع الجولات.</li>
    <li>توقعاتك تنحسب لناديك ولاسمك اللي في بطاقة المشجع وقت ما توقعت.</li>
@@ -432,7 +432,7 @@ async function save(id,extra){
     const put=async()=>{WHO=WHO||await who(au);const rec={h,a,c:WHO.c,n:WHO.n,w:{'.sv':'timestamp'}};if(x)rec.x=true;
       return fetch(authq('pr/'+id+'/'+au.u,au),{method:'PUT',body:JSON.stringify(rec)})};
     let r=await put();
-    if(!r.ok&&(r.status===401||r.status===403)&&now()<LT(m)){WHO=null;r=await put()} // بطاقة المشجع تغيرت: نجيبها من يديد ونعيد
+    if(!r.ok&&(r.status===401||r.status===403)&&now()<LT(m)){WHO=null;r=await put()} // بطاقة المشجع تغيرت: نجيبها من جديد ونعيد
     if(!r.ok)throw new Error('w'+r.status)
     MY[id]={h,a};if(x)MY[id].x=true;saveLocal();
     const nd=draft[id];if(!nd||((nd.h==null||nd.h===h)&&(nd.a==null||nd.a===a)))delete draft[id]; // لو ضغط وهو يحفظ، نخلي آخر قيمة لين تنحفظ
@@ -463,14 +463,14 @@ async function toggleDouble(id){
   }catch(e){toast('ما انحفظ، جرب مرة ثانية')}
   render();
 }
-/* لو المشجع غيّر ناديه أو اسمه: نحدّث توقعاته المفتوحة عشان تنحسب للنادي اليديد */
+/* لو المشجع غيّر ناديه أو اسمه: نحدّث توقعاته المفتوحة عشان تنحسب للنادي الجديد */
 async function resyncOpen(){
   WHO=null;const T=now(),ids=Object.keys(MY).filter(id=>{const m=D&&D.matches.find(x=>x.id===id);return m&&LT(m)>T+3e4});
   if(!ids.length)return;
   try{const au=await tok();WHO=await who(au);const b={};ids.forEach(id=>{const q=MY[id],o={h:q.h,a:q.a,c:WHO.c,n:WHO.n,w:{'.sv':'timestamp'}};if(q.x)o.x=true;b['pr/'+id+'/'+au.u]=o});
     await fetch(authq('',au),{method:'PATCH',body:JSON.stringify(b)})}catch(e){}
 }
-/* نجيب توقعات الجولة من السيرفر (جهاز يديد أو بيانات ممسوحة) */
+/* نجيب توقعات الجولة من السيرفر (جهاز جديد أو بيانات ممسوحة) */
 async function pullRound(r){
   const a=PID.get(FBK);if(!a)return;
   let au;try{au=await tok()}catch(e){return}

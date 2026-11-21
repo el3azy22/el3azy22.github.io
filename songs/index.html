@@ -196,7 +196,7 @@ async function saveAs(k,btn){
   const file=BLOB[key];
   if(!navigator.canShare({files:[file]})){const a=document.createElement('a');a.href=URL.createObjectURL(file);a.download=name;a.click();gc('dl-'+s.id);window.el3stat&&el3stat(s.id,'dl');closeDl();return}
   try{await navigator.share({files:[file]});gc('dl-'+s.id);window.el3stat&&el3stat(s.id,'dl');closeDl()}
-  catch(e){if(e&&e.name==='AbortError')return; // آيفون يطلب ضغطة يديدة لو التجهيز طوّل
+  catch(e){if(e&&e.name==='AbortError')return; // آيفون يطلب ضغطة جديدة لو التجهيز طوّل
     btn.classList.add('ready');btn.querySelector('small').textContent='✓ جاهزة، اضغط مرة ثانية واختر '+(k==='v'?'«حفظ الفيديو»':'«حفظ في الملفات»')}
 }
 document.querySelectorAll('#dlOv .opt').forEach(o=>o.onclick=()=>saveAs(o.dataset.k,o));

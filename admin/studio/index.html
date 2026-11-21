@@ -56,7 +56,7 @@ html.emb body{padding:0;background:transparent}html.emb header,html.emb .note,ht
     <div class="btns"><button class="btn" data-share="I">شارك الصورة</button><button class="btn g" data-copy="I">انسخ النص</button></div></div>
   </section>
   <section class="card" id="cJ">
-    <h2>🚌 باص الفريق <small>لعبة يديدة</small></h2>
+    <h2>🚌 باص الفريق <small>لعبة جديدة</small></h2>
     <p class="when">انشرها يوم تنزل اللعبة (الثلاثاء 24 نوفمبر)، بعيد عن منشور بطل الأسبوع بكم ساعة.</p>
     <div id="bJ"><img class="prev" id="iJ" alt=""><div class="tw" id="tJ"></div>
     <div class="btns"><button class="btn" data-share="J">شارك الصورة</button><button class="btn g" data-copy="J">انسخ النص</button></div></div>
@@ -181,7 +181,7 @@ async function cardA(d){
   x.fillStyle='#14384F';x.beginPath();x.arc(cx,cy-36,58,0,7);x.fill();x.beginPath();x.moveTo(cx-112,cy+R);x.quadraticCurveTo(cx-106,cy+40,cx,cy+37);x.quadraticCurveTo(cx+106,cy+40,cx+112,cy+R);x.fill();x.restore();
   x.strokeStyle='#D7B465';x.lineWidth=6;x.beginPath();x.arc(cx,cy,R,0,7);x.stroke();
   x.fillStyle='#D7B465';x.font=`700 120px ${F}`;x.textAlign='center';x.fillText('؟',cx,cy+10);
-  x.fillStyle='#F0D99A';x.font=`700 64px ${F}`;x.fillText(d===1?'انطلق أول تحدي!':'لاعب اليوم السري يديد',cx,748);
+  x.fillStyle='#F0D99A';x.font=`700 64px ${F}`;x.fillText(d===1?'انطلق أول تحدي!':'لاعب اليوم السري جديد',cx,748);
   segs(x,cx,816,[['لاعب من دوري أدنوك للمحترفين، وعندك ',`500 32px ${F}`,'rgba(255,245,229,.75)'],['6',`700 34px ${F}`,'#D7B465'],[' محاولات',`500 32px ${F}`,'rgba(255,245,229,.75)']]);
   const s=104,gap=18,tot=6*s+5*gap,y=880;
   for(let i=0;i<6;i++){const X=cx+tot/2-s-i*(s+gap);rr(x,X,y,s,s,24);x.strokeStyle='rgba(215,180,101,.45)';x.lineWidth=3;x.setLineDash([10,8]);x.stroke();x.setLineDash([]);
@@ -190,7 +190,7 @@ async function cardA(d){
   const cols=7,cw=(W-200)/cols;ORDER.forEach((c,i)=>{const col=i%cols,row=i/cols|0;crestAt(x,CR[c],c,W-100-cw/2-col*cw,1098+row*74,50,.9)});
   footer(x,W,'تقدر تعرفه؟');
   const text=d===1?`🕵️ انطلق أول تحدي في «منو اللاعب؟»\nلاعب سري من دوري أدنوك للمحترفين، وعندك 6 محاولات تعرفه.\n\nيلا نشوف منو يعرفه أول 👇\n${URL_M}`
-    :`🕵️ منو اللاعب؟ تحدي #${d}\nلاعب سري يديد من دوري أدنوك للمحترفين، وعندك 6 محاولات.\n\nتقدر تعرفه؟ 👇\n${URL_M}`;
+    :`🕵️ منو اللاعب؟ تحدي #${d}\nلاعب سري جديد من دوري أدنوك للمحترفين، وعندك 6 محاولات.\n\nتقدر تعرفه؟ 👇\n${URL_M}`;
   return {cv,text};
 }
 
@@ -262,7 +262,7 @@ async function cardC(wk){
   const names=tops.map(o=>D.clubs[o.k]),nm=names.length>1?names.slice(0,-1).join('، ')+' و'+names[names.length-1]:names[0];
   const many=tops.length>1;
   const text=!rows.length?'':done
-    ?`🏆 ${many?'أبطال':'بطل'} دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' بطل الأسبوع'} بـ${tops[0].pts} نقطة 👏\n\nالأسبوع اليديد بدا، العب وارفع ترتيب ناديك 👇\n${URL_F}`
+    ?`🏆 ${many?'أبطال':'بطل'} دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' بطل الأسبوع'} بـ${tops[0].pts} نقطة 👏\n\nالأسبوع الجديد بدا، العب وارفع ترتيب ناديك 👇\n${URL_F}`
     :`🏆 دوري الجماهير · الأسبوع ${wk}\n${many?'جماهير '+nm+' متعادلين في الصدارة':'جمهور '+nm+' متصدر'} بـ${tops[0].pts} نقطة.\nكل تحدي تلعبه يزيد نقاط نخبة جمهور ناديك.\n\nمنو بيلحقهم؟ 👇\n${URL_F}`;
   return {cv,text,empty:!rows.length};
 }
@@ -403,7 +403,7 @@ async function cardH(wk){
   footer(x,W,'العب وكون من النجوم','el3azy.com/fans');
   const line=o=>`${MED[Math.min(2,o.rk-1)]} ${o.nm} (${D.clubs[o.c]||'بدون نادي'}) · ${o.pts} نقطة`;
   const text=!rows.length?'':done
-    ?`⭐ نجوم دوري الجماهير · الأسبوع ${wk}\n${top.map(line).join('\n')}\n\nمبروك لهم 👏\nالأسبوع اليديد بدا، تقدر توصل لهني؟ 👇\n${URL_F}`
+    ?`⭐ نجوم دوري الجماهير · الأسبوع ${wk}\n${top.map(line).join('\n')}\n\nمبروك لهم 👏\nالأسبوع الجديد بدا، تقدر توصل لهني؟ 👇\n${URL_F}`
     :`⭐ نجوم دوري الجماهير · الأسبوع ${wk} لين الحين\n${top.map(line).join('\n')}\n\nباقي وقت، منو بيطلع فوقهم؟ 👇\n${URL_F}`;
   return {cv,text,empty:!rows.length};
 }
@@ -416,7 +416,7 @@ async function cardI(){
   const n=new Date(L+4*3600e3),dn=`${DAYS[n.getUTCDay()]} ${n.getUTCDate()} ${MONS[n.getUTCMonth()]}`;
   const same=new Date(T+4*3600e3).toISOString().slice(0,10)===n.toISOString().slice(0,10);
   const when=`${hm(L)} ${dayPart(L)}`;
-  const {cv,x,W}=frame(live?'انطلقت':same?'الليلة '+when:dn+' · '+when,'منصة العازي',live?'انطلقت!':'تحديات يديدة');
+  const {cv,x,W}=frame(live?'انطلقت':same?'الليلة '+when:dn+' · '+when,'منصة العازي',live?'انطلقت!':'تحديات جديدة');
   const items=[
     ['🔮','توقع الجولة 7','الجولة المؤجلة: توقع نتيجة كل مباراة','el3azy.com/predict'],
     ['⚽','منو بيسجل؟','اختار لاعب من ناديك، ولو سجّل تاخذ نقاط','el3azy.com/tashkila'],
@@ -432,7 +432,7 @@ async function cardI(){
   x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText('كل نقطة تحققها تنحسب لجمهور ناديك في دوري الجماهير 🏆',W/2,1148);
   footer(x,W,live?'العب الحين':'ينطلق '+(same?'الليلة':DAYS[n.getUTCDay()])+' '+when,'el3azy.com');
   const text=live
-    ?`🚀 انطلقت التحديات اليديدة في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\nel3azy.com/predict\n\n⚽ منو بيسجل؟ اختار لاعب من ناديك\nel3azy.com/tashkila\n\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\nel3azy.com/khamsa\n\nكل نقطة لجمهور ناديك في دوري الجماهير 🏆`
+    ?`🚀 انطلقت التحديات الجديدة في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\nel3azy.com/predict\n\n⚽ منو بيسجل؟ اختار لاعب من ناديك\nel3azy.com/tashkila\n\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\nel3azy.com/khamsa\n\nكل نقطة لجمهور ناديك في دوري الجماهير 🏆`
     :`🚀 ${same?'الليلة':DAYS[n.getUTCDay()]+' '+n.getUTCDate()+' '+MONS[n.getUTCMonth()]} الساعة ${when} تنطلق في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\n⚽ منو بيسجل؟ اختار لاعب من ناديك\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\n\nوكل نقطة لجمهور ناديك في دوري الجماهير 🏆\nel3azy.com`;
   return {cv,text};
 }
@@ -441,7 +441,7 @@ async function cardI(){
 const BUSF={ain:'al_ain',wahda:'al_wahda',jazira:'al_jazira',nasr:'al_nasr',wasl:'al_wasl',shababahli:'shabab_al_ahli',dhafra:'al_dhafra'};
 async function cardJ(){
   const ims=await Promise.all(ORDER.map(c=>imgOK('../../bus/buses/'+(BUSF[c]||c)+'.webp')));
-  const {cv,x,W}=frame('لعبة يديدة','منصة العازي','باص الفريق');
+  const {cv,x,W}=frame('لعبة جديدة','منصة العازي','باص الفريق');
   x.textAlign='center';x.fillStyle='#F0D99A';x.font=`700 50px ${F}`;x.fillText('وصّل باص ناديك لملعب المباراة',W/2,372);
   const ry=600;
   const bw=124,bh=bw*509/472,cols=7,gx=(W-140-cols*bw)/(cols-1);
@@ -454,7 +454,7 @@ async function cardJ(){
     x.textAlign='right';x.direction='rtl';x.fillStyle='#F0D99A';x.font=`700 32px ${F}`;x.fillText(t,W-190,y+38);
     x.fillStyle='rgba(255,245,229,.8)';x.font=`500 26px ${F}`;x.fillText(d,W-190,y+80)});
   footer(x,W,'أول تحدي: الخميس 3 ديسمبر','el3azy.com/bus');
-  const text=`🚌 لعبة يديدة في منصة العازي: باص الفريق\nوصّل باص ناديك لملعب المباراة.\n\n🎮 العبها الحين وتدرّب\n🏟️ من الخميس 3 ديسمبر: يوم مباراة ناديك عندك محاولة وحدة\n⭐ كل نجمة = 3 نقاط لجمهور ناديك في دوري الجماهير\n\nel3azy.com/bus`;
+  const text=`🚌 لعبة جديدة في منصة العازي: باص الفريق\nوصّل باص ناديك لملعب المباراة.\n\n🎮 العبها الحين وتدرّب\n🏟️ من الخميس 3 ديسمبر: يوم مباراة ناديك عندك محاولة وحدة\n⭐ كل نجمة = 3 نقاط لجمهور ناديك في دوري الجماهير\n\nel3azy.com/bus`;
   return {cv,text};
 }
 

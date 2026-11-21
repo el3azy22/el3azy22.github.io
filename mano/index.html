@@ -5,10 +5,10 @@
 <script src="/assets/stat.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>منو اللاعب؟ | العازي</title>
-<meta name="description" content="لعبة يومية: خمّن لاعب دوري أدنوك للمحترفين. لاعب يديد كل يوم.">
+<meta name="description" content="لعبة يومية: خمّن لاعب دوري أدنوك للمحترفين. لاعب جديد كل يوم.">
 <meta name="theme-color" content="#071D2B">
 <meta property="og:title" content="منو اللاعب؟ — تحدي العازي اليومي">
-<meta property="og:description" content="خمّن لاعب دوري أدنوك اليوم في 6 محاولات. لاعب يديد كل يوم.">
+<meta property="og:description" content="خمّن لاعب دوري أدنوك اليوم في 6 محاولات. لاعب جديد كل يوم.">
 <meta property="og:image" content="https://el3azy.com/mano/assets/og-14.jpg">
 <meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -262,7 +262,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
    <div class="r"><span>أقصى شي في اليوم</span><b>12</b></div>
    <p>نقاطك تنحسب لك ولجمهور ناديك في «دوري الجماهير».</p>
   <details class="det"><summary>التفاصيل والحالات الخاصة</summary><ul>
-   <li><b>الوقت:</b> لاعب يديد كل يوم الساعة 12 بالليل بتوقيت الإمارات، ولو الصفحة مفتوحة تتحدث بروحها.</li>
+   <li><b>الوقت:</b> لاعب جديد كل يوم الساعة 12 بالليل بتوقيت الإمارات، ولو الصفحة مفتوحة تتحدث بروحها.</li>
    <li><b>المحاولات:</b> 6 في كل تحدي. ما تنحسب محاولة لنفس اللاعب مرتين، وما في إعادة بعد ما يخلص التحدي.</li>
    <li><b>متى تنحسب نتيجتك لناديك؟</b> بعد ما تخلّص التحدي وتكون مختار ناديك، في نفس اليوم (لين 12:15 بالليل). وتنحسب مرة وحدة بس.</li>
    <li><b>التلميحات في لاعب اليوم:</b> المركز من البداية، وكل غلطة تفتح تلميح: الجنسية، العمر، النادي، رقم القميص، أول حرف.</li>
@@ -270,7 +270,7 @@ header .day{display:flex;align-items:center;gap:6px;white-space:nowrap}
    <li><b>تحدي الخبير</b> ينحسب لنفس النادي اللي انحسبت له لعبة لاعب اليوم.</li>
    <li><b>الأخطاء والوقت:</b> كل تخمين غلط خطأ، واللي ما عرف اللاعب = 6 أخطاء. ووقتك من فتح التحدي لين الجواب (بحد ساعة). إذا تساويت مع غيرك في النقاط: الأقل أخطاء، بعدها الأكثر لعب، بعدها الأسرع.</li>
    <li><b>لو انقطع الإنترنت:</b> نتيجتك محفوظة في تلفونك، وتنرسل أول ما ترجع للصفحة في نفس اليوم.</li>
-   <li>نتيجتك وإحصائياتك محفوظة في <b>هالتلفون</b>. لو مسحت بيانات المتصفح أو لعبت من تلفون ثاني، تبدا من يديد.</li>
+   <li>نتيجتك وإحصائياتك محفوظة في <b>هالتلفون</b>. لو مسحت بيانات المتصفح أو لعبت من تلفون ثاني، تبدا من جديد.</li>
   </ul></details>
 </div>
   <button class="btn" id="howGo">يلا نلعب</button>
@@ -347,7 +347,7 @@ function init(data){
   document.querySelectorAll('#modeSeg button').forEach(b=>{b.onclick=()=>{const m=b.dataset.m;if(m===mode)return;if(m==='pro'&&!easyDone()){toast('🔒 خلّص لاعب اليوم أول، وبعدها ينفتح تحدي الخبير');vib(30);return}setMode(m)}});
   if(!store.get('seenHow',false))$('#howto').hidden=false;
   load();
-  /* لو الصفحة ظلت مفتوحة وعدّى 12 بالليل: نحدّثها عشان يطلع لاعب اليوم اليديد (وما تنحسب تخمينات على لاعب أمس) */
+  /* لو الصفحة ظلت مفتوحة وعدّى 12 بالليل: نحدّثها عشان يطلع لاعب اليوم الجديد (وما تنحسب تخمينات على لاعب أمس) */
   const dayChk=()=>{if(dubaiDayIndex(D.start)+1!==DAY)location.reload()};setInterval(dayChk,20000);document.addEventListener('visibilitychange',()=>{if(!document.hidden)dayChk()});
 }
 function prelaunch(raw){
@@ -427,7 +427,7 @@ function render(){
    <div class="hero">
      ${S.done?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">؟</span></span></span>`}
      <div style="flex:1"><b>${S.done?ANS.n:(mode==='easy'?'لاعب اليوم السري':'لاعب الخبير السري')}</b>
-       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح يديد':'لاعبك السري هني خاص فيك، غير لاعب ربعك · كل تخمين يقارن لاعبك باللاعب السري')}</div>
+       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح جديد':'لاعبك السري هني خاص فيك، غير لاعب ربعك · كل تخمين يقارن لاعبك باللاعب السري')}</div>
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
    </div>`;
   if(mode==='easy'){
@@ -484,7 +484,7 @@ function guess(id){
   if(S.guesses.length===1)gc('start-'+mode);
   if(win){gc('win-'+mode);vib([30,40,60]);confetti();const n=S.guesses.length;sfx(mode==='pro'?'yasalam':n===1?'mainoon':n<=4?'kafu':'sawaha')}
   else if(S.done){gc('lose-'+mode);vib([60,40,60]);sfx(mode==='pro'?'rooh':'lose')}
-  else if(!S.done){vib(40);sfx(S.guesses.length>=3?'galna':'mubho',.85);if(mode==='easy')toast('🔓 انفتح تلميح يديد');else if(DAY>=2&&S.guesses.length===3)toast('🔓 انكشف نادي لاعبك السري');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
+  else if(!S.done){vib(40);sfx(S.guesses.length>=3?'galna':'mubho',.85);if(mode==='easy')toast('🔓 انفتح تلميح جديد');else if(DAY>=2&&S.guesses.length===3)toast('🔓 انكشف نادي لاعبك السري');const c=document.querySelector('.card');c.classList.add('shake');setTimeout(()=>c.classList.remove('shake'),400);setTimeout(()=>{const i=$('#gIn');i&&i.focus()},50)}
   if(S.done)setTimeout(()=>{const r=document.querySelector('.result');r&&r.scrollIntoView({behavior:'smooth',block:'start'})},350);
 }
 

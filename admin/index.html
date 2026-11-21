@@ -232,10 +232,10 @@ function render(){
   if(FD&&FD.v===3){const W=FD.weeks.find(w=>w.live)||FD.weeks[FD.weeks.length-1],xi=FD.xi||11;
     const rows=((W.boards.all||{}).clubs||[]).filter(r=>r[2]>0).map(r=>[r[1]+'. '+(CLUBS[r[0]]||r[0]),r[2],{img:'../mano/assets/'+r[0]+'.png',txt:nf(r[2])+(r[3]<xi?` <small style="opacity:.6">(${r[3]}/${xi})</small>`:'')}]);
     h+=`<div class="lbl">🏆 دوري الجماهير · الأسبوع ${W.w}</div><div class="card"><p class="cap">نقاط أفضل ${xi} مشجع لكل نادي (نخبة الجمهور) من كل التحديات. (٤/١١) = النخبة ناقصة. التفاصيل في <a href="../fans/" style="color:inherit">صفحة دوري الجماهير</a>.</p>${rows.length?bars(rows):'<div class="empty">ما في نقاط لين الحين</div>'}</div>`}
-  { // جماهير الأندية: من قاعدة البيانات (كل مشجع مرة وحدة، ولو غيّر ناديه ينحسب لليديد بس)
+  { // جماهير الأندية: من قاعدة البيانات (كل مشجع مرة وحدة، ولو غيّر ناديه ينحسب للجديد بس)
     const F=Object.entries(FBF).filter(([,v])=>v>0),tot=F.reduce((x,[,v])=>x+v,0),neu=FBF.none||0;
     const picks=F.filter(([c])=>c!=='none').map(([c,v])=>[CLUBS[c]||c,v,{img:'../mano/assets/'+c+'.png',txt:nf(v)}]).sort((x,y)=>y[1]-x[1]);
-    h+=`<div class="lbl">👥 جماهير الأندية</div><div class="card"><p class="cap"><b>${nf(tot)}</b> مشجع اختاروا لين الحين (من بداية المنصة، مب حسب الفترة)${neu?` · منهم ${nf(neu)} محايد`:''}. كل مشجع ينحسب مرة وحدة، ولو غيّر ناديه ينحسب لليديد.</p>${picks.length?bars(picks):'<div class="empty">للحين ما اختار أحد ناديه</div>'}</div>`}
+    h+=`<div class="lbl">👥 جماهير الأندية</div><div class="card"><p class="cap"><b>${nf(tot)}</b> مشجع اختاروا لين الحين (من بداية المنصة، مب حسب الفترة)${neu?` · منهم ${nf(neu)} محايد`:''}. كل مشجع ينحسب مرة وحدة، ولو غيّر ناديه ينحسب للجديد.</p>${picks.length?bars(picks):'<div class="empty">للحين ما اختار أحد ناديه</div>'}</div>`}
   { // أغاني دورينا وأنديتنا: تشغيل وتنزيل ومشاركة لكل أغنية (حسب الفترة)
     const SS=id=>useV?(V.s[id]||{}):{play:ev['play-'+id],dl:ev['dl-'+id],share:ev['share-'+id]};const rows=SONGS.filter(o=>o.file).map(o=>({o,vi:SV[o.id]||0,pl:SS(o.id).play||0,dl:SS(o.id).dl||0,sh:SS(o.id).share||0})).sort((x,y)=>(y.vi+y.pl)-(x.vi+x.pl));
     const td='padding:9px 4px;text-align:center;font-weight:700;font-size:15px',th='padding:4px;text-align:center;font-size:12px;opacity:.7;font-weight:600';

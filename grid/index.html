@@ -264,7 +264,7 @@ function pick(id){const k=cur,i=+k[0],j=+k[1],p=PM[id];$('#ov').classList.remove
   if(left()<=0){ // الوقت الإضافي: محلي بس
     if(ok){S.ex[k]=id;toast('✅ صح · وقت إضافي بدون نقاط')}else toast('❌ '+why(p,i,j),3200);
     save();draw();return}
-  if(isOver()){toast('خلص يوم هالشبكة. افتح الصفحة من يديد للشبكة الجديدة',3000);return}
+  if(isOver()){toast('خلص يوم هالشبكة. افتح الصفحة من جديد للشبكة الجديدة',3000);return}
   S.att.push({k,p:id,ok});if(S.att.length===9||Object.keys(cells()).length===9)S.sec=Math.min(86400,Math.round((now()-S.t0)/1000));
   save();
   if(ok){toast('✅ صح! '+(GN[k]>=THR?'':'النسبة تطلع بعد 30 حل'))}else{toast('❌ '+why(p,i,j),3200)}

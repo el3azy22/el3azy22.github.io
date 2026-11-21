@@ -228,7 +228,7 @@ function rkRow(el){if(!el||!crypto.subtle)return;
   const paint=c=>{el.hidden=false;el.innerHTML=`<div class="rk-l"><span>🔐 رمز الاسترجاع</span><b dir="ltr">${fmtCode(c)}</b><button class="fz-link rk-cp" type="button">انسخ</button></div>
     <small>صوّره واحفظه، يرجّع بطاقتك لو ضاعت · <button class="fz-link rk-sw" type="button">غيّره</button></small>`;
     el.querySelector('.rk-cp').onclick=async e=>{try{await navigator.clipboard.writeText(fmtCode(c));e.target.textContent='✓ انسخ'}catch(_){prompt('انسخ:',fmtCode(c))}};
-    el.querySelector('.rk-sw').onclick=async e=>{if(!confirm('نسوي لك رمز يديد، والقديم ما يشتغل بعدها. أكيد؟'))return;e.target.textContent='...';try{paint(await swapRk())}catch(_){e.target.textContent='غيّره'}}};
+    el.querySelector('.rk-sw').onclick=async e=>{if(!confirm('نسوي لك رمز جديد، والقديم ما يشتغل بعدها. أكيد؟'))return;e.target.textContent='...';try{paint(await swapRk())}catch(_){e.target.textContent='غيّره'}}};
   const c=PID.get('rk');if(c)return paint(c);myRk().then(paint).catch(()=>{})}
 function addCss(){if(document.getElementById('fz-css'))return;const s=document.createElement('style');s.id='fz-css';s.textContent=css;document.head.appendChild(s)}
 
@@ -303,7 +303,7 @@ function moveIn(bg,pre){
     try{const f=await useCode(pickCode(inp.value));
       sh.innerHTML=TILE+`<h2>رجعت لك بطاقتك ✅</h2><p class="fz-why">${f&&f.c&&f.c!=='none'?`جمهور <b>${CL[f.c]||''}</b>${f.n?' · '+esc(f.n):''}<br>`:''}نقاطك وتوقعاتك كلها هني.</p>`;
       setTimeout(()=>location.reload(),1400)}
-    catch(e){go.disabled=false;go.textContent='انقل البطاقة';err.textContent=e.message==='net'?'ما قدرنا نكمل، تأكد من الإنترنت وجرب مرة ثانية':'الرمز غلط أو انتهى. سو رمز يديد من تلفونك الثاني'}};
+    catch(e){go.disabled=false;go.textContent='انقل البطاقة';err.textContent=e.message==='net'?'ما قدرنا نكمل، تأكد من الإنترنت وجرب مرة ثانية':'الرمز غلط أو انتهى. سو رمز جديد من تلفونك الثاني'}};
   if(!pre)setTimeout(()=>inp.focus(),50);
 }
 
