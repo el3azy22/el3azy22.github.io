@@ -76,7 +76,7 @@ h1 em{font-style:normal;color:var(--gold)}
 .topnav{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:38px}.topnav .g{display:flex;gap:8px;position:relative;margin-inline-start:auto}
 .tn{display:inline-grid;place-items:center;width:38px;height:38px;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.07);color:var(--gold2);cursor:pointer;padding:0;font-family:inherit;text-decoration:none}
 .tn svg{width:19px;height:19px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}.tn.mute{opacity:.45}
-.hdr{display:flex;align-items:center;gap:10px;margin-top:-2px}.hdr img{height:56px;width:56px;object-fit:contain}.hdr .t{flex:1;min-width:0}.hdr h1{font-size:25px;text-align:start;line-height:1.2}.hdr .s{font-size:12.5px;color:var(--gold);font-weight:600}.hdr .s b{color:var(--gold2)}.hdr .s.ask{cursor:pointer}.mnote{font-size:12px;opacity:.7;text-align:center;margin-top:8px}.hdr .s u{color:var(--gold2);text-underline-offset:3px}
+.hdr{display:flex;align-items:center;gap:10px;margin-top:-2px}.hdr img{height:56px;width:56px;object-fit:contain}.hdr .t{flex:1;min-width:0}.hdr h1{font-size:25px;text-align:start;line-height:1.2;padding-bottom:.24em}.hdr .s{line-height:1.5;font-size:12.5px;color:var(--gold);font-weight:600}.hdr .s b{color:var(--gold2)}.hdr .s.ask{cursor:pointer}.mnote{font-size:12px;opacity:.7;text-align:center;margin-top:8px}.hdr .s u{color:var(--gold2);text-underline-offset:3px}
 .q{flex:none;width:40px;height:40px;border-radius:12px;border:1px solid rgba(215,180,101,.45);background:rgba(215,180,101,.06);color:var(--gold);font-size:19px;font-weight:700;display:grid;place-items:center;cursor:pointer;font-family:inherit;padding:0}
 .sadu{height:12px;margin:-4px auto;width:100%;background:var(--sadu) center/18px 12px repeat-x;opacity:.75;-webkit-mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent);mask:linear-gradient(90deg,transparent,#000 18%,#000 82%,transparent)}
 .lbl{display:flex;align-items:center;gap:10px;font-size:13px;color:var(--gold);font-weight:600;margin-bottom:4px;align-self:stretch}.lbl:after{content:'';flex:1;height:1px;background:linear-gradient(270deg,transparent,rgba(215,180,101,.45))}
@@ -674,29 +674,112 @@ function skyline(g,R,w,h,hmin,hmax,gaps,cols){let x=0;while(x<w){const bw=W*(.01
   winLights(g,R,x,h-bh,bw,bh,.35);if(R()<.2)glow(g,x+bw/2,h-bh-2,4,'rgba(255,60,60,.9)');x+=bw+W*R()*.006;}}
 function water(g,R,w,h,top){const wg=g.createLinearGradient(0,top,0,h);wg.addColorStop(0,'#24325a');wg.addColorStop(1,'#141c36');g.fillStyle=wg;g.fillRect(0,top,w,h-top);
   for(let i=0;i<w/9;i++){g.fillStyle='rgba(255,215,150,'+(.1+R()*.35)+')';g.fillRect(R()*w,top+R()*(h-top),4+R()*14,1.2);}}
-function drawBurj(g,x,h,ht){const bw=W*.05;glow(g,x,h-ht*.5,ht*.5,'rgba(140,160,255,.12)');g.fillStyle='#55509a';const st=[[1,0],[.8,.22],[.62,.42],[.45,.6],[.3,.76],[.16,.88]];for(const [k,y] of st){const ww=bw*k;g.fillRect(x-ww/2,h-ht*(y+.16),ww,ht*.16+1);}
-  g.fillRect(x-1.5,h-ht*1.06,3,ht*.2);g.fillStyle='rgba(200,215,255,.8)';for(let i=0;i<60;i++){const y=h-ht*(i/60)*.98;const k=1-i/66;g.fillRect(x-bw*.04*k,y,bw*.08*k,1.2);}glow(g,x,h-ht*1.06,8,'rgba(255,70,70,1)');}
-function drawFrame(g,x,h,ht){const pw=W*.012,sp=W*.05;g.fillStyle='#c9a24a';g.fillRect(x-sp/2-pw,h-ht,pw,ht);g.fillRect(x+sp/2,h-ht,pw,ht);g.fillRect(x-sp/2-pw,h-ht-H*.012,sp+pw*2,H*.014);
-  g.fillStyle='rgba(255,230,160,.6)';for(let y=h-ht;y<h;y+=5){g.fillRect(x-sp/2-pw+2,y,pw-4,1.5);g.fillRect(x+sp/2+2,y,pw-4,1.5);}glow(g,x,h-ht,sp*.9,'rgba(255,210,120,.25)');}
-function drawGrandMosque(g,x,h){const s=H*.01,c='#e9edf6';glow(g,x,h-s*5,s*30,'rgba(170,200,255,.28)');g.fillStyle=c;g.fillRect(x-s*18,h-s*3.4,s*36,s*3.4);
-  const dome=(dx,r,dy)=>{g.beginPath();g.ellipse(x+dx,h-s*3.4-dy,r,r*1.15,0,Math.PI,0);g.fill();g.fillRect(x+dx-.7,h-s*3.4-dy-r*1.15-s*.9,1.4,s*.9);};
-  g.fillRect(x-s*4,h-s*5.2,s*8,s*1.9);dome(0,s*4.2,s*1.8);[-9,-5,5,9].forEach(d=>dome(d*s,s*1.6,0));[-14,14].forEach(d=>dome(d*s,s*1.2,0));
-  for(const d of[-17.5,17.5,-12,12]){g.fillRect(x+d*s-s*.45,h-s*(d*d>200?11:9),s*.9,s*(d*d>200?11:9));g.beginPath();g.moveTo(x+d*s-s*.55,h-s*(d*d>200?11:9));g.lineTo(x+d*s,h-s*(d*d>200?12.4:10.2));g.lineTo(x+d*s+s*.55,h-s*(d*d>200?11:9));g.fill();}
-  g.fillStyle='rgba(120,160,230,.45)';g.fillRect(x-s*18,h-s*1.2,s*36,s*.5);}
+/* معالم حقيقية: النسب كلها من الارتفاع (ht) عشان الشكل يظل صح في أي مقاس شاشة */
+function lmGlass(g,x0,x1,y0,y1,c){const gr=g.createLinearGradient(x0,0,x1,0);gr.addColorStop(0,c[0]);gr.addColorStop(.5,c[1]);gr.addColorStop(1,c[2]);return gr;}
+/* برج خليفة: مقطع جانبي بالارتدادات الحقيقية (الأجنحة الثلاثة تقصر بالتناوب)، والمستدق ~ ربع الطول */
+function drawBurj(g,x,h,ht){
+  const T=[[0,.074,.074],[.05,.07,.07],[.16,.07,.06],[.25,.058,.06],[.33,.058,.049],[.40,.047,.049],[.465,.047,.039],[.525,.037,.039],[.575,.037,.03],[.62,.029,.03],[.655,.029,.022],[.69,.021,.022],[.715,.017,.016],[.745,.012,.012]];
+  const top=.775,Y=f=>h-ht*f,ch=ht*.004;
+  glow(g,x,Y(.45),ht*.42,'rgba(150,170,255,.16)');
+  const P=[];P.push([x-T[0][1]*ht,h]);
+  for(let i=0;i<T.length;i++){const L=T[i][1]*ht,yN=i+1<T.length?T[i+1][0]:top;P.push([x-L,Y(yN)+(i+1<T.length&&T[i+1][1]<T[i][1]?ch:0)]);if(i+1<T.length&&T[i+1][1]<T[i][1])P.push([x-T[i+1][1]*ht,Y(yN)]);}
+  const Q=[];for(let i=T.length-1;i>=0;i--){const R=T[i][2]*ht,yN=i+1<T.length?T[i+1][0]:top;if(i+1<T.length&&T[i+1][2]<T[i][2])Q.push([x+T[i+1][2]*ht,Y(yN)]);Q.push([x+R,Y(yN)+(i+1<T.length&&T[i+1][2]<T[i][2]?ch:0)]);Q.push([x+R,Y(T[i][0])]);}
+  g.save();g.beginPath();g.moveTo(...P[0]);for(const p of P)g.lineTo(...p);for(const q of Q)g.lineTo(...q);g.closePath();
+  g.fillStyle=lmGlass(g,x-.075*ht,x+.075*ht,0,0,['#c9d4f0','#8a98c6','#3f4778']);g.fill();
+  g.clip();
+  const vg=g.createLinearGradient(0,h,0,Y(top));vg.addColorStop(0,'rgba(20,16,48,.55)');vg.addColorStop(.6,'rgba(40,30,80,.1)');vg.addColorStop(1,'rgba(255,190,210,.22)');g.fillStyle=vg;g.fillRect(x-ht*.08,Y(top),ht*.16,ht*top);
+  // الأضلاع العمودية (الزعانف المعدنية)
+  g.strokeStyle='rgba(230,238,255,.28)';g.lineWidth=Math.max(.6,ht*.0018);for(let k=-.07;k<=.07;k+=.0065){g.beginPath();g.moveTo(x+k*ht,h);g.lineTo(x+k*ht,Y(top));g.stroke();}
+  // الجناح الأوسط (القلب) أفتح شوي
+  g.fillStyle='rgba(255,255,255,.08)';g.fillRect(x-ht*.011,Y(top),ht*.022,ht*top);
+  // إضاءة الأدوار
+  const R=rng(77);for(let f=.012;f<top;f+=.0058)for(let k=-.07;k<.07;k+=.0065)if(R()<.32){g.fillStyle=R()<.85?'rgba(255,224,170,.75)':'rgba(200,225,255,.8)';g.fillRect(x+k*ht+ht*.001,Y(f),ht*.004,Math.max(1,ht*.0022));}
+  g.restore();
+  // إضاءة حواف الارتدادات
+  g.fillStyle='rgba(255,255,255,.85)';for(let i=1;i<T.length;i++){const y=Y(T[i][0]);if(T[i][1]<T[i-1][1])g.fillRect(x-T[i-1][1]*ht,y,(T[i-1][1]-T[i][1])*ht,Math.max(1,ht*.002));if(T[i][2]<T[i-1][2])g.fillRect(x+T[i][2]*ht,y,(T[i-1][2]-T[i][2])*ht,Math.max(1,ht*.002));}
+  // المستدق: إبرة معدنية تضيق لين القمة
+  const s0=.0105*ht,y0=Y(top),y1=Y(1);g.beginPath();g.moveTo(x-s0,y0);g.lineTo(x-.0018*ht,y1+ht*.01);g.lineTo(x,y1);g.lineTo(x+.0018*ht,y1+ht*.01);g.lineTo(x+s0,y0);g.closePath();
+  g.fillStyle=lmGlass(g,x-s0,x+s0,0,0,['#e6ecfa','#a9b4d6','#5a6390']);g.fill();
+  g.fillStyle='rgba(255,255,255,.55)';for(let f=top+.012;f<.97;f+=.018){const w=s0*(1-(f-top)/(1-top))+.002*ht;g.fillRect(x-w,Y(f),w*2,Math.max(.8,ht*.0012));}
+  glow(g,x,y1+2,Math.max(5,ht*.02),'rgba(255,60,60,1)');for(const f of[.6,.72])glow(g,x,Y(f),Math.max(3,ht*.008),'rgba(255,70,70,.9)');}
+/* برواز دبي: برجين 150م وفتحة 93م وجسر فوق، ذهبي بنقشة */
+function drawFrame(g,x,h,ht){const W2=ht*.62/2,lg=ht*.13,br=ht*.13;
+  glow(g,x,h-ht*.55,ht*.75,'rgba(255,200,110,.18)');
+  const gold=g.createLinearGradient(x-W2,0,x+W2,0);gold.addColorStop(0,'#f3d27a');gold.addColorStop(.5,'#d9a845');gold.addColorStop(1,'#a77a2a');
+  g.fillStyle=gold;g.beginPath();g.rect(x-W2,h-ht,W2*2,ht);g.rect(x-W2+lg,h-ht+br,W2*2-lg*2,ht-br);g.fill('evenodd');
+  // واجهة زجاج داخلية للبرجين والجسر
+  g.fillStyle='rgba(70,90,140,.85)';const gw=lg*.34;g.fillRect(x-W2+lg-gw,h-ht+br,gw,ht-br);g.fillRect(x+W2-lg,h-ht+br,gw,ht-br);g.fillRect(x-W2+lg-gw,h-ht+br-gw,W2*2-lg*2+gw*2,gw);
+  // النقشة المخرّمة
+  g.fillStyle='rgba(120,80,20,.55)';const st=Math.max(3,ht*.022),R=rng(5);
+  const pat=(x0,y0,w,hh)=>{for(let yy=y0+st*.6;yy<y0+hh-st*.4;yy+=st)for(let xx=x0+st*.6+((yy/st)%2?st/2:0);xx<x0+w-st*.4;xx+=st){g.beginPath();g.arc(xx,yy,st*.22,0,7);g.fill();}};
+  pat(x-W2,h-ht,lg-gw,ht);pat(x+W2-lg+gw,h-ht,lg-gw,ht);pat(x-W2+lg,h-ht,W2*2-lg*2,br-gw);
+  g.fillStyle='rgba(255,240,190,.9)';g.fillRect(x-W2,h-ht,W2*2,Math.max(1,ht*.006));}
+/* مقر الدار: قرص دائري واقف على حافته، بشبكة زجاج قطرية */
+function drawAldar(g,x,h,r){r=r||H*.07;const cy=h-r*.94;glow(g,x,cy,r*1.5,'rgba(150,180,255,.2)');
+  g.save();g.beginPath();g.rect(x-r*1.2,cy-r*1.2,r*2.4,h-(cy-r*1.2));g.clip();
+  g.beginPath();g.arc(x,cy,r,0,7);const gr=g.createLinearGradient(x-r,cy-r,x+r,cy+r);gr.addColorStop(0,'#b8c6ea');gr.addColorStop(.55,'#6676a8');gr.addColorStop(1,'#2f3863');g.fillStyle=gr;g.fill();
+  g.save();g.clip();g.strokeStyle='rgba(235,242,255,.55)';g.lineWidth=Math.max(.7,r*.012);const s=r/4.2;
+  for(let k=-6;k<=6;k++){g.beginPath();g.moveTo(x+k*s-r,cy-r);g.lineTo(x+k*s+r,cy+r);g.stroke();g.beginPath();g.moveTo(x+k*s+r,cy-r);g.lineTo(x+k*s-r,cy+r);g.stroke();}
+  const R=rng(9);for(let yy=cy-r;yy<cy+r;yy+=r*.06)for(let xx=x-r;xx<x+r;xx+=r*.05)if(R()<.25){g.fillStyle='rgba(255,225,170,.7)';g.fillRect(xx,yy,r*.025,r*.018);}
+  g.restore();g.lineWidth=Math.max(1.5,r*.035);g.strokeStyle='#dfe6f6';g.beginPath();g.arc(x,cy,r,0,7);g.stroke();g.restore();}
+/* بوابة العاصمة (أدنيك): البرج المايل 18 درجة، وشبكة قطرية، ومظلة «الرذاذ» */
+function drawCapitalGate(g,x,h,ht){const lean=Math.tan(18*Math.PI/180)*ht*.55,b0=ht*.16,b1=ht*.24;
+  glow(g,x-lean*.5,h-ht*.5,ht*.6,'rgba(150,180,255,.16)');
+  const P=[[x-b0/2,h],[x+b0/2,h]];g.beginPath();g.moveTo(x-b0/2,h);g.bezierCurveTo(x-b0*.6,h-ht*.4,x-lean-b1*.55,h-ht*.75,x-lean-b1/2,h-ht);g.lineTo(x-lean+b1/2,h-ht*.97);
+  g.bezierCurveTo(x-lean*.55+b1*.5,h-ht*.6,x+b0*.55,h-ht*.3,x+b0/2,h);g.closePath();
+  g.fillStyle=lmGlass(g,x-lean-b1/2,x+b0/2,0,0,['#c5d1f0','#7d8cbf','#39416f']);g.fill();
+  g.save();g.clip();g.strokeStyle='rgba(235,242,255,.5)';g.lineWidth=Math.max(.6,ht*.003);const s=ht*.045;
+  for(let k=-14;k<=14;k++){g.beginPath();g.moveTo(x+k*s-ht*.5,h);g.lineTo(x+k*s+ht*.2,h-ht);g.stroke();g.beginPath();g.moveTo(x+k*s+ht*.1,h);g.lineTo(x+k*s-ht*.6,h-ht);g.stroke();}
+  const R=rng(3);for(let f=.03;f<.98;f+=.025)for(let k=-.6;k<.2;k+=.02)if(R()<.18){g.fillStyle='rgba(255,225,170,.75)';g.fillRect(x+k*ht,h-f*ht,ht*.007,ht*.004);}g.restore();
+  // مظلة الرذاذ الفولاذية من جنب البرج للأرض
+  g.strokeStyle='rgba(225,232,248,.85)';g.lineWidth=Math.max(1.2,ht*.012);g.beginPath();g.moveTo(x+b0*.2,h-ht*.3);g.bezierCurveTo(x+ht*.25,h-ht*.32,x+ht*.4,h-ht*.12,x+ht*.55,h);g.stroke();
+  g.lineWidth=Math.max(.8,ht*.006);g.beginPath();g.moveTo(x+b0*.3,h-ht*.22);g.bezierCurveTo(x+ht*.2,h-ht*.22,x+ht*.3,h-ht*.08,x+ht*.4,h);g.stroke();
+  glow(g,x-lean-b1/2+2,h-ht,Math.max(4,ht*.02),'rgba(255,70,70,.9)');}
+/* برج الساعة في ديرة: أربع أرجل بقناطر، وجسم يضيق فوق، وساعات */
+function drawClockFar(g,x,h,ht){const c1='#e9dcc0',c2='#a9946b',bw=ht*.42;glow(g,x,h-ht*.6,ht*.7,'rgba(255,220,150,.2)');
+  const gr=g.createLinearGradient(x-bw/2,0,x+bw/2,0);gr.addColorStop(0,c1);gr.addColorStop(1,c2);g.fillStyle=gr;
+  // القاعدة: أرجل مقوسة
+  g.beginPath();g.moveTo(x-bw/2,h);g.lineTo(x-bw/2,h-ht*.3);g.lineTo(x+bw/2,h-ht*.3);g.lineTo(x+bw/2,h);g.lineTo(x+bw*.3,h);g.quadraticCurveTo(x+bw*.3,h-ht*.2,x,h-ht*.22);g.quadraticCurveTo(x-bw*.3,h-ht*.2,x-bw*.3,h);g.closePath();g.fill();
+  // الجسم يضيق
+  g.beginPath();g.moveTo(x-bw*.38,h-ht*.3);g.lineTo(x-bw*.16,h-ht*.78);g.lineTo(x+bw*.16,h-ht*.78);g.lineTo(x+bw*.38,h-ht*.3);g.closePath();g.fill();
+  g.fillRect(x-bw*.2,h-ht*.9,bw*.4,ht*.13);g.beginPath();g.moveTo(x-bw*.2,h-ht*.9);g.lineTo(x,h-ht);g.lineTo(x+bw*.2,h-ht*.9);g.fill();
+  g.fillStyle='#fffbe8';g.beginPath();g.arc(x,h-ht*.835,bw*.13,0,7);g.fill();g.strokeStyle='#5b4a2c';g.lineWidth=Math.max(1,ht*.01);g.beginPath();g.moveTo(x,h-ht*.835);g.lineTo(x,h-ht*.88);g.moveTo(x,h-ht*.835);g.lineTo(x+bw*.07,h-ht*.835);g.stroke();
+  g.fillStyle='rgba(255,215,140,.55)';for(let k=0;k<4;k++)g.fillRect(x-bw*.3+k*bw*.17,h-ht*.29,bw*.08,ht*.04);}
+/* برج مراقبة دائري (قرية حتا التراثية) */
+function drawRoundTower(g,x,h,ht){const w=ht*.42;const gr=g.createLinearGradient(x-w/2,0,x+w/2,0);gr.addColorStop(0,'#d8b98a');gr.addColorStop(.6,'#b8925f');gr.addColorStop(1,'#7c5e3a');g.fillStyle=gr;
+  g.beginPath();g.moveTo(x-w/2,h);g.lineTo(x-w*.42,h-ht);g.lineTo(x+w*.42,h-ht);g.lineTo(x+w/2,h);g.fill();for(let i=0;i<5;i++)g.fillRect(x-w*.42+i*w*.21-w*.04,h-ht-ht*.07,w*.1,ht*.07);
+  g.fillStyle='rgba(60,40,25,.8)';g.fillRect(x-w*.06,h-ht*.62,w*.12,ht*.12);g.fillRect(x-w*.06,h-ht*.32,w*.12,ht*.1);glow(g,x,h-ht*.5,ht*.6,'rgba(255,200,120,.18)');}
+/* جامع الشيخ زايد من زاوية: القبة الكبيرة، والقباب الصغيرة، والمآذن الأربع بأهلّة ذهبية */
+function drawGrandMosque(g,x,h){const s=Math.min(H*.014,W*.022),c='#eef1f8';glow(g,x,h-s*6,s*20,'rgba(170,200,255,.3)');
+  const wall=g.createLinearGradient(0,h-s*4,0,h);wall.addColorStop(0,'#f4f6fb');wall.addColorStop(1,'#b9c3dc');g.fillStyle=wall;g.fillRect(x-s*12,h-s*3,s*24,s*3);
+  g.fillStyle='rgba(90,110,170,.55)';for(let i=0;i<13;i++){const ax=x-s*11.2+i*s*1.8;g.beginPath();g.ellipse(ax+s*.5,h-s*1.6,s*.45,s*.7,0,Math.PI,0);g.fill();g.fillRect(ax+s*.05,h-s*1.6,s*.9,s*1.4);}
+  const gold='#e9c46a';
+  const dome=(dx,r,dy,tip)=>{const yb=h-s*3-dy;const dg=g.createLinearGradient(x+dx-r,0,x+dx+r,0);dg.addColorStop(0,'#ffffff');dg.addColorStop(1,'#c7cfe3');g.fillStyle=dg;g.beginPath();g.moveTo(x+dx-r,yb);g.bezierCurveTo(x+dx-r,yb-r*1.25,x+dx-r*.25,yb-r*1.45,x+dx,yb-r*1.6);g.bezierCurveTo(x+dx+r*.25,yb-r*1.45,x+dx+r,yb-r*1.25,x+dx+r,yb);g.fill();
+    g.fillStyle=gold;g.fillRect(x+dx-s*.06,yb-r*1.6-s*tip,s*.12,s*tip);g.beginPath();g.arc(x+dx,yb-r*1.6-s*tip,s*.18,0,7);g.fill();};
+  g.fillStyle=c;g.fillRect(x-s*3.4,h-s*4.6,s*6.8,s*1.7);
+  [-8.6,8.6].forEach(d=>dome(d*s,s*1.1,0,.5));[-6.2,6.2].forEach(d=>dome(d*s,s*1.3,0,.5));[-3.6,3.6].forEach(d=>dome(d*s,s*1.6,.4,.6));dome(0,s*3.9,1.6,1);
+  const minar=(d,hh)=>{const mx=x+d*s,w=s*.75;const mg=g.createLinearGradient(mx-w/2,0,mx+w/2,0);mg.addColorStop(0,'#ffffff');mg.addColorStop(1,'#c3cbe0');g.fillStyle=mg;g.fillRect(mx-w/2,h-s*hh,w,s*hh);
+    for(const f of[.45,.68,.86]){g.fillRect(mx-w*.75,h-s*hh*f,w*1.5,s*.35);}g.beginPath();g.moveTo(mx-w*.55,h-s*hh);g.quadraticCurveTo(mx,h-s*(hh+1.6),mx+w*.55,h-s*hh);g.fill();
+    g.fillStyle=gold;g.fillRect(mx-s*.06,h-s*(hh+2.3),s*.12,s*.9);g.beginPath();g.arc(mx,h-s*(hh+2.35),s*.2,0,7);g.fill();};
+  minar(-6.9,11.2);minar(6.9,11.2);minar(-11.4,13);minar(11.4,13);
+  g.fillStyle='rgba(120,160,230,.5)';g.fillRect(x-s*12,h-s*.5,s*24,s*.5);}
 function drawNoor(g,x,h){const s=H*.01;glow(g,x,h-s*6,s*22,'rgba(200,220,255,.28)');g.fillStyle='#eef0f6';g.fillRect(x-s*7,h-s*4,s*14,s*4);g.beginPath();g.ellipse(x,h-s*4,s*5.5,s*5,0,Math.PI,0);g.fill();
   [-4.5,4.5].forEach(d=>{g.beginPath();g.ellipse(x+d*s,h-s*4,s*2,s*2.2,0,Math.PI,0);g.fill();});[-8.5,8.5].forEach(d=>{g.fillRect(x+d*s-s*.4,h-s*13,s*.8,s*13);g.beginPath();g.moveTo(x+d*s-s*.5,h-s*13);g.lineTo(x+d*s,h-s*15.5);g.lineTo(x+d*s+s*.5,h-s*13);g.fill();});g.fillRect(x-.6,h-s*10.8,1.2,s*1.8);}
 function drawFort(g,x,h,s){s=s||H*.01;const c1='#c9a173',c2='#8a6844';const fg=g.createLinearGradient(0,h-s*6,0,h);fg.addColorStop(0,c1);fg.addColorStop(1,c2);g.fillStyle=fg;g.fillRect(x-s*8,h-s*4,s*16,s*4);
   for(let i=0;i<9;i++)g.fillRect(x-s*8+i*s*2,h-s*4.6,s*.9,s*.6);g.beginPath();g.ellipse(x-s*8,h-s*6.5,s*1.8,s*1.8,0,Math.PI,0);g.fill();g.fillRect(x-s*9.8,h-s*6.5,s*3.6,s*6.5);g.fillRect(x+s*5,h-s*8,s*3.4,s*8);for(let i=0;i<3;i++)g.fillRect(x+s*5+i*s*1.3,h-s*8.6,s*.7,s*.6);
   glow(g,x,h-s*3,s*9,'rgba(255,190,110,.28)');g.fillStyle='rgba(255,210,140,.9)';g.fillRect(x-s*1,h-s*2.4,s*2,s*2.4);}
-function drawAldar(g,x,h){const r=H*.06;glow(g,x,h-r,r*1.6,'rgba(150,180,255,.2)');g.fillStyle='#34446a';g.beginPath();g.arc(x,h-r,r,0,7);g.fill();g.strokeStyle='rgba(170,200,255,.55)';g.lineWidth=1;
-  for(let k=-4;k<=4;k++){g.beginPath();g.ellipse(x,h-r,Math.abs(k)*r/4.6,r,0,0,7);g.stroke();}for(let y=-r;y<r;y+=r/6){const ww=Math.sqrt(r*r-y*y);g.beginPath();g.moveTo(x-ww,h-r+y);g.lineTo(x+ww,h-r+y);g.stroke();}}
 function drawZBridge(g,x,h){const sp=W*.3,ht=H*.065;g.strokeStyle='#eef2f8';g.lineWidth=3.2;for(const [o,k] of [[-.33,.8],[0,1],[.33,.8]]){g.beginPath();g.moveTo(x+(o-.18)*sp,h-H*.012);g.quadraticCurveTo(x+o*sp,h-H*.012-ht*k*2,x+(o+.18)*sp,h-H*.012);g.stroke();}
   g.fillStyle='#d9dde6';g.fillRect(x-sp*.55,h-H*.014,sp*1.1,3);for(let i=0;i<14;i++)glow(g,x-sp*.5+i*sp/13,h-H*.016,5,'rgba(255,230,180,.8)');}
 function drawEmiratesTowers(g,x,h){const ht=H*.21;for(const [o,k] of [[-1,1],[1,.86]]){const xx=x+o*W*.022,bw=W*.026,hh=ht*k;g.fillStyle='#3a3f60';g.beginPath();g.moveTo(xx-bw/2,h);g.lineTo(xx-bw/2,h-hh*.88);g.lineTo(xx+bw/2,h-hh);g.lineTo(xx+bw/2,h);g.fill();
   g.fillStyle='rgba(200,215,255,.6)';for(let y=h-hh*.86;y<h;y+=4)g.fillRect(xx-bw/2+2,y,bw-4,1);glow(g,xx+bw/2,h-hh,6,'rgba(255,80,80,.9)');}}
 function drawMetro(g,R,w,h){const y=h-H*.032;g.fillStyle='#5a6078';g.fillRect(0,y,w,H*.006);for(let x=10;x<w;x+=W*.06)g.fillRect(x,y,4,h-y);
   for(let k=0;k<2;k++){const tx=w*(.2+k*.45);fr(g,tx,y-H*.011,W*.14,H*.011,3,'#c9ced8');for(let i=0;i<14;i++){g.fillStyle='rgba(255,240,190,.95)';g.fillRect(tx+4+i*W*.0095,y-H*.008,W*.005,H*.004);}}}
-function drawDam(g,x,h){const s=H*.0055;const lg=g.createLinearGradient(0,h-s*3,0,h);lg.addColorStop(0,'#2f5c8a');lg.addColorStop(1,'#1a3557');g.fillStyle=lg;g.fillRect(x-s*16,h-s*2.2,s*32,s*2.2);
+/* حصن كلباء: سور ببرج دائري كبير وبرج مربع */
+function drawKalbaFort(g,x,h,ht){const w=ht*2.2,gr=g.createLinearGradient(0,h-ht,0,h);gr.addColorStop(0,'#eadcbd');gr.addColorStop(1,'#a88a5e');glow(g,x,h-ht*.5,ht*1.6,'rgba(255,205,130,.22)');g.fillStyle=gr;
+  g.fillRect(x-w/2,h-ht*.45,w,ht*.45);for(let i=0;i<12;i++)g.fillRect(x-w/2+i*w/11.5,h-ht*.53,w/26,ht*.08);
+  g.fillRect(x+w*.22,h-ht*.85,w*.2,ht*.85);for(let i=0;i<4;i++)g.fillRect(x+w*.22+i*w*.058,h-ht*.93,w*.03,ht*.08);
+  drawRoundTower(g,x-w*.33,h,ht);g.fillStyle='rgba(255,215,140,.9)';g.fillRect(x-w*.05,h-ht*.3,w*.07,ht*.3);g.fillStyle='rgba(60,40,25,.7)';for(const k of[.27,.33])g.fillRect(x+w*k,h-ht*.62,w*.035,ht*.1);}
+function drawDam(g,x,h){const s=Math.min(H*.009,W*.012);const lg=g.createLinearGradient(0,h-s*3,0,h);lg.addColorStop(0,'#2f5c8a');lg.addColorStop(1,'#1a3557');g.fillStyle=lg;g.fillRect(x-s*16,h-s*2.2,s*32,s*2.2);
   g.fillStyle='#7f7d94';g.beginPath();g.moveTo(x-s*14,h-s*2.2);g.quadraticCurveTo(x,h-s*4.2,x+s*14,h-s*2.2);g.lineTo(x+s*14,h-s*5.6);g.quadraticCurveTo(x,h-s*7.6,x-s*14,h-s*5.6);g.closePath();g.fill();
   for(let i=0;i<10;i++)glow(g,x-s*13+i*s*2.9,h-s*6.4+Math.pow((i-4.5)/4.5,2)*s*1.6,4,'rgba(255,230,170,.9)');g.fillStyle='rgba(255,220,150,.5)';g.fillRect(x-s*14,h-s*1.4,s*28,1);}
 function drawAmph(g,x,h){const s=H*.01;glow(g,x,h-s*5,s*20,'rgba(255,200,120,.25)');g.fillStyle='#d9b98a';g.fillRect(x-s*15,h-s*1.2,s*30,s*1.2);
@@ -709,19 +792,19 @@ function farArt(g,w,h){const T=TH,R=rng(hashStr(STAGE)+7),Lx=w*.3;
     backs.forEach(([c,b,a],k)=>{const p=ridgePts(R,w,h,h-H*b,H*a,W*.02,.9);fillPts(g,p,h,c);if(k===0)for(let i=0;i<p.length;i++)if(R()<.05)glow(g,p[i][0],p[i][1]+4,3,'rgba(255,220,160,.5)');});
     if(T.lm.includes('sea')||T.lm.includes('mangrove')){water(g,R,w,h,h-H*.018);}
     if(T.lm.includes('mangrove'))drawMangrove(g,R,w*.6,h,h-H*.018);
-    if(T.lm.includes('dam'))drawDam(g,Lx,h);if(T.lm.includes('amph'))drawAmph(g,Lx,h-H*.018);
+    if(T.lm.includes('dam')){g.fillStyle='#2e2445';g.fillRect(Lx-W*.2,h-H*.04,W*.4,H*.04);drawDam(g,Lx,h-H*.04);}if(T.lm.includes('htower')){const hx=Lx+W*.42,hb=h-H*.035;g.fillStyle='#3c2f57';g.beginPath();g.moveTo(hx-W*.16,h);g.quadraticCurveTo(hx,hb-H*.02,hx+W*.16,h);g.fill();drawRoundTower(g,hx,hb,H*.06);drawRoundTower(g,hx+W*.08,hb+H*.012,H*.045);}if(T.lm.includes('kfort'))drawKalbaFort(g,Lx,h-H*.018,H*.075);if(T.lm.includes('amph'))drawAmph(g,Lx,h-H*.018);
     if(T.lm.includes('fort'))drawFort(g,w*.6,h-H*.018);return;}
   if(T.far==='dunes'){[['#5c4058',.1,.04],['#6e4b55',.065,.03],['#80575a',.035,.02]].forEach(([c,b,a])=>{g.fillStyle=c;g.beginPath();g.moveTo(0,h);for(let x=0;x<=w;x+=8)g.lineTo(x,h-H*b-H*a*Math.sin(x/w*Math.PI*(5+R()*.02)+b*30)-H*a*.4*Math.sin(x/w*Math.PI*13));g.lineTo(w,h);g.fill();});
-    if(T.lm.includes('fort'))drawFort(g,Lx,h-H*.03,H*.0075);for(let i=0;i<10;i++){const px=w*(.6+R()*.3),ph=H*.03;g.drawImage(palmSil,px,h-ph-H*.02,ph*220/380,ph);}return;}
+    if(T.lm.includes('fort'))drawFort(g,Lx-W*.06,h-H*.03,Math.min(H*.014,W*.02));for(let i=0;i<10;i++){const px=w*(.6+R()*.3),ph=H*.03;g.drawImage(palmSil,px,h-ph-H*.02,ph*220/380,ph);}return;}
   if(T.far==='sea'){water(g,R,w,h,h-H*.022);const top=h-H*.022;skyline(g,R,w,top,.008,.035,[[Lx-W*.2,Lx+W*.2]],['#2a2848','#262541','#2e2c4e']);
-    if(T.lm.includes('noor'))drawNoor(g,Lx,top);if(T.lm.includes('fort'))drawFort(g,Lx,top,H*.0075);
+    if(T.lm.includes('noor'))drawNoor(g,Lx,top);if(T.lm.includes('fort'))drawFort(g,Lx-W*.06,top,Math.min(H*.014,W*.02));
     g.fillStyle='rgba(255,220,160,.8)';for(let x=0;x<w;x+=W*.03)glow(g,x,top-2,3,'rgba(255,220,150,.8)');return;}
   // دبي وأبوظبي: أفق أبراج
-  const dxb=T.far==='dxb',gaps=[];if(T.lm.length)gaps.push([Lx-W*.13,Lx+W*.13]);if(T.lm.length>1)gaps.push([w*.6-W*.16,w*.6+W*.16]);
+  const dxb=T.far==='dxb',gaps=[],L2=Lx+W*.46;if(T.lm.length)gaps.push(T.lm[0]==='mosque'?[Lx-W*.26,Lx+W*.3]:[Lx-W*.13,Lx+W*.13]);if(T.lm.length>1)gaps.push([L2-W*.17,L2+W*.17]);
   const creek=T.lm.includes('creek');const base=creek?h-H*.016:h;if(creek)water(g,R,w,h,base);
   skyline(g,R,w,base,dxb?.03:.02,T.lm.includes('suburb')?.04:(dxb?.13:.09),gaps,['#2a2848','#262541','#2e2c4e','#24233d']);
-  for(const lm of T.lm){const x=lm===T.lm[0]?Lx:w*.6;
-    if(lm==='burj')drawBurj(g,x,base,H*.36);else if(lm==='frame')drawFrame(g,x,base,H*.16);else if(lm==='mosque')drawGrandMosque(g,x,base);else if(lm==='aldar')drawAldar(g,x,base);
+  for(const lm of T.lm){const x=lm===T.lm[0]?Lx:L2;
+    if(lm==='burj')drawBurj(g,x,base,H*.38);else if(lm==='frame')drawFrame(g,x,base,H*.15);else if(lm==='cgate')drawCapitalGate(g,x,base,H*.2);else if(lm==='clock')drawClockFar(g,x,base,H*.13);else if(lm==='mosque')drawGrandMosque(g,x+W*.02,base);else if(lm==='aldar')drawAldar(g,x,base,Math.min(H*.07,W*.1));
     else if(lm==='zbridge')drawZBridge(g,x,base);else if(lm==='szr')drawEmiratesTowers(g,x,base);else if(lm==='metro')drawMetro(g,R,w,base);
     else if(lm==='skyline')skyline(g,R,W*.5,base,.08,.16,[],['#30305a']);else if(lm==='creek'){for(let i=0;i<6;i++){const dx=w*(.08+i*.15);g.fillStyle='#4a3424';g.beginPath();g.moveTo(dx,h-H*.008);g.lineTo(dx+W*.03,h-H*.008);g.lineTo(dx+W*.025,h-H*.002);g.lineTo(dx+W*.004,h-H*.002);g.fill();glow(g,dx+W*.015,h-H*.011,4,'rgba(255,200,120,.9)');}}
     else if(lm==='suburb'){for(let i=0;i<5;i++){const mx=x-W*.1+i*W*.05;g.fillStyle='#e8e2d6';g.beginPath();g.ellipse(mx,base-H*.012,W*.008,H*.008,0,Math.PI,0);g.fill();g.fillRect(mx-W*.008,base-H*.012,W*.016,H*.012);if(i%2===0)g.fillRect(mx+W*.012,base-H*.035,W*.003,H*.035);}}}
@@ -889,22 +972,22 @@ const STADS={
   jazira:{st:'ملعب محمد بن زايد',short:'محمد بن زايد',city:'أبوظبي',area:'آل نهيان',far:'auh',lm:['aldar','zbridge'],near:'city',zA:['coast','city','city'],zB:['city','coast','city'],fin:'city',
     streets:['جسر الشيخ زايد','شارع الشيخ راشد بن سعيد','شارع الكورنيش'],place:['جسر الشيخ زايد','يمين 1 كم'],g2:['جزيرة السعديات','يسار'],bridge:'أبوظبي · العاصمة',
     prim:'highway4',sec:'exit',shape:'bowl',acc:'#ff6b76',subA:'طريق سريع بأربعة مسارات وجسر الشيخ زايد',subB:'الطريق السريع من جهة الكورنيش'},
-  baniyas:{st:'ملعب بني ياس',short:'بني ياس',city:'أبوظبي',area:'بني ياس',far:'auh',lm:['suburb'],near:'low',zA:['city','oasis','desert'],zB:['desert','city','oasis'],fin:'city',
+  baniyas:{st:'ملعب بني ياس',short:'بني ياس',city:'أبوظبي',area:'بني ياس',far:'auh',lm:['cgate','suburb'],near:'low',zA:['city','oasis','desert'],zB:['desert','city','oasis'],fin:'city',
     streets:['طريق أبوظبي – العين','طريق أبوظبي – دبي'],place:['بني ياس','يمين 1 كم'],g2:['أبوظبي','وسط المدينة'],bridge:'بني ياس · أبوظبي',
     prim:'bump',sec:'light',shape:'arena',acc:'#8fd0f5',subA:'الأحياء السكنية والمطبات',subB:'من الصحراء لبني ياس'},
   dhafra:{st:'ملعب حمدان بن زايد',short:'حمدان بن زايد',city:'مدينة زايد',area:'الظفرة',far:'dunes',lm:['fort'],near:'dunes',zA:['desert','desert','oasis'],zB:['oasis','desert','desert'],fin:'city',
     streets:['طريق ليوا','طريق أبوظبي – الغويفات'],place:['ليوا','يسار'],g2:['ليوا','الجنوب'],bridge:'الظفرة · مدينة زايد',
     prim:'dust',sec:'camel',shape:'arena',acc:'#f5d76e',subA:'كثبان الظفرة والغبار',subB:'من واحات ليوا'},
-  nasr:{st:'ملعب آل مكتوم',short:'آل مكتوم',city:'دبي',area:'عود ميثاء',far:'dxb',lm:['creek','burj'],near:'city',zA:['coast','city','city'],zB:['city','coast','city'],fin:'city',
+  nasr:{st:'ملعب آل مكتوم',short:'آل مكتوم',city:'دبي',area:'عود ميثاء',far:'dxb',lm:['burj','creek'],near:'city',zA:['coast','city','city'],zB:['city','coast','city'],fin:'city',
     streets:['شارع عود ميثاء','شارع الشيخ راشد','شارع الشيخ زايد'],place:['خور دبي','يمين'],g2:['خور دبي','بر دبي'],bridge:'دبي · عود ميثاء',
     prim:'light',sec:'buslane',shape:'bowl',acc:'#86a8ff',subA:'إشارات بر دبي وخور دبي',subB:'من جهة شارع الشيخ زايد'},
-  united:{st:'ملعب آل مكتوم',short:'آل مكتوم',city:'دبي',area:'عود ميثاء',far:'dxb',lm:['szr','burj'],near:'city',zA:['city','city','coast'],zB:['coast','city','city'],fin:'city',
+  united:{st:'ملعب آل مكتوم',short:'آل مكتوم',city:'دبي',area:'عود ميثاء',far:'dxb',lm:['burj','szr'],near:'city',zA:['city','city','coast'],zB:['coast','city','city'],fin:'city',
     streets:['شارع الشيخ زايد','شارع الخيل','شارع عود ميثاء'],place:['شارع الشيخ زايد','يسار'],g2:['أبوظبي','الشيخ زايد'],bridge:'دبي · شارع الشيخ زايد',
     prim:'buslane',sec:'highway4',shape:'bowl',acc:'#e8e8e8',subA:'شارع الشيخ زايد بأربعة مسارات',subB:'من شارع الخيل لعود ميثاء'},
   wasl:{st:'ملعب زعبيل',short:'زعبيل',city:'دبي',area:'زعبيل',far:'dxb',lm:['burj','frame'],near:'city',zA:['city','coast','city'],zB:['coast','city','city'],fin:'city',
     streets:['شارع زعبيل','شارع الشيخ زايد','شارع الخيل'],place:['إطار دبي','حديقة زعبيل'],g2:['إطار دبي','زعبيل'],bridge:'دبي · زعبيل',
     prim:'amb',sec:'exit',shape:'arena',acc:'#f5d64a',subA:'برج خليفة وإطار دبي',subB:'من جهة شارع الخيل'},
-  shabab:{st:'ملعب راشد',short:'راشد',city:'دبي',area:'الطوار',far:'dxb',lm:['skyline','metro'],near:'city',zA:['city','city','coast'],zB:['coast','city','city'],fin:'city',
+  shabab:{st:'ملعب راشد',short:'راشد',city:'دبي',area:'الطوار',far:'dxb',lm:['clock','metro'],near:'city',zA:['city','city','coast'],zB:['coast','city','city'],fin:'city',
     streets:['شارع الاتحاد','شارع الشيخ محمد بن زايد','شارع النهضة'],place:['القصيص','يمين'],g2:['الشارقة','شارع الاتحاد'],bridge:'دبي · شارع الاتحاد',
     prim:'works',sec:'highway4',shape:'arena',acc:'#ff8080',subA:'شارع الاتحاد وأعمال الطرق',subB:'من شارع الشيخ محمد بن زايد'},
   sharjah:{st:'ملعب الشارقة',short:'الشارقة',city:'الشارقة',area:'',far:'sea',lm:['noor'],near:'city',zA:['coast','city','city'],zB:['city','coast','city'],fin:'city',
@@ -913,10 +996,10 @@ const STADS={
   ajman:{st:'ملعب راشد بن سعيد',short:'راشد بن سعيد',city:'عجمان',area:'',far:'sea',lm:['fort'],near:'city',zA:['coast','city','city'],zB:['city','coast','city'],fin:'city',
     streets:['كورنيش عجمان','شارع الشيخ محمد بن زايد'],place:['كورنيش عجمان','يمين'],g2:['متحف عجمان','الكورنيش'],bridge:'عجمان · الكورنيش',
     prim:'bump',sec:'works',shape:'arena',acc:'#ffa060',subA:'الكورنيش والأحياء',subB:'من شارع الشيخ محمد بن زايد'},
-  kalba:{st:'ملعب اتحاد كلباء',short:'اتحاد كلباء',city:'كلباء',area:'',far:'mountains',lm:['sea','mangrove'],near:'hills',zA:['mountain','coast','coast'],zB:['coast','mountain','coast'],fin:'coast',
+  kalba:{st:'ملعب اتحاد كلباء',short:'اتحاد كلباء',city:'كلباء',area:'',far:'mountains',lm:['kfort','sea','mangrove'],near:'hills',zA:['mountain','coast','coast'],zB:['coast','mountain','coast'],fin:'coast',
     streets:['طريق كلباء','كورنيش كلباء'],place:['محمية القرم','يسار'],g2:['خور كلباء','القرم'],bridge:'كلباء · الساحل الشرقي',
     prim:'fog',sec:'camel',shape:'arena',acc:'#f5d14a',subA:'ضباب الساحل الشرقي',subB:'من جبال الحجر للبحر'},
-  hatta:{st:'ملعب حمدان بن راشد',short:'حمدان بن راشد',city:'حتا',area:'',far:'mountains',lm:['dam'],near:'hills',zA:['desert','mountain','mountain'],zB:['mountain','desert','mountain'],fin:'mountain',
+  hatta:{st:'ملعب حمدان بن راشد',short:'حمدان بن راشد',city:'حتا',area:'',far:'mountains',lm:['dam','htower'],near:'hills',zA:['desert','mountain','mountain'],zB:['mountain','desert','mountain'],fin:'mountain',
     streets:['طريق دبي – حتا'],place:['سد حتا','يمين 3 كم'],g2:['سد حتا','قرية حتا التراثية'],bridge:'حتا · جبال الحجر',
     prim:'hairpin',sec:'bump',shape:'arena',acc:'#8cc4ec',subA:'منعطفات جبال الحجر',subB:'طريق السد والقرية'},
   khorfakkan:{st:'ملعب صقر بن محمد القاسمي',short:'صقر بن محمد',city:'خورفكان',area:'',far:'mountains',lm:['amph','sea'],near:'hills',zA:['mountain','mountain','coast'],zB:['mountain','coast','mountain'],fin:'coast',
@@ -978,7 +1061,7 @@ function genRoute(id,v){
 for(const id in STADS){ROUTES[id+'_A']=genRoute(id,0);ROUTES[id+'_B']=genRoute(id,1);}
 
 // تعديل الوقت لكل طريق من اختبارات البوت (عشان كل الملاعب نفس الصعوبة)
-const TB={"ain_A":2,"ain_B":4,"ajman_A":2,"ajman_B":3,"baniyas_A":1,"baniyas_B":3,"dhafra_A":1,"dhafra_B":3,"hatta_A":4,"hatta_B":2,"jazira_A":3,"jazira_B":1,"kalba_A":4,"kalba_B":3,"khorfakkan_A":4,"khorfakkan_B":6,"nasr_A":4,"nasr_B":1,"shabab_A":4,"shabab_B":3,"sharjah_A":7,"sharjah_B":5,"united_A":1,"united_B":2,"wahda_A":6,"wahda_B":4,"wasl_A":-3,"wasl_B":-2};   // من 840 جولة بوت لكل ضبط
+const TB={"ain_A":2,"ain_B":4,"ajman_A":2,"ajman_B":3,"baniyas_A":1,"baniyas_B":3,"dhafra_A":1,"dhafra_B":3,"hatta_A":4,"hatta_B":2,"jazira_A":3,"jazira_B":1,"kalba_A":4,"kalba_B":3,"khorfakkan_A":4,"khorfakkan_B":6,"nasr_A":4,"nasr_B":1,"shabab_A":4,"shabab_B":3,"sharjah_A":7,"sharjah_B":5,"united_A":3,"united_B":3,"wahda_A":6,"wahda_B":4,"wasl_A":5,"wasl_B":3};   // من 840 جولة بوت لكل ضبط
 let ROUND=9,routeKey='ain_A';
 const routeFor=r=>STAGE+(r>=14?'_B':'_A');
 // نعدّل المنعطفات بهدوء قرب المحطات والتقاطعات عشان الطريق يكون مستقيم هناك
@@ -1095,6 +1178,28 @@ function despawn(c){const s=findSeg(c.z),i=s.cars.indexOf(c);if(i>=0)s.cars.spli
 function resetCars(){for(const s of segments)s.cars.length=0;carR=rng(DAY);traffic=[];
   for(let n=0;n<44;n++){const c={on:false};traffic.push(c);}
   let z=(PLAYERZ/SEG+18)*SEG;for(const c of traffic){if(z>(DRAW+10)*SEG)break;const gap=14+carR()*22;z+=gap/zoneDens(Math.floor(z/SEG))*SEG*.6;spawnCar(c,z);}}
+/* الإسعاف: طريقه أقصى اليسار بس، وما يدخل في شي. السيارات اللي قدامه تفسح له، ولو ما قدرت يخفف وراها.
+   لو الباص قدامه في مساره يوقف وراه ويهرن؛ لو سدّيت عليه 4 ثواني تنخصم ثانيتين، ولو فسّحت له تكسب ثانية ونص. */
+const AMB_W=.36;
+function ambLane(L,z){return amb&&li(L)===0&&z>amb.z-6*SEG&&z<amb.z+34*SEG;}
+function ambStep(dt){amb.t+=dt;const pz=position+PLAYERZ,AX=amb.x,inL=overlap(playerX,BUS_W,AX,AMB_W);let lim=amb.z+amb.v*dt;
+  for(const c of traffic){if(!c.on)continue;const d=(c.z-amb.z)/SEG;if(d<-1||d>30)continue;
+    const inC=overlap(c.offset,c.w,AX,AMB_W);if(!inC&&!overlap(c.tOff,c.w,AX,AMB_W))continue;
+    if(c.blink<=0&&li(c.tOff)===0&&d<24&&laneFree(LANE_X[1],c.z,c,4,6)){c.blink=.35;c.bdir=1;c.next=LANE_X[1];}
+    if(inC&&d>=0)lim=Math.min(lim,c.z-3.2*SEG);}
+  const behind=pz-amb.z;let blocked=false;
+  if(inL&&behind>0){lim=Math.min(lim,pz-3.2*SEG);blocked=behind<4.5*SEG;if(behind<16*SEG)amb.seen=1;}
+  amb.z=Math.max(amb.z,lim);
+  // تصدمه لو دخلت مساره وهو جنبك أو قدامك
+  if(state==='play'&&inv<=0&&inL&&amb.z>pz-1.4*SEG&&amb.z<pz+1.6*SEG){
+    if(amb.z>pz){speed=Math.min(speed,amb.v*.6);position=Math.min(position,amb.z-PLAYERZ-90);}else{playerX=AX+(BUS_W/2+AMB_W/2+.04);speed*=.9;}
+    inv=.6;shake=.35;crashes++;boost=0;timeLeft-=CRASH_T;sfx('crash');toast('صدمت الإسعاف!',true);CT.amb=(CT.amb||0)+1;duck();addSparks();}
+  if(blocked){amb.blk+=dt;amb.honk-=dt;if(amb.honk<=0){sfx('horn');amb.honk=1.1;if(amb.res===0)tip('🚑 <b>الإسعاف وراك يهرن!</b> وخّر عن أقصى اليسار',1.2);}}else amb.honk=0;
+  if(amb.res===0&&state==='play'){
+    if(amb.blk>4){CT.ambBlk=(CT.ambBlk||0)+1;amb.res=-1;amb.m.res=-1;timeLeft-=2;toast('سكرت الدرب على الإسعاف!',true);duck();}
+    else if(amb.seen&&!inL&&amb.z<pz){amb.res=1;amb.m.res=1;timeLeft+=1.5;V(23,1,1);$('tip').classList.remove('on');toast('شكراً! فسّحت للإسعاف',false);sfx('board');}
+    else if(amb.z>pz+2*SEG){amb.res=2;amb.m.res=2;}}
+  if(amb.z>pz+26*SEG||amb.t>25||state!=='play'&&amb.res===0)amb=null;}
 function updateCars(dt){
   if(QA_NOTRAFFIC){for(const c of traffic)if(c.on)despawn(c);return;}
   const pz=position+PLAYERZ,pIdx=Math.floor(pz/SEG);
@@ -1104,7 +1209,7 @@ function updateCars(dt){
     if(!c.on){if(active<want){const nz=pz+(DRAW*.7+carR()*DRAW*.3)*SEG;if(nz<finishZ-25*SEG){let L=LANE_X[Math.floor(carR()*NL())];spawnCar(c,nz);active++;}}continue;}
     const os=findSeg(c.z);
     // ما تصدم الباص من ورا: تخفف وراه وتحاول تغير المسار
-    {const dp=(pz-c.z)/SEG;if(dp>0&&dp<8&&Math.abs(c.offset-playerX)<.45&&c.speed>speed){c.speed=Math.max(0,speed*.95);if(c.blink<=0&&Math.abs(c.offset-c.tOff)<.01){const L=LANE_X.find(L=>Math.abs(L-c.offset)>.35&&Math.abs(L-c.offset)<.8&&Math.abs(L-playerX)>.5&&laneFree(L,c.z,c,5,8));if(L!==undefined){c.blink=.6;c.bdir=L>c.offset?1:-1;c.next=L;}}}}
+    {const dp=(pz-c.z)/SEG;if(dp>0&&dp<8&&Math.abs(c.offset-playerX)<.45&&c.speed>speed){c.speed=Math.max(0,speed*.95);if(c.blink<=0&&Math.abs(c.offset-c.tOff)<.01){const L=LANE_X.find(L=>Math.abs(L-c.offset)>.35&&Math.abs(L-c.offset)<.8&&Math.abs(L-playerX)>.5&&!ambLane(L,c.z)&&laneFree(L,c.z,c,5,8));if(L!==undefined){c.blink=.6;c.bdir=L>c.offset?1:-1;c.next=L;}}}}
     // تفضي مسار المحطة
     if(li(c.tOff)===NL()-1&&c.blink<=0)for(const st of STATIONS){const d=st.at-c.z/SEG;if(d>-BAY-2&&d<20){c.blink=.7;c.bdir=-1;c.next=LANE_X[NL()-2];break;}}
     // الإشارات والدوارات والمطبات وأعمال الطرق
@@ -1132,7 +1237,7 @@ function updateCars(dt){
         const L=opts[Math.floor(carR()*opts.length)];
         const nearP=(c.z-pz)/SEG>-4&&(c.z-pz)/SEG<14&&Math.abs(playerX-L)<.6;
         const busBan=L===RIGHT()&&c.type!=='taxi'&&MECH.some(m=>m.t==='buslane'&&c.z/SEG>m.at-15&&c.z/SEG<m.at+m.len);
-        if(L!==undefined&&!busBan&&!nearP&&laneFree(L,c.z,c,6,9)&&!wallAt(L,c.z,c,9)){c.blink=1;c.bdir=L>c.offset?1:-1;c.next=L;}}}
+        if(L!==undefined&&!busBan&&!nearP&&!ambLane(L,c.z)&&laneFree(L,c.z,c,6,9)&&!wallAt(L,c.z,c,9)){c.blink=1;c.bdir=L>c.offset?1:-1;c.next=L;}}}
     if(c.blink>0){c.blink-=dt;if(c.blink<=0)c.tOff=c.next;}
     if(Math.abs(c.tOff-c.offset)>.001){const st=dt*.6;c.offset=Math.abs(c.tOff-c.offset)<st?c.tOff:c.offset+Math.sign(c.tOff-c.offset)*st;}
     c.z+=c.speed*dt;
@@ -1233,7 +1338,7 @@ function render(){const _t0=performance.now();
     if(s===pSeg)drawPlayer(pSeg,pPct);}
   if(wxAmt>.02){ctx.fillStyle=curFog;ctx.globalAlpha=Math.min(.85,wxAmt*.9);ctx.fillRect(0,0,W,HZ+H*.04);const hg=ctx.createLinearGradient(0,HZ,0,H*.8);hg.addColorStop(0,curFog);hg.addColorStop(1,'rgba(0,0,0,0)');ctx.globalAlpha=Math.min(.7,wxAmt*.75);ctx.fillStyle=hg;ctx.fillRect(0,HZ,W,H*.8-HZ);ctx.globalAlpha=1;}
   if(boost>0)speedLines();
-  if(amb&&amb.res===0){const on=Math.floor(clock*5)%2;ctx.save();ctx.lineWidth=14;ctx.strokeStyle=on?'rgba(255,40,40,.75)':'rgba(40,110,255,.75)';ctx.strokeRect(7,7,W-14,H-14);ctx.restore();}
+  if(amb&&amb.z<position+PLAYERZ){const on=Math.floor(clock*5)%2;ctx.save();ctx.lineWidth=14;ctx.strokeStyle=on?'rgba(255,40,40,.75)':'rgba(40,110,255,.75)';ctx.strokeRect(7,7,W-14,H-14);ctx.restore();}
   drawSparks();
   const _d=performance.now()-_t0;qualityTick(_d,1/60);perfStat.n++;perfStat.ms+=_d;if(_d>perfStat.max)perfStat.max=_d;
 }
@@ -1305,9 +1410,8 @@ function update(dt){
     // النفق: الجدار قريب
     if(pSeg.tunnel!==undefined&&inv<=0&&Math.abs(playerX)>.97){playerX=Math.sign(playerX)*.86;crashes++;timeLeft-=CRASH_T;speed*=.6;inv=.6;shake=.4;toast('صدمت جدار النفق!',true);CT.tun=(CT.tun||0)+1;sfx('crash');addSparks();duck();}
     // الإسعاف
-    for(const m of MECH)if(m.t==='amb'&&!m.fired&&pSeg.index>=m.at){m.fired=true;sfx('siren');V(22,3,1);amb={m,z:position+PLAYERZ-30*SEG,x:LANE_X[li(playerX)],tx:LANE_X[li(playerX)],t:0,res:0};tip('🚑 <b>إسعاف وراك!</b> فسّح له مسار خلال 4 ثواني',3.5);sfx('siren');}
-    if(amb&&amb.res===0){if(Math.abs(playerX-amb.x)>.42&&amb.t<=4){amb.res=1;amb.m.res=1;timeLeft+=1.5;V(23,1,1);$('tip').classList.remove('on');toast('شكراً! فسّحت للإسعاف',false);sfx('board');}
-      else if(amb.t>4){amb.res=-1;amb.m.res=-1;timeLeft-=2;toast('سكرت الدرب على الإسعاف!',true);sfx('bump');duck();}}
+    for(const m of MECH)if(m.t==='amb'&&!m.fired&&pSeg.index>=m.at){m.fired=true;sfx('siren');V(22,3,1);const inL=overlap(playerX,BUS_W,LANE_X[0],AMB_W);
+      amb={m,z:position+PLAYERZ-30*SEG,x:LANE_X[0],v:MAXS*1.3,t:0,res:0,blk:0,seen:inL,honk:0};tip(inL?'🚑 <b>إسعاف وراك!</b> طريقه أقصى اليسار، فسّح له':'🚑 <b>إسعاف جاي من اليسار</b> لا تدخل مساره لين يعدّي',3.5);}
     if(pSeg.works!==undefined&&inv<=0&&Math.abs(playerX-pSeg.works)<.36){crashes++;timeLeft-=CRASH_T;speed*=.5;inv=.6;shake=.35;toast('صدمت الأقماع!',true);sfx('crash');addSparks();duck();}
     for(const m of MECH)if(m.t==='camel'&&m.active&&!m.hit&&inv<=0&&Math.abs(pSeg.index-m.at)<=1&&overlap(playerX,BUS_W,m.x,.36)){m.hit=true;crashes++;timeLeft-=CRASH_T;speed*=.4;inv=.8;shake=.45;toast('انتبه للجمال!',true);sfx('crash');duck();}
     for(let i=lastIdx+1;i<=pSeg.index;i++){const r=segments[i].radar;if(r&&toKmh(speed)>r){fines++;timeLeft-=3;flashA=.9;sfx('flash');V(3,2,3);toast('مخالفة رادار! ضيّعت نص دقيقة',true);duck();}}
@@ -1317,7 +1421,7 @@ function update(dt){
   }
   if(inFrame||window.__alog)voiceRoad();
   if(!ramp||lastIdx<pSeg.index)lastIdx=Math.max(lastIdx,pSeg.index);
-  if(amb){amb.t+=dt;const pz=position+PLAYERZ;if(amb.res===-1&&Math.abs(amb.tx-playerX)<.45)amb.tx=LANE_X[li(playerX)===0?1:li(playerX)-1];amb.x+= (amb.tx-amb.x)*Math.min(1,dt*3);amb.z+=MAXS*1.25*dt;if(amb.res===0&&Math.abs(playerX-amb.x)<.42&&amb.z>pz-3*SEG)amb.z=pz-3*SEG;if(amb.z>pz+DRAW*SEG*.6||state!=='play'&&amb.res===0)amb=null;}
+  if(amb)ambStep(dt);
   for(const m of MECH)if(m.t==='camel'&&!m.done){if(!m.active&&(position+PLAYERZ)/SEG>=m.at-38&&state==='play')m.active=true;if(m.active){m.x+=.62*dt;if(m.x>1.85)m.done=true;}}
   updateCars(dt);
   const dz=(position-start)/SEG;farOff+=pSeg.curve*dz*W*.0016;nearOff+=pSeg.curve*dz*W*.0034;stadOff+=pSeg.curve*dz*W*.0045;stadOff*=Math.max(0,1-dt*.6);
@@ -1443,7 +1547,7 @@ let inv=0,rec=[],nitroQ=false,curPath=[],ghostPath=null;
 let ac=null,eng=null,engineOn=true,musicOn=true,hasMusic=true;
 try{const v=localStorage.getItem('bus_snd');if(v){const o=JSON.parse(v);engineOn=o.e!==false;musicOn=o.m!==false;}}catch(e){}
 const music=new Audio();music.loop=true;music.preload='auto';
-let musicGain=null,crowdG=null,duckT=0,musicUnlocked=false;const MUSIC_VOL=.22;
+let musicGain=null,crowdG=null,duckT=0,musicUnlocked=false;const MUSIC_VOL=.09;
 function hookMusic(){if(!ac||musicGain||!hasMusic)return;try{const src=ac.createMediaElementSource(music);musicGain=ac.createGain();musicGain.gain.value=0;src.connect(musicGain);musicGain.connect(OUT());}catch(e){music.volume=MUSIC_VOL;}}
 function duck(){duckT=.9;}
 // الجمهور يبدأ آخر 30% من الطريق بس، ويعلى لين الوصول
@@ -1500,6 +1604,7 @@ function sfx(k){const small=k==='star'||k==='pick';
   else if(k==='c')beep(523,t,.15,'square',.06);else if(k==='go')beep(1046,t,.3,'square',.07);
   else if(k==='win'){[0,.28].forEach(d=>{beep(350,t+d,.22,'square',.05);beep(440,t+d,.22,'square',.05);});[523,659,784,1046].forEach((f,i)=>beep(f,t+.6+i*.11,.22,'square',.05));}
   else if(k==='lose')whistle(t);
+  else if(k==='horn'){beep(415,t,.32,'sawtooth',.05);beep(523,t,.32,'sawtooth',.045);beep(415,t+.42,.22,'sawtooth',.05);beep(523,t+.42,.22,'sawtooth',.045);}
   else if(k==='siren'){for(let i=0;i<4;i++){beep(960,t+i*.5,.25,'sawtooth',.035);beep(720,t+i*.5+.25,.25,'sawtooth',.035);}}
 }catch(e){}}
 
@@ -1549,7 +1654,7 @@ const MFIRST={station:['🚏','محطة لاعب','خلك يمين وخفّف ت
   exit:['⤴','مخرج مختصر','يختصر عليك الطريق، بس حده 80 وعليه رادار.'],
   hairpin:['↩','منعطف قوي','خفّف قبله، وخلك في نص الطريق وانت داخل.'],
   tunnel:['🚇','نفق','خلك في نص مسارك، الجدران قريبة.'],
-  amb:['🚑','إسعاف','لما يطلع وراك، فسّح له مسار خلال 4 ثواني وتكسب وقت.'],
+  amb:['🚑','إسعاف','طريقه أقصى اليسار. لو انت فيه، فسّح له وتكسب وقت، ولو سدّيت عليه يهرن لك، وبعد 4 ثواني تخسر وقت. ولا تدخل مساره وهو جنبك.'],
   buslane:['🚌','مسار الباصات','المسار اليمين لك بروحك وفاضي من السيارات.']};
 let SEEN={};try{SEEN=JSON.parse(localStorage.getItem('bus_seen')||'{}')}catch(e){}
 let fcT=null;function firstCard(t){if(SIM||SEEN[t]||!MFIRST[t])return;SEEN[t]=1;try{localStorage.setItem('bus_seen',JSON.stringify(SEEN))}catch(e){}
@@ -1639,7 +1744,7 @@ botsim(day,skill){DAY=day;const R=rng(day*7+skill),react=[18,8,3][skill],look=[2
       if(m.t==='hairpin'&&d<40&&d>-30){if(v>(skill?56:64)&&(d<[16,22,26][skill]))keys.brake=true;if(d<=0)target=0;}
       if(m.t==='tunnel'&&d<20&&d>-m.len){target=LANE_X.reduce((a,L)=>Math.abs(L-target)<Math.abs(a-target)?L:a,LANE_X[0]);}
       if(m.t==='buslane'&&skill>0&&d<30&&d>-m.len+20&&!traffic.some(c=>c.on&&li(c.offset)===NL()-1&&(c.z-pz)/SEG>-1&&(c.z-pz)/SEG<8))target=RIGHT();}
-    if(amb&&amb.res===0&&(skill>0||R()<.3)){const cl=li(playerX),opts=[cl-1,cl+1].filter(i=>i>=0&&i<NL());let b=-1,bc=-1e9;for(const i of opts){const L=LANE_X[i];let c=99;for(const car of traffic)if(car.on&&(Math.abs(car.offset-L)<.45||Math.abs(car.tOff-L)<.45)){const d=(car.z-pz)/SEG;if(d>-3&&d<20)c=Math.min(c,d);}if(c>4&&c>bc){bc=c;b=i;}}if(b>=0)target=LANE_X[b];}}
+    if(amb&&amb.z>pz-40*SEG&&amb.z<pz+8*SEG&&(skill>0||R()<.3)){if(target<LANE_X[0]+(LANE_X[1]-LANE_X[0])*.75){let c=99;for(const car of traffic)if(car.on&&(Math.abs(car.offset-LANE_X[1])<.45||Math.abs(car.tOff-LANE_X[1])<.45)){const d=(car.z-pz)/SEG;if(d>-3&&d<20)c=Math.min(c,d);}if(c>4||li(playerX)===0)target=LANE_X[1];}}}
     if(ramp)target=playerX-ramp.rel;keys.left=playerX>target+.06;keys.right=playerX<target-.06;
     // مقاييس العدالة: جدار من 3 سيارات، وسيارة تقطع قدام الباص فجأة
     const blocked=LANE_X.filter(L=>traffic.some(c=>c.on&&Math.abs(c.offset-L)<.3&&(c.z-pz)/SEG>0&&(c.z-pz)/SEG<7));const w=blocked.length===NL();if(w&&!wallOn)walls++;wallOn=w;
@@ -1660,7 +1765,7 @@ get perf(){return perfStat},setRoute(k){const st_=ROUTES[k].stage;if(st_&&st_!==
   }
   for(const it of segments.flatMap(s=>s.items.map(x=>[s.index,x])))if(segments[it[0]].tunnel!==undefined&&Math.abs(it[1].offset)>.9)out.push(['itemWall',it[0]]);
   return out;},routes:()=>Object.keys(ROUTES).filter(k=>ROUTES[k].stage),get path(){return curPath},get ghost(){return {has:!!ghostPath,len:ghostPath&&ghostPath.length,gIdx,gZ,pz:position+PLAYERZ,rec:rec.length}},get voice(){return {loaded:VBUF.filter(Boolean).length,said:[...vSaid],voiceOn,voiceT}},get audio(){return {hasMusic,musicOn,paused:music.paused,ready:music.readyState,net:music.networkState,err:music.error&&music.error.code,t:music.currentTime,ac:ac&&ac.state,gain:musicGain?musicGain.gain.value:null,toggleHidden:$('tgMusic').hidden}},get q(){return qLevel},set carN(v){CAR_N=v},set crashT(v){CRASH_T=v},setTB(o){Object.assign(TB,o)},get ct(){return CT},resetCT(){CT={}},
-autosim(nitro){resetRace();state='play';const was=tut;tut=false;let n=0;while(state==='play'&&n<20000){const pz=position+PLAYERZ;keys.left=playerX>.05;keys.right=playerX<-.05;let br=false;for(let i=0;i<70;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar&&toKmh(speed)>sg.radar)br=true;}keys.brake=br;if(nitro&&charges>0&&boost<=0){let rd=false;for(let i=0;i<120;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar)rd=true;}if(!rd)nitroQ=true;}update(STEP);n++;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines};state='menu';return o;},sim(r){const inp=r.slice();resetRace();state='play';const was=tut;tut=false;for(const b of inp){keys.left=!!(b&1);keys.right=!!(b&2);keys.brake=!!(b&4);if(b&8)nitroQ=true;update(STEP);if(state!=='play')break;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines,steps:inp.length,np:picked.filter(v=>v===1).length};state='menu';return o;},get result(){return {timeLeft,crashes,stars,fines,won}},seg:z=>findSeg(z),PLAYERZ,MARK,get pz(){return position+PLAYERZ},STAR3,encK,chTick(){for(const k in chPolled)chPolled[k]=0;chTick();},get ch(){return {CH,CHR,live:chLive(),st:chState().k}}};
+autosim(nitro){resetRace();state='play';const was=tut;tut=false;let n=0;while(state==='play'&&n<20000){const pz=position+PLAYERZ;keys.left=playerX>.05;keys.right=playerX<-.05;let br=false;for(let i=0;i<70;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar&&toKmh(speed)>sg.radar)br=true;}keys.brake=br;if(nitro&&charges>0&&boost<=0){let rd=false;for(let i=0;i<120;i++){const sg=segments[Math.floor(pz/SEG)+i];if(sg&&sg.radar)rd=true;}if(!rd)nitroQ=true;}update(STEP);n++;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines};state='menu';return o;},sim(r){const inp=r.slice();resetRace();state='play';const was=tut;tut=false;for(const b of inp){keys.left=!!(b&1);keys.right=!!(b&2);keys.brake=!!(b&4);if(b&8)nitroQ=true;update(STEP);if(state!=='play')break;}tut=was;keys.left=keys.right=keys.brake=false;const o={state,timeLeft,crashes,stars,fines,steps:inp.length,np:picked.filter(v=>v===1).length};state='menu';return o;},get result(){return {timeLeft,crashes,stars,fines,won}},seg:z=>findSeg(z),PLAYERZ,MARK,get pz(){return position+PLAYERZ},get amb(){return amb&&{d:+((amb.z-position-PLAYERZ)/SEG).toFixed(1),res:amb.res,blk:+amb.blk.toFixed(1)}},STAR3,encK,chTick(){for(const k in chPolled)chPolled[k]=0;chTick();},get ch(){return {CH,CHR,live:chLive(),st:chState().k}}};
 const MNAME={round:'الدوارات',light:'الإشارات',bump:'المطبات',works:'أعمال الطرق',dust:'الغبار',camel:'الجمال',fog:'الضباب',exit:'المخارج المختصرة',hairpin:'المنعطفات الحادة',tunnel:'الأنفاق',amb:'الإسعاف',buslane:'مسار الباصات',highway4:'طريق 4 مسارات'};
 function paintFan(){const e=$('hdrSub');if(!e)return;const f=fanClub(),id=fanId();
   if(f){e.innerHTML='تلعب لجمهور <b>'+f.name+'</b>';e.onclick=null;e.classList.remove('ask');}
@@ -1715,7 +1820,7 @@ function gc(n){try{window.goatcounter&&window.goatcounter.count&&window.goatcoun
 // تسجيل نتيجة الجولة في التقدم، ويرجع الأوسمة الجديدة
 function recordRun(won,rating,nP){const before=badgeState().filter(b=>b.on).map(b=>b.id);
   PROG.runs++;if(won){PROG.wins++;PROG.reach[STAGE]=1;}if(nP===3)PROG.full++;if(rating===3)PROG.clean3++;
-  for(const m of MECH){if(m.t==='amb'&&m.res>0)PROG.amb++;if(m.t==='exit'&&m.used)PROG.exits++;}
+  for(const m of MECH){if(m.t==='amb'&&m.res===1)PROG.amb++;if(m.t==='exit'&&m.used)PROG.exits++;}
   if(MODE==='round'&&RMATCH){const r=PROG.rounds[RMATCH.id]||0;PROG.rounds[RMATCH.id]=Math.max(r,rating);}
   saveProg();gc((won?'win-':'lose-')+MODE+'-'+STAGE);
   return badgeState().filter(b=>b.on&&!before.includes(b.id));}
@@ -1850,7 +1955,7 @@ function shareCard(r){const c=document.createElement('canvas');c.width=1080;c.he
   txt(g,'النتيجة '+r.score+' · اللاعبين '+r.nP+'/3',540,1240,FONT(600,36),'#cdbf9f');
   txt(g,'el3azy.com · منصة العازي',540,1305,FONT(600,30),'#D7B465');return c;}
 async function doShare(r){gc('share-'+MODE);const c=shareCard(r);const blob=await new Promise(ok=>c.toBlob(ok,'image/png'));const f=new File([blob],'bus-el3azy.png',{type:'image/png'});
-  const text='وصّلت باص '+club.name+' لـ'+TH.st+' '+'★'.repeat(r.rating)+' · جرّبها على el3azy.com';
+  const text='وصّلت باص '+club.name+' لـ'+TH.st+' '+'★'.repeat(r.rating)+' · جرّبها على el3azy.com #منصة_العازي';
   try{if(navigator.canShare&&navigator.canShare({files:[f]})){await navigator.share({files:[f],text});return;}}catch(e){if(e&&e.name==='AbortError')return;}
   try{const dl=window.claude&&window.claude.use?await window.claude.use('downloads'):null;if(dl){try{await dl.save({filename:'bus-el3azy.png',data:blob});}catch(e){if(e&&e.code!=='declined')toast('ما قدرنا نحفظ البطاقة هنا',true);}return;}}catch(e){}
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='bus-el3azy.png';document.body.appendChild(a);a.click();a.remove();toast('انحفظت البطاقة في جهازك');}
