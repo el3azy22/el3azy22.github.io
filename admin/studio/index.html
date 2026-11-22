@@ -591,7 +591,8 @@ async function init(){
   await rA();
   if(TODAY<2&&!DEMO){$('#bB').innerHTML='<div class="empty">أول صورة «جواب أمس» تطلع صباح الأربعاء 18 نوفمبر.</div>';$('#dB').textContent='—'}else await rB();
   if(TODAY<1&&!DEMO){$('#bC').innerHTML='<div class="empty">دوري الجماهير يبدا مع أول تحدي الثلاثاء 17 نوفمبر.</div>';$('#dC').textContent='—'}else await rC();
-  if(TODAY>=1||DEMO){await rK();await rL();await rH()}
+  // جدول الموسم يطلع بعد ما يخلص أول أسبوع (قبلها = نفس ترتيب الأسبوع)
+  if(TODAY>=1||DEMO){await rK();if(((FANS&&FANS.weeks)||[]).some(w=>w.final))await rL();else $('#cL').remove();await rH()}
 }
 /* داخل لوحة الإحصائيات (?embed=FE): الأقسام المطلوبة بس، واللي فاضي يختفي، والطول يروح للوحة */
 function embFit(){if(!EMB)return;document.querySelectorAll('section.card').forEach(c=>{const k=c.id.slice(1);c.classList.toggle('sec-off',!EMB.includes(k)||!!c.querySelector('.empty'))});
