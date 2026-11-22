@@ -177,6 +177,16 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
 
 <h2 class="in" style="animation-delay:.32s">تحديات اليوم</h2>
 <div id="chs"></div>
+<!-- 🚌 باص الفريق: يطلع من الإثنين 4 يناير 2027 (اللعب الحر)، وسطر «أول تحدي» يختفي بعد 16 يناير (قرار إبراهيم 23 نوفمبر) -->
+<a class="feat" id="busCard" href="bus/" hidden>
+  <div class="top">
+    <div class="ic"><svg viewBox="0 0 32 32" aria-hidden="true"><rect class="s" x="5" y="5" width="22" height="19" rx="4"/><path d="M5 15h22M9 9h14M10 24v3M22 24v3"/><circle class="f" cx="10" cy="20" r="1.6"/><circle class="f" cx="22" cy="20" r="1.6"/></svg></div>
+    <div><span class="tag"><i></i>لعبة جديدة</span><b class="t">باص الفريق</b></div>
+  </div>
+  <div class="d">وصّل باص ناديك لملعب المباراة قبل الصافرة. العبها الحين وتدرّب.</div>
+  <div class="timer" id="busWhen"><span>أول تحدي جولة</span><time>السبت 16 يناير</time></div>
+  <div class="cta">العب الحين</div>
+</a>
 
 <h2 class="in" style="animation-delay:.6s">أدوات المنصة</h2>
 <a class="tool in" style="animation-delay:.62s" href="rate/">
@@ -301,6 +311,7 @@ function drawRate(){
 
 drawCh();
 const v=Math.floor(Date.now()/12e4),J=u=>fetch(u+'?v='+v).then(r=>r.ok?r.json():null).catch(()=>null);
+{const T=Date.now(),pv=/[?&]bus\b/.test(location.search),c=document.getElementById('busCard');if(c&&(pv||T>=1799006400000)){c.hidden=false;if(T>=1800129600000)document.getElementById('busWhen').remove()}}
 Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json')]).then(([p,o,r,f,k])=>{P=p;OPEN=o||{};R=r;FD=f;K5=k||{};drawCh();drawLg();drawRate();
   J('fans/ranks.json').then(k=>{RK=k;drawLg()})});
 setInterval(()=>{drawCh();drawRate()},1000);

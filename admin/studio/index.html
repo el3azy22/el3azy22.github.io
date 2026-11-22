@@ -57,7 +57,7 @@ html.emb body{padding:0;background:transparent}html.emb header,html.emb .note,ht
   </section>
   <section class="card" id="cJ">
     <h2>🚌 باص الفريق <small>لعبة جديدة</small></h2>
-    <p class="when">انشرها يوم تنزل اللعبة (الثلاثاء 24 نوفمبر)، بعيد عن منشور بطل الأسبوع بكم ساعة.</p>
+    <p class="when">انشرها يوم تنزل اللعبة (الإثنين 4 يناير)، وارجع ذكّرهم قبل أول تحدي (السبت 16 يناير).</p>
     <div id="bJ"><img class="prev" id="iJ" alt=""><div class="tw" id="tJ"></div>
     <div class="btns"><button class="btn" data-share="J">شارك الصورة</button><button class="btn g" data-copy="J">انسخ النص</button></div></div>
   </section>
@@ -529,8 +529,8 @@ async function cardJ(){
     x.textAlign='center';x.font=`44px ${F}`;x.fillText(ic,W-130,y+h/2+3);
     x.textAlign='right';x.direction='rtl';x.fillStyle='#F0D99A';x.font=`700 32px ${F}`;x.fillText(t,W-190,y+38);
     x.fillStyle='rgba(255,245,229,.8)';x.font=`500 26px ${F}`;x.fillText(d,W-190,y+80)});
-  footer(x,W,'أول تحدي: الخميس 3 ديسمبر','el3azy.com/bus');
-  const text=`🚌 لعبة جديدة في منصة العازي: باص الفريق\nوصّل باص ناديك لملعب المباراة.\n\n🎮 العبها الحين وتدرّب\n🏟️ من الخميس 3 ديسمبر: يوم مباراة ناديك عندك محاولة وحدة\n⭐ كل نجمة = 3 نقاط لجمهور ناديك في دوري الجماهير\n\nel3azy.com/bus`;
+  footer(x,W,'أول تحدي: السبت 16 يناير','el3azy.com/bus');
+  const text=`🚌 لعبة جديدة في منصة العازي: باص الفريق\nوصّل باص ناديك لملعب المباراة.\n\n🎮 العبها الحين وتدرّب\n🏟️ من السبت 16 يناير: يوم مباراة ناديك عندك محاولة وحدة\n⭐ كل نجمة = 3 نقاط لجمهور ناديك في دوري الجماهير\n\nel3azy.com/bus`;
   return {cv,text};
 }
 
@@ -581,10 +581,10 @@ async function init(){
   document.querySelectorAll('#cK [data-d]').forEach(b=>b.onclick=()=>{wK=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wK+ +b.dataset.d));rK()});
   document.querySelectorAll('#cH [data-d]').forEach(b=>b.onclick=()=>{wH=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wH+ +b.dataset.d));rH()});
   document.querySelectorAll('#cC [data-d]').forEach(b=>b.onclick=()=>{wC=Math.max(1,Math.min(wkOf(Math.max(1,TODAY)),wC+ +b.dataset.d));rC()});
-  // الإطلاق يظهر لين 3 أيام بعد موعده، والباص لين أول تحدي (3 ديسمبر)
+  // الإطلاق يظهر لين 3 أيام بعد موعده، والباص لين أول تحدي (16 يناير)
   K5C=await fetch('../../khamsa/config.json?v='+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({}));
   if(Date.now()<(K5C.launch||0)+3*864e5)await rI();else $('#cI').remove();
-  if(Date.now()<Date.UTC(2026,11,4,20))await rJ();else $('#cJ').remove();
+  if(Date.now()<1800129600000)await rJ();else $('#cJ').remove();
   await rF();
   LE=await crowdList();await rE();
   if(EMB)return;   // داخل لوحة الإحصائيات: صور اليوم بس (الصور الثقيلة الباقية تطيّح صفحة الآيفون)

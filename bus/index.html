@@ -1733,6 +1733,7 @@ const pday=t=>Math.floor((t-P0)/PDMS)+1;
 function ymdOf(d){const x=new Date(P0+(d-1)*PDMS+4*3600e3);return x.getUTCFullYear()*10000+(x.getUTCMonth()+1)*100+x.getUTCDate();}
 const DEMO=!!window.BUS_DEMO;   // نسخة التجربة (bus/preview): التحدي مفتوح على مباراة ناديك الياية كأنها اليوم، وما ينرسل شي
 let BUS_START=0,CH=null,CHR=null;try{BUS_START=+localStorage.getItem('bus_start')||0;}catch(e){}
+const CH_FIRST=61;   // أول تحدي جولة: السبت 16 يناير 2027، الجولة 14 أول الدور الثاني (اليوم 1 = 17 نوفمبر)
 function chLive(){return DEMO||BUS_START>0&&pday(Date.now())>=BUS_START;}
 const CHK=DEMO?'bus_chd_':'bus_ch_';
 function chGet(d){try{return JSON.parse(localStorage.getItem(CHK+d)||'null');}catch(e){return null;}}
@@ -1747,6 +1748,8 @@ function chState(){const id=fanId(),fc=fanClub();
   const today=pday(Date.now()),m=fanMatch(),last=chDays().filter(d=>d<today).map(chGet).filter(Boolean).pop()||null;
   if(!m)return {k:'nomatch',last};
   const d=DEMO?today:pday(m.t),x=chGet(d);
+  // قبل أول تحدي (السبت 16 يناير = يوم 61): مباريات قبله ما تنحسب
+  if(!DEMO&&!x&&d<Math.max(BUS_START||0,CH_FIRST))return {k:'pre',m,d,last};
   if(d>today)return {k:'before',m,d,last};
   if(x&&!(CH&&CH.d===d))return {k:'done',m,d,x};
   if(!chLive())return {k:'soon',m,d};
@@ -1765,8 +1768,9 @@ function chMatchHTML(m){const H=HOST(m.h),A=HOST(m.a),dr=derby(m);
   return '<div class="chm"><span class="tm"><i style="background:'+H.c1+'"></i>'+H.name+' × '+A.name+'<i style="background:'+A.c1+'"></i></span><small>'+STADS[m.h].st+' · '+kickStr(m.t)+(dr?' · <em>'+dr+'</em>':'')+'</small></div>';}
 function lastLine(x){if(!x)return '';const v=x.v&&x.v.ok?x.v:null,rt=v?v.rt:x.rt;return '<span class="chs'+(v?' ok':'')+'">نتيجتك في الجولة '+(x.wk||'')+': '+starStr(rt||0)+' · '+PTS[rt||0]+' نقاط'+(v?' ✓':x.v&&x.v.ok===0?' (ما انقبلت)':'')+'</span>';}
 function paintRoundCard(){const el=$('mRound');if(!el)return;const S=chState(),F=fanClub();
-  let h='<div class="rh"><b>تحدي الجولة'+(S.m?' '+S.m.wk:'')+'</b><small>محاولة وحدة في يوم مباراة ناديك، وكل نجمة فيها بـ 3 نقاط لجمهوره في دوري الجماهير.</small></div>';
+  let h='<div class="rh"><b>تحدي الجولة'+(S.m&&S.k!=='pre'?' '+S.m.wk:'')+'</b><small>محاولة وحدة في يوم مباراة ناديك، وكل نجمة فيها بـ 3 نقاط لجمهوره في دوري الجماهير.</small></div>';
   if(S.k==='noclub'||S.k==='neutral'){h+='<div class="chg">'+(S.k==='neutral'?'انت محايد في بطاقة المشجع، والتحدي لجمهور الأندية.':'التحدي لجمهور الأندية، وانت ما اخترت ناديك.')+'</div><span class="chs">اختار ناديك من بطاقة المشجع عشان تدخل التحدي. لين ذاك الوقت تقدر تلعب حر.</span>';}
+  else if(S.k==='pre')h+='<div class="chg">أول تحدي جولة: السبت 16 يناير</div><span class="chs">قبلها مباريات ناديك ما تنحسب. تدرّب في اللعب الحر لين ذاك اليوم.</span>';
   else if(S.k==='nomatch')h+='<div class="chg">ما في مباراة ل'+F.name+' في الجدول لين الحين.</div><span class="chs">تنزل هنا أول ما تنشرها الرابطة.</span>'+lastLine(S.last);
   else{h+=chMatchHTML(S.m);
     if(S.k==='before')h+='<div class="chg">يفتح يوم المباراة: '+dateStr(S.m.t)+'</div><span class="chs">يفتح من أول يوم المباراة لين 12 بالليل. لين ذاك الوقت تدرّب في اللعب الحر.</span>'+lastLine(S.last);
@@ -1778,7 +1782,7 @@ function paintRoundCard(){const el=$('mRound');if(!el)return;const S=chState(),F
   el.innerHTML=h;paintStart();{const r=$('bChReset');if(r)r.onclick=()=>{for(const d of chDays())try{localStorage.removeItem(CHK+d)}catch(e){}paintRoundCard();};}
   if(S.k==='done'&&S.x&&!(S.x.v))chPoll(S.d);}
 function paintStart(){const b=$('bStart');if(!b)return;let t='انطلق',off=false;
-  if(MODE==='round'){const k=chState().k;t={open:'ابدا التحدي',noclub:'اختار ناديك',neutral:'اختار ناديك',before:'يفتح يوم المباراة',done:'لعبت تحدي هالجولة',soon:'التحدي ما بدا',nomatch:'التحدي مقفول'}[k];off=!['open','noclub','neutral'].includes(k);}
+  if(MODE==='round'){const k=chState().k;t={open:'ابدا التحدي',noclub:'اختار ناديك',neutral:'اختار ناديك',before:'يفتح يوم المباراة',pre:'يبدا 16 يناير',done:'لعبت تحدي هالجولة',soon:'التحدي ما بدا',nomatch:'التحدي مقفول'}[k];off=!['open','noclub','neutral'].includes(k);}
   b.textContent=t;b.classList.toggle('off',off);b.setAttribute('aria-disabled',off?'true':'false');}
 function paintAgain(){const a=$('bAgain');if(a)a.textContent=MODE==='round'?'العب حر على نفس الطريق':'عيد الجولة';const m=$('bMenu2');if(m)m.textContent=MODE==='round'?'القائمة':'غيّر الباص';}
 function roundTab(){MODE='round';setTab('round');const S=chState();if(S.m){pickRound(S.m);}else{RMATCH=null;paintRoundCard();}}
