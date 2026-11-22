@@ -121,6 +121,19 @@ def save_added():
         print('انضاف لقائمة %s: %s #%s' % (club, e[1], e[0]))
     json.dump(tk, open(f, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     json.dump(sorted(only), open(fo, 'w', encoding='utf8'), ensure_ascii=False)
+    # ونفس اللاعب في بحث «منو اللاعب؟» (كان ينضاف للتشكيلة بس، ومحمد ناصر ما كان يطلع في البحث — 23 نوفمبر)
+    fm = os.path.join(ROOT, 'mano', 'data.json')
+    md = json.load(open(fm, encoding='utf8'))
+    have = {x['id'] for x in md['players']}
+    P2 = {'GK': 'GK', 'DEF': 'DF', 'MID': 'MD', 'FWD': 'FW'}
+    for club, e in ADDED:
+        if e[5] in have:
+            continue
+        md['players'].append(dict(id=e[5], n=e[1], e=' '.join(w.capitalize() for w in e[5].split('-')[:2]), c='shababahli' if club == 'shabab' else club,
+                                  p=P2.get(e[2], 'MD'), nat='', f='', a=None, no=e[0], ap=1, ph=0, gl=0, st=None))
+        have.add(e[5])
+        print('انضاف لبحث «منو اللاعب؟»: %s' % e[1])
+    json.dump(md, open(fm, 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
 
 
 def match_squad(sq, a):
