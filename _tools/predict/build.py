@@ -69,7 +69,17 @@ def ended(mid):
         return False
 
 
+def prev_finished():
+    """النتايج اللي انحسبت قبل (predict/data.json الحالي): المباراة اللي خلصت ما ترجع «ما خلصت»."""
+    try:
+        old = json.load(open(os.path.join(OUT_DIR, 'data.json'), encoding='utf8'))['matches']
+        return {str(m['id']): m for m in old if m.get('st') == FINISHED and 'sh' in m}
+    except Exception:
+        return {}
+
+
 def fixtures():
+    prev = prev_finished()
     comp = http_json(API + 'matches?lang=ar&competition_id=' + COMP)
     if comp.get('error'):
         raise RuntimeError(comp.get('msg'))
@@ -88,10 +98,15 @@ def fixtures():
             m = {'id': it['match_id'], 'wk': int(it['week_no']), 't': t, 'h': h, 'a': a, 'st': st}
             s1, s2 = it.get('team1_score'), it.get('team2_score')
             now = time.time() * 1000
-            if st != FINISHED and t <= now < t + 12 * 3600000 and str(s1).isdigit() and str(s2).isdigit() and ended(it['match_id']):
+            # الحالة الرسمية (6) أحياناً تتأخر يوم كامل ويظل الموقع يكتب 5. كان الفحص بـ«نهاية الشوط الثاني» لـ12 ساعة بس،
+            # فبعدها النتيجة كانت تختفي والنقاط تنخصم (22 نوفمبر). الحين: الفحص لين 7 أيام، واللي خلص قبل ما يرجع أبداً.
+            if st != FINISHED and t <= now < t + 7 * 86400000 and str(s1).isdigit() and str(s2).isdigit() and ended(it['match_id']):
                 st = m['st'] = FINISHED
             if st == FINISHED and str(s1).isdigit() and str(s2).isdigit():
                 m['sh'], m['sa'] = int(s1), int(s2)
+            o = prev.get(str(it['match_id']))
+            if o and 'sh' not in m and t <= now:
+                m['st'], m['sh'], m['sa'] = FINISHED, o['sh'], o['sa']
             out.append(m)
     out.sort(key=lambda m: (m['t'], m['id']))
     return out
