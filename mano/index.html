@@ -466,7 +466,9 @@ function bindInput(){
     const words=q.split(' ');
     const m=D.players.filter(p=>!S.guesses.includes(p.id)&&words.every(w=>p._k.includes(w)))
       .sort((a,b)=>(b._k.startsWith(q)-a._k.startsWith(q))||(b.ap-a.ap)).slice(0,8);
-    sg.innerHTML=m.length?m.map(p=>`<button data-id="${p.id}">${ph(p,40)}<span class="nm">${p.n}<small>${D.clubs[p.c]} · <span dir="ltr">${p.e}</span></small></span></button>`).join(''):'<div class="empty">ما في لاعب بهالاسم في قوائم الدوري</div>';
+    // اللاعب اللي جربته قبل ما يطلع في الاقتراحات: نقول له جي بدال «ما في لاعب» (كان يلخبط الناس)
+    const tried=m.length?[]:D.players.filter(p=>S.guesses.includes(p.id)&&words.every(w=>p._k.includes(w)));
+    sg.innerHTML=m.length?m.map(p=>`<button data-id="${p.id}">${ph(p,40)}<span class="nm">${p.n}<small>${D.clubs[p.c]} · <span dir="ltr">${p.e}</span></small></span></button>`).join(''):tried.length?`<div class="empty">جرّبت ${tried.length>1?'هالأسماء':'<b>'+tried[0].n+'</b>'} قبل، وتحصله في الجدول تحت 👇</div>`:'<div class="empty">ما في لاعب بهالاسم في قوائم الدوري</div>';
     sg.hidden=false;
     sg.querySelectorAll('button').forEach(b=>b.onclick=()=>guess(b.dataset.id));
   };
