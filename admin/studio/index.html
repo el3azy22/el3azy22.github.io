@@ -495,8 +495,8 @@ async function cardI(){
   const {cv,x,W}=frame(live?'انطلقت':same?'الليلة '+when:dn+' · '+when,'منصة العازي',live?'انطلقت!':'تحديات جديدة');
   const items=[
     ['🔮','توقع الجولة 7','الجولة المؤجلة: توقع نتيجة كل مباراة','el3azy.com/predict'],
-    ['⚽','منو بيسجل؟','اختار لاعب من ناديك، ولو سجّل تاخذ نقاط','el3azy.com/tashkila'],
-    ['🖐️','خماسي الفانتازي','5 لاعبين من الدوري، والقائد نقاطه دبل','el3azy.com/khamsa']];
+    ['🖐️','خماسي الفانتازي','5 لاعبين من الدوري، والقائد نقاطه دبل','el3azy.com/khamsa'],
+    ['⚽','منو بيسجل؟','مع مباراة ناديك الجاية: لو سجّل لاعبك تاخذ نقاط','el3azy.com/tashkila']];
   const y0=380,h=220,gap=30;
   items.forEach(([ic,t,d,u],i)=>{const y=y0+i*(h+gap);
     rr(x,70,y,W-140,h,30);x.fillStyle='rgba(12,38,56,.88)';x.fill();x.strokeStyle='rgba(215,180,101,.45)';x.lineWidth=2;x.stroke();
@@ -505,11 +505,11 @@ async function cardI(){
     x.textAlign='right';x.direction='rtl';x.fillStyle='#F0D99A';x.font=`700 46px ${F}`;x.fillText(t,W-270,y+72);
     x.fillStyle='rgba(255,245,229,.8)';x.font=`500 29px ${F}`;x.fillText(d,W-270,y+130);
     x.direction='ltr';x.textAlign='right';x.fillStyle='rgba(215,180,101,.75)';x.font=`500 24px ${F}`;x.fillText(u,W-270,y+178);x.direction='rtl'});
-  x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText('كل نقطة تحققها تنحسب لجمهور ناديك في دوري الجماهير 🏆',W/2,1148);
+  x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText('أول نقاط السبت في مباراة الوصل والظفرة 🔥',W/2,1148);
   footer(x,W,live?'العب الحين':'ينطلق '+(same?'الليلة':DAYS[n.getUTCDay()])+' '+when,'el3azy.com');
   const text=live
-    ?`🚀 انطلقت التحديات الجديدة في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\nel3azy.com/predict\n\n⚽ منو بيسجل؟ اختار لاعب من ناديك\nel3azy.com/tashkila\n\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\nel3azy.com/khamsa\n\nكل نقطة لجمهور ناديك في دوري الجماهير 🏆`
-    :`🚀 ${same?'الليلة':DAYS[n.getUTCDay()]+' '+n.getUTCDate()+' '+MONS[n.getUTCMonth()]} الساعة ${when} تنطلق في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\n⚽ منو بيسجل؟ اختار لاعب من ناديك\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\n\nوكل نقطة لجمهور ناديك في دوري الجماهير 🏆\nel3azy.com`;
+    ?`🚀 انطلقت التحديات الجديدة في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\nel3azy.com/predict\n\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\nel3azy.com/khamsa\n\n⚽ منو بيسجل؟ مع مباراة ناديك الجاية (الوصل والظفرة من الليلة، والباقين السبت بالليل مع الجولة 10)\nel3azy.com/tashkila\n\nأول نقاط السبت في مباراة الوصل والظفرة 🔥`
+    :`🚀 ${same?'الليلة':DAYS[n.getUTCDay()]+' '+n.getUTCDate()+' '+MONS[n.getUTCMonth()]} الساعة ${when} تنطلق في منصة العازي:\n\n🔮 توقع الجولة 7 المؤجلة\n🖐️ خماسي الفانتازي: 5 لاعبين والقائد نقاطه دبل\n⚽ منو بيسجل؟ مع مباراة ناديك الجاية\n(جمهور الوصل والظفرة من الليلة، والباقين السبت بالليل مع الجولة 10)\n\nأول نقاط السبت في مباراة الوصل والظفرة 🔥\nel3azy.com`;
   return {cv,text};
 }
 
