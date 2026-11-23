@@ -234,8 +234,8 @@ function list(){
   const ms=D.matches;
   const wk=ms.filter(m=>state(m)!=='pre').map(m=>m.wk).pop()||(ms[0]&&ms[0].wk);
   $('#sub').textContent='دوري أدنوك للمحترفين'+(wk?' · الجولة '+wk:'');
-  if(!ms.length){$('#app').innerHTML=crests14()+'<div class="card empty">ما في مباريات هالأيام 🤷‍♂️<br>ارجع لنا يوم الجولة الياية</div>';return}
-  // المفتوحة أول، بعدين الياية، بعدين اللي سكّرت
+  if(!ms.length){$('#app').innerHTML=crests14()+'<div class="card empty">ما في مباريات هالأيام 🤷‍♂️<br>ارجع لنا يوم الجولة القادمة</div>';return}
+  // المفتوحة أول، بعدين القادمة، بعدين اللي سكّرت
   const rank={open:0,soon:1,live:1,pre:2,closed:3};
   const sorted=[...ms].sort((a,b)=>rank[state(a)]-rank[state(b)]||(state(a)==='closed'?b.t-a.t:a.t-b.t));
   let html=crests14(),lastG='';

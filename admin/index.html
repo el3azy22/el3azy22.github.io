@@ -252,7 +252,7 @@ async function loadPred(){ // المشاركين + تنبيه لو مواعيد 
   const T=Date.now(),fut=D.matches.filter(m=>m.t>T),bad=fut.filter(m=>!L||L[m.id]!==m.t);
   let h='';
   if(bad.length)h+=`<p class="cap" style="color:#ef8f86"><b>⚠ ${bad.length} مباراة موعدها تغيّر أو انضافت</b> ولازم نحدّث قواعد Firebase عشان التوقع يفتح ويقفل صح. قول لـClaude «حدّث قواعد التوقعات».</p>`;
-  else h+=`<p class="cap">✅ قواعد Firebase مطابقة لمواعيد المباريات الجاية (${fut.length} مباراة).</p>`;
+  else h+=`<p class="cap">✅ قواعد Firebase مطابقة لمواعيد المباريات القادمة (${fut.length} مباراة).</p>`;
   const R=TB&&TB.rounds?Object.entries(TB.rounds):[];
   if(R.length)h+=bars(R.map(([w,rows])=>['الجولة '+w+' · متوقعين',rows.length]));else h+='<div class="empty">الترتيب يطلع بعد صافرة أول مباراة فيها توقعات</div>';
   el.innerHTML=h;

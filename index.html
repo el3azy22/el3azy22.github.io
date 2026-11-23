@@ -249,7 +249,7 @@ function challenges(){
   {const e=(LS('el3azy_mano_g_'+DAY+'_easy')||{}),p=(LS('el3azy_mano_g_'+DAY+'_pro')||{});
    if(!e.done)L.push({k:'mano',href:'mano/',s:'todo',dl:eod,t:'منو اللاعب؟',st:`لاعب اليوم <bdi dir="ltr">#${DAY}</bdi> · 6 محاولات`,tm:['ينتهي بعد',eod-T],a:'العب'});
    else if(!p.done)L.push({k:'mano',href:'mano/',s:'todo',dl:eod,t:'منو اللاعب؟',st:(e.win?'✓ عرفت لاعب اليوم':'✓ لعبت لاعب اليوم')+' · باقي تحدي الخبير 🧠',tm:['ينتهي بعد',eod-T],a:'الخبير'});
-   else L.push({k:'mano',href:'mano/',s:'done',t:'منو اللاعب؟',st:'<span class="st ok">✓ خلّصت تحديات اليوم</span>',tm:['اللاعب الياي بعد',eod-T]})}
+   else L.push({k:'mano',href:'mano/',s:'done',t:'منو اللاعب؟',st:'<span class="st ok">✓ خلّصت تحديات اليوم</span>',tm:['اللاعب القادم بعد',eod-T]})}
   if(P){
     const T0={};P.matches.forEach(m=>T0[m.wk]=Math.min(T0[m.wk]||9e15,m.t));const LATE=w=>Object.keys(T0).some(x=>+x>+w&&T0[x]<T0[w]);
     // دوري التوقعات

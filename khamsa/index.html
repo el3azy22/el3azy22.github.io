@@ -208,7 +208,7 @@ async function boot(){
   RDS=Object.keys(by).map(w=>{const ms=by[w].sort((a,b)=>a.t-b.t),op=+(OPEN[w]||0);return{wk:+w,ms,op,first:ms[0].t,last:ms[ms.length-1].t}})
     .filter(r=>r.op>=L).sort((a,b)=>a.op-b.op||a.wk-b.wk);
   RDS.forEach(r=>r.def=PD.matches.some(m=>m.wk>r.wk&&m.t<r.first));
-  // الجولات اللي تطلع: المفتوحة اللي ما خلصت + آخر وحدة خلصت (للنتيجة) + الياية لو ما في مفتوحة
+  // الجولات اللي تطلع: المفتوحة اللي ما خلصت + آخر وحدة خلصت (للنتيجة) + القادمة لو ما في مفتوحة
   const ALL=RDS,open=RDS.filter(r=>r.op<=now&&r.last+3*3600e3>now),done=RDS.filter(r=>r.last+3*3600e3<=now).sort((a,b)=>a.last-b.last),soon=RDS.filter(r=>r.op>now);
   let show=open.slice();if(done.length&&show.length<2)show.unshift(done[done.length-1]);if(!open.length&&soon.length)show.push(soon[0]);
   const want=+(new URLSearchParams(location.search).get('w')||0),wr=ALL.find(r=>r.wk===want);if(wr&&!show.includes(wr))show.push(wr);
@@ -219,7 +219,7 @@ async function boot(){
 function fanClub(){const F=window.EL3FAN;const c=F&&F.club();return c&&c!=='none'?c:'none'}
 async function render(){
   clearInterval(tick);const app=$('app');app.innerHTML='';
-  if(!RD){app.append(el(`<div class="msg">خماسي الفانتازي ينطلق مع الجولة الياية.<br>تابع المنصة 👀</div>`));return}
+  if(!RD){app.append(el(`<div class="msg">خماسي الفانتازي ينطلق مع الجولة القادمة.<br>تابع المنصة 👀</div>`));return}
   if(RDS.length>1){const t=el(`<div class="rds">${RDS.map(r=>`<button type="button" data-w="${r.wk}" aria-pressed="${r===RD}">الجولة ${r.wk}<small>${r.def?'المؤجلة · ':''}${dm(r.first)===dm(r.last)?dm(r.first):dm(r.first)+' – '+dm(r.last)}</small></button>`).join('')}</div>`);
     t.querySelectorAll('button').forEach(b=>b.onclick=()=>{RD=RDS.find(r=>r.wk==b.dataset.w);xi=[null,null,null,null,null];cap=null;MINE=null;render()});app.append(t)}
   T={};RD.ms.forEach(m=>{T[m.h]=m.t;T[m.a]=m.t});

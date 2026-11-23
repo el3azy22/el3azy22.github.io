@@ -236,7 +236,7 @@ function open(){
   addCss();const cur=club(),edit=cur!==null;let pick=cur||null;
   const L=edit?lock():{free:true},locked=!L.free;
   const hrs=t=>{const h=Math.max(1,Math.ceil((t-Date.now())/36e5));return h===1?'ساعة':h===2?'ساعتين':h<=10?h+' ساعات':h+' ساعة'};
-  const note=locked?`🔒 غيّرت ناديك هالموسم، تقدر تغيره الموسم الياي`
+  const note=locked?`🔒 غيّرت ناديك هالموسم، تقدر تغيره الموسم القادم`
     :L.grace?`تقدر تعدل خلال ${hrs(L.grace)}، وبعدها تغيير واحد في الموسم`
     :L.left?`تقدر تغير ناديك مرة وحدة في الموسم`
     :`عندك 24 ساعة تعدل، وبعدها تغيير واحد في الموسم`;

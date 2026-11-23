@@ -539,7 +539,7 @@ function resultHTML(){
    <img class="cardimg" id="cardImg" alt="صورة نتيجتك">
    <button class="btn" id="imgBtn">𝕏 شارك نتيجتك</button>
    ${mode==='pro'?`<button class="btn ghost" id="otherBtn">🕵️ ارجع لاعب اليوم</button>`:''}
-   <div class="next">اللاعب الياي بعد<b id="cd">--:--:--</b></div>
+   <div class="next">اللاعب القادم بعد<b id="cd">--:--:--</b></div>
   </div>`;
 }
 function bindResult(){
@@ -624,7 +624,7 @@ window.addEventListener('el3fan',()=>crowdFlow());
 function pickHTML(again){
   return `<div class="card clubc"><div class="lbl">🏆 ترتيب جماهير الأندية</div>
    <div style="font-size:16px;font-weight:700">${again?'غيّر ناديك':'أي نادي تشجع؟'}</div>
-   <div style="font-size:12.5px;opacity:.7;margin-top:3px">كل يوم نتيجتك تنحسب لجمهور ناديك${again?' (من اللعبة الياية)':'، وبعدها تشوف نسبة الجماهير'}</div>
+   <div style="font-size:12.5px;opacity:.7;margin-top:3px">كل يوم نتيجتك تنحسب لجمهور ناديك${again?' (من اللعبة القادمة)':'، وبعدها تشوف نسبة الجماهير'}</div>
    <div class="cpick">${CLUBS_ORDER.map(k=>`<button data-c="${k}">${crest(k,30)}<span>${D.clubs[k]}</span></button>`).join('')}</div>
    <button class="linkb" data-c="">ما أشجع نادي معيّن</button></div>`;
 }

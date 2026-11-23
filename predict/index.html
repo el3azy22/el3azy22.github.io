@@ -334,7 +334,7 @@ function roundsOf(ms){
 }
 function pickRound(){
   const T=now();
-  // الجولة اللي فيها مباراة ما خلصت (أو جاية) وأقرب موعد
+  // الجولة اللي فيها مباراة ما خلصت (أو قادمة) وأقرب موعد
   let best=null;
   RD.forEach(r=>{const open=r.ms.filter(m=>m.st!==FIN&&m.t+3*3600e3>T);if(open.length){const t=Math.min(...open.map(m=>m.t));if(!best||t<best.t)best={r,t}}});
   return best?best.r.wk:(RD.length?RD[RD.length-1].wk:null);
@@ -342,7 +342,7 @@ function pickRound(){
 const rlabel=r=>{const late=RD.some(x=>x.wk>r.wk&&x.t0<r.t0);return 'الجولة '+r.wk+(late?' (المؤجلة)':'')};
 function renderRounds(){
   const T=now();
-  // الجولات اللي فتحت (أو خلصت) + أول جولة جاية تبين إنها تفتح بعد الحالية
+  // الجولات اللي فتحت (أو خلصت) + أول جولة قادمة تبين إنها تفتح بعد الحالية
   const shut=RD.filter(r=>T<OPN(r.wk)).sort((a,b)=>OPN(a.wk)-OPN(b.wk)),nx=shut[0];
   const show=RD.filter(r=>(T>=OPN(r.wk)&&r.t0<T+21*864e5)||r.wk===CUR||r===nx);
   $('#rounds').innerHTML=show.map(r=>`<button data-w="${r.wk}" class="${r.wk===CUR?'on':''}">${rlabel(r)}</button>`).join('');
@@ -394,8 +394,8 @@ function renderMe(){
   let h='';
   if(window.EL3FAN&&EL3FAN.club()===null)h+=`<button class="clubask" id="askClub"><span style="font-size:26px">📣</span><span><b>اختار ناديك</b>عشان نقاطك تنحسب لجمهوره في ترتيب الأندية</span></button>`;
   const shutR=T<OPN(r.wk),pvR=shutR?RD.filter(x=>x.t0<r.t0).sort((a,b)=>b.t0-a.t0)[0]:null;
-  if(shutR)h+=`<div class="lockb"><span>التوقع يفتح بعد نهاية ${pvR?rlabel(pvR):'الجولة الحالية'}<br><small style="opacity:.65">نفتح الجولة الجاية بس، عشان التوقع يكون على آخر الأخبار</small></span><b id="cd" dir="auto" data-t="${OPN(r.wk)}">${dur(OPN(r.wk)-T)}</b></div>`;
-  else if(next)h+=`<div class="lockb"><span>${openN===r.ms.length?'أول صافرة':'الصافرة الياية'}: ${CL[next.h]} × ${CL[next.a]}<br><small style="opacity:.65">كل توقع يقفل مع صافرة مباراته</small></span><b id="cd" dir="auto" data-t="${LT(next)}">${dur(LT(next)-T)}</b></div>`;
+  if(shutR)h+=`<div class="lockb"><span>التوقع يفتح بعد نهاية ${pvR?rlabel(pvR):'الجولة الحالية'}<br><small style="opacity:.65">نفتح الجولة القادمة بس، عشان التوقع يكون على آخر الأخبار</small></span><b id="cd" dir="auto" data-t="${OPN(r.wk)}">${dur(OPN(r.wk)-T)}</b></div>`;
+  else if(next)h+=`<div class="lockb"><span>${openN===r.ms.length?'أول صافرة':'الصافرة القادمة'}: ${CL[next.h]} × ${CL[next.a]}<br><small style="opacity:.65">كل توقع يقفل مع صافرة مباراته</small></span><b id="cd" dir="auto" data-t="${LT(next)}">${dur(LT(next)-T)}</b></div>`;
   h+=r.ms.map(card).join('');
   const myPts=r.ms.reduce((s,m)=>{const p=MY[m.id];return s+(p&&m.st===FIN&&m.sh!=null&&m.t>0&&T>=m.t?points(p.h,p.a,m.sh,m.sa)*(p.x?2:1):0)},0);
   if(r.ms.some(m=>m.st===FIN))h+=`<div class="note">نقاطك في ${rlabel(r)}: <b style="color:var(--gold2)">${myPts}</b></div>`;
@@ -569,7 +569,7 @@ function renderLb(){
     else if(r&&r.ms.some(m=>MY[m.id]))h+=`<div class="note">ترتيبك يطلع بعد صافرة أول مباراة توقعتها</div>`;
     // تنبيه: بدون نادي نقاطك ما تنفع أي جمهور · بدون اسم يطلع «مشجع» (قرار إبراهيم 19 نوفمبر)
     if(i>=0&&window.EL3FAN){const fc=EL3FAN.club(),fn=(EL3FAN.name()||'').trim();
-      if(fc===null)h+=`<div class="nudge"><span>🔥 أنت <b><bdi dir="ltr">#${i+1}</bdi></b>، بس نقاطك ما تنحسب لأي جمهور.<br>اختار ناديك عشان توقعاتك الياية تنفعه.</span><button id="nudgeB">اختار ناديك</button></div>`;
+      if(fc===null)h+=`<div class="nudge"><span>🔥 أنت <b><bdi dir="ltr">#${i+1}</bdi></b>، بس نقاطك ما تنحسب لأي جمهور.<br>اختار ناديك عشان توقعاتك القادمة تنفعه.</span><button id="nudgeB">اختار ناديك</button></div>`;
       else if(!fn)h+=`<div class="nudge"><span>✍️ في الترتيب تطلع «${fc&&CL[fc]?'مشجع '+CL[fc]:'مشجع'}».<br>اكتب اسمك عشان يطلع.</span><button id="nudgeB">اكتب اسمك</button></div>`;}
     h+=`<div class="h3">🏆 ترتيب ${r?rlabel(r):''}</div><div class="note" style="margin:-4px 0 8px;font-size:12px">اضغط أي اسم وشوف توقعاته في المباريات اللي بدت</div><div class="lb">${lbRows(rows,'rd')}</div>`;
     if(i>=0)h+=`<button class="btn ghost" id="shareR">𝕏 شارك ترتيبك</button>`;

@@ -744,19 +744,19 @@ async function renderTP(){
   if(!c){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">🏆 <b>توقّع تشكيلة ناديك</b> للجمهور اللي اختار ناديه.<br>اختار ناديك من بطاقة المشجع، وبعدها توقّع تشكيلته قبل كل مباراة.<br><button id="tpPick">اختار ناديك</button></div>`));q('tpPick').onclick=()=>F&&F.open();return}
   await loadData();
   const now=(QA&&+(new URLSearchParams(location.search).get('now')||0))||Date.now(),mine=PD.matches.filter(m=>m.h===c||m.a===c).sort((a,b)=>a.t-b.t);
-  // نتيجة المباراة الماضية تظل يومين، بس لو المباراة الجاية انطلق توقعها (مثلاً الوصل: الجولة 7 السبت وبعدها الجولة 10)
-  // نفتح على الجاية ونحط فوقها زر يرجع للنتيجة (قبل كان المشجع ما يقدر يتوقع الجاية لين تخلص اليومين)
+  // نتيجة المباراة الماضية تظل يومين، بس لو المباراة القادمة انطلق توقعها (مثلاً الوصل: الجولة 7 السبت وبعدها الجولة 10)
+  // نفتح على القادمة ونحط فوقها زر يرجع للنتيجة (قبل كان المشجع ما يقدر يتوقع القادمة لين تخلص اليومين)
   const PREV=mine.slice().reverse().find(m=>m.t<=now&&now-m.t<2*DAYMS&&LU[m.id])||null,NEXT=mine.find(m=>m.t+3*3600e3>now&&m!==PREV)||null;
   const nextOpen=NEXT&&now>=(OPEN[NEXT.wk]||0);
-  // أول 12 ساعة بعد بداية المباراة: النتيجة أول (الناس يبون يشوفونها)، وبعدها نفتح على الجاية. الزر يبدّل في أي وقت
+  // أول 12 ساعة بعد بداية المباراة: النتيجة أول (الناس يبون يشوفونها)، وبعدها نفتح على القادمة. الزر يبدّل في أي وقت
   const dflt=PREV&&now-PREV.t<12*3600e3?'prev':'next';
   M=PREV&&nextOpen?((TPV||dflt)==='prev'?PREV:NEXT):(PREV||NEXT);
   const sq=CLUBS.find(x=>x.id===(TCLUB[c]||c));
-  if(!M||!sq){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">ما في مباراة جاية لناديك في الجدول لين الحين.<br>ارجع لما تنزل مواعيد الجولة الجاية.</div>`));return}
+  if(!M||!sq){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">ما في مباراة قادمة لناديك في الجدول لين الحين.<br>ارجع لما تنزل مواعيد الجولة القادمة.</div>`));return}
   const op=OPEN[M.wk]||0,lock=M.t-LOCK;
   SCON=QA||op>=K5L;   // «منو بيسجل؟» في الجولات اللي تنطلق من الإطلاق بس (khamsa/config.json)
   ST=LU[M.id]&&now>=M.t?'reveal':now>=lock?'locked':now<op?'soon':'pick';
-  if(PREV&&nextOpen){const nm=x=>{const o=x.h===c?x.a:x.h;return (CLUBS.find(y=>y.id===(TCLUB[o]||o))||{}).name||''},sw=el(`<div class="tp-msg tp-sw" style="padding:10px 12px;margin:8px 0">${M===NEXT?`✅ نتيجتك في مباراة ${nm(PREV)} جاهزة · <button id="tpSw">شوفها</button>`:`👈 توقّع مباراتك الجاية ضد ${nm(NEXT)} · <button id="tpSw">توقّع الحين</button>`}</div>`);
+  if(PREV&&nextOpen){const nm=x=>{const o=x.h===c?x.a:x.h;return (CLUBS.find(y=>y.id===(TCLUB[o]||o))||{}).name||''},sw=el(`<div class="tp-msg tp-sw" style="padding:10px 12px;margin:8px 0">${M===NEXT?`✅ نتيجتك في مباراة ${nm(PREV)} جاهزة · <button id="tpSw">شوفها</button>`:`👈 توقّع مباراتك القادمة ضد ${nm(NEXT)} · <button id="tpSw">توقّع الحين</button>`}</div>`);
     window._tpSw=sw;sw.querySelector('#tpSw').onclick=()=>{TPV=M===NEXT?'prev':'next';renderTP()}}else window._tpSw=null;
   const other=M.h===c?M.a:M.h,oc=CLUBS.find(x=>x.id===(TCLUB[other]||other));
   const nm=x=>(CLUBS.find(y=>y.id===(TCLUB[x]||x))||{}).name||x;
@@ -795,11 +795,11 @@ async function renderTP(){
     q('tpGo').after(el(`<div class="tp-sub" id="tpSub">${keys?'توقعك محفوظ ✅ وتقدر تعدّله لين ما يقفل':'تقدر تعدّل لين ما يقفل · الخطة للشكل بس، والنقاط على أسماء اللاعبين'}</div>`));
     q('tpGo').onclick=save;upd();
   }
-  if(ST==='locked'){if(keys&&SC)pitch.after(scRO());pitch.after(el(`<div class="tp-sub">${keys?'توقعك محفوظ ✅ ما تقدر تعدّله بعد القفل':'ما اعتمدت توقع لهالمباراة. توقّع المباراة الجاية قبل ما تقفل.'}</div>`));
+  if(ST==='locked'){if(keys&&SC)pitch.after(scRO());pitch.after(el(`<div class="tp-sub">${keys?'توقعك محفوظ ✅ ما تقدر تعدّله بعد القفل':'ما اعتمدت توقع لهالمباراة. توقّع المباراة القادمة قبل ما تقفل.'}</div>`));
     if(keys){pitch.after(el(`<button class="tp-go tp-sh" id="tpSh" type="button">𝕏 شارك توقعي</button>`));q('tpSh').onclick=()=>shareTP(null)}}
   if(ST==='reveal'){
     const L=LU[M.id],real=new Set(M.h===c?L.hs:L.as);
-    if(!keys){pitch.before(el(`<div class="tp-msg">ما توقعت تشكيلة هالمباراة.${window._tpSw?'':'<br>توقع التشكيلة الجاي ينطلق مع الجولة الجاية.'}</div>`));}
+    if(!keys){pitch.before(el(`<div class="tp-msg">ما توقعت تشكيلة هالمباراة.${window._tpSw?'':'<br>توقع التشكيلة القادم ينطلق مع الجولة القادمة.'}</div>`));}
     else{const hits=keys.filter(k=>real.has(k)).length,sr=scRes(L,c,SC),tot=hits+(sr?sr.pts:0),sp=scP();
       if(!sp)pitch.before(el(`<div class="tp-res"><div class="big">${hits} <small>من 11</small></div><div class="l">توقعت ${hits} صح من التشكيلة الأساسية ${hits?'✅':''} وجبت <b>${hits} ${NQT(hits)}</b> لك ولجمهور ${nm(c)}</div></div>`));
       else{const n=sp[6]||sp[1],jk=!keys.includes(SC)?' · من خارج تشكيلتك':'';
