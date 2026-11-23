@@ -29,7 +29,7 @@ jobs:
           python3 _tools/predict/build.py || echo "::warning::predict فشل"
           python3 _tools/firebase/deploy.py || echo "::warning::نشر القواعد فشل"
           python3 _tools/sync/sync.py
-          git add -A tashkila/squads.json mano/data.json mano/assets/p _tools/sync/report.json predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json predict/open.json setup/rules.html
+          git add -A tashkila/squads.json mano/data.json mano/assets/p _tools/sync/report.json predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json predict/open.json predict/mopen.json setup/rules.html
           if ! git diff --cached --quiet; then
             git commit -m "مزامنة القوائم من المواقع الرسمية" -q
             git pull --rebase -q && git push -q

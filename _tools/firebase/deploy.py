@@ -15,7 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 DB = os.environ.get('FBDB', 'https://el3azy-3b64e-default-rtdb.europe-west1.firebasedatabase.app')
 NS = os.environ.get('FBNS')
-FILES = ['_tools/firebase/rules.json', 'predict/lock.json', 'predict/open.json']
+FILES = ['_tools/firebase/rules.json', 'predict/lock.json', 'predict/open.json', 'predict/mopen.json']
 
 
 def revert(msg):

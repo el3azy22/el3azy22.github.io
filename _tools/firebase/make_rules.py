@@ -157,10 +157,26 @@ for _w,_t in OPEN_FIX.items():
 try: LAUNCH5=int(json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'..','..','khamsa','config.json'),encoding='utf8')).get('launch') or 0) or 1795449600000
 except Exception: LAUNCH5=1795449600000
 LAUNCH5=int(os.environ.get('LAUNCH5') or LAUNCH5)
-rules["rules"]["pr"]={m['id']:_pr(m['t'],_op[m['wk']]) for m in _ms}
+# مباريات جولة مؤجلة متفرقة (قرار إبراهيم 23 نوفمبر): من الجولة 7 تنفتح الحين مباراة الوصل والظفرة بس، والست الباقية (29-30 ديسمبر)
+# تنفتح مثل أي جولة: بعد آخر مباراة قبلها من الجولات الثانية بساعتين. المباراة «منفصلة» لو في جولة ثانية بدت بعد أول مباراة في جولتها وقبلها.
+def _mopen(ms,op):
+  rd={}
+  for m in ms: rd.setdefault(m['wk'],[]).append(m['t'])
+  mo={}
+  for m in ms:
+    w=m['wk'];t0=min(rd[w])
+    mids=[x for x in rd if x!=w and t0<min(rd[x])<m['t']]
+    if not mids: continue
+    before=[t for x in rd if x!=w for t in rd[x] if t<m['t']]
+    mo[m['id']]=max(op[w],max(before)+2*3600000)
+  return mo
+_mo=_mopen(_ms,_op)
+OPM=lambda m:_mo.get(m['id'],_op[m['wk']])
+rules["rules"]["pr"]={m['id']:_pr(m['t'],OPM(m)) for m in _ms}
 # نسخة من مواعيد القفل اللي في القواعد: الصفحة تقفل على الأبكر، ولوحة التحكم تنبّه لو المواعيد تغيرت
 if _ms:json.dump({m['id']:m['t'] for m in _ms},open(os.path.join(os.path.dirname(_pd),'lock.json'),'w'),separators=(',',':'))
 if _ms:json.dump({str(w):t for w,t in _op.items()},open(os.path.join(os.path.dirname(_pd),'open.json'),'w'),separators=(',',':'))   # متى تفتح كل جولة (للصفحة)
+if _ms:json.dump(_mo,open(os.path.join(os.path.dirname(_pd),'mopen.json'),'w'),separators=(',',':'))   # مباريات تنفتح بروحها (بعد جولات ثانية)
 
 # ── «توقّع تشكيلة ناديك» (صفحة «تشكيلتي»، قرار إبراهيم 18 نوفمبر) ──
 # tp/<مباراة>/<uid> = {c: نادي المشجع، x: 11 مفتاح لاعب مفصولة بـ ~ بترتيب الخانات، f: الخطة (اختياري)، w: وقت السيرفر}
@@ -179,7 +195,7 @@ def _tp(m,O=0):
     **({"s":{".validate":"newData.isString() && newData.val().matches(/^[^~]{1,200}$/)"}} if O>=LAUNCH5 else {}),   # «منو بيسجل؟»: مفتاح اللاعب (اختياري، توقع مستقل) من الإطلاق
     "w":{".validate":"newData.val() == now"},
     "$other":{".validate":False}}}
-rules["rules"]["tp"]={m['id']:_tp(m,_op[m['wk']]) for m in _ms}
+rules["rules"]["tp"]={m['id']:_tp(m,OPM(m)) for m in _ms}
 
 # ── «خماسي الفانتازي» (قرار إبراهيم 20 نوفمبر): k5/<جولة>/<uid> = {c: نادي البطاقة، p: {0..4: {c: نادي اللاعب، k: مفتاح اللاعب}}، cap: 0-4، w}
 # الخانات: 0 حارس · 1 مدافع · 2 وسط · 3 مهاجم · 4 حر. كل لاعب يقفل مع بداية مباراة ناديه في الجولة (ما يتبدل ولا ينشال)،
