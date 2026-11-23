@@ -748,7 +748,9 @@ async function renderTP(){
   // نفتح على الجاية ونحط فوقها زر يرجع للنتيجة (قبل كان المشجع ما يقدر يتوقع الجاية لين تخلص اليومين)
   const PREV=mine.slice().reverse().find(m=>m.t<=now&&now-m.t<2*DAYMS&&LU[m.id])||null,NEXT=mine.find(m=>m.t+3*3600e3>now&&m!==PREV)||null;
   const nextOpen=NEXT&&now>=(OPEN[NEXT.wk]||0);
-  M=PREV&&nextOpen?(TPV==='prev'?PREV:NEXT):(PREV||NEXT);
+  // أول 12 ساعة بعد بداية المباراة: النتيجة أول (الناس يبون يشوفونها)، وبعدها نفتح على الجاية. الزر يبدّل في أي وقت
+  const dflt=PREV&&now-PREV.t<12*3600e3?'prev':'next';
+  M=PREV&&nextOpen?((TPV||dflt)==='prev'?PREV:NEXT):(PREV||NEXT);
   const sq=CLUBS.find(x=>x.id===(TCLUB[c]||c));
   if(!M||!sq){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">ما في مباراة جاية لناديك في الجدول لين الحين.<br>ارجع لما تنزل مواعيد الجولة الجاية.</div>`));return}
   const op=OPEN[M.wk]||0,lock=M.t-LOCK;
