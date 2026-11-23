@@ -205,7 +205,10 @@ async function boot(){
   (sq.clubs||[]).forEach(c=>{const id=FIXC[c.id]||c.id;CL[id]=c;c.p.forEach(p=>BYK[key(p)]={p,c:id})});
   const L=CFG.launch||1795449600000,now=Date.now(),by={};
   PD.matches.forEach(m=>(by[m.wk]=by[m.wk]||[]).push(m));
-  RDS=Object.keys(by).map(w=>{const ms=by[w].sort((a,b)=>a.t-b.t),op=+(OPEN[w]||0);return{wk:+w,ms,op,first:ms[0].t,last:ms[ms.length-1].t}})
+  // جولة مؤجلة متفرقة (قرار إبراهيم 23 نوفمبر): الخماسي يمشي مع المباريات المنفصلة بس وينفتح معها (الجولة 7: 29–30 ديسمبر)
+  const MO=await fetch('../predict/mopen.json',nc).then(r=>r.ok?r.json():{}).catch(()=>({}));
+  Object.keys(by).forEach(w=>{const d=by[w].filter(m=>MO[m.id]);if(d.length){by[w]=d;by[w].op=Math.min(...d.map(m=>MO[m.id]))}});
+  RDS=Object.keys(by).map(w=>{const ms=by[w].sort((a,b)=>a.t-b.t),op=+(by[w].op||OPEN[w]||0);return{wk:+w,ms,op,first:ms[0].t,last:ms[ms.length-1].t}})
     .filter(r=>r.op>=L).sort((a,b)=>a.op-b.op||a.wk-b.wk);
   RDS.forEach(r=>r.def=PD.matches.some(m=>m.wk>r.wk&&m.t<r.first));
   // الجولات اللي تطلع: المفتوحة اللي ما خلصت + آخر وحدة خلصت (للنتيجة) + القادمة لو ما في مفتوحة

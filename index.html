@@ -269,7 +269,9 @@ function challenges(){
         else if(LS('el3azy_tp_'+m.id))L.push({k:'tp',href:'tashkila/?tp',s:'done',t:'توقّع تشكيلة ناديك',st:`<span class="st ok">✓ توقعت تشكيلة ${CN[c]}</span>`,tm:['يقفل بعد',m.t-LOCK-T]});
         else L.push({k:'tp',href:'tashkila/?tp',s:'todo',dl:m.t-LOCK,t:'توقّع تشكيلة ناديك',st:vs,tm:['يقفل بعد',m.t-LOCK-T],a:'توقّع'})}}
     // خماسي الفانتازي (khamsa/config.json → launch): أقرب جولة ما خلصت
-    if(K5.launch&&T>=K5.launch){const by={};P.matches.forEach(m=>(by[m.wk]=by[m.wk]||[]).push(m.t));
+    if(K5.launch&&T>=K5.launch){const by={},K5O={};P.matches.forEach(m=>(by[m.wk]=by[m.wk]||[]).push(m.t));
+      // جولة مؤجلة متفرقة: الخماسي مع المباريات المنفصلة بس (نفس صفحة الخماسي)
+      Object.keys(by).forEach(w=>{const d=P.matches.filter(m=>m.wk==w&&MO[m.id]);if(d.length){by[w]=d.map(m=>m.t);K5O[w]=Math.min(...d.map(m=>MO[m.id]))}});const OPEN=Object.assign({},window.OPENG,K5O);
       // أكثر من جولة مفتوحة (الجولة 7 المؤجلة تظل مفتوحة لين 30 ديسمبر): الأولوية للجولة اللي ما اخترت لها، وبعدها أقرب قفل
       const nxt=w=>Math.min(...by[w].filter(t=>t>T)),rs=Object.keys(by).filter(w=>(OPEN[w]||0)>=K5.launch&&Math.max(...by[w])>T),
         opn=rs.filter(w=>(OPEN[w]||0)<=T).sort((a,b)=>nxt(a)-nxt(b)),todo=opn.filter(w=>!LS('el3azy_k5_'+w)),wait=rs.filter(w=>(OPEN[w]||0)>T).sort((a,b)=>OPEN[a]-OPEN[b]),
@@ -318,7 +320,7 @@ function drawRate(){
 drawCh();
 const v=Math.floor(Date.now()/12e4),J=u=>fetch(u+'?v='+v).then(r=>r.ok?r.json():null).catch(()=>null);
 {const T=Date.now(),pv=/[?&]bus\b/.test(location.search),c=document.getElementById('busCard');if(c&&(pv||T>=1799006400000)){c.hidden=false;if(T>=1800129600000)document.getElementById('busWhen').remove()}}
-Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json'),J('predict/mopen.json')]).then(([p,o,r,f,k,mo])=>{P=p;OPEN=o||{};MO=mo||{};R=r;FD=f;K5=k||{};drawCh();drawLg();drawRate();
+Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json'),J('predict/mopen.json')]).then(([p,o,r,f,k,mo])=>{P=p;OPEN=o||{};window.OPENG=OPEN;MO=mo||{};R=r;FD=f;K5=k||{};drawCh();drawLg();drawRate();
   J('fans/ranks.json').then(k=>{RK=k;drawLg()})});
 setInterval(()=>{drawCh();drawRate()},1000);
 addEventListener('el3fan',()=>{lastSig='';drawCh();drawLg()});
