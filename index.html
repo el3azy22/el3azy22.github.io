@@ -244,18 +244,21 @@ let P=null,OPEN={},FD=null,RK=null,R=null,K5={};
 
 /* تحديات اليوم: كل تحدي وحالته لك (باقي عليك / خلّصته / ينطلق بعدين)، اللي يقفل أول فوق */
 function challenges(){
-  const T=Date.now(),dub=T+4*3600e3,DAY=Math.floor((dub-Date.UTC(2026,10,17))/864e5)+1,eod=T+(864e5-dub%864e5),L=[];
+  const T=+(new URLSearchParams(location.search).get('now')||0)||Date.now(),dub=T+4*3600e3,DAY=Math.floor((dub-Date.UTC(2026,10,17))/864e5)+1,eod=T+(864e5-dub%864e5),L=[];
   // منو اللاعب؟
   {const e=(LS('el3azy_mano_g_'+DAY+'_easy')||{}),p=(LS('el3azy_mano_g_'+DAY+'_pro')||{});
    if(!e.done)L.push({k:'mano',href:'mano/',s:'todo',dl:eod,t:'منو اللاعب؟',st:`لاعب اليوم <bdi dir="ltr">#${DAY}</bdi> · 6 محاولات`,tm:['ينتهي بعد',eod-T],a:'العب'});
    else if(!p.done)L.push({k:'mano',href:'mano/',s:'todo',dl:eod,t:'منو اللاعب؟',st:(e.win?'✓ عرفت لاعب اليوم':'✓ لعبت لاعب اليوم')+' · باقي تحدي الخبير 🧠',tm:['ينتهي بعد',eod-T],a:'الخبير'});
    else L.push({k:'mano',href:'mano/',s:'done',t:'منو اللاعب؟',st:'<span class="st ok">✓ خلّصت تحديات اليوم</span>',tm:['اللاعب الياي بعد',eod-T]})}
   if(P){
+    const T0={};P.matches.forEach(m=>T0[m.wk]=Math.min(T0[m.wk]||9e15,m.t));const LATE=w=>Object.keys(T0).some(x=>+x>+w&&T0[x]<T0[w]);
     // دوري التوقعات
     const MY=LS('el3azy_pred')||{},op=m=>(OPEN[m.wk]||0)<=T,up=P.matches.filter(m=>m.t>T).sort((a,b)=>a.t-b.t),on=up.filter(op);
-    if(on.length){const MM=k=>k===1?'مباراة':k===2?'مباراتين':k<=10?k+' مباريات':k+' مباراة',left=on.filter(m=>!MY[m.id]),wk=on[0].wk,n=on.length;
+    if(on.length){const MM=k=>k===1?'مباراة':k===2?'مباراتين':k<=10?k+' مباريات':k+' مباراة',left=on.filter(m=>!MY[m.id]),n=on.length;
+      // جولتين مفتوحات (مثلاً الجولة 10 والجولة 7 المؤجلة): نكتب الثنتين بالترتيب حسب أقرب مباراة
+      const wks=[...new Set(on.map(m=>m.wk))],wk=wks.map(w=>w+(LATE(w)?' المؤجلة':'')).join(' و'),R=wks.length>1?'الجولتين ':'الجولة ';
       if(left.length)L.push({k:'pred',href:'predict/',s:'todo',dl:left[0].t,t:'دوري التوقعات',st:`الجولة ${wk} · ${n-left.length?`توقعت ${n-left.length} · `:''}باقي ${MM(left.length)}`,tm:['أقرب قفل بعد',left[0].t-T],a:'توقّع'});
-      else L.push({k:'pred',href:'predict/',s:'done',t:'دوري التوقعات',st:`<span class="st ok">✓ توقعت كل مباريات الجولة ${wk}</span>`,tm:['تقدر تعدّل لين صافرة كل مباراة',null]})}
+      else L.push({k:'pred',href:'predict/',s:'done',t:'دوري التوقعات',st:`<span class="st ok">✓ توقعت كل مباريات ${R}${wk}</span>`,tm:['تقدر تعدّل لين صافرة كل مباراة',null]})}
     else if(up.length){const m=up[0];L.push({k:'pred',href:'predict/',s:'wait',t:'دوري التوقعات',st:`الجولة ${m.wk}`,tm:['تنطلق بعد',(OPEN[m.wk]||m.t)-T],a:'شوف'})}
     // توقّع تشكيلة ناديك
     const c=myClub(),LOCK=2*3600e3;
@@ -267,11 +270,14 @@ function challenges(){
         else L.push({k:'tp',href:'tashkila/?tp',s:'todo',dl:m.t-LOCK,t:'توقّع تشكيلة ناديك',st:vs,tm:['يقفل بعد',m.t-LOCK-T],a:'توقّع'})}}
     // خماسي الفانتازي (khamsa/config.json → launch): أقرب جولة ما خلصت
     if(K5.launch&&T>=K5.launch){const by={};P.matches.forEach(m=>(by[m.wk]=by[m.wk]||[]).push(m.t));
-      const rs=Object.keys(by).filter(w=>(OPEN[w]||0)>=K5.launch&&Math.max(...by[w])>T).sort((a,b)=>(OPEN[a]||0)-(OPEN[b]||0)),w=rs[0];
-      if(w){const nx=by[w].filter(t=>t>T).sort((a,b)=>a-b)[0],o=OPEN[w]||0,href='khamsa/?w='+w;
-        if(o>T)L.push({k:'k5',href,s:'wait',t:'خماسي الفانتازي',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['ينطلق بعد',o-T],a:'شوف'});
-        else if(LS('el3azy_k5_'+w))L.push({k:'k5',href,s:'done',t:'خماسي الفانتازي',st:`<span class="st ok">✓ اخترت لاعبينك للجولة ${w}</span>`,tm:['أقرب قفل بعد',nx-T]});
-        else L.push({k:'k5',href,s:'todo',dl:nx,t:'خماسي الفانتازي',st:`الجولة ${w} · 5 لاعبين من الدوري`,tm:['أول قفل بعد',nx-T],a:'اختار'})}}
+      // أكثر من جولة مفتوحة (الجولة 7 المؤجلة تظل مفتوحة لين 30 ديسمبر): الأولوية للجولة اللي ما اخترت لها، وبعدها أقرب قفل
+      const nxt=w=>Math.min(...by[w].filter(t=>t>T)),rs=Object.keys(by).filter(w=>(OPEN[w]||0)>=K5.launch&&Math.max(...by[w])>T),
+        opn=rs.filter(w=>(OPEN[w]||0)<=T).sort((a,b)=>nxt(a)-nxt(b)),todo=opn.filter(w=>!LS('el3azy_k5_'+w)),wait=rs.filter(w=>(OPEN[w]||0)>T).sort((a,b)=>OPEN[a]-OPEN[b]),
+        w=todo[0]||(wait.length&&!opn.length?wait[0]:opn[0]||wait[0]),wl=w&&(w+(LATE(w)?' المؤجلة':''));
+      if(w){const nx=nxt(w),o=OPEN[w]||0,href='khamsa/?w='+w;
+        if(o>T)L.push({k:'k5',href,s:'wait',t:'خماسي الفانتازي',st:`الجولة ${wl} · 5 لاعبين من الدوري`,tm:['ينطلق بعد',o-T],a:'شوف'});
+        else if(LS('el3azy_k5_'+w))L.push({k:'k5',href,s:'done',t:'خماسي الفانتازي',st:`<span class="st ok">✓ اخترت لاعبينك للجولة ${wl}</span>`,tm:['أقرب قفل بعد',nx-T]});
+        else L.push({k:'k5',href,s:'todo',dl:nx,t:'خماسي الفانتازي',st:`الجولة ${wl} · 5 لاعبين من الدوري`,tm:['أول قفل بعد',nx-T],a:'اختار'})}}
   }
   const o={todo:0,wait:1,done:2};L.sort((a,b)=>o[a.s]-o[b.s]||(a.dl||9e15)-(b.dl||9e15));
   return L;
