@@ -37,9 +37,15 @@ FIX = {'shabab': 'shababahli'}
 K = lambda p: p[5] or f"{'' if p[0] is None else p[0]}|{p[1]}"
 BY = {FIX.get(c['id'], c['id']): c['p'] for c in SQ['clubs']}
 # أول جولة من الإطلاق
-W = min((int(w) for w, t in OPEN.items() if t >= CFG['launch']), key=lambda w: OPEN[str(w)])
-MS = sorted([m for m in PD['matches'] if m['wk'] == W], key=lambda m: m['t'])
-OP, FIRST, LAST = OPEN[str(W)], MS[0]['t'], MS[-1]['t']
+# جولة مؤجلة متفرقة: الخماسي مع المباريات المنفصلة بس وموعد فتحها (predict/mopen.json، قرار 23 نوفمبر)
+MOP = json.load(open(os.path.join(ROOT, 'predict/mopen.json'), encoding='utf8')) if os.path.exists(os.path.join(ROOT, 'predict/mopen.json')) else {}
+def K5R(w):
+    v = sorted([m for m in PD['matches'] if m['wk'] == w], key=lambda m: m['t'])
+    d = [m for m in v if m['id'] in MOP]
+    return (d, min(MOP[m['id']] for m in d)) if d else (v, OPEN[str(w)])
+W = min((int(w) for w in OPEN if K5R(int(w))[1] >= CFG['launch']), key=lambda w: K5R(w)[1])
+MS, OP = K5R(W)
+FIRST, LAST = MS[0]['t'], MS[-1]['t']
 m0 = MS[0]                       # أول مباراة في الجولة: لاعبه يقفل أول
 c0, c1 = m0['h'], MS[1]['h']
 pick = lambda c, pos, n=0: K([p for p in BY[c] if p[2] == pos][n])

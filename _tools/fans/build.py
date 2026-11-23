@@ -121,8 +121,9 @@ K5_START = int(os.environ.get('K5_START') or _K5.get('start') or 0)
 LAUNCH5 = int(os.environ.get('LAUNCH5') or _K5.get('launch') or 0) if (os.environ.get('LAUNCH5') or _K5.get('launch')) else 10 ** 15
 try:
     OPENS = {int(k): int(v) for k, v in json.load(open(os.path.join(ROOT, 'predict', 'open.json'), encoding='utf8')).items()}
+    MOPEN = json.load(open(os.path.join(ROOT, 'predict', 'mopen.json'), encoding='utf8')) if os.path.exists(os.path.join(ROOT, 'predict', 'mopen.json')) else {}
 except Exception:
-    OPENS = {}
+    OPENS, MOPEN = {}, {}
 if K5_START and int(os.environ.get('NOW') or time.time() * 1000) >= max(LAUNCH5 if LAUNCH5 < 10 ** 15 else 0, START + (K5_START - 1) * DAYMS):   # اللوحة تطلع من الإطلاق (الإثنين 8 المسا)
     CHALLENGES.append({'id': 'k5', 'name': 'خماسي الفانتازي', 'icon': '🖐️'})
 K5_POS = ['GK', 'DEF', 'MID', 'FWD', None]     # الخانات: حارس · مدافع · وسط · مهاجم · حر (أي مركز غير الحارس)
@@ -363,8 +364,9 @@ def collect_k5(k5_all, stats, d0, d1, act=None, sqi=None):
     users = defaultdict(stat)
     for wk, entries in (k5_all or {}).items():
         byc = {}
+        det = {k for k, v in (stats or {}).items() if str(v.get('wk')) == str(wk) and k in MOPEN}   # جولة مؤجلة متفرقة: المباريات المنفصلة بس
         for mid, m in (stats or {}).items():
-            if str(m.get('wk')) == str(wk):      # الصناعة تنضاف أول ما تنزل (عادة مع نهاية المباراة)
+            if str(m.get('wk')) == str(wk) and (not det or mid in det):      # الصناعة تنضاف أول ما تنزل (عادة مع نهاية المباراة)
                 d = (int(m['t']) - START) // DAYMS + 1
                 for c in (m['h'], m['a']):
                     byc[c] = {**m, 'd': d}

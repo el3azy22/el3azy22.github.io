@@ -216,7 +216,7 @@ def _k5(ms,O):
     "c":{".validate":f"newData.val() == ({FCU}.child('c').exists() ? {FCU}.child('c').val() : 'none')"},
     "p":{".validate":"newData.hasChildren(['0','1','2','3','4'])",
       "$i":{".validate":("$i.matches(/^[0-4]$/) && newData.hasChildren(['c','k'])"
-        f" && (({same}) || (now < {K(chr(110)+'ewData.child(\'c\').val()')} && (!data.exists() || now < {K('data.child(\'c\').val()')})))"),
+        f" && (({same}) || (now < {K(chr(110)+'ewData.child(\'c\').val()')} && (!data.exists() || {K('data.child(\'c\').val()')} == 0 || now < {K('data.child(\'c\').val()')})))"),
         "c":{".validate":f"newData.isString() && newData.val().matches(/^({CL})$/)"},
         "k":{".validate":"newData.isString() && newData.val().matches(/^[^~|]{1,200}$/)"},
         "$other":{".validate":False}}},
@@ -229,7 +229,13 @@ for m in _ms: _rd.setdefault(m['wk'],[]).append(m)
 import time as _time
 _now=int(os.environ.get('NOW') or _time.time()*1000)
 # حجم القواعد: الجولات المفتوحة واللي تنفتح خلال 30 يوم بس (القواعد تنعاد وتنتشر يومياً مع sync و rate)
-rules["rules"]["k5"]={str(w):_k5(v,_op[w]) for w,v in _rd.items() if _op.get(w,0)>=LAUNCH5 and _op[w]<=_now+30*DAYMS and max(m['t'] for m in v)>_now-2*DAYMS}
+# الخماسي في جولة مؤجلة متفرقة (قرار 23 نوفمبر): يمشي مع المباريات «المنفصلة» بس وينفتح معها (الجولة 7: الست مباريات 29–30 ديسمبر، ينفتح 25 ديسمبر)،
+# ومباراة الوصل والظفرة (28 نوفمبر) ما تدخل الخماسي: لاعبينها مقفولين (ناديين بس ما يكفون 5 لاعبين).
+def _k5set(w,v):
+  d=[m for m in v if m['id'] in _mo]
+  return (d,min(_mo[m['id']] for m in d)) if d else (v,_op[w])
+_k5r={w:_k5set(w,v) for w,v in _rd.items()}
+rules["rules"]["k5"]={str(w):_k5(v,o) for w,(v,o) in _k5r.items() if o>=LAUNCH5 and o<=_now+30*DAYMS and max(m['t'] for m in v)>_now-2*DAYMS}
 
 # ── «رمز النقل» (قرار إبراهيم 18 نوفمبر): ينقل بطاقة المشجع لتلفون أو متصفح ثاني بدون تسجيل ──
 # x/<sha256(الرمز)> = {u: صاحب البطاقة، c: البيانات مشفّرة بالرمز (AES-GCM)، i: IV، e: ينتهي (10 دقايق، 15 بالكثير)}
