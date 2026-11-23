@@ -240,7 +240,7 @@ const ICO={
  pred:'<svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg>',
  k5:'<svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M10 28V15.5c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5V8.3c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5v6.9-5.1c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5V20c0 4.6-3.2 8-7.6 8Z"/><path d="M10 18.5 7.6 15c-.8-1.1-2.3-1.3-3.3-.5s-1.1 2.2-.3 3.2L10 26"/></svg>',
  tp:'<svg viewBox="0 0 32 32" aria-hidden="true"><rect class="s" x="5" y="3" width="22" height="26" rx="3"/><path d="M5 16h22M11.5 3v4.2h9V3M11.5 29v-4.2h9V29"/><circle cx="16" cy="16" r="3.2"/><circle class="f" cx="10" cy="10.5" r="1.5"/><circle class="f" cx="22" cy="10.5" r="1.5"/><circle class="f" cx="10.5" cy="21.5" r="1.5"/><circle class="f" cx="21.5" cy="21.5" r="1.5"/></svg>'};
-let P=null,OPEN={},FD=null,RK=null,R=null,K5={};
+let P=null,OPEN={},MO={},FD=null,RK=null,R=null,K5={};
 
 /* تحديات اليوم: كل تحدي وحالته لك (باقي عليك / خلّصته / ينطلق بعدين)، اللي يقفل أول فوق */
 function challenges(){
@@ -253,19 +253,19 @@ function challenges(){
   if(P){
     const T0={};P.matches.forEach(m=>T0[m.wk]=Math.min(T0[m.wk]||9e15,m.t));const LATE=w=>Object.keys(T0).some(x=>+x>+w&&T0[x]<T0[w]);
     // دوري التوقعات
-    const MY=LS('el3azy_pred')||{},op=m=>(OPEN[m.wk]||0)<=T,up=P.matches.filter(m=>m.t>T).sort((a,b)=>a.t-b.t),on=up.filter(op);
+    const MY=LS('el3azy_pred')||{},op=m=>(MO[m.id]||OPEN[m.wk]||0)<=T,up=P.matches.filter(m=>m.t>T).sort((a,b)=>a.t-b.t),on=up.filter(op);
     if(on.length){const MM=k=>k===1?'مباراة':k===2?'مباراتين':k<=10?k+' مباريات':k+' مباراة',left=on.filter(m=>!MY[m.id]),n=on.length;
       // جولتين مفتوحات (مثلاً الجولة 10 والجولة 7 المؤجلة): نكتب الثنتين بالترتيب حسب أقرب مباراة
       const wks=[...new Set(on.map(m=>m.wk))],wk=wks.map(w=>w+(LATE(w)?' المؤجلة':'')).join(' و'),R=wks.length>1?'الجولتين ':'الجولة ';
       if(left.length)L.push({k:'pred',href:'predict/',s:'todo',dl:left[0].t,t:'دوري التوقعات',st:`الجولة ${wk} · ${n-left.length?`توقعت ${n-left.length} · `:''}باقي ${MM(left.length)}`,tm:['أقرب قفل بعد',left[0].t-T],a:'توقّع'});
       else L.push({k:'pred',href:'predict/',s:'done',t:'دوري التوقعات',st:`<span class="st ok">✓ توقعت كل مباريات ${R}${wk}</span>`,tm:['تقدر تعدّل لين صافرة كل مباراة',null]})}
-    else if(up.length){const m=up[0];L.push({k:'pred',href:'predict/',s:'wait',t:'دوري التوقعات',st:`الجولة ${m.wk}`,tm:['تنطلق بعد',(OPEN[m.wk]||m.t)-T],a:'شوف'})}
+    else if(up.length){const m=up[0];L.push({k:'pred',href:'predict/',s:'wait',t:'دوري التوقعات',st:`الجولة ${m.wk}`,tm:['تنطلق بعد',(MO[m.id]||OPEN[m.wk]||m.t)-T],a:'شوف'})}
     // توقّع تشكيلة ناديك
     const c=myClub(),LOCK=2*3600e3;
     if(!c)L.push({k:'tp',href:'tashkila/?tp',s:'wait',t:'توقّع تشكيلة ناديك',st:'اختار ناديك، وتوقّع تشكيلته قبل كل مباراة',a:'ناديك'});
     else{const ms=up.filter(m=>(m.h===c||m.a===c)&&m.t-LOCK>T),m=ms[0];
       if(m){const vs=`${CN[m.h]} × ${CN[m.a]}`;
-        if(!op(m))L.push({k:'tp',href:'tashkila/?tp',s:'wait',t:'توقّع تشكيلة ناديك',st:vs,tm:['ينطلق بعد',(OPEN[m.wk]||0)-T],a:'شوف'});
+        if(!op(m))L.push({k:'tp',href:'tashkila/?tp',s:'wait',t:'توقّع تشكيلة ناديك',st:vs,tm:['ينطلق بعد',(MO[m.id]||OPEN[m.wk]||0)-T],a:'شوف'});
         else if(LS('el3azy_tp_'+m.id))L.push({k:'tp',href:'tashkila/?tp',s:'done',t:'توقّع تشكيلة ناديك',st:`<span class="st ok">✓ توقعت تشكيلة ${CN[c]}</span>`,tm:['يقفل بعد',m.t-LOCK-T]});
         else L.push({k:'tp',href:'tashkila/?tp',s:'todo',dl:m.t-LOCK,t:'توقّع تشكيلة ناديك',st:vs,tm:['يقفل بعد',m.t-LOCK-T],a:'توقّع'})}}
     // خماسي الفانتازي (khamsa/config.json → launch): أقرب جولة ما خلصت
@@ -318,7 +318,7 @@ function drawRate(){
 drawCh();
 const v=Math.floor(Date.now()/12e4),J=u=>fetch(u+'?v='+v).then(r=>r.ok?r.json():null).catch(()=>null);
 {const T=Date.now(),pv=/[?&]bus\b/.test(location.search),c=document.getElementById('busCard');if(c&&(pv||T>=1799006400000)){c.hidden=false;if(T>=1800129600000)document.getElementById('busWhen').remove()}}
-Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json')]).then(([p,o,r,f,k])=>{P=p;OPEN=o||{};R=r;FD=f;K5=k||{};drawCh();drawLg();drawRate();
+Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json'),J('predict/mopen.json')]).then(([p,o,r,f,k,mo])=>{P=p;OPEN=o||{};MO=mo||{};R=r;FD=f;K5=k||{};drawCh();drawLg();drawRate();
   J('fans/ranks.json').then(k=>{RK=k;drawLg()})});
 setInterval(()=>{drawCh();drawRate()},1000);
 addEventListener('el3fan',()=>{lastSig='';drawCh();drawLg()});

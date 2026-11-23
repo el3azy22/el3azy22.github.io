@@ -699,7 +699,7 @@ const TCLUB={shababahli:'shabab'};   // رمز النادي في squads.json ل�
 const AR=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],MO=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
 const when=t=>{const d=new Date(t+4*3600e3),h=d.getUTCHours(),m=d.getUTCMinutes();return `${AR[d.getUTCDay()]} ${d.getUTCDate()} ${MO[d.getUTCMonth()]} · ${(h%12)||12}:${String(m).padStart(2,'0')} ${h<12?'الصبح':h<16?'الظهر':'المسا'}`};
 const tk=p=>p[5]||((p[0]??'')+'|'+p[1]);
-let K5L=1795449600000,SCON=false,PD=null,OPEN={},LU={},M=null,TPV=null,ST='',MINE=null,mode='free',saved=null,tick=0,SC=null,MINES=null,scTab='xi';
+let K5L=1795449600000,SCON=false,PD=null,OPEN={},MOP={},LU={},M=null,TPV=null,ST='',MINE=null,mode='free',saved=null,tick=0,SC=null,MINES=null,scTab='xi';
 const NQT=n=>n===1?'نقطة':n===2?'نقطتين':n>=3&&n<=10?'نقاط':'نقطة';
 const POSO={FWD:0,MID:1,DEF:2};
 /* «منو بيسجل؟»: سجّل (أساسي أو بديل) = 3 · كل هدف زيادة +1 · أول هدف في المباراة +2 · نفس _tools/fans/build.py scorer_pts */
@@ -735,6 +735,7 @@ function setMode(m){
 async function loadData(){
   if(PD)return;const nc={cache:'no-cache'};
   try{const k=await fetch('../khamsa/config.json',nc).then(r=>r.json());if(k.launch)K5L=k.launch}catch(e){}
+  MOP=await fetch('../predict/mopen.json',nc).then(r=>r.ok?r.json():{}).catch(()=>({}));
   [PD,OPEN,LU]=await Promise.all([fetch('../predict/data.json',nc).then(r=>r.json()).catch(()=>({matches:[]})),fetch('../predict/open.json',nc).then(r=>r.json()).catch(()=>({})),fetch('lineups.json',nc).then(r=>r.json()).catch(()=>({}))]);
 }
 function clear(){document.querySelectorAll('.tp-card,.tp-msg,.tp-res,.tp-miss,.tp-go,.tp-sub,.tp-sc,.tp-sw').forEach(e=>e.remove());clearInterval(tick)}
@@ -747,13 +748,13 @@ async function renderTP(){
   // نتيجة المباراة الماضية تظل يومين، بس لو المباراة القادمة انطلق توقعها (مثلاً الوصل: الجولة 7 السبت وبعدها الجولة 10)
   // نفتح على القادمة ونحط فوقها زر يرجع للنتيجة (قبل كان المشجع ما يقدر يتوقع القادمة لين تخلص اليومين)
   const PREV=mine.slice().reverse().find(m=>m.t<=now&&now-m.t<2*DAYMS&&LU[m.id])||null,NEXT=mine.find(m=>m.t+3*3600e3>now&&m!==PREV)||null;
-  const nextOpen=NEXT&&now>=(OPEN[NEXT.wk]||0);
+  const nextOpen=NEXT&&now>=(MOP[NEXT.id]||OPEN[NEXT.wk]||0);
   // أول 12 ساعة بعد بداية المباراة: النتيجة أول (الناس يبون يشوفونها)، وبعدها نفتح على القادمة. الزر يبدّل في أي وقت
   const dflt=PREV&&now-PREV.t<12*3600e3?'prev':'next';
   M=PREV&&nextOpen?((TPV||dflt)==='prev'?PREV:NEXT):(PREV||NEXT);
   const sq=CLUBS.find(x=>x.id===(TCLUB[c]||c));
   if(!M||!sq){q('builder').hidden=true;anchor.after(el(`<div class="tp-msg">ما في مباراة قادمة لناديك في الجدول لين الحين.<br>ارجع لما تنزل مواعيد الجولة القادمة.</div>`));return}
-  const op=OPEN[M.wk]||0,lock=M.t-LOCK;
+  const op=MOP[M.id]||OPEN[M.wk]||0,lock=M.t-LOCK;
   SCON=QA||op>=K5L;   // «منو بيسجل؟» في الجولات اللي تنطلق من الإطلاق بس (khamsa/config.json)
   ST=LU[M.id]&&now>=M.t?'reveal':now>=lock?'locked':now<op?'soon':'pick';
   if(PREV&&nextOpen){const nm=x=>{const o=x.h===c?x.a:x.h;return (CLUBS.find(y=>y.id===(TCLUB[o]||o))||{}).name||''},sw=el(`<div class="tp-msg tp-sw" style="padding:10px 12px;margin:8px 0">${M===NEXT?`✅ نتيجتك في مباراة ${nm(PREV)} جاهزة · <button id="tpSw">شوفها</button>`:`👈 توقّع مباراتك القادمة ضد ${nm(NEXT)} · <button id="tpSw">توقّع الحين</button>`}</div>`);

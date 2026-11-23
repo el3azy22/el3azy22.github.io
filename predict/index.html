@@ -288,7 +288,7 @@ const esc=s=>String(s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;',
 const nf=n=>Number(n).toLocaleString('en-US');
 const fmtDay=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{weekday:'long',day:'numeric',month:'long',timeZone:'Asia/Dubai'}).format(t);
 const fmtTime=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{hour:'numeric',minute:'2-digit',timeZone:'Asia/Dubai'}).format(t);
-const fmtDT=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{weekday:'long',hour:'numeric',minute:'2-digit',timeZone:'Asia/Dubai'}).format(t);
+const fmtDT=t=>new Intl.DateTimeFormat('ar-AE-u-nu-latn',{weekday:'long',day:'numeric',month:'long',hour:'numeric',minute:'2-digit',timeZone:'Asia/Dubai'}).format(t).replace('،',' ·').replace(' في ',' · ');
 const dur=ms=>{if(ms<=0)return '0:00';const s=Math.floor(ms/1e3),d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
   return d>=1?(d===1?'يوم':d===2?'يومين':d+(d<=10?' أيام':' يوم'))+(h?' و'+(h===1?'ساعة':h===2?'ساعتين':h+(h<=10?' ساعات':' ساعة')):''):`${h}:${String(m).padStart(2,'0')}:${String(x).padStart(2,'0')}`};
 let toastT;function toast(t){const e=$('#toast');e.textContent=t;e.classList.add('on');clearTimeout(toastT);toastT=setTimeout(()=>e.classList.remove('on'),2200)}
@@ -323,7 +323,7 @@ async function who(a){
 const LS=FB.auth?'pred_emu':'pred';
 let MY=PID.get(LS)||{};
 const saveLocal=()=>PID.set(LS,MY);
-let LK={},OP={};const OPN=w=>OP[w]||0; // متى تفتح الجولة (open.json، نفس القواعد)
+let LK={},OP={},MO={};const OPN=w=>OP[w]||0,OPM=m=>MO[m.id]||OPN(m.wk); // MO: مباريات تنفتح بروحها (mopen.json، مثل الجولة 7 المؤجلة) // متى تفتح الجولة (open.json، نفس القواعد)
 const LT=m=>LK[m.id]!=null?Math.min(m.t,LK[m.id]):0; // موعد القفل (القواعد تقفل على الموعد اللي فيها)
 let D=null,TB=null,RD=[],CUR=null,TAB='me',draft={},status={},timers={};
 
@@ -358,8 +358,8 @@ function card(m){
   const dblId=r.ms.find(x=>MY[x.id]&&MY[x.id].x)?.id,isD=dblId===m.id;
   const dblLocked=dblId&&LT(r.ms.find(x=>x.id===dblId))<=T;
   let mid,foot='',band='';
-  const shut=T<OPN(m.wk);
-  if(shut){const pv=RD.filter(x=>x.t0<r.t0).sort((a,b)=>b.t0-a.t0)[0];mid=`<div class="res"><div class="kt">ما فتح</div><div class="mine">يفتح ${pv?'بعد نهاية '+rlabel(pv):'قريب'}</div></div>`;foot=`<span class="when">${fmtDT(m.t)}</span>`}
+  const shut=T<OPM(m);
+  if(shut){mid=`<div class="res"><div class="kt">ما فتح</div><div class="mine">يفتح ${fmtDT(OPM(m))}</div></div>`;foot=`<span class="when">${fmtDT(m.t)}</span>`}
   else if(soon){mid=`<div class="res"><div class="kt">قريب</div><div class="mine">التوقع يفتح قريب</div></div>`;foot=`<span class="when">${fmtDT(m.t)}</span>`}
   else if(open){
     const h=val(m,'h'),a=val(m,'a');
@@ -389,12 +389,12 @@ function card(m){
 }
 function renderMe(){
   const r=RD.find(x=>x.wk===CUR);if(!r){$('#app').innerHTML='<div class="empty">ما في مباريات حالياً</div>';return}
-  const T=now(),next=r.ms.filter(m=>LT(m)>T).sort((a,b)=>LT(a)-LT(b))[0];
-  const done=r.ms.filter(m=>MY[m.id]).length,openN=r.ms.filter(m=>LT(m)>T).length;
+  const T=now(),next=r.ms.filter(m=>LT(m)>T&&T>=OPM(m)).sort((a,b)=>LT(a)-LT(b))[0];
+  const done=r.ms.filter(m=>MY[m.id]).length,openN=r.ms.filter(m=>LT(m)>T&&T>=OPM(m)).length;
   let h='';
   if(window.EL3FAN&&EL3FAN.club()===null)h+=`<button class="clubask" id="askClub"><span style="font-size:26px">📣</span><span><b>اختار ناديك</b>عشان نقاطك تنحسب لجمهوره في ترتيب الأندية</span></button>`;
   const shutR=T<OPN(r.wk),pvR=shutR?RD.filter(x=>x.t0<r.t0).sort((a,b)=>b.t0-a.t0)[0]:null;
-  if(shutR)h+=`<div class="lockb"><span>التوقع يفتح بعد نهاية ${pvR?rlabel(pvR):'الجولة الحالية'}<br><small style="opacity:.65">نفتح الجولة القادمة بس، عشان التوقع يكون على آخر الأخبار</small></span><b id="cd" dir="auto" data-t="${OPN(r.wk)}">${dur(OPN(r.wk)-T)}</b></div>`;
+  if(shutR)h+=`<div class="lockb"><span>التوقع يفتح ${fmtDT(OPN(r.wk))}<br><small style="opacity:.65">نفتح الجولة القادمة بس، عشان التوقع يكون على آخر الأخبار</small></span><b id="cd" dir="auto" data-t="${OPN(r.wk)}">${dur(OPN(r.wk)-T)}</b></div>`;
   else if(next)h+=`<div class="lockb"><span>${openN===r.ms.length?'أول صافرة':'الصافرة القادمة'}: ${CL[next.h]} × ${CL[next.a]}<br><small style="opacity:.65">كل توقع يقفل مع صافرة مباراته</small></span><b id="cd" dir="auto" data-t="${LT(next)}">${dur(LT(next)-T)}</b></div>`;
   h+=r.ms.map(card).join('');
   const myPts=r.ms.reduce((s,m)=>{const p=MY[m.id];return s+(p&&m.st===FIN&&m.sh!=null&&m.t>0&&T>=m.t?points(p.h,p.a,m.sh,m.sa)*(p.x?2:1):0)},0);
@@ -613,7 +613,7 @@ window.addEventListener('el3fan',()=>{resyncOpen();render()});
 async function load(){
   const v=Math.floor(Date.now()/12e4);
   try{
-    [D,TB,LK,OP]=await Promise.all([fetch('data.json?v='+v).then(r=>r.json()),fetch('table.json?v='+v).then(r=>r.json()).catch(()=>null),fetch('lock.json?v='+v).then(r=>r.json()).catch(()=>({})),fetch('open.json?v='+v).then(r=>r.ok?r.json():{}).catch(()=>({}))]);
+    [D,TB,LK,OP,MO]=await Promise.all([fetch('data.json?v='+v).then(r=>r.json()),fetch('table.json?v='+v).then(r=>r.json()).catch(()=>null),fetch('lock.json?v='+v).then(r=>r.json()).catch(()=>({})),fetch('open.json?v='+v).then(r=>r.ok?r.json():{}).catch(()=>({})),fetch('mopen.json?v='+v).then(r=>r.ok?r.json():{}).catch(()=>({}))]);
   }catch(e){$('#app').innerHTML='<div class="empty">ما قدرنا نجيب المباريات، حدّث الصفحة</div>';return}
   RD=roundsOf(D.matches);if(CUR==null||!RD.some(r=>r.wk===CUR))CUR=+(Q.get('r')||pickRound());
   renderRounds();render();
