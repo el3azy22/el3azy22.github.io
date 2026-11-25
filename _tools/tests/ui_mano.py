@@ -100,8 +100,9 @@ async def main():
         st = await play(b, 'ua5', 'kalba', win2, extra={f'st_{day}_easy': t0, f'fin_{day}_easy': t0 + 83000})
         T.check('وقت الحل ينرسل (83 ثانية) والسيرفر يقبله', (st[0], T.get(f'p/{day}/easy/ua5').json().get('sec')), ({'g': 2, 'c': 'kalba'}, 83))
         # سجل نهاية اللعبة الخاص (رصد الكشّاف): ينكتب لحظة ما تخلص اللعبة، حتى بدون نادي
-        five = {'guesses': [E[3], E[4], E[6], E[7], E[8]], 'done': False, 'win': False}
-        await play(b, 'ua6', '', five, act=E[9])
+        wrong = [x for x in E[3:] if x != E[day - 1]]   # تخمينات غلط أكيد (مب لاعب اليوم، أياً كان اليوم)
+        five = {'guesses': wrong[:5], 'done': False, 'win': False}
+        await play(b, 'ua6', '', five, act=wrong[5])
         adm = T.get(f'r/{day}/easy/ua6', 'Vt7pBIwn9jhQCI2LSORFpnU3aCa2').json() or {}
         T.check('خسارة كاملة تنسجل في السجل الخاص مع البصمة', (adm.get('g'), len(adm.get('dv') or ''), bool(adm.get('t'))), (0, 12, True))
         await play(b, 'ua7', '', {'guesses': [], 'done': False, 'win': False}, act=E[day - 1])
