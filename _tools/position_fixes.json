@@ -86,7 +86,19 @@
   "renato-fabrizio-tapia-cortijo": [
    "بيرو",
    "PE"
-  ]
+  ],
+    "gjoko-zajkov": ["مقدونيا الشمالية", "MK"],
+    "alejandro-sebastian-romero-gamarra": ["باراغواي", "PY"],
+    "nermin-mujkic": ["البوسنة والهرسك", "BA"],
+    "joao-moreira-sanmartin-souza": ["البرازيل", "BR"],
+    "chris-vianney-ryan-bile-bedia": ["ساحل العاج", "CI"],
+    "nassim-said-chadli": ["المغرب", "MA"],
+    "moussa-diarra": ["مالي", "ML"],
+    "brahima-diarra": ["مالي", "ML"],
+    "youssoufou-niakate": ["مالي", "ML"],
+    "saman-ghoddos": ["إيران", "IR"],
+    "selim-amallah": ["المغرب", "MA"],
+    "tarik-tissoudali": ["المغرب", "MA"]
  },
  "_mano": {
   "_note": "مراكز «منو اللاعب؟» اللي نخالف فيها الرابطة: بإعلان النادي الرسمي أو بقرار إبراهيم (نوفمبر 2026). الحارس اليومي في sync.py يتجاهلها",
