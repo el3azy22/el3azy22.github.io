@@ -58,6 +58,21 @@ def fetch(u, xhr=False, tries=3):
             time.sleep(4 + 6 * k)
 
 
+def other_photo(slug):
+    """صورة اللاعب من صفحته في أي مسابقة ثانية (مثل محمد ناصر: صورته في دوري تحت 21 بس)."""
+    for comp in ('adnoc-pro-league', 'pro-league-u23-1', 'pro-league-u23', 'pro-league-u21-2', 'pro-league-u21', 'arabian-gulf-league-u21', 'arabian-gulf-league-u23'):
+        try:
+            h = fetch(f'https://www.uaeproleague.ae/ar/player/{slug}/{comp}', tries=1).decode('utf8', 'replace')
+        except Exception:
+            continue
+        if slug not in h:   # تحويل لصفحة ثانية (ممكن فيها صور لاعبين غيره)
+            continue
+        m = re.search(r'player-hero__img-round">\s*<img src="(https://[^"]+/uploads/person/small/[^"]+)"', h)
+        if m and 'dummy' not in m.group(1):
+            return m.group(1)
+    return None
+
+
 def parse(h):  # نفس محلل _tools/mano/scrape.py
     out = []
     for blk in re.split(r'(?=<a href="https://uaeproleague\.ae/(?:en|ar)/player/)|(?=<h\d[^>]*class="[^"]*title)', h):
@@ -151,6 +166,8 @@ def main():
             f = os.path.join(PH, s + '.webp')
             if os.path.exists(f): m['ph'] = 1
             else:
+                if not q['img'] or 'dummy' in q['img']:   # قائمة الفريق الأول بدون صورة: ندوّر في صفحاته في المسابقات الثانية (تحت 21/23)
+                    q['img'] = other_photo(s) or q['img']
                 if q['img'] and 'dummy' not in q['img']:
                     try:
                         from PIL import Image
