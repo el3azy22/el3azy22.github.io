@@ -23,7 +23,7 @@ PL_CLUBS = {'ajman': 'ajman', 'al-ain': 'ain', 'al-dhafra': 'dhafra', 'al-jazira
 TK_ID = {'shababahli': 'shabab'}  # اسم النادي في tashkila/squads.json
 FA_CLUB = {'nasr': '4', 'kalba': '12', 'wahda': '8', 'ajman': '21', 'dhafra': '31', 'sharjah': '3', 'wasl': '2', 'united': '464',
            'khorfakkan': '11', 'shababahli': '6', 'hatta': '20', 'jazira': '9', 'baniyas': '5', 'ain': '1'}
-KNOWN_NO_PHOTO = {'stefan-pjanovic'}  # ما له صورة لا في الرابطة ولا في الاتحاد (نشيكه لو تغيّر: نشيله من هني)
+KNOWN_NO_PHOTO = set()  # ما له صورة لا في الرابطة ولا في الاتحاد (نشيكه لو تغيّر: نشيله من هني)
 POS4 = {'GK': 'GK', 'DF': 'DEF', 'MD': 'MID', 'FW': 'FWD'}
 COMP = 'b8785e20-745f-11f1-82d0-f556dfffd44c'; PRO = 'd304d980-e5e8-11ea-a63c-112a991a4e3f'
 # دوال التنظيف نفسها اللي في _tools/mano/build_data.py
