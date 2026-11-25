@@ -60,6 +60,7 @@ def close(a, b):   # كم كلمة متشابهة (تتحمل اختلاف ال�
 
 def main():
     md = json.load(open(os.path.join(ROOT, 'mano', 'data.json'), encoding='utf8'))
+    AL = json.load(open(os.path.join(ROOT, 'mano', 'aliases.json'), encoding='utf8'))   # أسماء الشهرة (كاكو، تاليسكا…) تساعد المطابقة
     old = json.load(open(OUT, encoding='utf8')) if os.path.exists(OUT) else {}
     res, ok = {}, set()
     for c, path in TM.items():
@@ -68,7 +69,9 @@ def main():
         except Exception as e:
             print('فشل', c, e); continue
         for p in [q for q in md['players'] if q['c'] == c]:
-            mine = toks(p.get('e'))
+            alias = [a for a in AL.get(p['id'], []) if re.match(r'[A-Za-z]', a)]
+            mine = toks(p.get('e')) + [w for a in alias for w in toks(a)]
+            exact = {' '.join(toks(a)) for a in alias}
             best = None
             for x in L:
                 theirs = toks(x['name'])
@@ -79,6 +82,8 @@ def main():
                     continue   # رقم مختلف واسم واحد مشترك: غالباً لاعب ثاني
                 age = x['age'] and p.get('a') and abs(x['age'] - p['a']) <= 1
                 # اسم نادر مشترك + (رقم أو عمر)، أو اسمين مشتركين + الرقم والعمر. الأسامي الشايعة (محمد، أحمد…) بروحها ما تكفي
+                if ' '.join(theirs) in exact and (num or age):   # اسم الشهرة نفسه بالضبط
+                    ov, rare = 9, 1
                 if ((rare and (num or age)) or (ov >= 2 and num and age)) and (best is None or ov > best[0]):
                     best = (ov, x)
             if best and best[1]['pos'] in POS:

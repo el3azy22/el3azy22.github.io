@@ -3,6 +3,10 @@
 "Central Midfield",
 "MD"
 ],
+"abdalla-saleh-khamis-almukhani-aljneibi": [
+"Centre-Back",
+"DF"
+],
 "abdaulla-mohammad-ismail-abdulghafoor-altamimi": [
 "Goalkeeper",
 "GK"
@@ -14,6 +18,10 @@
 "abdelrahman-saleh-radi-rida-khamis": [
 "Left-Back",
 "DF"
+],
+"abdoul-karim-traore": [
+"Defensive Midfield",
+"MD"
 ],
 "abdoulaye-sanago": [
 "Centre-Back",
@@ -167,6 +175,10 @@
 "Defensive Midfield",
 "MD"
 ],
+"alejandro-sebastian-romero-gamarra": [
+"Attacking Midfield",
+"MD"
+],
 "alejandro-vergaz-lozano": [
 "Left-Back",
 "DF"
@@ -211,6 +223,10 @@
 "Centre-Back",
 "DF"
 ],
+"amen-allah-el-mejhed": [
+"Left-Back",
+"DF"
+],
 "amirhossein-bagher-samdaliri": [
 "Centre-Back",
 "DF"
@@ -227,11 +243,19 @@
 "Right Winger",
 "FW"
 ],
+"anderson-souza-conceicao": [
+"Attacking Midfield",
+"MD"
+],
 "aniss-karimi": [
 "Defensive Midfield",
 "MD"
 ],
 "anthony-junior-dennis": [
+"Defensive Midfield",
+"MD"
+],
+"antonio-fialho-de-carvalho-neto": [
 "Defensive Midfield",
 "MD"
 ],
@@ -407,6 +431,10 @@
 "Left Winger",
 "FW"
 ],
+"edilson-alberto-monteiro-sanches-borges": [
+"Centre-Back",
+"DF"
+],
 "eid-khamis-eid-khamis-alnuaimi": [
 "Central Midfield",
 "MD"
@@ -463,6 +491,10 @@
 "Right Winger",
 "FW"
 ],
+"felicio-mendes-joao": [
+"Left Winger",
+"FW"
+],
 "felipe-de-souza-motta-marins": [
 "Centre-Back",
 "DF"
@@ -497,6 +529,10 @@
 ],
 "glauber-siqueira-dos-santos-lima": [
 "Centre-Back",
+"DF"
+],
+"goncalo-moura-de-oliveira": [
+"Right-Back",
 "DF"
 ],
 "guilherme-da-silva-goncalves": [
@@ -586,6 +622,10 @@
 "ibrahim-essa-ali-ibrahim-al-balooshi": [
 "Goalkeeper",
 "GK"
+],
+"ibrahima-junior-ndiaye": [
+"Left-Back",
+"DF"
 ],
 "igor-caique-coronado": [
 "Attacking Midfield",
@@ -815,6 +855,10 @@
 "Centre-Back",
 "DF"
 ],
+"leonardo-de-azevedo-silva": [
+"Defensive Midfield",
+"MD"
+],
 "lionel-sebastian-verde": [
 "Central Midfield",
 "MD"
@@ -895,6 +939,10 @@
 "Defensive Midfield",
 "MD"
 ],
+"mansour-saleh-barghash-jaralla-al-menhali": [
+"Right-Back",
+"DF"
+],
 "marcel-ratnik": [
 "Centre-Back",
 "DF"
@@ -902,6 +950,14 @@
 "marcelo-jose-de-lima-filho": [
 "Right Winger",
 "FW"
+],
+"marcos-andre-paulino-maia": [
+"Centre-Back",
+"DF"
+],
+"marcos-souza-moraes": [
+"Centre-Back",
+"DF"
 ],
 "marcus-vinicius": [
 "Right-Back",
@@ -983,6 +1039,10 @@
 "Defensive Midfield",
 "MD"
 ],
+"mohamad-ibrahim-mohamad-alhamadi": [
+"Centre-Forward",
+"FW"
+],
 "mohamed-ahmed-mohamed-khalaf-alhammadi": [
 "Goalkeeper",
 "GK"
@@ -1015,12 +1075,20 @@
 "Right-Back",
 "DF"
 ],
+"mohammad-rasoul-ghorbani": [
+"Defensive Midfield",
+"MD"
+],
 "mohammad-yousuf-atiq-khamis-ahmad": [
 "Centre-Back",
 "DF"
 ],
 "mohammad-yousuf-ghulam-murad-ali": [
 "Defensive Midfield",
+"MD"
+],
+"mohammed-abbas-ahmed-abdulla-hasan-al-baloushi": [
+"Attacking Midfield",
 "MD"
 ],
 "mohammed-elkhaloui": [
@@ -1119,6 +1187,10 @@
 "Left Winger",
 "FW"
 ],
+"pedro-henrique-fonseca-de-araujo-martins": [
+"Right Winger",
+"FW"
+],
 "pedro-henrique-leao-alves-lopes": [
 "Centre-Forward",
 "FW"
@@ -1214,6 +1286,10 @@
 "rocky-marciano-tchatchoua-tchato": [
 "Centre-Forward",
 "FW"
+],
+"rodrigo-garcia-de-lima-baz-de-medeiros": [
+"Attacking Midfield",
+"MD"
 ],
 "rodrigo-oliveira-d-almeida": [
 "Right-Back",
@@ -1326,6 +1402,10 @@
 "sergio-pereira-andrade": [
 "Right Winger",
 "FW"
+],
+"shaheen-abdalla-abdelrahman-shaheen-almaazmi": [
+"Centre-Back",
+"DF"
 ],
 "shavy-warren-babicka": [
 "Right Winger",
@@ -1477,6 +1557,10 @@
 ],
 "yousef-abdulkareem-mohamed-saeed-al-ameri": [
 "Right-Back",
+"DF"
+],
+"yousif-ahmed-saeed-ebrahim-hamaadi-almarzooqi": [
+"Centre-Back",
 "DF"
 ],
 "yousif-ali-bakhit-nasir-almheiri": [
