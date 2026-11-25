@@ -16,6 +16,11 @@ for c in [t['national']]+t['clubs']:
     mp=byid.get(p[5]) if p[5] else None
     if not mp: mp=next((x for x in m['players'] if x['c']==mc and str(x.get('no'))==str(p[0])),None)
     # «منو اللاعب؟» والشبكة يستخدمون المركز المسجل في الرابطة (اللي يشوفه المشجع في موقعها)، فالتصحيح هني لـ«اختار تشكيلتك» بس
+# مركز اللاعب = أكثر مركز لعب فيه في مسيرته (قرار إبراهيم 26 نوفمبر 2026): _tools/sync/career_pos.json (sync/career_pos.py)
+CP=f'{R}/_tools/sync/career_pos.json'
+for pid,(src,pos) in (json.load(open(CP,encoding='utf8')).items() if os.path.exists(CP) else []):
+  mp=byid.get(pid)
+  if mp and mp['p']!=pos: log.append(f"   career {pid}: {mp['p']} -> {pos} ({src})");mp['p']=pos
 # مراكز «منو اللاعب؟» اللي نخالف فيها الرابطة بقرار إبراهيم
 for pid,pos in {k:v for k,v in F.get('_mano',{}).items() if not k.startswith('_')}.items():
   mp=byid.get(pid)

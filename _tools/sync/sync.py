@@ -110,6 +110,10 @@ def main():
     where = {p[5]: (cid, p) for cid, c in clubs.items() for p in c['p'] if p[5]}
     mp = {p['id']: p for p in md['players']}
     seen = set()
+    # مراكز مقصودة (مركز المسيرة + قرارات إبراهيم): الرابطة ما تغيّرها يومياً، و apply_position_fixes يثبّتها
+    _F = json.load(open(os.path.join(ROOT, '_tools', 'position_fixes.json'), encoding='utf8')).get('_mano', {})
+    _C = os.path.join(ROOT, '_tools', 'sync', 'career_pos.json')
+    KEEP_POS = set(_F) | set(json.load(open(_C, encoding='utf8')) if os.path.exists(_C) else {})
 
     for c, players in pl.items():
         tid = TK_ID.get(c, c)
@@ -131,7 +135,7 @@ def main():
                 m['ap'] = B.ap(q); m['gl'] = B.gl(q)
                 if B.ST.get(q.get('status')): m['st'] = B.ST[q['status']]
                 # «منو اللاعب؟» والشبكة: المركز المسجل في الرابطة دايماً (تصحيحات المراكز لـ«اختار تشكيلتك» بس)
-                if q.get('pos') in POS4 and m.get('p') != q['pos']: ch.append(f"مركز {m['n']}: {m.get('p')} ← {q['pos']}"); m['p'] = q['pos']
+                if q.get('pos') in POS4 and m.get('p') != q['pos'] and s not in KEEP_POS: ch.append(f"مركز {m['n']}: {m.get('p')} ← {q['pos']}"); m['p'] = q['pos']
             # «اختار تشكيلتك»
             if s in where:
                 cid, e = where[s]
@@ -235,6 +239,8 @@ def main():
     json.dump(md, open(os.path.join(ROOT, 'mano', 'data.json'), 'w', encoding='utf8'), ensure_ascii=False, separators=(',', ':'))
     subprocess.run([sys.executable, os.path.join(ROOT, '_tools', 'apply_position_fixes.py')], check=False, capture_output=True)
     MANO_POS = json.load(open(os.path.join(ROOT, '_tools', 'position_fixes.json'), encoding='utf8')).get('_mano', {})   # تصحيحات مقصودة
+    CPF = os.path.join(ROOT, '_tools', 'sync', 'career_pos.json')
+    MANO_POS = {**MANO_POS, **(json.load(open(CPF, encoding='utf8')) if os.path.exists(CPF) else {})}   # مراكز المسيرة مقصودة بعد
     # حارس (سالفة كارتابيا): مراكز «منو اللاعب» وأنديتهم لازم تطابق الرابطة بالضبط بعد كل التصحيحات
     md2 = json.load(open(os.path.join(ROOT, 'mano', 'data.json'), encoding='utf8'))
     by2 = {p['id']: p for p in (md2['players'] if isinstance(md2, dict) and 'players' in md2 else md2)}

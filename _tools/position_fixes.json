@@ -82,26 +82,18 @@
   "name:لوان مارتينس": "MID"
  },
  "_nat": {
-  "_note": "تصحيح الجنسية الرياضية (المنتخب اللي يلعب له) لما تختلف عن بيانات الرابطة",
+  "_note": "الجنسية = المسجلة في الرابطة والاتحاد (قرار إبراهيم 26 نوفمبر 2026). هني بس لما الرابطة والاتحاد يختلفون: ناخذ تسجيل الاتحاد اللي يطابق منتخب اللاعب",
+  "gjoko-zajkov": [
+   "مقدونيا الشمالية",
+   "MK"
+  ],
   "renato-fabrizio-tapia-cortijo": [
    "بيرو",
    "PE"
-  ],
-    "gjoko-zajkov": ["مقدونيا الشمالية", "MK"],
-    "alejandro-sebastian-romero-gamarra": ["باراغواي", "PY"],
-    "nermin-mujkic": ["البوسنة والهرسك", "BA"],
-    "joao-moreira-sanmartin-souza": ["البرازيل", "BR"],
-    "chris-vianney-ryan-bile-bedia": ["ساحل العاج", "CI"],
-    "nassim-said-chadli": ["المغرب", "MA"],
-    "moussa-diarra": ["مالي", "ML"],
-    "brahima-diarra": ["مالي", "ML"],
-    "youssoufou-niakate": ["مالي", "ML"],
-    "saman-ghoddos": ["إيران", "IR"],
-    "selim-amallah": ["المغرب", "MA"],
-    "tarik-tissoudali": ["المغرب", "MA"]
+  ]
  },
  "_mano": {
-  "_note": "مراكز «منو اللاعب؟» اللي نخالف فيها الرابطة: بإعلان النادي الرسمي أو بقرار إبراهيم (نوفمبر 2026). الحارس اليومي في sync.py يتجاهلها",
+  "_note": "قرارات إبراهيم فوق «مركز المسيرة» (_tools/sync/career_pos.json). القاعدة من 26 نوفمبر 2026: مركز اللاعب = أكثر مركز لعب فيه في مسيرته؛ هالقائمة للاستثناءات اللي يقررها إبراهيم بالاسم بس",
   "ahmed-barman-ali-barman-alhamoudi": "MD",
   "jobson-souza-santos": "MD",
   "lourency-do-nascimento-rodrigues": "FW",
@@ -122,7 +114,6 @@
   "atiq-esam-atiq-juma-embarkoh-embarkoh": "FW",
   "atiq-walid-atiq-malalla-walid": "MD",
   "kaua-bastian-santana": "DF",
-  "drissa-coulibaly": "MD",
   "nguessan-jean-frederic-kouadio": "MD",
   "federico-nicolas-cartabia": "FW",
   "guilherme-da-silva-goncalves": "FW",
@@ -142,31 +133,9 @@
   "harib-abdulla-suhail": "FW",
   "cedrick-steve-nana-gjeunou": "DF",
   "suhail-ahmed-alnoobi-saeed": "FW",
-  "lithierry-silva-neves": "FW",
-  "sekou-baba-gassama": "FW",
-  "jonatas-da-anunciacao-santos": "FW",
-  "solomon-sosu": "MD",
-  "saad-farid": "MD",
-  "khalid-salem-khalfan-ghumail-mubarak": "DF",
-  "khauan-schlickmann-carmon": "MD",
-  "eid-khamis-eid-khamis-alnuaimi": "DF",
-  "ousseynou-ndiaye": "MD",
-  "luan-martins-pereira": "FW",
-  "majid-ibrahim-surour-khamis-salim": "MD",
-  "bandar-mohamed-mohamed-saeed-alahbabi": "DF",
   "yassine-jabri": "FW",
   "rayan-yasiam-mohammed-oboudan-al-jaberi": "MD",
   "mohamed-firas-ben-arbi": "MD",
-  "caio-canedo-correa": "FW",
-  "abdulla-abdulaziz-ahmed-saeed-alraeesi": "FW",
-  "hazim-mohammad-abdallah-abbaas": "FW",
-  "khalid-abdulraheem-mohamed-salem-bawazir": "FW",
-  "burak-ince": "FW",
-  "anass-taouil": "FW",
-  "hamdan-humaid-hasan-ahmed": "FW",
-  "guilherme-sucigan-mafra-cunha": "FW",
-  "antonio-valmor-assis-da-silva-junior": "FW",
-  "francisco-licinio-silva-pinho": "DF",
-  "khalil-ibrahim-ali-abdulla-al-hammadi": "FW"
+  "caio-canedo-correa": "FW"
  }
 }
