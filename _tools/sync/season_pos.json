@@ -1,0 +1,2650 @@
+{
+"abdalla-ali-hassan-mohamed-alnaqbi": {
+"cat": {
+"MD": 4
+},
+"n": 4,
+"role": {
+"am": 1,
+"cm": 2,
+"dm": 1
+}
+},
+"abdalla-ramadan-bekheet-soliman-bekheet": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"cm": 1
+}
+},
+"abdoul-karim-traore": {
+"cat": {
+"MD": 7
+},
+"n": 7,
+"role": {
+"cm": 7
+}
+},
+"abdoulaye-sanago": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"cb": 4
+}
+},
+"abdoulaye-toure": {
+"cat": {
+"FW": 4
+},
+"n": 4,
+"role": {
+"lw": 4
+}
+},
+"abdulla-abbas-ibrahim-salem-al-balooshi": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"lb": 3
+}
+},
+"abdulla-faisal-nasser-nasser-al-karbi": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"rb": 2,
+"rwb": 5
+}
+},
+"abdulla-hamad-mohamed-salmeen-al-menhali": {
+"cat": {
+"FW": 1,
+"MD": 5
+},
+"n": 6,
+"role": {
+"am": 3,
+"cm": 1,
+"dm": 1,
+"rw": 1
+}
+},
+"adam-gnezda-cerin": {
+"cat": {
+"FW": 1,
+"MD": 5
+},
+"n": 6,
+"role": {
+"am": 5,
+"lw": 1
+}
+},
+"adama-alain-diallo": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"adeel-wgdan-mahmood-alchadli": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"rw": 7
+}
+},
+"adel-mohamed-ali-mohamed-alhosani": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"adham-khalid-ali-abdelhameed": {
+"cat": {
+"DF": 5
+},
+"n": 5,
+"role": {
+"lb": 5
+}
+},
+"adryelson-shawann-lima-silva": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 6
+}
+},
+"adyson-do-nascimento-soares": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"rw": 2,
+"st": 1
+}
+},
+"agner-moura-izigethy-de-souza": {
+"cat": {
+"FW": 1,
+"MD": 1
+},
+"n": 2,
+"role": {
+"am": 1,
+"lw": 1
+}
+},
+"ahmad-noorollah-noorolahi": {
+"cat": {
+"FW": 5,
+"MD": 2
+},
+"n": 7,
+"role": {
+"am": 1,
+"cm": 1,
+"lw": 2,
+"st": 3
+}
+},
+"ahmadou-camara": {
+"cat": {
+"MD": 6
+},
+"n": 6,
+"role": {
+"am": 1,
+"cm": 1,
+"dm": 4
+}
+},
+"ahmed-barman-ali-barman-alhamoudi": {
+"cat": {
+"MD": 2
+},
+"n": 2,
+"role": {
+"dm": 2
+}
+},
+"ahmed-dballa-mohamad-jshak": {
+"cat": {
+"DF": 6,
+"FW": 2
+},
+"n": 8,
+"role": {
+"rb": 4,
+"rw": 2,
+"rwb": 2
+}
+},
+"ahmed-hamdan-ibrahim-saeed-alhosani": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"ahmed-mohammad-shambih-bilal-albalooshi": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"ahmed-shehda-mohamed-hussin-abunamous": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"lw": 2
+}
+},
+"ajdin-hrustic": {
+"cat": {
+"FW": 1,
+"MD": 6
+},
+"n": 7,
+"role": {
+"am": 6,
+"st": 1
+}
+},
+"akram-nakach": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"cb": 1,
+"lb": 3
+}
+},
+"al-emhdi-maouhoub": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"st": 3
+}
+},
+"ala-eddine-zhir": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 4,
+"rb": 3
+}
+},
+"alassane-diallo": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"dm": 1
+}
+},
+"alejandro-sebastian-romero-gamarra": {
+"cat": {
+"FW": 8
+},
+"n": 8,
+"role": {
+"rw": 8
+}
+},
+"alejandro-vergaz-lozano": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 1,
+"lb": 6
+}
+},
+"aleksa-puric": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"cb": 3
+}
+},
+"alhassan-koroma": {
+"cat": {
+"FW": 6,
+"MD": 2
+},
+"n": 8,
+"role": {
+"am": 1,
+"cm": 1,
+"rw": 6
+}
+},
+"ali-hassan-ali-salmin-al-bloushi": {
+"cat": {
+"MD": 2
+},
+"n": 2,
+"role": {
+"cm": 2
+}
+},
+"ali-mohamed-ali-mohamed-alhosani": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"ali-saleh-ali-saleh-amro": {
+"cat": {
+"FW": 4
+},
+"n": 4,
+"role": {
+"lw": 1,
+"rw": 3
+}
+},
+"amadou-saidou-niang": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"rb": 1
+}
+},
+"amen-allah-el-mejhed": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"lb": 3
+}
+},
+"amjad-nezar-alsayed": {
+"cat": {
+"GK": 6
+},
+"n": 6,
+"role": {
+"gk": 6
+}
+},
+"anass-taouil": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"anderson-souza-conceicao": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"aniss-karimi": {
+"cat": {
+"MD": 8
+},
+"n": 8,
+"role": {
+"am": 8
+}
+},
+"antonio-fialho-de-carvalho-neto": {
+"cat": {
+"MD": 4
+},
+"n": 4,
+"role": {
+"cm": 3,
+"dm": 1
+}
+},
+"antonio-valmor-assis-da-silva-junior": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"lw": 2
+}
+},
+"arielson-sampaio-galvao": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"arnau-pradas-algaba": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"asher-chris-ofega-agbinone": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"lw": 3,
+"rw": 2
+}
+},
+"atiq-walid-atiq-malalla-walid": {
+"cat": {
+"DF": 1,
+"MD": 1
+},
+"n": 2,
+"role": {
+"cb": 1,
+"dm": 1
+}
+},
+"aylton-filipe-boa-morte": {
+"cat": {
+"FW": 8
+},
+"n": 8,
+"role": {
+"rw": 6,
+"st": 2
+}
+},
+"ayman-rchoq": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"lw": 2,
+"rw": 3
+}
+},
+"azizjon-ganiev": {
+"cat": {
+"MD": 3
+},
+"n": 3,
+"role": {
+"am": 3
+}
+},
+"baba-bello-ilou": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"st": 2
+}
+},
+"bader-nasser-abaelaziz-mohammad": {
+"cat": {
+"DF": 2
+},
+"n": 2,
+"role": {
+"lb": 2
+}
+},
+"baidy-kane-diakite": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"am": 1
+}
+},
+"benjamin-tetteh": {
+"cat": {
+"FW": 4
+},
+"n": 4,
+"role": {
+"st": 4
+}
+},
+"bernard-babacar-faye": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"st": 2
+}
+},
+"bilal-yousif-abdalla-ali-alraeesi": {
+"cat": {
+"MD": 3
+},
+"n": 3,
+"role": {
+"cm": 3
+}
+},
+"brahian-palacios-alzate": {
+"cat": {
+"FW": 4
+},
+"n": 4,
+"role": {
+"rw": 4
+}
+},
+"brahima-diarra": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"lw": 1,
+"rw": 1
+}
+},
+"breno-cascardo-lemos": {
+"cat": {
+"FW": 1,
+"MD": 1
+},
+"n": 2,
+"role": {
+"dm": 1,
+"rw": 1
+}
+},
+"bruno-conceicao-de-oliveira": {
+"cat": {
+"FW": 6
+},
+"n": 6,
+"role": {
+"rw": 4,
+"st": 2
+}
+},
+"bruno-leonardo-dos-santos-covas": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"cb": 8
+}
+},
+"caio-eduardo-germano": {
+"cat": {
+"FW": 2,
+"MD": 2
+},
+"n": 4,
+"role": {
+"am": 1,
+"cm": 1,
+"rw": 2
+}
+},
+"caio-lucas-fernandes": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"lw": 2
+}
+},
+"cameron-mitchel-puertas-castro": {
+"cat": {
+"MD": 3
+},
+"n": 3,
+"role": {
+"cm": 1,
+"dm": 2
+}
+},
+"carlos-alberto-gomes-da-silva-filho": {
+"cat": {
+"FW": 6
+},
+"n": 6,
+"role": {
+"lw": 1,
+"st": 5
+}
+},
+"charles-monginda-pickel": {
+"cat": {
+"MD": 8
+},
+"n": 8,
+"role": {
+"dm": 8
+}
+},
+"cheickna-doumbia": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"chris-vianney-ryan-bile-bedia": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"st": 5
+}
+},
+"christian-benteke-liolo": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"st": 3
+}
+},
+"clinton-nsiala-makengo": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"cb": 3
+}
+},
+"david-petrovic": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"lb": 8
+}
+},
+"dieu-merci-ndembo-michel": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"st": 5
+}
+},
+"dinko-horkas": {
+"cat": {
+"GK": 5
+},
+"n": 5,
+"role": {
+"gk": 5
+}
+},
+"dominique-celidor-simon": {
+"cat": {
+"MD": 2
+},
+"n": 2,
+"role": {
+"cm": 2
+}
+},
+"dominique-mendy": {
+"cat": {
+"MD": 7
+},
+"n": 7,
+"role": {
+"cm": 7
+}
+},
+"dorde-skoko": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"lb": 3
+}
+},
+"dramane-koumare": {
+"cat": {
+"DF": 2
+},
+"n": 2,
+"role": {
+"cb": 2
+}
+},
+"drissa-coulibaly": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"lw": 4,
+"rw": 1
+}
+},
+"edilson-alberto-monteiro-sanches-borges": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 6
+}
+},
+"eisa-ahmed-eisa-ali-alhoti": {
+"cat": {
+"GK": 2
+},
+"n": 2,
+"role": {
+"gk": 2
+}
+},
+"el-houssine-rahimi": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"st": 3
+}
+},
+"erik-jorgens-de-menezes": {
+"cat": {
+"DF": 2
+},
+"n": 2,
+"role": {
+"lwb": 2
+}
+},
+"ersin-destanoglu": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"ezeckiel-noumonvi": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"lb": 4,
+"lwb": 3
+}
+},
+"facundo-daniel-kruspzky": {
+"cat": {
+"FW": 6,
+"MD": 1
+},
+"n": 7,
+"role": {
+"am": 1,
+"lw": 2,
+"rw": 4
+}
+},
+"facundo-ezequiel-insfran-lirussi": {
+"cat": {
+"GK": 7
+},
+"n": 7,
+"role": {
+"gk": 7
+}
+},
+"fahad-jasim-mohamed-abdalla-yousif-al-ali": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"cb": 1
+}
+},
+"fahad-mohamed-ahmed-hassan-aldhanhani": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"fawaz-awana-ahmed-hussain-almesabi": {
+"cat": {
+"DF": 1,
+"MD": 6
+},
+"n": 7,
+"role": {
+"cb": 1,
+"dm": 6
+}
+},
+"federico-nicolas-cartabia": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"rw": 5
+}
+},
+"felicio-mendes-joao": {
+"cat": {
+"FW": 8
+},
+"n": 8,
+"role": {
+"lw": 8
+}
+},
+"gabriel-dos-santos-da-silva": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"cb": 1
+}
+},
+"georgios-giakomakis": {
+"cat": {
+"FW": 6
+},
+"n": 6,
+"role": {
+"st": 6
+}
+},
+"ghaith-ouahabi": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"cm": 1
+}
+},
+"gjoko-zajkov": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"cb": 8
+}
+},
+"glauber-siqueira-dos-santos-lima": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"cb": 8
+}
+},
+"guilherme-da-silva-goncalves": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"lw": 5
+}
+},
+"hamad-abdulla-mohamed-salim-almeqbaali": {
+"cat": {
+"GK": 7
+},
+"n": 7,
+"role": {
+"gk": 7
+}
+},
+"hamdan-humaid-hasan-ahmed": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"hamid-yahya-mohammed-aljabri": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"rb": 7
+}
+},
+"harib-abdulla-suhail": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"hugo-goncalves-ferreira-neto": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"lb": 8
+}
+},
+"hussain-abbas-juma-kharam": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"lb": 1
+}
+},
+"hussain-mahdi-mohammed-mahdi-sadeq": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"dm": 1
+}
+},
+"ibrahim-cisse": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 4,
+"rb": 2
+}
+},
+"ibrahim-essa-ali-ibrahim-al-balooshi": {
+"cat": {
+"GK": 2
+},
+"n": 2,
+"role": {
+"gk": 2
+}
+},
+"igor-caique-coronado": {
+"cat": {
+"MD": 6
+},
+"n": 6,
+"role": {
+"am": 6
+}
+},
+"igor-eduardo-schlemper": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"rb": 7
+}
+},
+"igor-gomes-silva": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 5,
+"rb": 2
+}
+},
+"ilyass-lagrimi": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"lwb": 1
+}
+},
+"ismail-moumene": {
+"cat": {
+"MD": 6
+},
+"n": 6,
+"role": {
+"am": 2,
+"cm": 4
+}
+},
+"issam-faiz": {
+"cat": {
+"MD": 5
+},
+"n": 5,
+"role": {
+"am": 2,
+"cm": 1,
+"dm": 2
+}
+},
+"jacob-gildas-awoute": {
+"cat": {
+"FW": 1,
+"MD": 4
+},
+"n": 5,
+"role": {
+"dm": 4,
+"rw": 1
+}
+},
+"jadsom-meemyas-de-oliveira-da-silva": {
+"cat": {
+"MD": 8
+},
+"n": 8,
+"role": {
+"cm": 2,
+"dm": 6
+}
+},
+"jahnoah-guevara-markelo": {
+"cat": {
+"DF": 2,
+"FW": 1
+},
+"n": 3,
+"role": {
+"rw": 1,
+"rwb": 2
+}
+},
+"jefferson-yuri-de-sousa-matias": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"cb": 8
+}
+},
+"joao-pedro-chermont-crema": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"rb": 1
+}
+},
+"joao-victor-lucas-wesner": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"lb": 1
+}
+},
+"jobson-souza-santos": {
+"cat": {
+"MD": 5
+},
+"n": 5,
+"role": {
+"cm": 3,
+"dm": 2
+}
+},
+"jocelyn-thuram-doumbia": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"cb": 1
+}
+},
+"jonas-naafo": {
+"cat": {
+"MD": 6
+},
+"n": 6,
+"role": {
+"am": 6
+}
+},
+"jonatas-da-anunciacao-santos": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"jorge-filipe-oliveira-fernandes": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"cb": 1
+}
+},
+"juan-alvina-bezerra": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"juan-sebastian-pedroza-perdomo": {
+"cat": {
+"MD": 7
+},
+"n": 7,
+"role": {
+"cm": 4,
+"dm": 3
+}
+},
+"julimar-silva-oliveira-junior": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"rw": 3
+}
+},
+"kahlifa-mubarak-khalfan-khairi-alhammadi": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"cb": 3
+}
+},
+"karim-el-berkaoui": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"kaua-bastian-santana": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"cb": 4
+}
+},
+"kauan-santos-silva": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"lb": 1,
+"lwb": 2,
+"rb": 1
+}
+},
+"kayque-soares-campos": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"cb": 5,
+"rb": 3
+}
+},
+"kevin-andres-agudelo-ardila": {
+"cat": {
+"FW": 6
+},
+"n": 6,
+"role": {
+"rw": 6
+}
+},
+"khaled-ebraheim-helal-alghais-aldhanhani": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"rb": 6
+}
+},
+"khaled-mohammed-husain-mousa-alblooshi": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"dm": 1
+}
+},
+"khalid-abdulraheem-mohamed-salem-bawazir": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"rw": 2,
+"st": 1
+}
+},
+"khalid-ali-khamis-binmahmoud-aldarmaki": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"cm": 1
+}
+},
+"khalid-eisa-mohamed-bilal": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"khamis-ahmed-jar-allah-hussain-al-mansoori": {
+"cat": {
+"DF": 5
+},
+"n": 5,
+"role": {
+"cb": 3,
+"rb": 2
+}
+},
+"khamis-saleh-ismaeil-khalil-alhammadi": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"lb": 3,
+"lwb": 1
+}
+},
+"khauan-schlickmann-carmon": {
+"cat": {
+"MD": 2
+},
+"n": 2,
+"role": {
+"dm": 2
+}
+},
+"kodjo-fo-doh-laba": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"st": 7
+}
+},
+"koray-gunter": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"cb": 4
+}
+},
+"kouame-autonne-kouadio": {
+"cat": {
+"DF": 2
+},
+"n": 2,
+"role": {
+"cb": 2
+}
+},
+"kristjan-asllani": {
+"cat": {
+"MD": 3
+},
+"n": 3,
+"role": {
+"cm": 3
+}
+},
+"leandro-spadacio-leite": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"rw": 1,
+"st": 1
+}
+},
+"leandro-viana-da-silva-gama": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"lb": 8
+}
+},
+"leonard-offoe-amesimeku": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"lwb": 1
+}
+},
+"lionel-sebastian-verde": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"am": 1
+}
+},
+"lithierry-silva-neves": {
+"cat": {
+"FW": 2,
+"MD": 1
+},
+"n": 3,
+"role": {
+"am": 1,
+"rw": 1,
+"st": 1
+}
+},
+"lorran-lucas-pereira-de-sousa": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"rw": 3
+}
+},
+"lourency-do-nascimento-rodrigues": {
+"cat": {
+"FW": 8
+},
+"n": 8,
+"role": {
+"lw": 8
+}
+},
+"luan-martins-pereira": {
+"cat": {
+"MD": 6
+},
+"n": 6,
+"role": {
+"am": 1,
+"dm": 5
+}
+},
+"lucas-pimenta-peres-lopes": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 6
+}
+},
+"luis-fernando-haquin-lopez": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 6
+}
+},
+"luka-milivojevic": {
+"cat": {
+"MD": 3
+},
+"n": 3,
+"role": {
+"dm": 3
+}
+},
+"mackenzie-james-hunt": {
+"cat": {
+"DF": 3,
+"FW": 1,
+"MD": 3
+},
+"n": 7,
+"role": {
+"dm": 3,
+"lb": 3,
+"lw": 1
+}
+},
+"mahamadou-camara": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 6,
+"lb": 1
+}
+},
+"mahmoud-dahoud": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"am": 1
+}
+},
+"majed-hassan-ahmed-abdulla-alahmadi": {
+"cat": {
+"MD": 2
+},
+"n": 2,
+"role": {
+"dm": 2
+}
+},
+"malcom-filipe-silva-de-oliveira": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"rw": 3,
+"st": 4
+}
+},
+"mamadou-abdoulaye-ndoye": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"lwb": 1
+}
+},
+"mamadou-coulibaly": {
+"cat": {
+"MD": 8
+},
+"n": 8,
+"role": {
+"cm": 8
+}
+},
+"mansor-ibrahim-abdulla-shamsan-al-harbi": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"cm": 1
+}
+},
+"mansour-saleh-barghash-jaralla-al-menhali": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"rb": 4
+}
+},
+"marcel-ratnik": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"lb": 1,
+"rb": 3
+}
+},
+"marcelo-jose-de-lima-filho": {
+"cat": {
+"DF": 1,
+"FW": 3
+},
+"n": 4,
+"role": {
+"rw": 3,
+"rwb": 1
+}
+},
+"marcos-andre-paulino-maia": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"cb": 1
+}
+},
+"marcos-souza-moraes": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"cb": 4
+}
+},
+"marcus-vinicius": {
+"cat": {
+"DF": 2,
+"FW": 1,
+"MD": 4
+},
+"n": 7,
+"role": {
+"cm": 4,
+"lb": 1,
+"rb": 1,
+"rw": 1
+}
+},
+"marius-mihai-marin": {
+"cat": {
+"DF": 4,
+"MD": 6
+},
+"n": 10,
+"role": {
+"cb": 4,
+"cm": 1,
+"dm": 5
+}
+},
+"maro-katinic": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 6,
+"rb": 1
+}
+},
+"marwan-fahad-hamza-hassan-alwatani": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"rb": 3
+}
+},
+"marzooq-rashed-marzooq-saqer-albadwawi": {
+"cat": {
+"GK": 6
+},
+"n": 6,
+"role": {
+"gk": 6
+}
+},
+"mateus-dias-lima": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"st": 3
+}
+},
+"mateus-henrique-alves-silva": {
+"cat": {
+"DF": 5
+},
+"n": 5,
+"role": {
+"rb": 5
+}
+},
+"matheus-planelles-donelli": {
+"cat": {
+"GK": 1
+},
+"n": 1,
+"role": {
+"gk": 1
+}
+},
+"matias-damian-palacios": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"lw": 7
+}
+},
+"mehdi-abdolhamid-ghayedi": {
+"cat": {
+"FW": 4,
+"MD": 1
+},
+"n": 5,
+"role": {
+"am": 1,
+"lw": 4
+}
+},
+"mehdi-taremi": {
+"cat": {
+"FW": 4,
+"MD": 1
+},
+"n": 5,
+"role": {
+"am": 1,
+"st": 4
+}
+},
+"mersad-fariborz-seifi": {
+"cat": {
+"DF": 2
+},
+"n": 2,
+"role": {
+"lb": 2
+}
+},
+"mobin-amir-dehghan": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"rb": 1
+}
+},
+"mohamad-ibrahim-mohamad-alhamadi": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"rw": 3
+}
+},
+"mohamed-ali-ahmed-mohamed-qayoudhi": {
+"cat": {
+"GK": 3
+},
+"n": 3,
+"role": {
+"gk": 3
+}
+},
+"mohamed-awad-alla-hassan-ibramim": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"lw": 2
+}
+},
+"mohamed-firas-ben-arbi": {
+"cat": {
+"FW": 5,
+"MD": 3
+},
+"n": 8,
+"role": {
+"am": 3,
+"rw": 2,
+"st": 3
+}
+},
+"mohammad-nasser-abdelaziz-mohammed": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"rb": 8
+}
+},
+"mohammad-rasoul-ghorbani": {
+"cat": {
+"DF": 3,
+"MD": 2
+},
+"n": 5,
+"role": {
+"cb": 3,
+"dm": 2
+}
+},
+"mohammed-elkhaloui": {
+"cat": {
+"DF": 2,
+"FW": 6
+},
+"n": 8,
+"role": {
+"lw": 6,
+"lwb": 2
+}
+},
+"mohammed-jumah-abdulla-darwish-almansoori": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"mohammed-salem-jawhar-salmeen-alkhateri": {
+"cat": {
+"DF": 2
+},
+"n": 2,
+"role": {
+"cb": 2
+}
+},
+"moussa-diarra": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 3,
+"lb": 3
+}
+},
+"moussa-ndiaye": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"am": 1
+}
+},
+"moustapha-name": {
+"cat": {
+"MD": 8
+},
+"n": 8,
+"role": {
+"dm": 8
+}
+},
+"nagoro-brahima-dao": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"lb": 7
+}
+},
+"nassim-said-chadli": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"nemanja-dekovic": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 5,
+"rb": 1
+}
+},
+"nemanja-jovic": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"lw": 1
+}
+},
+"nemanja-maksimovic": {
+"cat": {
+"FW": 1,
+"MD": 6
+},
+"n": 7,
+"role": {
+"cm": 3,
+"dm": 3,
+"lw": 1
+}
+},
+"nermin-mujkic": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"lb": 1
+}
+},
+"nguessan-jean-frederic-kouadio": {
+"cat": {
+"MD": 6
+},
+"n": 6,
+"role": {
+"am": 3,
+"cm": 2,
+"dm": 1
+}
+},
+"nicolas-ezequiel-gimenez": {
+"cat": {
+"FW": 1,
+"MD": 5
+},
+"n": 6,
+"role": {
+"am": 5,
+"st": 1
+}
+},
+"omar-maher-khrbin": {
+"cat": {
+"FW": 6
+},
+"n": 6,
+"role": {
+"st": 6
+}
+},
+"othman-jamal-eddin-othman-ramadan": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"cb": 7,
+"rb": 1
+}
+},
+"oualid-azaro": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"st": 5
+}
+},
+"oumar-keita": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"cb": 1
+}
+},
+"oumar-traore": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"rw": 1,
+"st": 1
+}
+},
+"ousmane-camara": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"lw": 4,
+"rw": 1
+}
+},
+"pedro-henrique-fonseca-de-araujo-martins": {
+"cat": {
+"FW": 3,
+"MD": 1
+},
+"n": 4,
+"role": {
+"am": 1,
+"lw": 3
+}
+},
+"pedro-javier-pavlov": {
+"cat": {
+"DF": 3,
+"FW": 3
+},
+"n": 6,
+"role": {
+"lb": 2,
+"lw": 3,
+"lwb": 1
+}
+},
+"pedro-jorge-goncalves-malheiro": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"rb": 8
+}
+},
+"rafael-antonio-pereira": {
+"cat": {
+"DF": 4
+},
+"n": 4,
+"role": {
+"cb": 1,
+"lb": 3
+}
+},
+"rafael-vela-rodrigues": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"lwb": 6
+}
+},
+"ramiro-vaca-ponce": {
+"cat": {
+"MD": 2
+},
+"n": 2,
+"role": {
+"am": 2
+}
+},
+"ramon-nazareno-mierez": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"st": 3
+}
+},
+"ramy-hisham-abdelaziz-mostafa-rabia": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 7
+}
+},
+"ravil-tagir": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 6
+}
+},
+"rejan-alivoda": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 4,
+"rb": 2,
+"rwb": 1
+}
+},
+"renan-victor-da-silva": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 5,
+"lb": 1
+}
+},
+"renato-barbosa-dos-santos-junior": {
+"cat": {
+"FW": 4
+},
+"n": 4,
+"role": {
+"st": 4
+}
+},
+"renne-alejandro-rivas-alezones": {
+"cat": {
+"DF": 2
+},
+"n": 2,
+"role": {
+"lb": 2
+}
+},
+"reza-hasan-ghandi-pour": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"lw": 1
+}
+},
+"ridwan-popoola-abdulrasaq": {
+"cat": {
+"MD": 7
+},
+"n": 7,
+"role": {
+"cm": 2,
+"dm": 5
+}
+},
+"rikelme-hernandes-amorim-rocha": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"lb": 3
+}
+},
+"rilwanu-haliru-sarki": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"lw": 1
+}
+},
+"rocky-marciano-tchatchoua-tchato": {
+"cat": {
+"FW": 2,
+"MD": 2
+},
+"n": 4,
+"role": {
+"am": 2,
+"st": 2
+}
+},
+"rostand-delord-menpweh-djooh": {
+"cat": {
+"FW": 1,
+"MD": 7
+},
+"n": 8,
+"role": {
+"cm": 7,
+"lw": 1
+}
+},
+"ruben-filipe-canedo-amaral": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"lb": 6
+}
+},
+"saad-elhadani": {
+"cat": {
+"FW": 6
+},
+"n": 6,
+"role": {
+"rw": 1,
+"st": 5
+}
+},
+"saeed-suleiman-salem-mobarak": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"rb": 8
+}
+},
+"saeid-nader-ezatolahi-afagh": {
+"cat": {
+"MD": 7
+},
+"n": 7,
+"role": {
+"cm": 4,
+"dm": 3
+}
+},
+"saile-samuel-da-silva-souza": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"dm": 1
+}
+},
+"salem-khairi-ahmed-khairi-muftah": {
+"cat": {
+"GK": 4
+},
+"n": 4,
+"role": {
+"gk": 4
+}
+},
+"sam-mark-koffie": {
+"cat": {
+"FW": 2
+},
+"n": 2,
+"role": {
+"lw": 2
+}
+},
+"saman-ghoddos": {
+"cat": {
+"FW": 3,
+"MD": 4
+},
+"n": 7,
+"role": {
+"am": 1,
+"cm": 3,
+"rw": 1,
+"st": 2
+}
+},
+"samir-caetano-de-souza-santos": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 5,
+"lb": 1
+}
+},
+"sardar-khalil-azmoun": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"st": 5
+}
+},
+"sasa-ivkovic": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"cb": 1
+}
+},
+"saviour-amunde-godwin": {
+"cat": {
+"FW": 5
+},
+"n": 5,
+"role": {
+"lw": 5
+}
+},
+"seifeddine-jaziri": {
+"cat": {
+"FW": 6
+},
+"n": 6,
+"role": {
+"st": 6
+}
+},
+"sekou-baba-gassama": {
+"cat": {
+"FW": 4
+},
+"n": 4,
+"role": {
+"rw": 4
+}
+},
+"selim-amallah": {
+"cat": {
+"FW": 1,
+"MD": 1
+},
+"n": 2,
+"role": {
+"cm": 1,
+"st": 1
+}
+},
+"sergio-damian-garcia-grana": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"dm": 1
+}
+},
+"sergio-pereira-andrade": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"lw": 7
+}
+},
+"shavy-warren-babicka": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"siaka-sidibe": {
+"cat": {
+"MD": 5
+},
+"n": 5,
+"role": {
+"am": 1,
+"cm": 1,
+"dm": 3
+}
+},
+"sory-kaba": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"st": 7
+}
+},
+"soufiane-bouftini": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"cb": 8
+}
+},
+"soufiane-rahimi": {
+"cat": {
+"FW": 4
+},
+"n": 4,
+"role": {
+"st": 4
+}
+},
+"stojan-lekovic": {
+"cat": {
+"GK": 4
+},
+"n": 4,
+"role": {
+"gk": 4
+}
+},
+"suhail-ahmed-alnoobi-saeed": {
+"cat": {
+"DF": 6,
+"FW": 1
+},
+"n": 7,
+"role": {
+"rb": 5,
+"rw": 1,
+"rwb": 1
+}
+},
+"sultan-abdulla-saeed-al-manthari": {
+"cat": {
+"GK": 8
+},
+"n": 8,
+"role": {
+"gk": 8
+}
+},
+"sultan-adill-mohamed-abdalla-alamiri": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"st": 1
+}
+},
+"tahnoon-hamdan-saeed-a-badal-al-zaabi": {
+"cat": {
+"FW": 1,
+"MD": 1
+},
+"n": 2,
+"role": {
+"am": 1,
+"rw": 1
+}
+},
+"tarik-tissoudali": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"st": 3
+}
+},
+"teun-gijselhart": {
+"cat": {
+"FW": 1,
+"MD": 1
+},
+"n": 2,
+"role": {
+"cm": 1,
+"lw": 1
+}
+},
+"valentin-lando-lazaro": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"rwb": 8
+}
+},
+"victor-henrique-cardoso-santos": {
+"cat": {
+"FW": 5,
+"MD": 1
+},
+"n": 6,
+"role": {
+"am": 1,
+"rw": 2,
+"st": 3
+}
+},
+"victor-hugo-ramos-de-souza": {
+"cat": {
+"MD": 2
+},
+"n": 2,
+"role": {
+"cm": 2
+}
+},
+"vinicius-lima-serafim": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"cb": 3,
+"lb": 2,
+"rb": 1
+}
+},
+"vinicius-silveira-de-mello": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"st": 7
+}
+},
+"vitor-hugo-brenneisen-vargas": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"lb": 3
+}
+},
+"waleed-rashid-sultan-ali-ahmed-almuhrizi": {
+"cat": {
+"DF": 2,
+"MD": 1
+},
+"n": 3,
+"role": {
+"am": 1,
+"cb": 1,
+"rb": 1
+}
+},
+"wesley-bruno-lima-delgado": {
+"cat": {
+"FW": 1
+},
+"n": 1,
+"role": {
+"rw": 1
+}
+},
+"willy-johosn-semedo-afonso": {
+"cat": {
+"FW": 8
+},
+"n": 8,
+"role": {
+"lw": 8
+}
+},
+"willyan-da-silva-rocha": {
+"cat": {
+"DF": 7
+},
+"n": 7,
+"role": {
+"cb": 7
+}
+},
+"wout-felix-l-faes": {
+"cat": {
+"DF": 3
+},
+"n": 3,
+"role": {
+"cb": 2,
+"lb": 1
+}
+},
+"yahia-nader-moustafa-elsharif": {
+"cat": {
+"MD": 1
+},
+"n": 1,
+"role": {
+"dm": 1
+}
+},
+"yahya-ali-said-al-ghassani": {
+"cat": {
+"FW": 1,
+"MD": 1
+},
+"n": 2,
+"role": {
+"am": 1,
+"lw": 1
+}
+},
+"yahya-benkhaleq": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"lb": 4,
+"rb": 4
+}
+},
+"yassine-jabri": {
+"cat": {
+"DF": 5
+},
+"n": 5,
+"role": {
+"lb": 5
+}
+},
+"yousef-abdulkareem-mohamed-saeed-al-ameri": {
+"cat": {
+"DF": 1
+},
+"n": 1,
+"role": {
+"rb": 1
+}
+},
+"yousif-ahmed-saeed-ebrahim-hamaadi-almarzooqi": {
+"cat": {
+"DF": 6
+},
+"n": 6,
+"role": {
+"lb": 1,
+"rb": 5
+}
+},
+"youssoufou-niakate": {
+"cat": {
+"FW": 7
+},
+"n": 7,
+"role": {
+"st": 7
+}
+},
+"yuri-cesar-santos-de-oliveira-silva": {
+"cat": {
+"FW": 2,
+"MD": 4
+},
+"n": 6,
+"role": {
+"am": 4,
+"lw": 1,
+"st": 1
+}
+},
+"zayed-ahmed-husain-ahmed-alhammadi": {
+"cat": {
+"GK": 1
+},
+"n": 1,
+"role": {
+"gk": 1
+}
+},
+"zayed-sultan-ahmed-jassim-ibrahim-alzaabi": {
+"cat": {
+"DF": 8
+},
+"n": 8,
+"role": {
+"rb": 8
+}
+}
+}

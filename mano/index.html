@@ -304,6 +304,9 @@ const ph=(p,s=40,badge=true)=>{const b='';const inner=p.ph?`<img class="pi" src=
 const POS={GK:'حارس مرمى',DF:'مدافع',MD:'لاعب وسط',FW:'مهاجم'};
 const POSS={GK:'حارس',DF:'مدافع',MD:'وسط',FW:'مهاجم'};
 const LINE={GK:0,DF:1,MD:2,FW:3};
+/* المركز التفصيلي (قرار إبراهيم 27 نوفمبر): «جناح أيمن · هجوم». pd من البيانات، وإذا ما فيه نكتفي بالخط */
+const LW={DF:'دفاع',MD:'وسط',FW:'هجوم'};
+const POSD=p=>p.pd&&LW[p.p]?p.pd+' · '+LW[p.p]:POS[p.p];
 const AR=n=>String(n);
 const PC=n=>'\u2066'+n+'%\u2069';
 const flag=cc=>cc&&cc.length===2?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt())):'🏳️';
@@ -409,7 +412,8 @@ const EMI={ain:'ad',wahda:'ad',jazira:'ad',baniyas:'ad',dhafra:'ad',wasl:'dxb',s
 function cmp(p){
   const a=ANS;const r={};
   r.c=p.c===a.c?'ok':(EMI[p.c]&&EMI[p.c]===EMI[a.c]?'near':'');
-  r.p=p.p===a.p?'ok':(Math.abs(LINE[p.p]-LINE[a.p])===1?'near':'');
+  // أصفر: الخط اللي جنبه، أو المركز الثاني للاعب (مثلاً مهاجم يلعب ظهير هالموسم). الحارس ما له مركز ثاني
+  r.p=p.p===a.p?'ok':(Math.abs(LINE[p.p]-LINE[a.p])===1||(a.p2&&p.p===a.p2)||(p.p2&&p.p2===a.p)?'near':'');
   r.n=(p.nat&&p.nat===a.nat)?'ok':'';
   r.a=p.a==null?'':p.a===a.a?'ok':(Math.abs(p.a-a.a)<=2?'near':'');
   r.no=p.no==null?'':p.no===a.no?'ok':(Math.abs(p.no-a.no)<=3?'near':'');
@@ -428,7 +432,7 @@ function render(){
    <div class="hero">
      ${S.done?`<span class="reveal">${ph(ANS,96)}</span>`:`<span class="phw"><span class="ph mys">${SIL}<span class="q">؟</span></span></span>`}
      <div style="flex:1"><b>${S.done?ANS.n:(mode==='easy'?'لاعب اليوم السري':'لاعب الخبير السري')}</b>
-       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POS[ANS.p]:(mode==='easy'?'كل محاولة غلط تفتح تلميح جديد':'لاعبك السري هني خاص فيك، غير لاعب ربعك · كل تخمين يقارن لاعبك باللاعب السري')}</div>
+       <div class="sub">${S.done?D.clubs[ANS.c]+' · '+POSD(ANS):(mode==='easy'?'كل محاولة غلط تفتح تلميح جديد':'لاعبك السري هني خاص فيك، غير لاعب ربعك · كل تخمين يقارن لاعبك باللاعب السري')}</div>
        <div class="tries">${tries}<em>${S.done?'':AR(MAX-used)+' محاولات باقية'}</em></div></div>
    </div>`;
   if(mode==='easy'){
@@ -441,7 +445,7 @@ function render(){
     // من اليوم 2: بعد 3 محاولات غلط ينكشف نادي لاعبك السري
     if(DAY>=2&&!S.done&&S.guesses.length>=3)h+=`<div class="clubhint">${crest(ANS.c,30)}<div><small>🔓 تلميح بعد 3 محاولات</small><b>لاعبك السري من ${D.clubs[ANS.c]}</b></div></div>`;
     if(S.guesses.length<2)h+=`<div class="prohow">اكتب اسم <b>أي لاعب</b> في الدوري، ونقارن لك لاعبك باللاعب السري في 5 خانات: <b>النادي، المركز، الجنسية، العمر، رقم القميص</b>. لون كل خانة يقولك قد شو قربت، ومنها تعرف اللاعب السري.</div>`;
-    h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري بالضبط</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب: <b>المركز</b> في الخط اللي جنبه في الملعب (مثلاً وسط بدال مهاجم)، أو <b>العمر</b> بفرق سنتين أو أقل، أو <b>رقم القميص</b> بفرق 3 أو أقل، أو <b>النادي</b> من نفس الإمارة</span></div><div><i></i><span><b>رمادي</b> = بعيد. والجنسية يا أخضر يا رمادي</span></div><div><i class="ar">⬆⬇</i><span>تحت العمر ورقم القميص: <b>⬆ اللاعب السري أكبر، ⬇ أصغر</b> من لاعبك</span></div></div>`;
+    h+=`<div class="legend2"><div><i style="background:var(--green)"></i><span><b>أخضر</b> = نفس اللاعب السري بالضبط</span></div><div><i style="background:var(--yellow)"></i><span><b>أصفر</b> = قريب: <b>المركز</b> في الخط اللي جنبه في الملعب (مثلاً وسط بدال مهاجم) أو مركزه الثاني، أو <b>العمر</b> بفرق سنتين أو أقل، أو <b>رقم القميص</b> بفرق 3 أو أقل، أو <b>النادي</b> من نفس الإمارة</span></div><div><i></i><span><b>رمادي</b> = بعيد. والجنسية يا أخضر يا رمادي</span></div><div><i class="ar">⬆⬇</i><span>تحت العمر ورقم القميص: <b>⬆ اللاعب السري أكبر، ⬇ أصغر</b> من لاعبك</span></div></div>`;
   }
   if(!S.done)h+=`<div class="inp"><input id="gIn" placeholder="اكتب اسم اللاعب بالعربي أو بالإنجليزي..." autocomplete="off" autocorrect="off" spellcheck="false" enterkeyhint="search"><div class="sugg" id="sugg" hidden></div></div>`;
   if(mode==='easy'){
@@ -452,7 +456,7 @@ function render(){
   }
   h+=`</div>`;
   if(S.done)h+=resultHTML()+(CROWD?'<div id="crowd"></div><div id="clubs"></div>':'');
-  if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · ${MODEN[mode]} <bdi dir="ltr">#${AR(DAY-1)}</bdi></div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POS[YEST.p]}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
+  if(YEST)h+=`<div class="card yest">${ph(YEST,60)}<div style="flex:1;min-width:0"><div class="lbl">جواب أمس · ${MODEN[mode]} <bdi dir="ltr">#${AR(DAY-1)}</bdi></div><div class="nm">${YEST.n}</div><div class="en">${YEST.e}</div><div class="facts"><span>${D.clubs[YEST.c]}</span><span>${POSD(YEST)}</span><span>${flag(YEST.f)} ${YEST.nat}</span><span>رقم ${AR(YEST.no)}</span></div></div></div>`;
   $('#app').innerHTML=h;
   if(!S.done)bindInput();else bindResult();
 }
@@ -531,7 +535,7 @@ function resultHTML(){
    <div class="emo">${S.win?'🎉':'😅'}</div>
    <h2>${S.win?(S.guesses.length===1?'من أول محاولة! مينوون معلومات 🔥':'كفووو! عرفته'):'هالمرة ما ضبطت'}</h2>
    <div class="ans">${ph(ANS,70)}<div style="flex:1"><div class="nm">${ANS.n}</div><div class="en">${ANS.e}</div>
-     <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POS[ANS.p]}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
+     <div class="facts"><span>${D.clubs[ANS.c]}</span><span>${POSD(ANS)}</span><span>${flag(ANS.f)} ${ANS.nat}</span><span>${AR(ANS.a)} سنة</span><span>رقم ${AR(ANS.no)}</span></div></div></div>
    <div class="gotp">${S.win?`🏆 <b>${'\u2066+'+(7-S.guesses.length)+'\u2069'}</b> نقاط لك${(()=>{const se=mode==='pro'?store.get('sub_'+DAY+'_easy',null):null,cc=se?se.c:myClub();return cc?' ولجمهور '+D.clubs[cc]:''})()}`:`ما جبت نقاط هالمرة${mode==='easy'?'، عوّضها في تحدي الخبير':''}`}</div>
    ${st.streak>1&&S.win?`<div style="font-size:14px;margin-bottom:6px">سلسلتك: <b style="color:var(--gold)">${AR(st.streak)} أيام 🔥</b></div>`:''}
    ${mode==='easy'&&!(store.get('g_'+DAY+'_pro',null)||{}).done?`<div class="nextpro"><div class="t">🧠 الحين دورك في تحدي الخبير</div><div class="d">لاعب سري <b>ثاني غير لاعب اليوم</b> وأصعب منه، ونقاطه <b>تنضاف فوق نقاطك</b> (لين 6 زيادة) لك ولناديك</div><button class="btn pro" id="otherBtn">ابدا تحدي الخبير ‹</button></div>`:''}

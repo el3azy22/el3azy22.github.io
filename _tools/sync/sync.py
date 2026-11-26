@@ -141,7 +141,7 @@ def main():
             # «منو اللاعب؟»
             m = mp.get(s)
             if m is None:
-                m = dict(id=s, n=na, e=B.clean_en(q['name']), c=c, p=q['pos'], nat=nat, f=q['flag'], a=age, no=no, ap=B.ap(q), gl=B.gl(q), st=B.ST.get(q.get('status'), ''))
+                m = dict(id=s, n=na, e=B.clean_en(q['name']), c=c, p=q['pos'], pr=q['pos'], nat=nat, f=q['flag'], a=age, no=no, ap=B.ap(q), gl=B.gl(q), st=B.ST.get(q.get('status'), ''))
                 md['players'].append(m); mp[s] = m; ch.append(f'لاعب يديد: {na} ({tid} #{no})')
             else:
                 if m['c'] != c: ch.append(f"انتقال: {m['n']} من {m['c']} إلى {c}"); m['c'] = c
@@ -149,7 +149,8 @@ def main():
                 if age and m.get('a') != age: m['a'] = age
                 m['ap'] = B.ap(q); m['gl'] = B.gl(q)
                 if B.ST.get(q.get('status')): m['st'] = B.ST[q['status']]
-                # «منو اللاعب؟» والشبكة: المركز المسجل في الرابطة دايماً (تصحيحات المراكز لـ«اختار تشكيلتك» بس)
+                # المركز المسجل محلياً ينحفظ في pr دايماً؛ المركز الأساسي p يحسبه apply_position_fixes.py (قرار إبراهيم 27 نوفمبر)
+                if q.get('pos') in POS4: m['pr'] = q['pos']
                 if q.get('pos') in POS4 and m.get('p') != q['pos'] and s not in KEEP_POS: ch.append(f"مركز {m['n']}: {m.get('p')} ← {q['pos']}"); m['p'] = q['pos']
             # «اختار تشكيلتك»
             if s in where:
@@ -262,7 +263,7 @@ def main():
     md2 = json.load(open(os.path.join(ROOT, 'mano', 'data.json'), encoding='utf8'))
     by2 = {p['id']: p for p in (md2['players'] if isinstance(md2, dict) and 'players' in md2 else md2)}
     off = [f"{by2[q['slug']]['n']}: {by2[q['slug']]['p']}≠{q['pos']}" for c, lst in pl.items() for q in lst
-           if q['slug'] in by2 and q.get('pos') in POS4 and by2[q['slug']]['p'] != q['pos'] and q['slug'] not in MANO_POS]
+           if q['slug'] in by2 and q.get('pos') in POS4 and by2[q['slug']]['p'] != q['pos'] and by2[q['slug']].get('ps', 'reg') == 'reg' and q['slug'] not in MANO_POS]
     if off:
         pr.append('مراكز في «منو اللاعب» تختلف عن الرابطة: ' + '، '.join(off[:20]))
     return finish(rep, True)

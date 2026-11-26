@@ -16,15 +16,46 @@ for c in [t['national']]+t['clubs']:
     mp=byid.get(p[5]) if p[5] else None
     if not mp: mp=next((x for x in m['players'] if x['c']==mc and str(x.get('no'))==str(p[0])),None)
     # «منو اللاعب؟» والشبكة يستخدمون المركز المسجل في الرابطة (اللي يشوفه المشجع في موقعها)، فالتصحيح هني لـ«اختار تشكيلتك» بس
-# مركز اللاعب = أكثر مركز لعب فيه في مسيرته (قرار إبراهيم 26 نوفمبر 2026): _tools/sync/career_pos.json (sync/career_pos.py)
-CP=f'{R}/_tools/sync/career_pos.json'
-for pid,(src,pos) in (json.load(open(CP,encoding='utf8')).items() if os.path.exists(CP) else []):
-  mp=byid.get(pid)
-  if mp and mp['p']!=pos: log.append(f"   career {pid}: {mp['p']} -> {pos} ({src})");mp['p']=pos
-# مراكز «منو اللاعب؟» اللي نخالف فيها الرابطة بقرار إبراهيم
-for pid,pos in {k:v for k,v in F.get('_mano',{}).items() if not k.startswith('_')}.items():
-  mp=byid.get(pid)
-  if mp and mp['p']!=pos: log.append(f"   mano {pid}: {mp['p']} -> {pos}");mp['p']=pos
+# نظام المراكز (قرار إبراهيم 27 نوفمبر 2026):
+# المركز الأساسي p = قرار إبراهيم/إعلان النادي (_mano) ← اللي بدا فيه أكثر هالموسم (3 مباريات أو أكثر) ← مسيرته ← التسجيل المحلي pr
+# المركز الثاني p2 = أول مركز يختلف عن الأساسي من: هالموسم/المسيرة/التسجيل (3 بدايات أو أكثر) يختلف عن الأساسي. الحارس ما له مركز ثاني
+# المركز التفصيلي pd (ظهير أيسر، جناح أيمن...) من هالموسم أو المسيرة، بشرط يكون من نفس الخط
+CP=f'{R}/_tools/sync/career_pos.json';SP=f'{R}/_tools/sync/season_pos.json'
+CAR=json.load(open(CP,encoding='utf8')) if os.path.exists(CP) else {}
+SEA=json.load(open(SP,encoding='utf8')) if os.path.exists(SP) else {}
+MANO={k:v for k,v in F.get('_mano',{}).items() if not k.startswith('_')}
+TMR={'Goalkeeper':None,'Centre-Back':'cb','Left-Back':'lb','Right-Back':'rb','Defensive Midfield':'dm','Central Midfield':'cm','Attacking Midfield':'am',
+     'Left Midfield':'lw','Right Midfield':'rw','Left Winger':'lw','Right Winger':'rw','Centre-Forward':'st','Second Striker':'ss'}
+RC={'cb':'DF','lb':'DF','rb':'DF','lwb':'DF','rwb':'DF','dm':'MD','cm':'MD','am':'MD','lm':'MD','rm':'MD','lw':'FW','rw':'FW','st':'FW','ss':'FW'}
+RAR={'cb':'قلب دفاع','lb':'ظهير أيسر','rb':'ظهير أيمن','lwb':'ظهير أيسر','rwb':'ظهير أيمن','dm':'ارتكاز','am':'صانع ألعاب','lm':'وسط أيسر','rm':'وسط أيمن',
+     'lw':'جناح أيسر','rw':'جناح أيمن','st':'رأس حربة','ss':'مهاجم ثاني'}
+plog={'mano':0,'season':0,'career':0,'reg':0}
+for mp in m['players']:
+  pid=mp['id'];reg=mp.get('pr') or mp['p'];mp['pr']=reg
+  car=CAR.get(pid,[None,None]);cc=car[1]
+  se=SEA.get(pid) or {'n':0,'cat':{},'role':{}}
+  sc=None
+  if se['n']>=3:
+    top=max(se['cat'].values());tied=[k for k,v in se['cat'].items() if v==top]
+    sc=next((x for x in (cc,reg) if x in tied),sorted(tied)[0])
+  src,p=next(((a,b) for a,b in (('mano',MANO.get(pid)),('season',sc),('career',cc),('reg',reg)) if b),('reg',reg))
+  plog[src]+=1
+  if mp['p']!=p: log.append(f"   {src} {pid}: {mp['p']} -> {p}")
+  mp['p']=p;mp['ps']=src
+  p2=None
+  if p!='GK':
+    cands=[k for k,v in sorted(se['cat'].items(),key=lambda x:-x[1]) if v>=3]+[cc,reg]   # الأقرب للواقع أول: هالموسم ← المسيرة ← التسجيل
+    p2=next((x for x in cands if x and x!=p and x!='GK'),None)
+  if p2: mp['p2']=p2
+  else: mp.pop('p2',None)
+  rl=None
+  if p!='GK':
+    rs=sorted(((v,k) for k,v in se['role'].items() if RC.get(k)==p),reverse=True)
+    if se['n']>=3 and rs: rl=rs[0][1]
+    elif TMR.get(car[0]) and RC.get(TMR[car[0]])==p: rl=TMR[car[0]]
+  if rl in RAR: mp['pd']=RAR[rl]
+  else: mp.pop('pd',None)
+log.append(f'   main position sources: {plog}')
 for pid,(nat,cc) in {k:v for k,v in F.get('_nat',{}).items() if not k.startswith('_')}.items():
   mp=byid.get(pid)
   if mp and (mp['nat'],mp['f'])!=(nat,cc): log.append(f"   mano {pid}: {mp['nat']} -> {nat}");mp['nat'],mp['f']=nat,cc
