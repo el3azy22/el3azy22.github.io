@@ -326,6 +326,24 @@ def squad_index():
     return {(p[5] or f"{'' if p[0] is None else p[0]}|{p[1]}"): (fix.get(c['id'], c['id']), p[2]) for c in sq.get('clubs', []) for p in c.get('p', [])}
 
 
+_PH = None
+
+
+def pos_at(pid, t):
+    """مركز اللاعب وقت المباراة (t بالملي ثانية) من سجل المراكز، أو None لو ما في سجل. نظام المراكز لكل المنصة (27 نوفمبر)."""
+    global _PH
+    if _PH is None:
+        try:
+            _PH = json.load(open(os.path.join(ROOT, '_tools', 'sync', 'pos_hist.json'), encoding='utf8'))
+        except Exception:
+            _PH = {}
+    cur = None
+    for ts, p in _PH.get(pid) or []:
+        if ts <= t:
+            cur = p
+    return {'GK': 'GK', 'DF': 'DEF', 'MD': 'MID', 'FW': 'FWD'}.get(cur)
+
+
 def k5_entry(x, stats_by_club, sqi):
     """خماسي مشجع واحد في جولة ⇒ [(يوم المباراة، نقاط الخانة)] للخانات اللي خلصت مبارياتها.
     الخانة ما تنحسب (صفر) لو: المركز غلط، نادي اللاعب مب ناديه الحقيقي، اللاعب مكرر، أو ثالث لاعب من نفس النادي."""
@@ -343,12 +361,12 @@ def k5_entry(x, stats_by_club, sqi):
         seen.add(k); per_club[c] += 1
         if per_club[c] > 2:
             continue
-        pos = real[1]
-        if (K5_POS[i] and pos != K5_POS[i]) or (K5_POS[i] is None and pos == 'GK'):
-            continue
         m = stats_by_club.get(c)
         if not m:
             continue                     # مباراته ما خلصت لين الحين
+        pos = (pos_at(k, int(m['t'])) if m.get('t') else None) or real[1]   # مركزه وقت المباراة
+        if (K5_POS[i] and pos != K5_POS[i]) or (K5_POS[i] is None and pos == 'GK'):
+            continue
         st = m['p'].get(k)
         if not isinstance(st, dict):
             out.append((m['d'], 0, i)); continue   # ما لعب

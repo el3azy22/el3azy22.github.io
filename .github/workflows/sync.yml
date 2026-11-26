@@ -31,7 +31,7 @@ jobs:
           python3 _tools/sync/career_pos.py || echo "::warning::مراكز المسيرة ما تحدثت (يبقى آخر ملف)"
           python3 _tools/sync/season_pos.py || echo "::warning::مراكز هالموسم ما تحدثت (يبقى آخر ملف)"
           python3 _tools/sync/sync.py
-          git add -A tashkila/squads.json mano/data.json mano/assets/p _tools/sync/report.json _tools/sync/career_pos.json _tools/sync/season_pos.json _tools/sync/season_lineups.json predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json predict/open.json predict/mopen.json setup/rules.html
+          git add -A tashkila/squads.json mano/data.json mano/assets/p _tools/sync/report.json _tools/sync/career_pos.json _tools/sync/season_pos.json _tools/sync/season_lineups.json _tools/sync/pos_hist.json predict/data.json predict/table.json _tools/predict/cache _tools/firebase/rules.json predict/lock.json predict/open.json predict/mopen.json setup/rules.html
           if ! git diff --cached --quiet; then
             git commit -m "مزامنة القوائم من المواقع الرسمية" -q
             git pull --rebase -q && git push -q

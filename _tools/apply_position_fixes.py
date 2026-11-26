@@ -56,6 +56,17 @@ for mp in m['players']:
   if rl in RAR: mp['pd']=RAR[rl]
   else: mp.pop('pd',None)
 log.append(f'   main position sources: {plog}')
+# سجل المراكز (قرار إبراهيم 27 نوفمبر: النظام لكل التحديات): كل تغيير ينحفظ بوقته، عشان التحدي يحسب
+# بمركز اللاعب وقت المباراة، فمحد ينظلم لو تغيّر مركز لاعبه بعد ما اختاره (الخماسي وأي تحدي قادم)
+import time
+HP=f'{R}/_tools/sync/pos_hist.json'
+H=json.load(open(HP,encoding='utf8')) if os.path.exists(HP) else {}
+now=int(time.time()*1000)
+for mp in m['players']:
+  h=H.setdefault(mp['id'],[])
+  if not h: h.append([0,mp['p']])
+  elif h[-1][1]!=mp['p']: h.append([now,mp['p']])
+json.dump(H,open(HP,'w',encoding='utf8'),ensure_ascii=False,separators=(',',':'))
 for pid,(nat,cc) in {k:v for k,v in F.get('_nat',{}).items() if not k.startswith('_')}.items():
   mp=byid.get(pid)
   if mp and (mp['nat'],mp['f'])!=(nat,cc): log.append(f"   mano {pid}: {mp['nat']} -> {nat}");mp['nat'],mp['f']=nat,cc

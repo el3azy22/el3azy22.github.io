@@ -50,7 +50,7 @@ def catalog(players):
                              'f': (lambda nat: lambda p: p.get('nat') == nat)(nat)}
     for k, nm in POS.items():
         C['p:' + k] = {'t': 'pos', 'l': nm, 'q': f'لاعب مركزه {nm}', 'ic': 'pos:' + k,
-                       'f': (lambda k: lambda p: p.get('p') == k)(k)}
+                       'f': (lambda k: lambda p: k in (p.get('p'), p.get('p2')))(k)}   # المركز الأساسي أو الثاني (نظام المراكز 27 نوفمبر)
     C['a:30'] = {'t': 'age', 'l': 'العمر 30+', 'q': 'لاعب عمره 30 سنة أو أكثر', 'ic': 'txt:30+', 'f': lambda p: (p.get('a') or 0) >= 30}
     C['a:21'] = {'t': 'age', 'l': 'العمر 21 أو أقل', 'q': 'لاعب عمره 21 سنة أو أقل', 'ic': 'txt:21-', 'f': lambda p: 0 < (p.get('a') or 0) <= 21}
     C['no:1-11'] = {'t': 'num', 'l': 'رقم القميص من 1 إلى 11', 'q': 'لاعب رقم قميصه من 1 إلى 11', 'ic': 'shirt',

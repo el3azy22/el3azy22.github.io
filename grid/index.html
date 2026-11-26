@@ -181,7 +181,7 @@ const lb=s=>String(s).replace(/(\d+)\+/g,'<bdi dir="ltr">$1+</bdi>');   // «30+
 // ── الشروط (من رمز الشرط في الجدول) ──
 function atoms(id){return id.split('+').map(a=>{const [t,v]=a.split(':');
   if(t==='n')return{f:p=>p.nat===v,no:p=>`جنسيته ${p.nat}، والمطلوب ${v}`};
-  if(t==='p')return{f:p=>p.p===v,no:p=>`مركزه ${POS[p.p]||'—'}، والمطلوب ${POS[v]}`};
+  if(t==='p')return{f:p=>p.p===v||p.p2===v,no:p=>`مركزه ${POS[p.p]||'—'}${p.p2?' (وأحياناً '+POS[p.p2]+')':''}، والمطلوب ${POS[v]}`};   // الأساسي أو الثاني
   if(t==='a'&&v==='30')return{f:p=>(p.a||0)>=30,no:p=>`عمره ${p.a}، والمطلوب 30 أو أكثر`};
   if(t==='a'&&v==='21')return{f:p=>p.a>0&&p.a<=21,no:p=>`عمره ${p.a}، والمطلوب 21 أو أقل`};
   if(t==='st')return{f:p=>p.st===v,no:p=>`في الدوري ${STN[p.st]||'—'}، والمطلوب ${STN[v]}`};
