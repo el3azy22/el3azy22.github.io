@@ -86,14 +86,29 @@ def main():
             out.append(a)
         return out
 
+    def toks(p):
+        """كلمات اسم لاعبنا: الاسم الإنجليزي + الاسم الكامل في المعرّف + الأسماء المعروفة."""
+        out = set()
+        for x in names(p) + [p['id'].replace('-', ' ')]:
+            out |= {t for t in nrm(x) if len(t) > 2}
+        return out
+
+    def tm(t, ct, r=0.7):
+        return any(difflib.SequenceMatcher(None, t, c).ratio() >= r or (r < 0.8 and len(t) >= 5 and len(c) >= 4 and t[:4] == c[:4]) for c in ct)
+
     def match(club, no, name):
+        """مطابقة صارمة بنفس النادي:
+        - نفس الرقم + الاسم الأول يطابق (أو الاسم الوحيد مثل «ماركينيو»)
+        - أو بدون رقم: كل كلمات الاسم تطابق ولاعب واحد بس."""
         ps = by_club.get(club) or []
-        best = max(ps, key=lambda p: max(sim(name, x) for x in names(p)), default=None)
-        bs = max((sim(name, x) for x in names(best)), default=0) if best else 0
-        same_no = [p for p in ps if no is not None and str(p.get('no')) == str(no)]
-        if same_no and max(sim(name, x) for x in names(same_no[0])) >= 0.6:
-            return same_no[0]
-        return best if bs >= 0.85 else None
+        ft = [t for t in nrm(name) if len(t) > 2]
+        if not ft:
+            return None
+        for p in ps:
+            if no is not None and str(p.get('no')) == str(no) and tm(ft[0], toks(p)):
+                return p
+        full = [p for p in ps if len(ft) >= 2 and all(tm(t, toks(p), 0.85) for t in ft) and tm(ft[-1], toks(p), 0.9)]   # اسم العايلة لازم يطابق بقوة
+        return full[0] if len(full) == 1 else None
 
     out, miss = {}, 0
     for mid, rows in lineups().items():

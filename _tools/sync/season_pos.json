@@ -48,11 +48,11 @@
 },
 "abdulla-abbas-ibrahim-salem-al-balooshi": {
 "cat": {
-"DF": 3
+"DF": 1
 },
-"n": 3,
+"n": 1,
 "role": {
-"lb": 3
+"lb": 1
 }
 },
 "abdulla-faisal-nasser-nasser-al-karbi": {
@@ -924,6 +924,15 @@
 "lw": 5
 }
 },
+"guilherme-sucigan-mafra-cunha": {
+"cat": {
+"FW": 3
+},
+"n": 3,
+"role": {
+"rw": 3
+}
+},
 "hamad-abdulla-mohamed-salim-almeqbaali": {
 "cat": {
 "GK": 7
@@ -1611,12 +1620,10 @@
 },
 "marius-mihai-marin": {
 "cat": {
-"DF": 4,
 "MD": 6
 },
-"n": 10,
+"n": 6,
 "role": {
-"cb": 4,
 "cm": 1,
 "dm": 5
 }
@@ -1802,15 +1809,6 @@
 "n": 1,
 "role": {
 "st": 1
-}
-},
-"mohammed-salem-jawhar-salmeen-alkhateri": {
-"cat": {
-"DF": 2
-},
-"n": 2,
-"role": {
-"cb": 2
 }
 },
 "moussa-diarra": {
