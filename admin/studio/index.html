@@ -62,6 +62,11 @@ html.emb body{padding:0;background:transparent}html.emb header,html.emb .note,ht
     <div class="btns"><button class="btn" data-share="J">شارك الصورة</button><button class="btn g" data-copy="J">انسخ النص</button></div></div>
   </section>
 
+  <section class="card" id="cN">
+    <h2>📣 مفتوح الحين <small>توقع النتيجة · توقّع تشكيلة ناديك</small></h2>
+    <p class="when">المباريات اللي توقعها انطلق وما بدت. انشرها عشان الجماهير تنتبه قبل يوم المباراة.</p>
+    <div id="bN"><div class="empty">لحظة...</div></div>
+  </section>
   <section class="card" id="cF">
     <h2>⚽ مباريات اليوم <small>ذكّرهم يتوقعون</small></h2>
     <p class="when">انشرها الصبح يوم المباريات: موعد كل مباراة، ومتى يقفل توقع النتيجة والتشكيلة.</p>
@@ -334,6 +339,49 @@ async function rF(){
   $('#iF').src=OUT.F.url;$('#tF').textContent=OUT.F.text;if(g){$('#iG').src=OUT.G.url;$('#tG').textContent=OUT.G.text}bindBtns();
 }
 
+
+/* N: مفتوح الحين — مباريات توقعها انطلق (predict/open.json + mopen.json) وما بدت */
+async function openList(){
+  const [P,O,MO]=await Promise.all(['../../predict/data.json','../../predict/open.json','../../predict/mopen.json'].map(u=>fetch(u+'?v='+Date.now()).then(r=>r.ok?r.json():null).catch(()=>null)));
+  if(!P)return [];const T=Date.now();
+  return (P.matches||[]).filter(m=>{const op=(MO||{})[m.id]||(O||{})[m.wk];return m.t>T&&op&&op<=T}).sort((a,b)=>a.t-b.t)}
+const dateOf=t=>{const n=new Date(t+4*3600e3);return `${DAYS[n.getUTCDay()]} ${n.getUTCDate()} ${MONS[n.getUTCMonth()]}`};
+function matchBig(x,W,m,y){const cl=D.clubs;
+  rr(x,70,y,W-140,330,34);x.fillStyle='rgba(12,38,56,.88)';x.fill();x.strokeStyle='rgba(215,180,101,.5)';x.lineWidth=2;x.stroke();
+  crestAt(x,CR[m.h],m.h,W-230,y+130,150);crestAt(x,CR[m.a],m.a,230,y+130,150);
+  x.textAlign='center';x.fillStyle='#FFF5E5';x.font=`700 44px ${F}`;x.fillText(cl[m.h],W-230,y+262);x.fillText(cl[m.a],230,y+262);
+  x.fillStyle='rgba(215,180,101,.8)';x.font=`700 56px ${F}`;x.fillText('×',W/2,y+120);
+  x.fillStyle='#F0D99A';x.font=`700 34px ${F}`;x.fillText(dateOf(m.t),W/2,y+196);
+  segs(x,W/2,y+246,[[hm(m.t),`700 34px ${F}`,'#FFF5E5'],[' '+dayPart(m.t),`500 30px ${F}`,'rgba(255,245,229,.75)']]);}
+function rowsAt(x,W,y,list){list.forEach(([ic,t,d],i)=>{const yy=y+i*120;rr(x,70,yy,W-140,104,24);x.fillStyle='rgba(12,38,56,.75)';x.fill();x.strokeStyle='rgba(215,180,101,.3)';x.lineWidth=2;x.stroke();
+  x.textAlign='center';x.font=`42px ${F}`;x.fillStyle='#fff';x.fillText(ic,W-130,yy+52);
+  x.textAlign='right';x.direction='rtl';x.fillStyle='#F0D99A';x.font=`700 32px ${F}`;x.fillText(t,W-190,yy+36);
+  const fd=`500 25px ${F}`,cd='rgba(255,245,229,.78)';segs(x,W-190,yy+76,d.split(/(\d+-\d+)/).filter(Boolean).map(t=>/^\d+-\d+$/.test(t)?[t,`600 25px ${F}`,'#F0D99A']:[t,fd,cd]),'right')})}   // النتايج (2-1) بروحها عشان ما تنقلب
+function cardN1(m){const cl=D.clubs;
+  const {cv,x,W}=frame('الجولة '+m.wk,'مفتوح الحين للجميع','توقع النتيجة');
+  matchBig(x,W,m,350);
+  rowsAt(x,W,730,[['🎯','النتيجة بالضبط = 10 نقاط','نفس الأهداف للفريقين'],['📏','الفائز والفارق = 6 نقاط','الفائز صح، وبنفس فرق الأهداف'],['✅','الفائز بس = 4 نقاط','وكل نقطة لك ترفع ناديك في دوري الجماهير']]);
+  x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText('التوقع يقفل مع صافرة البداية',W/2,1110);
+  footer(x,W,'توقّع الحين','el3azy.com/predict');
+  const text=`🔮 توقع مباراة ${cl[m.h]} و${cl[m.a]} (الجولة ${m.wk}) مفتوح الحين للجميع\n🗓️ ${dateOf(m.t)} · ${hm(m.t)} ${dayPart(m.t)}\n\n🎯 النتيجة بالضبط 10 نقاط\n📏 الفائز والفارق 6\n✅ الفائز بس 4\n\nالتوقع يقفل مع صافرة البداية، وكل نقطة لك ترفع ناديك في دوري الجماهير 🏆\nel3azy.com/predict`;
+  return {cv,text}}
+function cardN2(m){const cl=D.clubs,lock=m.t-2*3600e3;
+  const {cv,x,W}=frame('جمهور '+cl[m.h]+' و'+cl[m.a],'مفتوح الحين','تشكيلة ناديك');
+  matchBig(x,W,m,350);
+  rowsAt(x,W,730,[['🧩','توقّع التشكيلة الأساسية','11 لاعب · كل أساسي صح = نقطة'],['⚽','منو بيسجل؟','سجّل لاعبك = 3 نقاط · كل هدف زيادة نقطة · وأول هدف نقطتين'],['⏳','يقفل قبل المباراة بساعتين',dateOf(lock)+' · '+hm(lock)+' '+dayPart(lock)]]);
+  x.textAlign='center';x.fillStyle='rgba(255,245,229,.7)';x.font=`500 28px ${F}`;x.fillText('نقاطك لجمهور ناديك في دوري الجماهير',W/2,1110);
+  footer(x,W,'توقّع تشكيلة ناديك','el3azy.com/tashkila');
+  const text=`🧩 جمهور ${cl[m.h]} و${cl[m.a]}: توقّع تشكيلة ناديك مفتوح الحين\nمباراة ${dateOf(m.t)} · ${hm(m.t)} ${dayPart(m.t)}\n\n11 لاعب، وكل أساسي صح = نقطة لجمهور ناديك\n⚽ ومعه «منو بيسجل؟»: لو سجّل لاعبك تاخذ نقاط\n⏳ يقفل ${dateOf(lock)} الساعة ${hm(lock)} ${dayPart(lock)}\n\nمنو يعرف ناديه أكثر؟ 👇\nel3azy.com/tashkila`;
+  return {cv,text}}
+async function rN(){
+  const box=$('#bN'),L=(await openList()).filter(m=>{const n=new Date(m.t+4*3600e3),t=new Date(Date.now()+4*3600e3);return n.toISOString().slice(0,10)!==t.toISOString().slice(0,10)});   // مباريات اليوم في «مباريات اليوم»
+  if(!L.length){$('#cN').remove();return}
+  let h='';
+  for(const m of L){for(const [k,fn] of [['N1'+m.id,cardN1],['N2'+m.id,cardN2]]){const r=fn(m),b=await blobOf(r.cv);OUT[k]={blob:b,text:HT(r.text),url:URL.createObjectURL(b),name:`el3azy-open-${k}.png`};
+    h+=`<img class="prev" id="i${k}" alt=""><div class="tw" id="t${k}"></div><div class="btns"><button class="btn" data-share="${k}">شارك الصورة</button><button class="btn g" data-copy="${k}">انسخ النص</button></div><div style="height:22px"></div>`}}
+  box.innerHTML=h;Object.keys(OUT).filter(k=>k.startsWith('N')).forEach(k=>{if($('#i'+k)){$('#i'+k).src=OUT[k].url;$('#t'+k).textContent=OUT[k].text}});bindBtns();
+}
+
 /* E: تشكيلة الجمهور — أكثر حارس وأكثر 10 لاعبين اختارهم جمهور النادي (fans/tp.json → x_<النادي>، بعد القفل بس) */
 const URL_T='https://el3azy.com/tashkila/';
 async function crowdList(){
@@ -585,6 +633,7 @@ async function init(){
   K5C=await fetch('../../khamsa/config.json?v='+Date.now()).then(r=>r.ok?r.json():{}).catch(()=>({}));
   if(Date.now()<(K5C.launch||0)+3*864e5)await rI();else $('#cI').remove();
   if(Date.now()<1800129600000)await rJ();else $('#cJ').remove();
+  await rN();
   await rF();
   LE=await crowdList();await rE();
   if(EMB)return;   // داخل لوحة الإحصائيات: صور اليوم بس (الصور الثقيلة الباقية تطيّح صفحة الآيفون)
