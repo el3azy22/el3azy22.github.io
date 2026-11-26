@@ -30,7 +30,10 @@ RC={'cb':'DF','lb':'DF','rb':'DF','lwb':'DF','rwb':'DF','dm':'MD','cm':'MD','am'
 RAR={'cb':'قلب دفاع','lb':'ظهير أيسر','rb':'ظهير أيمن','lwb':'ظهير أيسر','rwb':'ظهير أيمن','dm':'ارتكاز','am':'صانع ألعاب','lm':'وسط أيسر','rm':'وسط أيمن',
      'lw':'جناح أيسر','rw':'جناح أيمن','st':'رأس حربة','ss':'مهاجم ثاني'}
 plog={'mano':0,'season':0,'career':0,'reg':0}
+import time as _t
+NOW=int(_t.time()*1000)
 for mp in m['players']:
+  OLD=(mp.get('p'),mp.get('p2'),mp.get('pd'))
   pid=mp['id'];reg=mp.get('pr') or mp['p'];mp['pr']=reg
   car=CAR.get(pid,[None,None]);cc=car[1]
   se=SEA.get(pid) or {'n':0,'cat':{},'role':{}}
@@ -55,6 +58,15 @@ for mp in m['players']:
     elif TMR.get(car[0]) and RC.get(TMR[car[0]])==p: rl=TMR[car[0]]
   if rl in RAR: mp['pd']=RAR[rl]
   else: mp.pop('pd',None)
+  # تثبيت اليوم (قرار إبراهيم 27 نوفمبر): لو المركز تغيّر، اليوم الحالي يكمل على القديم ويتغيّر من بداية اليوم القادم
+  # (صفحة «منو اللاعب؟» تقرا pz لو وقت التغيير بعد بداية اليوم)، عشان التلميح والألوان ما يتغيرون وسط اليوم
+  NEW=(mp.get('p'),mp.get('p2'),mp.get('pd'))
+  if NEW!=OLD and OLD[0]:
+    pz=mp.get('pz')
+    if not (pz and NOW-pz['t']<86400000):   # تغيير ثاني بنفس اليوم: نخلي أول نسخة
+      mp['pz']={'p':OLD[0],'p2':OLD[1],'pd':OLD[2],'t':NOW}
+  elif mp.get('pz') and NOW-mp['pz']['t']>2*86400000:
+    mp.pop('pz')
 log.append(f'   main position sources: {plog}')
 # سجل المراكز (قرار إبراهيم 27 نوفمبر: النظام لكل التحديات): كل تغيير ينحفظ بوقته، عشان التحدي يحسب
 # بمركز اللاعب وقت المباراة، فمحد ينظلم لو تغيّر مركز لاعبه بعد ما اختاره (الخماسي وأي تحدي قادم)

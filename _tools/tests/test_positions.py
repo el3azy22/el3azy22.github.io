@@ -121,4 +121,27 @@ check('الشبكة (البناء) تقبل المركز الثاني', "p.get('
 gi = open(f'{R}/grid/index.html', encoding='utf8').read()
 check('الشبكة (الصفحة) تقبل المركز الثاني', 'p.p===v||p.p2===v' in gi)
 
+# 9) تثبيت اليوم: تغيير المركز ينحفظ القديم (pz) والصفحة تكمل عليه لين نهاية اليوم
+import shutil, tempfile
+tmp = tempfile.mkdtemp()
+for rel in ['_tools/apply_position_fixes.py', '_tools/position_fixes.json', '_tools/name_fixes.json', '_tools/sync/career_pos.json',
+            '_tools/sync/season_pos.json', '_tools/sync/pos_hist.json', 'mano/data.json', 'tashkila/squads.json']:
+    os.makedirs(os.path.dirname(f'{tmp}/{rel}'), exist_ok=True); shutil.copy(f'{R}/{rel}', f'{tmp}/{rel}')
+td = json.load(open(f'{tmp}/mano/data.json', encoding='utf8'))
+for p in td['players']:
+    if p['id'] == 'suhail-ahmed-alnoobi-saeed':
+        p['p'], p['pd'] = 'MD', 'صانع ألعاب'; p.pop('p2', None); p.pop('pz', None)
+json.dump(td, open(f'{tmp}/mano/data.json', 'w', encoding='utf8'), ensure_ascii=False)
+subprocess.run([sys.executable, f'{tmp}/_tools/apply_position_fixes.py'], capture_output=True)
+sp_ = next(p for p in json.load(open(f'{tmp}/mano/data.json', encoding='utf8'))['players'] if p['id'] == 'suhail-ahmed-alnoobi-saeed')
+check('تثبيت اليوم: الجديد في p والقديم في pz', sp_['p'] == 'FW' and (sp_.get('pz') or {}).get('p') == 'MD', sp_.get('pz'))
+shutil.rmtree(tmp)
+fz = re.search(r"\{const \[y,m,d\]=D\.start\.split.*?\}\)\}", html).group(0)
+js2 = ("const D={start:'2026-11-17',players:[{p:'FW',p2:'DF',pz:{p:'MD',p2:null,t:%d}},{p:'FW',pz:{p:'DF',t:%d}}]};const idx=%d;" + fz +
+       ";console.log(JSON.stringify(D.players.map(p=>[p.p,p.p2||null])))")
+ds = 1794859200000 + 10 * 86400000
+out2 = json.loads(subprocess.run(['node', '-e', js2 % (ds + 5 * 3600000, ds - 3600000, 10)], capture_output=True, text=True).stdout)
+check('تثبيت اليوم في الصفحة: تغيّر بعد بداية اليوم = القديم، وقبلها = الجديد', out2 == [['MD', None], ['FW', None]], out2)
+check('لاعب اليوم: تلميح المركز فيه المركز الثاني', 'ويلعب ${POSS[ANS.p2]} أحياناً' in html)
+
 print(f'النتيجة: {ok} نجح · {bad} فشل')
