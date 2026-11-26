@@ -90,10 +90,12 @@ check('أدوار FotMob', [S.role(x) for x in (11, 32, 38, 36, 65, 84, 82, 88, 
 # 6) «منو اللاعب؟»: خانة المركز (نفس كود الصفحة)
 html = open(f'{R}/mano/index.html', encoding='utf8').read()
 line = re.search(r"r\.p=p\.p===a\.p\?.*?;\n", html).group(0)
-js = "const LINE={GK:0,DF:1,MD:2,FW:3};function f(p,a){const r={};" + line + "return r.p}\n"
-cases = [({'p': 'FW'}, {'p': 'FW'}, 'ok'), ({'p': 'DF'}, {'p': 'FW', 'p2': 'DF'}, 'near'), ({'p': 'DF'}, {'p': 'FW'}, ''),
-         ({'p': 'FW', 'p2': 'DF'}, {'p': 'DF'}, 'near'), ({'p': 'MD'}, {'p': 'FW'}, 'near'), ({'p': 'GK'}, {'p': 'MD'}, ''),
-         ({'p': 'GK'}, {'p': 'DF'}, 'near'), ({'p': 'FW'}, {'p': 'GK'}, '')]
+par = re.search(r"const parrow=.*?;\n", html).group(0)
+js = "const LINE={GK:0,DF:1,MD:2,FW:3};" + par + "function f(p,a){const r={};" + line + "const ar=parrow(p.p,a.p);return r.p+'|'+(ar.includes('⬆')?'up':ar.includes('⬇')?'down':'')}\n"
+cases = [({'p': 'FW'}, {'p': 'FW'}, 'ok|'), ({'p': 'DF'}, {'p': 'FW', 'p2': 'DF'}, 'near|up'), ({'p': 'DF'}, {'p': 'FW'}, '|up'),
+         ({'p': 'FW', 'p2': 'DF'}, {'p': 'DF'}, '|down'), ({'p': 'MD'}, {'p': 'FW'}, '|up'), ({'p': 'GK'}, {'p': 'MD'}, '|up'),
+         ({'p': 'FW'}, {'p': 'GK'}, '|down'), ({'p': 'MD'}, {'p': 'FW', 'p2': 'MD'}, 'near|up'), ({'p': 'FW'}, {'p': 'MD', 'p2': 'FW'}, 'near|down'),
+         ({'p': 'GK'}, {'p': 'DF'}, '|up')]
 js += f"console.log(JSON.stringify({json.dumps(cases)}.map(([g,a])=>f(g,a))))"
 out = json.loads(subprocess.run(['node', '-e', js], capture_output=True, text=True).stdout)
 for (gp, ap, want), got in zip(cases, out):
