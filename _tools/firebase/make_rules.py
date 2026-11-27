@@ -345,4 +345,31 @@ rules["rules"]["r"]={".read":ISADM,"$d":{"$m":{"$u":{
    "t":{".validate":"newData.val() == now"},
    "$other":{".validate":False}}}}}
 
+# ── «علم الاتحاد» (صفحة عيد الاتحاد الـ55، el3azy.com/alam — مستودع مستقل) ──
+# مستقل تماماً عن باقي المنصة: يقرا ويكتب تحت alam/ بس.
+# alam/g/$u = {e: الإمارة، m: رقم الرسالة (من قائمة ثابتة، ما في كتابة حرة)، c: النادي (اختياري)، t: وقت السيرفر} — بصمة وحدة لكل جهاز، ما تنمسح ولا تتعدل
+# alam/t = {n: عدد البصمات، e/$e: لكل إمارة، c/$c: لكل نادي} — مقروءة، وكل عداد +1 بس ويا بصمة يديدة في نفس الطلب
+EM="ad|dxb|shj|ajm|uaq|rak|fuj"
+AG=lambda after:f"{after}.child('g').child(auth.uid)"
+afresh=lambda after:f"auth != null && !root.child('alam').child('g').child(auth.uid).exists() && {AG(after)}.exists()"
+AT0="root.child('alam').child('t')"
+a2="newData.parent().parent()"; a3="newData.parent().parent().parent()"
+rules["rules"]["alam"]={
+ "g":{".read":True,".indexOn":["t"],"$u":{
+   ".write":"auth != null && auth.uid == $u && !data.exists()",
+   ".validate":("newData.hasChildren(['e','m','t'])"
+     f" && {a2}.child('t').child('n').val() == ({AT0}.child('n').exists() ? {AT0}.child('n').val() : 0) + 1"
+     f" && {a2}.child('t').child('e').child(newData.child('e').val()).val() == ({AT0}.child('e').child(newData.child('e').val()).exists() ? {AT0}.child('e').child(newData.child('e').val()).val() : 0) + 1"
+     f" && (!newData.child('c').exists() || {a2}.child('t').child('c').child(newData.child('c').val()).val() == ({AT0}.child('c').child(newData.child('c').val()).exists() ? {AT0}.child('c').child(newData.child('c').val()).val() : 0) + 1)"),
+   "e":{".validate":f"newData.isString() && newData.val().matches(/^({EM})$/)"},
+   "m":{".validate":"newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 11"},
+   "c":{".validate":f"newData.isString() && newData.val().matches(/^({CL})$/)"},
+   "t":{".validate":"newData.val() == now"},
+   "$other":{".validate":False}}},
+ "t":{".read":True,
+   "n":{".write":afresh(a2),".validate":f"newData.isNumber() && {inc}"},
+   "e":{"$e":{".write":afresh(a3),".validate":f"newData.isNumber() && {inc} && {AG(a3)}.child('e').val() == $e"}},
+   "c":{"$c":{".write":afresh(a3),".validate":f"newData.isNumber() && {inc} && {AG(a3)}.child('c').val() == $c"}},
+   "$o":{".validate":False}}}
+
 json.dump(rules,open('rules.json','w'),ensure_ascii=False,separators=(',',':'))
