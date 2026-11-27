@@ -14,6 +14,7 @@ API = 'https://www.uaefa.ae/api/'
 COMP = os.environ.get('COMP', '2571')  # دوري أدنوك للمحترفين 2026/2027
 UAE = timezone(timedelta(hours=4))
 BACK, AHEAD = 7, 5  # أيام: نعرض المباريات اللي طافت (للنتائج) واللي ياية
+CLN = {'ain':'العين','wahda':'الوحدة','jazira':'الجزيرة','shababahli':'شباب الأهلي','sharjah':'الشارقة','wasl':'الوصل','nasr':'النصر','baniyas':'بني ياس','ajman':'عجمان','kalba':'كلباء','khorfakkan':'خورفكان','dhafra':'الظفرة','hatta':'حتا','united':'يونايتد'}   # أسماء الأندية الموحدة في المنصة (مثلاً «شباب الأهلي» مب «شباب الأهلي دبي»)
 CLUB = {'4': 'nasr', '12': 'kalba', '8': 'wahda', '21': 'ajman', '31': 'dhafra', '3': 'sharjah', '2': 'wasl',
         '464': 'united', '11': 'khorfakkan', '6': 'shababahli', '20': 'hatta', '9': 'jazira', '5': 'baniyas', '1': 'ain'}
 SQ_ID = {'shababahli': 'shabab'}  # اسم النادي في squads.json لو يختلف
@@ -228,7 +229,7 @@ def team(tm, side, ev, sq):
     coach = next((o for o in tm.get('official') or [] if o.get('title_name_en') == 'Coach'), None)
     form = (a.get('formation') or '').split(':')[-1].strip()
     pg = sum(1 for x in ev if x['type'] == 'goal' and x.get('club_dir') == side and x.get('goal_type') == '2')
-    return {'pg': pg or None, 'c': slug, 'cid': a['id'], 'name': a['name_ar'], 'sc': int(a['score']) if (a.get('score') or '').isdigit() else None,
+    return {'pg': pg or None, 'c': slug, 'cid': a['id'], 'name': CLN.get(slug, a['name_ar']), 'sc': int(a['score']) if (a.get('score') or '').isdigit() else None,
             'fm': form, 'coach': {'i': 'c' + coach['person_id'], 'n': fix_ya(coach['shortname_ar'].strip())} if coach else None,
             'pl': players}
 
@@ -405,7 +406,7 @@ def main():
             continue
         mid = it['match_id']
         m = {'id': mid, 'wk': int(it['week_no']), 't': k, 'st': int(it['status_id']),
-             'h': {'c': CLUB.get(it['club1_id'], ''), 'name': it['club1']}, 'a': {'c': CLUB.get(it['club2_ld'], ''), 'name': it['club2']}}
+             'h': {'c': CLUB.get(it['club1_id'], ''), 'name': CLN.get(CLUB.get(it['club1_id'], ''), it['club1'])}, 'a': {'c': CLUB.get(it['club2_ld'], ''), 'name': CLN.get(CLUB.get(it['club2_ld'], ''), it['club2'])}}
         o = old.get(mid)
         # نسحب التشكيلة من ساعة قبل البداية، ونوقف التحديث بعد ما تخلص المباراة وتثبت البيانات بـ 3 ساعات
         need = now.timestamp() * 1000 >= k - 75 * 60000 and not (o and o.get('st') == 6 and o.get('h', {}).get('pl') and now.timestamp() * 1000 > k + 5 * 3600000)

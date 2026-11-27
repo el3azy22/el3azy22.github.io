@@ -120,6 +120,8 @@ h1{margin:0;font-size:24px;font-weight:700;line-height:1.2;padding-bottom:.26em}
 .msg{border-radius:20px;padding:18px 14px;margin:12px 0;text-align:center;line-height:1.9;border:1px solid rgba(215,180,101,.3);background:rgba(255,245,229,.04)}
 .msg b{color:#F6E3AE}
 footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:30px;line-height:1.9}footer .sadu{width:90px;margin:0 auto 10px}footer a{color:var(--gold);text-decoration:none;font-weight:600}
+.how3{display:grid;gap:10px}.how3>div{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.6}.how3 i{flex:none;width:24px;height:24px;border-radius:50%;background:var(--gold,#D7B465);color:#071D2B;font-style:normal;font-weight:700;display:grid;place-items:center;font-size:13px}
+.det{margin-top:10px}.det summary{cursor:pointer;color:var(--gold,#D7B465);font-weight:600;font-size:13px;padding:6px 0}.det ul{margin-top:6px}
 </style>
 </head>
 <body>
@@ -133,6 +135,12 @@ footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:30px;line-height
   </header>
   <div class="sadu" aria-hidden="true"></div>
   <div id="app"><div class="msg">لحظة...</div></div>
+  <div class="lbl">طريقة اللعب</div>
+  <div class="rules how3">
+    <div><i>1</i><span>اختار <b>5 لاعبين</b>: حارس، مدافع، وسط، مهاجم، ولاعب حر غير الحارس. <b>لاعبين بالكثير</b> من نفس النادي.</span></div>
+    <div><i>2</i><span>👑 اختار <b>القائد</b>: نقاطه تتضاعف.</span></div>
+    <div><i>3</i><span>كل لاعب <b>يقفل</b> مع بداية مباراة ناديه، والباقين تقدر تبدّلهم.</span></div>
+  </div>
   <div class="lbl">النقاط</div>
   <div class="rules">
     <table class="pt">
@@ -151,15 +159,14 @@ footer{text-align:center;font-size:12.5px;opacity:.6;margin-top:30px;line-height
         <tr class="m"><td>هدف عكسي</td><td colspan="4"><b>−2</b></td></tr>
       </tbody>
     </table>
-    <ul>
-      <li>5 لاعبين: حارس، مدافع، وسط، مهاجم، ولاعب حر (أي مركز غير الحارس). لاعبين اثنين بالكثير من نفس النادي.</li>
-      <li>👑 <b>القائد</b> نقاطه تتضاعف (موجبة أو سالبة).</li>
+    <details class="det"><summary>التفاصيل والحالات الخاصة</summary><ul>
+      <li>القائد نقاطه تتضاعف، موجبة أو سالبة.</li>
       <li>الشباك النظيفة لمن لعب 60 دقيقة أو أكثر وما دخل على فريقه هدف وهو في الملعب. والأهداف اللي تدخل تنحسب وهو في الملعب بس.</li>
       <li>ركلة الجزاء: اللي سجّلها ياخذ نقاط الهدف، واللي كسبها ياخذ نقاط الصناعة لو انسجلت.</li>
-      <li>كل لاعب يقفل مع بداية مباراة ناديه في الجولة، واللي ما بدت مبارياتهم تقدر تبدّلهم.</li>
-      <li>الطرد بإنذار ثاني = طرد بس (ما ينحسب معه الإنذار الأول). اللاعب اللي ما لعب = صفر.</li>
+      <li>الطرد بإنذار ثاني = طرد بس (ما ينحسب معه الإنذار الأول). واللاعب اللي ما لعب = صفر.</li>
+      <li>المركز: مركز اللاعب وقت مباراته، فلو تغيّر مركزه بعد ما اخترته ما تنظلم.</li>
       <li>النقاط تنحسب لك ولجمهور ناديك في <a href="../fans/" style="color:var(--gold)">دوري الجماهير</a>، في أسبوع مباراة كل لاعب.</li>
-    </ul>
+    </ul></details>
   </div>
   <footer><div class="sadu" aria-hidden="true"></div>أداة جماهيرية غير رسمية من <a href="https://x.com/el3azy22" target="_blank" rel="noopener" dir="ltr">@el3azy22</a> · <a href="../">منصة العازي</a></footer>
 </div>

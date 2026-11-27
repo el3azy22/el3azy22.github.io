@@ -123,6 +123,7 @@ header img{width:46px;height:46px;object-fit:contain}
 .pc.pv{opacity:.85}
 .prov{font-size:11px;opacity:.7;margin-top:6px}
 .pend{font-size:12px;color:var(--bad);text-align:center;margin-top:6px}
+.gdet{margin-top:10px}.gdet summary{cursor:pointer;font-weight:700;color:#D7B465;padding:4px 0;font-size:14px}
 </style></head><body><div class="w">
 <header><img src="../mano/assets/logo.png" alt=""><div class="ht"><h1>شبكة الدوري</h1><div class="sub">شبكة جديدة كل يوم</div></div>
 <span class="tbtn"><button id="helpB" aria-label="طريقة اللعب">؟</button><a href="../" aria-label="الصفحة الرئيسية للمنصة"><svg viewBox="0 0 24 24"><path d="M4 11.5 12 5l8 6.5"/><path d="M6.5 10v9h11v-9"/><path d="M10 19v-5h4v5"/></svg></a></span></header>
@@ -130,7 +131,7 @@ header img{width:46px;height:46px;object-fit:contain}
 <div id="main">
 <div class="bar"><div class="bx"><small>المحاولات</small><div class="v"><b id="sA">9</b><span class="dots" id="dots"></span></div></div>
 <div class="bx"><small>نقاطك</small><div class="v"><b id="sP">0</b></div></div>
-<div class="bx"><small>شبكة بكرة بعد</small><div class="v"><b class="tm" id="sT">--:--:--</b></div></div></div>
+<div class="bx"><small>الشبكة القادمة بعد</small><div class="v"><b class="tm" id="sT">--:--:--</b></div></div></div>
 <div class="me" id="me"></div>
 <div class="board"><div class="grid" id="g"></div></div>
 <div class="pend" id="pend" hidden></div>
@@ -142,15 +143,16 @@ header img{width:46px;height:46px;object-fit:contain}
 <div class="ex"><img src="../mano/assets/wahda.png" alt=""><span>مثال من شبكة ثانية: الوحدة × حارس = أي حارس يلعب في الوحدة هالموسم.</span></div>
 <div class="hr"><span>3</span><p>عندك <b>9 محاولات</b> للـ9 خانات. كل اختيار ياخذ محاولة، صح ولا غلط. واللاعب ما يتكرر في خانتين.</p></div>
 <div class="hr"><span>4</span><p>لو خلصت المحاولات وباقي خانات، تقدر تكمّلها في <b>الوقت الإضافي</b>، بس ما تنحسب.</p></div>
-<h3 style="margin-top:10px">معنى الشروط</h3>
+<details class="gdet"><summary>معنى الشروط</summary>
 <div class="hr"><span>•</span><p><b>يلعب في النادي هالموسم:</b> اسمه في قائمة النادي هالموسم، حتى لو ما شارك في مباراة.</p></div>
-<div class="hr"><span>•</span><p><b>الجنسية:</b> جنسية اللاعب المسجلة في الدوري.</p></div>
-<div class="hr"><span>•</span><p><b>المركز:</b> مركزه المسجل: حارس، دفاع، وسط، هجوم.</p></div>
+<div class="hr"><span>•</span><p><b>الجنسية:</b> نفس جنسيته في «منو اللاعب؟».</p></div>
+<div class="hr"><span>•</span><p><b>المركز:</b> حارس، دفاع، وسط، هجوم: المركز اللي يلعب فيه هالموسم، أو مركزه الثاني.</p></div>
 <div class="hr"><span>•</span><p><b>العمر:</b> عمره المسجل هالموسم.</p></div>
 <div class="hr"><span>•</span><p><b>رقم القميص:</b> رقم قميصه المسجل هالموسم.</p></div>
 <div class="hr"><span>•</span><p><b>مواطن / مقيم:</b> وضع اللاعب المسجل في قائمة الدوري.</p></div>
 <div class="hr"><span>•</span><p><b>سجّل هدف هالموسم:</b> عنده هدف أو أكثر في الدوري هالموسم، حسب الأهداف لين قبل الشبكة بيومين.</p></div>
 <div class="hr"><span>•</span><p>الشرط المركّب لازم يتحقق كامل: «وسط والعمر 30+» يعني لاعب وسط وعمره 30 أو أكثر.</p></div>
+</details>
 <h3 style="margin-top:10px">النقاط</h3>
 <div class="hr"><span>✅</span><p>جواب صح = <b>نقطة</b>.</p></div>
 <div class="hr"><span>⭐</span><p>جواب نادر = <b>نقطتين</b>. النادر: لاعب اختاره أقل من <bdi dir="ltr">10%</bdi> من اللي حلوا نفس الخانة. النسب تطلع بعد ما يحل الخانة 30 مشجع، والنادر يتثبت 12 بالليل.</p></div>

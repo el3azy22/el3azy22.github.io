@@ -264,7 +264,7 @@ footer a{color:var(--gold);text-decoration:none;font-weight:600}
    <li><b>النتيجة المعتمدة:</b> النتيجة الرسمية للمباراة. النقاط تطلع بعد نهاية المباراة بدقايق.</li>
    <li><b>المضاعفة:</b> مباراة وحدة في الجولة. لو انحفظت على أكثر من وحدة، تنحسب أول وحدة بالموعد.</li>
    <li><b>التأجيل:</b> لو تأجلت مباراة، توقعك يظل ويتعدل لين صافرتها الجديدة. ونقاطها تنحسب لما تنلعب.</li>
-   <li><b>التعادل في الترتيب:</b> يتقدم الأقل أخطاء (التوقع اللي جاب صفر = خطأ)، بعدها الأكثر توقعات، بعدها اللي خلّص توقعاته أول. والأندية: الأقل أخطاء في التشكيلة، وإذا تساووا نفس المركز.</li>
+   <li><b>التعادل في الترتيب:</b> يتقدم الأقل أخطاء (التوقع اللي نقاطه صفر = خطأ)، بعدها الأكثر توقعات، بعدها اللي خلّص توقعاته أول. والأندية: الأقل أخطاء في التشكيلة، وإذا تساووا نفس المركز.</li>
    <li><b>ترتيب الموسم:</b> مجموع نقاطك في كل الجولات. <b>ترتيب الأندية:</b> نقاط أفضل 11 مشجع لكل نادي في الجولة، والموسم مجموع الجولات.</li>
    <li>توقعاتك تنحسب لناديك ولاسمك اللي في بطاقة المشجع وقت ما توقعت.</li>
   </ul></details>
@@ -373,7 +373,7 @@ function card(m){
     const fin=m.st===FIN&&m.sh!=null;
     // شريط «توقعك» بعرض البطاقة: توقعك يمين، ونقاطك وسببها يسار (بلون النتيجة)
     const myS=p?`<div class="mine">توقعك <b class="ms">${SC(p.h,p.a)}</b>${p.x?' ⭐':''}</div>`:'<div class="mine no">ما توقعت</div>';
-    if(fin){const base=p?points(p.h,p.a,m.sh,m.sa):0,pt=base*(p&&p.x?2:1),why={10:'النتيجة بالضبط',6:'الفائز مع الفارق',4:'الفائز صح',0:'ما توقعت صح'}[base];
+    if(fin){const base=p?points(p.h,p.a,m.sh,m.sa):0,pt=base*(p&&p.x?2:1),why={10:'النتيجة بالضبط',6:'الفائز والفارق',4:'الفائز صح',0:'ما توقعت صح'}[base];
       mid=`<div class="res"><div class="fin">${SC(m.sh,m.sa,' ')}</div><div class="ft">انتهت</div>${myS}</div>`;
       foot=p?`<span class="ptc b${base}"><b dir="ltr">+${pt}</b>${why}${p.x&&base?' <i class="x2" dir="ltr">×2</i>':''}</span>`:'<span></span>';
     }else{
@@ -403,7 +403,7 @@ function renderMe(){
   const over=r.ms.length&&r.ms.every(m=>m.st===FIN&&m.sh!=null),mine=r.ms.filter(m=>MY[m.id]);
   if(over&&mine.length)h+=`<button class="btn" id="shareRes">𝕏 شارك نتيجتك في ${rlabel(r)}</button>`;
   else if(done)h+=`<button class="btn ghost" id="shareP">𝕏 شارك توقعاتك (${done} من ${r.ms.length})</button>`;
-  h+=`<p class="rulesn">النتيجة بالضبط <b>10</b> · الفائز مع الفارق <b>6</b> · الفائز بس <b>4</b><br>⭐ مباراة وحدة في كل جولة تنضاعف نقاطها</p>`;
+  h+=`<p class="rulesn">النتيجة بالضبط <b>10</b> · الفائز والفارق <b>6</b> · الفائز بس <b>4</b><br>⭐ مباراة وحدة في كل جولة تنضاعف نقاطها</p>`;
   $('#app').innerHTML=h;
   $('#askClub')&&($('#askClub').onclick=()=>EL3FAN.open());
   $('#shareP')&&($('#shareP').onclick=()=>shareRound(r));
@@ -483,7 +483,7 @@ async function pullRound(r){
   if(ch){saveLocal();if(TAB==='me')render()}
 }
 /* «نتيجتي في الجولة»: صورة 1080×1350 فيها كل مباراة توقعتها: النتيجة، توقعك، ونقاطك (صح/غلط) */
-const WHY={10:'النتيجة بالضبط',6:'الفائز مع الفارق',4:'الفائز صح',0:'ما توقعت صح'};
+const WHY={10:'النتيجة بالضبط',6:'الفائز والفارق',4:'الفائز صح',0:'ما توقعت صح'};
 function ldImg(src){return new Promise(r=>{const i=new Image();i.onload=()=>r(i);i.onerror=()=>r(null);i.src=src})}
 async function resultCard(r){
   await document.fonts.ready.catch(()=>{});
