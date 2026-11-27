@@ -123,7 +123,8 @@ async def main():
         # قبل الإطلاق: ما في شبكة
         T.reset({})
         ctx, pg, errs = await page(b, 'g3')
-        T.check('بدون شبكة: رسالة «تنزل قريب»', 'قريب' in await pg.inner_text('#main'), True)
+        _m = await pg.inner_text('#main')
+        T.check('بدون شبكة: رسالة «تنزل قريب» أو موعد الإطلاق', 'قريب' in _m or 'تنطلق' in _m, True)
         T.check('بدون أخطاء في الصفحة', errs, [])
         await ctx.close()
         await b.close()

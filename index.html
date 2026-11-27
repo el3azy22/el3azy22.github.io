@@ -239,8 +239,9 @@ const ICO={
  mano:'<svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M11 5 6 7.5 3 13l4 2 1.5-2.5V27h15V12.5L25 15l4-2-3-5.5L21 5c-1 2-2.8 3-5 3s-4-1-5-3Z"/><path d="M13.7 15.3c0-1.5 1-2.5 2.4-2.5s2.4.9 2.4 2.2c0 1.8-2.5 2-2.5 4"/><circle class="f" cx="16" cy="22.3" r="1.15"/></svg>',
  pred:'<svg viewBox="0 0 32 32" aria-hidden="true"><circle class="s" cx="15" cy="17" r="11"/><circle cx="15" cy="17" r="6.3"/><circle class="f" cx="15" cy="17" r="2"/><path d="M15 17 26.5 5.5M23 5l3.5.5.5 3.5"/></svg>',
  k5:'<svg viewBox="0 0 32 32" aria-hidden="true"><path class="s" d="M10 28V15.5c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5V8.3c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5v6.9-5.1c0-1.4 1-2.5 2.3-2.5s2.2 1.1 2.2 2.5V20c0 4.6-3.2 8-7.6 8Z"/><path d="M10 18.5 7.6 15c-.8-1.1-2.3-1.3-3.3-.5s-1.1 2.2-.3 3.2L10 26"/></svg>',
+ grid:'<svg viewBox="0 0 32 32" aria-hidden="true"><rect class="s" x="4" y="4" width="24" height="24" rx="3"/><path d="M12 4v24M20 4v24M4 12h24M4 20h24"/><circle class="f" cx="16" cy="16" r="2"/></svg>',
  tp:'<svg viewBox="0 0 32 32" aria-hidden="true"><rect class="s" x="5" y="3" width="22" height="26" rx="3"/><path d="M5 16h22M11.5 3v4.2h9V3M11.5 29v-4.2h9V29"/><circle cx="16" cy="16" r="3.2"/><circle class="f" cx="10" cy="10.5" r="1.5"/><circle class="f" cx="22" cy="10.5" r="1.5"/><circle class="f" cx="10.5" cy="21.5" r="1.5"/><circle class="f" cx="21.5" cy="21.5" r="1.5"/></svg>'};
-let P=null,OPEN={},MO={},FD=null,RK=null,R=null,K5={};
+let P=null,OPEN={},MO={},FD=null,RK=null,R=null,K5={},GR={};
 
 /* تحديات اليوم: كل تحدي وحالته لك (باقي عليك / خلّصته / ينطلق بعدين)، اللي يقفل أول فوق */
 function challenges(){
@@ -281,6 +282,12 @@ function challenges(){
         else if(LS('el3azy_k5_'+w))L.push({k:'k5',href,s:'done',t:'خماسي الفانتازي',st:`<span class="st ok">✓ اخترت لاعبينك للجولة ${wl}</span>`,tm:['أقرب قفل بعد',nx-T]});
         else L.push({k:'k5',href,s:'todo',dl:nx,t:'خماسي الفانتازي',st:`الجولة ${wl} · 5 لاعبين من الدوري`,tm:['أول قفل بعد',nx-T],a:'اختار'})}}
   }
+  // شبكة الدوري (grid/config.json → start = رقم يوم المنصة): قبل الإطلاق عداد، وبعده شبكة اليوم
+  if(GR.start){const g0=Date.UTC(2026,10,17)-4*3600e3+(GR.start-1)*864e5;
+    if(DAY<GR.start)L.push({k:'grid',href:'grid/',s:'wait',t:'شبكة الدوري',st:'لعبة جديدة · شبكة كل يوم',tm:['تنطلق بعد',g0-T],a:'شوف'});
+    else{const g=LS('el3azy_grid_'+DAY)||{};
+      if((g.att||[]).length>=9)L.push({k:'grid',href:'grid/',s:'done',t:'شبكة الدوري',st:'<span class="st ok">✓ خلّصت شبكة اليوم</span>',tm:['الشبكة القادمة بعد',eod-T]});
+      else L.push({k:'grid',href:'grid/',s:'todo',dl:eod,t:'شبكة الدوري',st:`شبكة اليوم · ${(g.att||[]).length?'باقي '+(9-g.att.length)+' محاولات':'9 محاولات'}`,tm:['تنتهي بعد',eod-T],a:'العب'})}}
   const o={todo:0,wait:1,done:2};L.sort((a,b)=>o[a.s]-o[b.s]||(a.dl||9e15)-(b.dl||9e15));
   return L;
 }
@@ -320,7 +327,7 @@ function drawRate(){
 drawCh();
 const v=Math.floor(Date.now()/12e4),J=u=>fetch(u+'?v='+v).then(r=>r.ok?r.json():null).catch(()=>null);
 {const T=Date.now(),pv=/[?&]bus\b/.test(location.search),c=document.getElementById('busCard');if(c&&(pv||T>=1799006400000)){c.hidden=false;if(T>=1800129600000)document.getElementById('busWhen').remove()}}
-Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json'),J('predict/mopen.json')]).then(([p,o,r,f,k,mo])=>{P=p;OPEN=o||{};window.OPENG=OPEN;MO=mo||{};R=r;FD=f;K5=k||{};drawCh();drawLg();drawRate();
+Promise.all([J('predict/data.json'),J('predict/open.json'),J('rate/data.json'),J('fans/data.json'),J('khamsa/config.json'),J('predict/mopen.json'),J('grid/config.json')]).then(([p,o,r,f,k,mo,gc])=>{P=p;OPEN=o||{};window.OPENG=OPEN;MO=mo||{};R=r;FD=f;K5=k||{};GR=gc||{};drawCh();drawLg();drawRate();
   J('fans/ranks.json').then(k=>{RK=k;drawLg()})});
 setInterval(()=>{drawCh();drawRate()},1000);
 addEventListener('el3fan',()=>{lastSig='';drawCh();drawLg()});

@@ -240,7 +240,7 @@ function endCard(){const C=cells(),n=Object.keys(C).length,mis=S.att.filter(x=>!
    ${canX?'<button class="xtb" id="xB">⏱️ الوقت الإضافي: كمّل الشبكة<small>نتيجتك ثابتة، والأجوبة الزايدة ما تنحسب</small></button>':''}</div>
    <div class="insight" id="ins"><h3>🔎 اختيارات الجماهير</h3><div style="font-size:12px;opacity:.75">اضغط على أي خانة فيها لاعب، وتشوف أكثر اللاعبين اختياراً فيها وأندرهم.</div></div>`;
   $('#shB').onclick=()=>{const t=`شبكة الدوري #${G.n} · ${points()} ${points()===2?'نقطتين':'نقطة'}\n${share()}\nel3azy.com/grid\n\n#منصة_العازي`;
-    if(navigator.share)navigator.share({text:t}).catch(()=>{});else{try{navigator.clipboard.writeText(t).then(()=>toast('✅ انقسخت'))}catch(e){}}
+    if(navigator.share)navigator.share({text:t}).catch(()=>{});else{try{navigator.clipboard.writeText(t).then(()=>toast('✅ انسخ النص'))}catch(e){}}
     try{window.el3stat&&el3stat('grid','share')}catch(e){}};
   const xb=$('#xB');xb&&(xb.onclick=()=>{S.xon=1;save();draw();scrollTo({top:250,behavior:'smooth'})});
 }
@@ -321,10 +321,13 @@ Promise.all([
   fetch('../mano/data.json').then(r=>r.json()),
   fetch('../mano/assets/crest-sizes.json').then(r=>r.json()).catch(()=>({})),
   fetch('../mano/aliases.json').then(r=>r.json()).catch(()=>({}))
-]).then(([g,d,cr,al])=>{
+]).then(async([g,d,cr,al])=>{
   CR=cr;CLN=d.clubs||{};ALIAS=al||{};P=d.players;
   P.forEach(p=>{PM[p.id]=p;p._k=norm(p.n+' '+(p.e||'')+' '+((ALIAS[p.id]||[]).join(' ')));const kn=(ALIAS[p.id]||[]).find(x=>/[\u0600-\u06FF]/.test(x));if(kn&&!p.n.includes(kn))p.n+=' ('+kn+')'});
-  if(!g||!g.r){$('#main').innerHTML='<div class="msg">⏳ <b>شبكة الدوري</b> تنزل قريب.<br>كل يوم شبكة جديدة 12 بالليل.</div>';return}
+  if(!g||!g.r){const gs=await fetch('config.json?v='+Math.floor(now()/6e4)).then(r=>r.ok?r.json():{}).catch(()=>({}));
+    const when=gs.start&&DNUM<gs.start?new Date(START+(gs.start-1)*DAY+4*3600e3):null,DW=['الأحد','الإثنين','الثلاثاء','الأربعاء','الخميس','الجمعة','السبت'],MN=['يناير','فبراير','مارس','أبريل','مايو','يونيو','يوليو','أغسطس','سبتمبر','أكتوبر','نوفمبر','ديسمبر'];
+    $('#main').innerHTML='<div class="msg">⏳ <b>شبكة الدوري</b> '+(when?`تنطلق ${DW[when.getUTCDay()]} ${when.getUTCDate()} ${MN[when.getUTCMonth()]}، 12 بالليل.`:'تنزل قريب.')+'<br>كل يوم شبكة جديدة 12 بالليل.</div>';
+    if(when)setInterval(()=>{if(now()>=START+(gs.start-1)*DAY)location.reload()},30000);return}
   G=g;draw();clk();setInterval(clk,1000);
   setInterval(()=>{if(now()>=START+DNUM*DAY)location.reload()},30000);
   restore().then(flush);loadCounts();setInterval(loadCounts,60000);
