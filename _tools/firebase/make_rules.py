@@ -357,10 +357,14 @@ a2="newData.parent().parent()"; a3="newData.parent().parent().parent()"
 rules["rules"]["alam"]={
  "g":{".read":True,".indexOn":["t"],"$u":{
    ".write":"auth != null && auth.uid == $u && !data.exists()",
-   ".validate":("newData.hasChildren(['e','m','t'])"
-     f" && {a2}.child('t').child('n').val() == ({AT0}.child('n').exists() ? {AT0}.child('n').val() : 0) + 1"
+   # بصمة يديدة: العدادات لازم تزيد ويا البصمة. تعديل لاحق: بس الاسم (n) ينضاف مرة وحدة، والباقي ما يتغير
+   ".validate":("newData.hasChildren(['e','m','t']) && (data.exists() ? (newData.child('e').val() == data.child('e').val() && newData.child('m').val() == data.child('m').val() && newData.child('t').val() == data.child('t').val() && newData.child('c').val() == data.child('c').val()) : ("
+     f"{a2}.child('t').child('n').val() == ({AT0}.child('n').exists() ? {AT0}.child('n').val() : 0) + 1"
      f" && {a2}.child('t').child('e').child(newData.child('e').val()).val() == ({AT0}.child('e').child(newData.child('e').val()).exists() ? {AT0}.child('e').child(newData.child('e').val()).val() : 0) + 1"
-     f" && (!newData.child('c').exists() || {a2}.child('t').child('c').child(newData.child('c').val()).val() == ({AT0}.child('c').child(newData.child('c').val()).exists() ? {AT0}.child('c').child(newData.child('c').val()).val() : 0) + 1)"),
+     f" && (!newData.child('c').exists() || {a2}.child('t').child('c').child(newData.child('c').val()).val() == ({AT0}.child('c').child(newData.child('c').val()).exists() ? {AT0}.child('c').child(newData.child('c').val()).val() : 0) + 1)))"),
+   # الاسم (اختياري): حروف عربي أو إنجليزي ومسافات بس (ما في أرقام ولا روابط)، 2-18 حرف. ينكتب مرة وحدة، والمدير يقدر يمسحه
+   "n":{".write":f"(auth != null && auth.uid == $u && !data.exists()) || ({ISADM} && !newData.exists())",
+        ".validate":"newData.isString() && newData.val().matches(/^[ء-يa-zA-Z ]{2,18}$/)"},
    "e":{".validate":f"newData.isString() && newData.val().matches(/^({EM})$/)"},
    "m":{".validate":"newData.isNumber() && newData.val() % 1 == 0 && newData.val() >= 0 && newData.val() <= 11"},
    "c":{".validate":f"newData.isString() && newData.val().matches(/^({CL})$/)"},
